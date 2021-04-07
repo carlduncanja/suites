@@ -75,79 +75,66 @@ const PhysiciansDetailsTab = ({ onFieldChange, fields, errorFields }) =>{
                     />
                 </View>
 
-            </View>
-
-            <View
-            style={{
-                height:2,
-                backgroundColor:'#CCD6E0',
-                marginBottom:20
-            }}
-            />
-
-            <View style={styles.row}>
-
                 <View style={styles.inputWrapper}>
                     <InputField2
-                        label={"TRN"}
-                        onChangeText={(value) => { handleTrnValidation(value)}}
-                        value={trnText}
-                        onClear={() => onFieldChange('trn')('')}
-                        keyboardType = "number-pad"
-                        hasError = {errorFields['trn']}
-                        errorMessage = "TRN must contain 9 numbers."
+                        label={"Contact"}
+                        onChangeText={onFieldChange('phone')}
+                        value={fields['phone']}
+                        onClear={() => onFieldChange('phone')('')}
+                        hasError = {errorFields['phone']}
+                        errorMessage = "Please provide contact."
                     />
-                </View>
-
-                <View style={styles.inputWrapper}>
-                    <DateInputField
-                        label={"Date of Birth"}
-                        value={fields['dob']}
-                        onClear={() => onFieldChange('dob')('')}
-                        keyboardType="number-pad"
-                        mode={'date'}
-                        format={"YYYY-MM-DD"}
-                        placeholder="YYYY/MM/DD"
-                        hasError={errorFields['dob']}
-                        errorMessage={errorFields['dob']}
-                        onDateChange={handleDateValidation}
-                        maxDate = {new Date(moment().subtract(1, 'days'))}
-                    />
-                    {/* <DateInputField
-                        label= "Date"
-                    /> */}
-                    {/* <InputField2
-                        label={"Date of Birth"}
-                        onChangeText={(value) => {
-                            handleDateValidation(value)
-                        }}
-                        // value={fields['dob']}
-                        value = {dateText}
-                        onClear={() => onFieldChange('dob')('')}
-                        placeholder="DD/MM/YYYY"
-                        keyboardType = "number-pad"
-                    /> */}
                 </View>
 
             </View>
+
+            {/*<View*/}
+            {/*    style={{*/}
+            {/*        height: 2,*/}
+            {/*        backgroundColor: '#CCD6E0',*/}
+            {/*        marginBottom: 20*/}
+            {/*    }}*/}
+            {/*/>*/}
 
             <View style={styles.row}>
 
-                <View style={styles.inputWrapper}>
-                    <OptionsField
-                        label={"Gender"}
-                        text={fields['gender']}
-                        oneOptionsSelected={onFieldChange('gender')}
-                        menuOption={<MenuOptions>
-                            <MenuOption value={'Male'} text='Male'/>
-                            <MenuOption value={'Female'} text='Female'/>
-                        </MenuOptions>}
-                        hasError = {errorFields['gender']}
-                        errorMessage = "Select a gender from list."
-                    />
-                </View>
+
+
+                {/*<View style={styles.inputWrapper}>*/}
+                    {/*<DateInputField*/}
+                    {/*    label={"Date of Birth"}*/}
+                    {/*    value={fields['dob']}*/}
+                    {/*    onClear={() => onFieldChange('dob')('')}*/}
+                    {/*    keyboardType="number-pad"*/}
+                    {/*    mode={'date'}*/}
+                    {/*    format={"YYYY-MM-DD"}*/}
+                    {/*    placeholder="YYYY/MM/DD"*/}
+                    {/*    hasError={errorFields['dob']}*/}
+                    {/*    errorMessage={errorFields['dob']}*/}
+                    {/*    onDateChange={handleDateValidation}*/}
+                    {/*    maxDate = {new Date(moment().subtract(1, 'days'))}*/}
+                    {/*/>*/}
+                {/*</View>*/}
 
             </View>
+
+            {/*<View style={styles.row}>*/}
+
+            {/*    <View style={styles.inputWrapper}>*/}
+            {/*        <OptionsField*/}
+            {/*            label={"Gender"}*/}
+            {/*            text={fields['gender']}*/}
+            {/*            oneOptionsSelected={onFieldChange('gender')}*/}
+            {/*            menuOption={<MenuOptions>*/}
+            {/*                <MenuOption value={'Male'} text='Male'/>*/}
+            {/*                <MenuOption value={'Female'} text='Female'/>*/}
+            {/*            </MenuOptions>}*/}
+            {/*            hasError = {errorFields['gender']}*/}
+            {/*            // errorMessage = "Select a gender from list."*/}
+            {/*        />*/}
+            {/*    </View>*/}
+
+            {/*</View>*/}
 
         </View>
     )
@@ -160,7 +147,7 @@ export default PhysiciansDetailsTab
 
 const styles = StyleSheet.create({
     sectionContainer: {
-        height: 260,
+        height: 190,
         backgroundColor: '#FFFFFF',
         flexDirection: 'column',
         padding: 24,
