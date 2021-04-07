@@ -77,11 +77,11 @@ const PhysiciansDetailsTab = ({physician}) => {
         />,
         <Record
             recordTitle="Age"
-            recordValue={calcAge(dob) || ''}
+            recordValue={calcAge(dob) || '--'}
         />,
         <Record
             recordTitle="Gender"
-            recordValue={transformToSentence(gender)}
+            recordValue={gender && transformToSentence(gender)}
         />,
         <Record
             recordTitle="Date Of Birth"
@@ -91,7 +91,6 @@ const PhysiciansDetailsTab = ({physician}) => {
             recordTitle="TRN"
             recordValue={formatTrn(trn)}
         />,
-
         <Record
             recordTitle="Type"
             recordValue={ field || "Neurosurgeon" }
