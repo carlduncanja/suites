@@ -458,13 +458,21 @@ const EditablePhysiciansDetailsTab = ({fields, onFieldChange}) => {
                             onClear={() => onFieldChange('trn')('')}
                         />
                     </View>
-
-                    {/*<View style={styles.inputWrapper}>*/}
-                    {/*    <Text>{formatTrn(fields.trn)}</Text>*/}
-                    {/*</View>*/}
                 </View>
 
-                <View style={styles.fieldWrapper}/>
+                <View style={styles.fieldWrapper}>
+                    <View style={{marginBottom: 5}}>
+                        <Text style={styles.title}>Type</Text>
+                    </View>
+
+                    <View style={styles.inputWrapper}>
+                        <InputField2
+                            onChangeText={onFieldChange('field')}
+                            value={fields.field}
+                            onClear={() => onFieldChange('field')('')}
+                        />
+                    </View>
+                </View>
 
                 <View style={styles.fieldWrapper}/>
             </View>
