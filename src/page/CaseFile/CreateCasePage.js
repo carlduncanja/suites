@@ -429,13 +429,13 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, removeDraft, route}
         switch (tab) {
             case PATIENT_TABS.DETAILS: {
                 // validate the fields on the details tab that are required
-                requiredFields = ['firstName', 'surname', 'trn', 'dob'];
+                requiredFields = ['firstName', 'surname'];
 
                 break;
             }
             case PATIENT_TABS.ADDRESS: {
                 // validate the fields on the details tab that are required
-                requiredFields = ['line1', 'city', 'parish'];
+                requiredFields = [];
 
                 break;
             }
@@ -467,7 +467,6 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, removeDraft, route}
                     .isBefore(validaDob);
                 if (!validDob) {
                     isValid = false;
-
                     updateErrors = {
                         ...updateErrors,
                         [requiredField]: 'Invalid DOB',
