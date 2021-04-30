@@ -29,7 +29,7 @@ const App = () => {
     }), [state, dispatch]);
 
     // TODO REMOVE IN PROD [JUST FOR DEMO PURPOSES]
-    // LogBox.ignoreAllLogs(value)
+    LogBox.ignoreAllLogs(true)
 
     const _cacheResourcesAsync = async () => {
         const images = [
