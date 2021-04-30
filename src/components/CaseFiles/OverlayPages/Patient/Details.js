@@ -769,7 +769,7 @@ const Details = ({
                                 <View style={{flex: 2}}>
                                     <Record
                                         recordTitle="Address 1"
-                                        recordValue={item.line1}
+                                        recordValue={item?.line1}
                                         onClearValue={() => updateAddress('', 'line1', item._id)}
                                         onRecordUpdate={value => updateAddress(value, 'line1', item._id)}
                                         editMode={isEditMode}
@@ -793,13 +793,13 @@ const Details = ({
                                 <View style={{ flex: 2 }}>
                                     <PersonalRecord
                                         recordTitle="Address 1"
-                                        recordValue={item.line1}
+                                        recordValue={item?.line1}
                                     />
                                 </View>
 
                                 <PersonalRecord
                                     recordTitle="Address 2"
-                                    recordValue={item.line2}
+                                    recordValue={item?.line2}
                                 />
                             </Row>
                         ))
