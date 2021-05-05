@@ -1,12 +1,9 @@
 import React, {useState, useRef, useEffect, createRef} from 'react';
-import PropTypes from 'prop-types';
 import {
     View,
     StyleSheet,
     Alert,
     ActivityIndicator,
-    Text,
-    Keyboard,
 } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage'
 import {connect} from 'react-redux';
@@ -22,108 +19,7 @@ import {signIn} from '../../redux/actions/authActions';
 import {setBearerToken} from '../../api';
 import PageButton from "../../components/common/Page/PageButton";
 import {useTheme} from "emotion-theming";
-
-
-const PageWrapper = styled.View`
-    flex: 1;
-    height: 100%;
-    width: 100%;
-`;
-
-const PageContainer = styled.View`
-    flex: 1;
-    height: 100%;
-    width: 100%;
-    align-items: center;
-    justify-content: center;
-    padding-bottom: 100px;
-`;
-
-const CopyRightContainer = styled.View`
-   align-items: center;
-   justify-content: flex-end;
-   bottom: 30px;
-`
-const CopyRightText = styled.Text(({theme}) => ({
-    ...theme.font['--text-xs-regular'],
-    color: theme.colors['--default-shade-white']
-
-}))
-
-const LogoWrapper = styled.View`
-    height: 116px;
-    width: 116px;
-    margin-bottom: ${({theme}) => theme.space['--space-32']};
-`;
-const LogoContainer = styled.View`
-        height: 100%;
-        width: 100%;
-        background-color: ${({theme}) => theme.colors['--default-shade-white']};
-        border-radius: 58px;
-        align-items: center;
-        justify-content: center;
-    `;
-
-const FormWrapper = styled.View`
-   display: flex;
-   background-color: ${({theme}) => theme.colors['--default-shade-white']};
-   padding: ${({theme}) => theme.space['--space-32']} ;
-   //align-self: center;
-   //min-height: 200px;
-   //width: 352px;
-   border-radius: 12px;
-   justify-content: flex-start;
-   align-items: center;
-`;
-
-const FormHeaderText = styled.Text(({theme}) => ({
-    ...theme.font['--text-2xl-medium'],
-    color: theme.colors['--company'],
-    marginBottom: 32
-}))
-
-const FormContainer = styled.View`
-  display: flex;
-  width: 261px;
-  align-self: center;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-`;
-
-const RowContainer = styled.View`
-  width: 100%;
-  height: 36px;
-  margin-bottom: ${({theme}) => theme.space['--space-20']};
-`
-
-const DividerContainer = styled.View`
-  width: 100%;
-  height: 56px;
-  flex-direction: row;
-  align-items: center;
-`
-const DividerText = styled.Text(({theme}) => ({
-    ...theme.font['--text-xs-regular'],
-    color: theme.colors['--color-gray-400'],
-    marginLeft: 10,
-    marginRight: 10
-}))
-
-const LoginButtonWrapper = styled.View`
-    border-radius: 6px;
-    background-color: ${({theme}) => theme.colors['--company']};
-    padding-top:  ${({theme}) => theme.space['--space-8']};
-    padding-bottom:  ${({theme}) => theme.space['--space-8']};
-    height: 35px;
-    width: 100%
-`
-
-const ButtonWrapper = styled.View`
-    height: 36px;
-    margin-top: 16px;
-    width: 100%
-`
+import moment from "moment";
 
 function LoginPage({navigation, signIn, expoPushToken}) {
     const theme = useTheme();
@@ -152,10 +48,8 @@ function LoginPage({navigation, signIn, expoPushToken}) {
         setFieldError(updatedErrors)
     };
 
-    const onButtonPress = () => {
-        console.log('Fields: ', fields);
-
-        if(!validateFields()) return;
+    const onLoginButtonPress = () => {
+        if (!isFormFieldsValid()) return;
 
         setLoading(true);
         login(fields.email, fields.password, expoPushToken)
@@ -173,6 +67,7 @@ function LoginPage({navigation, signIn, expoPushToken}) {
                     signIn(token);
                 } catch (error) {
                     // Error saving data
+                    console.log('Failed to save token', error);
                 }
             })
             .catch(e => {
@@ -184,7 +79,7 @@ function LoginPage({navigation, signIn, expoPushToken}) {
             });
     };
 
-    const validateFields = () => {
+    const isFormFieldsValid = () => {
         const requiredParams = ['email', 'password']
 
         let valid = true;
@@ -200,25 +95,13 @@ function LoginPage({navigation, signIn, expoPushToken}) {
         return valid
     }
 
-
     const onGuestButtonPress = () => {
     };
 
-     const goToSignUp = () => {
-         navigation.navigate('signup')
+    const goToSignUp = () => {
+        navigation.navigate('signup')
     };
 
-
-    const divider = (
-        <View
-            style={{
-                flex: 1,
-                borderWidth: 1,
-                borderColor: '#CCD6E0',
-                height: 0,
-            }}
-        />
-    );
 
     return (
         <PageWrapper theme={theme}>
@@ -251,7 +134,6 @@ function LoginPage({navigation, signIn, expoPushToken}) {
                                     icon={<PersonIcon/>}
                                     inputRef={emailRef}
                                     isFocus={emailRef?.current?.isFocused() || false}
-                                    // onFocus = {onFocus}
                                 />
                             </RowContainer>
 
@@ -277,7 +159,7 @@ function LoginPage({navigation, signIn, expoPushToken}) {
                                 ) : (
                                     <Button
                                         backgroundColor="#104587"
-                                        buttonPress={onButtonPress}
+                                        buttonPress={onLoginButtonPress}
                                         title="Login"
                                         color="#FFFFFF"
                                     />
@@ -321,12 +203,11 @@ function LoginPage({navigation, signIn, expoPushToken}) {
                         </FormContainer>
                     </FormWrapper>
 
-                    {/* </PageContainer> */}
                 </PageContainer>
 
                 <CopyRightContainer theme={theme}>
                     <CopyRightText theme={theme}>
-                        {'\u00A9'} Copyright 2019 The Suites
+                        {'\u00A9'} Copyright { moment().format('YYYY').toString() } The Suites
                     </CopyRightText>
                 </CopyRightContainer>
 
@@ -335,6 +216,119 @@ function LoginPage({navigation, signIn, expoPushToken}) {
         </PageWrapper>
     );
 }
+
+const divider = (
+    <View
+        style={{
+            flex: 1,
+            borderWidth: 1,
+            borderColor: '#CCD6E0',
+            height: 0,
+        }}
+    />
+);
+
+const PageWrapper = styled.View`
+  flex: 1;
+  height: 100%;
+  width: 100%;
+`;
+
+const PageContainer = styled.View`
+  flex: 1;
+  height: 100%;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  padding-bottom: 100px;
+`;
+
+const CopyRightContainer = styled.View`
+  align-items: center;
+  justify-content: flex-end;
+  bottom: 30px;
+`
+const CopyRightText = styled.Text(({theme}) => ({
+    ...theme.font['--text-xs-regular'],
+    color: theme.colors['--default-shade-white']
+
+}))
+
+const LogoWrapper = styled.View`
+  height: 116px;
+  width: 116px;
+  margin-bottom: ${({theme}) => theme.space['--space-32']};
+`;
+const LogoContainer = styled.View`
+  height: 100%;
+  width: 100%;
+  background-color: ${({theme}) => theme.colors['--default-shade-white']};
+  border-radius: 58px;
+  align-items: center;
+  justify-content: center;
+`;
+
+const FormWrapper = styled.View`
+  display: flex;
+  background-color: ${({theme}) => theme.colors['--default-shade-white']};
+  padding: ${({theme}) => theme.space['--space-32']};
+  //align-self: center;
+  //min-height: 200px;
+  //width: 352px;
+  border-radius: 12px;
+  justify-content: flex-start;
+  align-items: center;
+`;
+
+const FormHeaderText = styled.Text(({theme}) => ({
+    ...theme.font['--text-2xl-medium'],
+    color: theme.colors['--company'],
+    marginBottom: 32
+}))
+
+const FormContainer = styled.View`
+  display: flex;
+  width: 261px;
+  align-self: center;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+`;
+
+const RowContainer = styled.View`
+  width: 100%;
+  height: 36px;
+  margin-bottom: ${({theme}) => theme.space['--space-20']};
+`
+
+const DividerContainer = styled.View`
+  width: 100%;
+  height: 56px;
+  flex-direction: row;
+  align-items: center;
+`
+const DividerText = styled.Text(({theme}) => ({
+    ...theme.font['--text-xs-regular'],
+    color: theme.colors['--color-gray-400'],
+    marginLeft: 10,
+    marginRight: 10
+}))
+
+const LoginButtonWrapper = styled.View`
+  border-radius: 6px;
+  background-color: ${({theme}) => theme.colors['--company']};
+  padding-top: ${({theme}) => theme.space['--space-8']};
+  padding-bottom: ${({theme}) => theme.space['--space-8']};
+  height: 35px;
+  width: 100%
+`
+
+const ButtonWrapper = styled.View`
+  height: 36px;
+  margin-top: 16px;
+  width: 100%
+`
+
 
 const styles = StyleSheet.create({
     overlay: {

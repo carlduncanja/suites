@@ -1,10 +1,10 @@
-import React, {useReducer, useMemo, useState} from 'react';
+import React, {useReducer, useMemo, useEffect} from 'react';
 import {Provider} from 'react-redux';
-import {ThemeProvider} from 'emotion-theming';
-import {Asset} from 'expo-asset';
-import AppLoading from 'expo-app-loading';
+import {ThemeProvider} from 'emotion-theming'
+import * as SplashScreen from 'expo-splash-screen';
 
-import {appActionTypes, appReducer} from './src/redux/reducers/appReducer';
+
+import { appReducer} from './src/redux/reducers/appReducer';
 import {initialState} from './src/SuitesContext';
 
 import {SuitesContextProvider} from './src/contexts/SuitesContext';
@@ -14,12 +14,12 @@ import NotificationRegistry from './src/components/notifications/NotficationRegi
 
 import {root} from './src/styles';
 import Statusbar from './src/components/navigation/Statusbar';
+import {restoreToken} from "./src/redux/actions/authActions";
 
 const store = configureStore({});
 
 const App = () => {
     const [state, dispatch] = useReducer(appReducer, initialState);
-    const [isReady, setIsReady] = useState(false);
 
     const contextValue = useMemo(() => ({
         state,
@@ -29,26 +29,24 @@ const App = () => {
     // TODO REMOVE IN PROD [JUST FOR DEMO PURPOSES]
     // console.disableYellowBox = true;
 
-    const _cacheResourcesAsync = async () => {
-        const images = [
-            require('./assets/TheSuitesLogo.png'),
-            require('./assets/TheSuitesLogo2.png')
-        ];
+    useEffect(() => {
+        async function prepare() {
+            try {
+                // Keep the splash screen visible while we fetch resources
+                await SplashScreen.preventAutoHideAsync();
 
-        const cacheImages = images.map(image => Asset.fromModule(image).downloadAsync());
-        return Promise.all(cacheImages);
-    };
+            } catch (e) {
+                console.warn('Failed to prevent splash screen hide', e);
+            }
+        }
+
+        prepare().then(r => {
+        });
+    }, []);
 
     return (
         <>
             {
-                // !isReady ? (
-                //     // <AppLoading
-                //     //     startAsync={_cacheResourcesAsync}
-                //     //     onFinish={() => setIsReady(true)}
-                //     //     onError={console.warn}
-                //     // />
-                // ) : (
                 <Provider store={store}>
                     <SuitesContextProvider value={{
                         state: contextValue.state,
@@ -62,10 +60,19 @@ const App = () => {
                         </ThemeProvider>
                     </SuitesContextProvider>
                 </Provider>
-                // )
             }
         </>
     );
 };
+
+const mapStateToProps = (state) => {
+    return {
+        auth: state.auth
+    }
+}
+
+const mapDispatchToProps = {
+    restoreToken
+}
 
 export default App;
