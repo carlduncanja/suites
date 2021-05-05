@@ -1,12 +1,11 @@
 import React, {useReducer, useMemo, useState} from 'react';
-import {connect, Provider} from 'react-redux';
+import {Provider} from 'react-redux';
 import {ThemeProvider} from 'emotion-theming';
 import {Asset} from 'expo-asset';
 import AppLoading from 'expo-app-loading';
 
-import {createStackNavigator} from '@react-navigation/stack';
 import {appActionTypes, appReducer} from './src/redux/reducers/appReducer';
-import {initialState, SuitesContext} from './src/SuitesContext';
+import {initialState} from './src/SuitesContext';
 
 import {SuitesContextProvider} from './src/contexts/SuitesContext';
 import configureStore from './src/redux/configureStore';
@@ -28,7 +27,7 @@ const App = () => {
     }), [state, dispatch]);
 
     // TODO REMOVE IN PROD [JUST FOR DEMO PURPOSES]
-    console.disableYellowBox = true;
+    // console.disableYellowBox = true;
 
     const _cacheResourcesAsync = async () => {
         const images = [
@@ -43,28 +42,27 @@ const App = () => {
     return (
         <>
             {
-                !isReady ? (
-                    <AppLoading
-                        startAsync={_cacheResourcesAsync}
-                        onFinish={() => setIsReady(true)}
-                        onError={console.warn}
-                    />
-                ) : (
-                    <Provider store={store}>
-                        <SuitesContextProvider value={{
-                            state: contextValue.state,
-                            dispatch: contextValue.dispatch
-                        }}
-                        >
-                            <ThemeProvider theme={root}>
-                                <Statusbar/>
-                                {/*<RootApplicationContainer/>*/}
-                                <RootApplicationNavigator/>
-                                <NotificationRegistry/>
-                            </ThemeProvider>
-                        </SuitesContextProvider>
-                    </Provider>
-                )
+                // !isReady ? (
+                //     // <AppLoading
+                //     //     startAsync={_cacheResourcesAsync}
+                //     //     onFinish={() => setIsReady(true)}
+                //     //     onError={console.warn}
+                //     // />
+                // ) : (
+                <Provider store={store}>
+                    <SuitesContextProvider value={{
+                        state: contextValue.state,
+                        dispatch: contextValue.dispatch
+                    }}
+                    >
+                        <ThemeProvider theme={root}>
+                            <Statusbar/>
+                            <RootApplicationNavigator/>
+                            <NotificationRegistry/>
+                        </ThemeProvider>
+                    </SuitesContextProvider>
+                </Provider>
+                // )
             }
         </>
     );

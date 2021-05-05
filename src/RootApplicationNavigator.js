@@ -3,22 +3,16 @@ import {StyleSheet, View} from 'react-native'
 import {NavigationContainer} from "@react-navigation/native";
 
 import AuthStack from "../src/components/navigation/AuthStack/AuthStack";
-import SplashScreen from "../src/page/SplashScreen";
-import * as ExpoSplashScreen from 'expo-splash-screen';
 import {connect} from "react-redux";
 import {createStackNavigator} from "@react-navigation/stack";
-import LoginPage from "./page/Onboarding/LoginPage";
-import NotFound from "./page/NotFound";
 import SuitesNavigationStack from "./components/navigation/AppStack/SuitesNavigationStack";
 
 const Stack = createStackNavigator();
 
 function RootApplicationNavigator({auth}) {
-
     const {
         isSignOut,
         userToken,
-        isLoading,
     } = auth;
 
     useEffect(() => {
@@ -26,17 +20,8 @@ function RootApplicationNavigator({auth}) {
 
     }, [auth])
 
-    if (isLoading) {
-        // We haven't finished checking for the token yet
-        return <SplashScreen/>;
-    } else  {
-        ExpoSplashScreen.hideAsync().then(r => {});
-    }
-
-
     return (
         <View style={styles.container}>
-            {/*<RootApplicationContainer/>*/}
 
             <NavigationContainer>
                 <Stack.Navigator
@@ -48,16 +33,14 @@ function RootApplicationNavigator({auth}) {
 
                     {
                         userToken === null
-                            ?
-                            <Stack.Screen
+                            ? <Stack.Screen
                                 name="Auth"
                                 component={AuthStack}
                                 options={{
                                     headerShown: false,
                                 }}
                             />
-                            :
-                            <Stack.Screen
+                            : <Stack.Screen
                                 name="App"
                                 component={SuitesNavigationStack}
                                 options={{
