@@ -1,12 +1,12 @@
-import React, { useContext, useEffect, useRef, useState } from 'react';
-import { ScrollView, View, StyleSheet, TouchableOpacity } from 'react-native';
+import React, {useContext, useEffect, useRef, useState} from 'react';
+import {ScrollView, View, StyleSheet, TouchableOpacity} from 'react-native';
 import moment from 'moment';
-import { useModal, withModal } from 'react-native-modalfy';
-import styled, { css } from '@emotion/native';
-import { useTheme } from 'emotion-theming';
-import { MenuOption, MenuOptions } from 'react-native-popup-menu';
+import {useModal, withModal} from 'react-native-modalfy';
+import styled, {css} from '@emotion/native';
+import {useTheme} from 'emotion-theming';
+import {MenuOption, MenuOptions} from 'react-native-popup-menu';
 import BMIConverter from '../../BMIConverter';
-import { PersonalRecord, ContactRecord, MissingValueRecord } from '../../../common/Information Record/RecordStyles';
+import {PersonalRecord, ContactRecord, MissingValueRecord} from '../../../common/Information Record/RecordStyles';
 import ResponsiveRecord from '../../../common/Information Record/ResponsiveRecord';
 import ContentResponsiveRecord from '../../../common/Information Record/ContentResponsiveRecord';
 import PatientBMIChart from '../../PatientBMIChart';
@@ -20,10 +20,10 @@ import {
 } from '../../../../utils/formatter';
 import Row from '../../../common/Row';
 import Record from '../../../common/Information Record/Record';
-import { PageContext } from '../../../../contexts/PageContext';
+import {PageContext} from '../../../../contexts/PageContext';
 import ConfirmationComponent from '../../../ConfirmationComponent';
-import { updatePatient } from '../../../../api/network';
-import { calculateBmi } from '../../../../helpers/calculations';
+import {updatePatient} from '../../../../api/network';
+import {calculateBmi} from '../../../../helpers/calculations';
 
 const bmiScale = [
     {
@@ -56,10 +56,10 @@ const bmiScale = [
 const itemWidth = `${100 / 3}%`;
 
 const Details = ({
-    tabDetails,
-    onUpdated = () => {
-    }
-}) => {
+                     tabDetails,
+                     onUpdated = () => {
+                     }
+                 }) => {
     const theme = useTheme();
     const modal = useModal();
 
@@ -89,7 +89,7 @@ const Details = ({
         contactInfo = {},
         address: addresses = []
     } = tabDetails;
-    const { phones = [], emails = [], emergencyContact: emergencyContacts = [] } = contactInfo;
+    const {phones = [], emails = [], emergencyContact: emergencyContacts = []} = contactInfo;
 
     const [fields, setFields] = useState({
         firstName,
@@ -109,8 +109,8 @@ const Details = ({
         emergencyContact: emergencyContacts
     });
 
-    const { pageState, setPageState } = useContext(PageContext);
-    const { isEditMode } = pageState;
+    const {pageState, setPageState} = useContext(PageContext);
+    const {isEditMode} = pageState;
 
     const [isLoading, setLoading] = useState(false);
     const [isUpdated, setUpdated] = useState(false);
@@ -126,7 +126,7 @@ const Details = ({
     const bmiMeasure = calculateBmi(height, weight);
     const bmi = bmiMeasure > 100 ? 100 : bmiMeasure;
 
-    const onTabUpdated = updatedFields => setFields({ ...fields, ...updatedFields });
+    const onTabUpdated = updatedFields => setFields({...fields, ...updatedFields});
 
     const onFieldChange = fieldName => value => {
         const updatedFields = {
@@ -209,7 +209,7 @@ const Details = ({
     }, [isEditMode]);
 
     const updatePatientAction = () => {
-        const data = { ...fields };
+        const data = {...fields};
 
         setLoading(true);
         updatePatient(patientId, data)
@@ -450,7 +450,7 @@ const Details = ({
     const editWorkEmailValue = (workEmailValue || workEmailValue === '') && isUpdated ? workEmailValue : workEmailRecordValue;
 
     return (
-        <ScrollView contentContainerStyle={{ paddingBottom: 100 }}>
+        <ScrollView contentContainerStyle={{paddingBottom: 100}}>
             <>
                 <Row>
                     {/* I concede; fields attributes not being instantiated like EVERYWHERE else so I give up. 'fields.<attribute>' || '<attribute>' defaulting it is */}
@@ -533,7 +533,7 @@ const Details = ({
                 <Row>
                     <Record
                         recordTitle="Date of Birth"
-                        recordValue={isEditMode ? defaultRecordValue(fields, 'dob', dob) : dateOfBirth}
+                        recordValue={isEditMode ? defaultRecordValue(fields, 'dob', dob) : (dateOfBirth || '--')}
                         editMode={isEditMode}
                         editable={true}
                         useDateField={true}
@@ -562,8 +562,8 @@ const Details = ({
                         onRecordUpdate={onFieldChange('gender')}
                         options={(
                             <MenuOptions>
-                                <MenuOption value="Male" text="Male" />
-                                <MenuOption value="Female" text="Female" />
+                                <MenuOption value="Male" text="Male"/>
+                                <MenuOption value="Female" text="Female"/>
                             </MenuOptions>
                         )}
                     />
@@ -579,12 +579,12 @@ const Details = ({
                         onRecordUpdate={onFieldChange('ethnicity')}
                         options={(
                             <MenuOptions>
-                                <MenuOption value="Black / African American" text="Black / African American" />
-                                <MenuOption value="White / Caucasian" text="White / Caucasian" />
-                                <MenuOption value="Indian" text="Indian" />
-                                <MenuOption value="Asian" text="Asian" />
-                                <MenuOption value="Hispanic" text="Hispanic" />
-                                <MenuOption value="Other" text="Other" />
+                                <MenuOption value="Black / African American" text="Black / African American"/>
+                                <MenuOption value="White / Caucasian" text="White / Caucasian"/>
+                                <MenuOption value="Indian" text="Indian"/>
+                                <MenuOption value="Asian" text="Asian"/>
+                                <MenuOption value="Hispanic" text="Hispanic"/>
+                                <MenuOption value="Other" text="Other"/>
                             </MenuOptions>
                         )}
                     />
@@ -597,14 +597,14 @@ const Details = ({
                         onRecordUpdate={onFieldChange('bloodType')}
                         options={(
                             <MenuOptions>
-                                <MenuOption value="A+" text="A+" />
-                                <MenuOption value="A-" text="A-" />
-                                <MenuOption value="B+" text="B+" />
-                                <MenuOption value="B-" text="B-" />
-                                <MenuOption value="O+" text="O+" />
-                                <MenuOption value="O-" text="O-" />
-                                <MenuOption value="AB+" text="AB+" />
-                                <MenuOption value="AB-" text="AB-" />
+                                <MenuOption value="A+" text="A+"/>
+                                <MenuOption value="A-" text="A-"/>
+                                <MenuOption value="B+" text="B+"/>
+                                <MenuOption value="B-" text="B-"/>
+                                <MenuOption value="O+" text="O+"/>
+                                <MenuOption value="O-" text="O-"/>
+                                <MenuOption value="AB+" text="AB+"/>
+                                <MenuOption value="AB-" text="AB-"/>
                             </MenuOptions>
                         )}
                     />
@@ -614,7 +614,7 @@ const Details = ({
                     />
                 </Row>
             </>
-            <Divider />
+            <Divider/>
             <>
                 <Row>
                     {
@@ -632,14 +632,14 @@ const Details = ({
                                 keyboardType="number-pad"
                             />
                         ) : (
-                                <ResponsiveRecord
-                                    recordTitle="Cell Phone Number"
-                                    isPhone={true}
-                                    recordValue={formatPhoneNumber(cellPhoneRecordValue)}
-                                    handleRecordPress={() => {
-                                    }}
-                                />
-                            )
+                            <ResponsiveRecord
+                                recordTitle="Cell Phone Number"
+                                isPhone={true}
+                                recordValue={formatPhoneNumber(cellPhoneRecordValue)}
+                                handleRecordPress={() => {
+                                }}
+                            />
+                        )
                     }
 
                     {
@@ -657,14 +657,14 @@ const Details = ({
                                 keyboardType="number-pad"
                             />
                         ) : (
-                                <ResponsiveRecord
-                                    recordTitle="Home Phone Number"
-                                    isPhone={true}
-                                    recordValue={formatPhoneNumber(homePhoneRecordValue)}
-                                    handleRecordPress={() => {
-                                    }}
-                                />
-                            )
+                            <ResponsiveRecord
+                                recordTitle="Home Phone Number"
+                                isPhone={true}
+                                recordValue={formatPhoneNumber(homePhoneRecordValue)}
+                                handleRecordPress={() => {
+                                }}
+                            />
+                        )
                     }
 
                     {
@@ -682,13 +682,13 @@ const Details = ({
                                 keyboardType="number-pad"
                             />
                         ) : (
-                                <ResponsiveRecord
-                                    recordTitle="Work Phone Number"
-                                    recordValue={formatPhoneNumber(workPhoneRecordValue)}
-                                    handleRecordPress={() => {
-                                    }}
-                                />
-                            )
+                            <ResponsiveRecord
+                                recordTitle="Work Phone Number"
+                                recordValue={formatPhoneNumber(workPhoneRecordValue)}
+                                handleRecordPress={() => {
+                                }}
+                            />
+                        )
                     }
                 </Row>
 
@@ -706,14 +706,14 @@ const Details = ({
                                 autoCapitalize="none"
                             />
                         ) : (
-                                <ResponsiveRecord
-                                    recordTitle="Primary Email"
-                                    isEmail={true}
-                                    recordValue={primaryEmailRecordValue}
-                                    handleRecordPress={() => {
-                                    }}
-                                />
-                            )
+                            <ResponsiveRecord
+                                recordTitle="Primary Email"
+                                isEmail={true}
+                                recordValue={primaryEmailRecordValue}
+                                handleRecordPress={() => {
+                                }}
+                            />
+                        )
                     }
 
                     {
@@ -729,13 +729,13 @@ const Details = ({
                                 autoCapitalize="none"
                             />
                         ) : (
-                                <ResponsiveRecord
-                                    recordTitle="Alternate Email"
-                                    recordValue={otherEmailRecordValue}
-                                    handleRecordPress={() => {
-                                    }}
-                                />
-                            )
+                            <ResponsiveRecord
+                                recordTitle="Alternate Email"
+                                recordValue={otherEmailRecordValue}
+                                handleRecordPress={() => {
+                                }}
+                            />
+                        )
                     }
 
                     {
@@ -751,25 +751,25 @@ const Details = ({
                                 autoCapitalize="none"
                             />
                         ) : (
-                                <ResponsiveRecord
-                                    recordTitle="Work Email"
-                                    isEmail={true}
-                                    recordValue={workEmailRecordValue}
-                                    handleRecordPress={() => {
-                                    }}
-                                />
-                            )
+                            <ResponsiveRecord
+                                recordTitle="Work Email"
+                                isEmail={true}
+                                recordValue={workEmailRecordValue}
+                                handleRecordPress={() => {
+                                }}
+                            />
+                        )
                     }
                 </Row>
 
                 {
                     isEditMode ? (
-                        addressValues.map((item, index) => (
+                        addressValues?.map((item, index) => (
                             <Row key={index}>
-                                <View style={{ flex: 2 }}>
+                                <View style={{flex: 2}}>
                                     <Record
                                         recordTitle="Address 1"
-                                        recordValue={item.line1}
+                                        recordValue={item?.line1}
                                         onClearValue={() => updateAddress('', 'line1', item._id)}
                                         onRecordUpdate={value => updateAddress(value, 'line1', item._id)}
                                         editMode={isEditMode}
@@ -788,30 +788,30 @@ const Details = ({
                             </Row>
                         ))
                     ) : (
-                            addresses.map((item, index) => (
-                                <Row key={index}>
-                                    <View style={{ flex: 2 }}>
-                                        <PersonalRecord
-                                            recordTitle="Address 1"
-                                            recordValue={item.line1}
-                                        />
-                                    </View>
-
+                        addresses?.map((item, index) => (
+                            <Row key={index}>
+                                <View style={{ flex: 2 }}>
                                     <PersonalRecord
-                                        recordTitle="Address 2"
-                                        recordValue={item.line2}
+                                        recordTitle="Address 1"
+                                        recordValue={item?.line1}
                                     />
-                                </Row>
-                            ))
-                        )
+                                </View>
+
+                                <PersonalRecord
+                                    recordTitle="Address 2"
+                                    recordValue={item?.line2}
+                                />
+                            </Row>
+                        ))
+                    )
                 }
             </>
-            <Divider />
+            <Divider/>
             <>
                 {
                     isEditMode ? (
                         emergencyContactsValues.map((contact, index) => {
-                            const { relation = '', email = '', phone = '', name = '' } = contact;
+                            const {relation = '', email = '', phone = '', name = ''} = contact;
                             return (
                                 <React.Fragment key={index}>
                                     <Row>
@@ -863,34 +863,34 @@ const Details = ({
                             );
                         })
                     ) : (
-                            emergencyContacts.map((contact, index) => {
-                                const { relation = '', email = '', phone = '', name = '' } = contact;
-                                return (
-                                    <Row key={index}>
-                                        <Record
-                                            recordTitle="Emergency Contact Name"
-                                            recordValue={`${name && relation ? `${name} (${relation})` : name || '--'}`}
-                                        />
+                        emergencyContacts.map((contact, index) => {
+                            const {relation = '', email = '', phone = '', name = ''} = contact;
+                            return (
+                                <Row key={index}>
+                                    <Record
+                                        recordTitle="Emergency Contact Name"
+                                        recordValue={`${name && relation ? `${name} (${relation})` : name || '--'}`}
+                                    />
 
-                                        <ResponsiveRecord
-                                            recordTitle="Emergency Contact Phone"
-                                            recordValue={formatPhoneNumber(phone)}
-                                            handleRecordPress={() => {
-                                            }}
-                                            isPhone={true}
-                                        />
+                                    <ResponsiveRecord
+                                        recordTitle="Emergency Contact Phone"
+                                        recordValue={formatPhoneNumber(phone)}
+                                        handleRecordPress={() => {
+                                        }}
+                                        isPhone={true}
+                                    />
 
-                                        <ResponsiveRecord
-                                            recordTitle="Emergency Contact Email"
-                                            recordValue={email}
-                                            handleRecordPress={() => {
-                                            }}
-                                            isEmail={true}
-                                        />
-                                    </Row>
-                                );
-                            })
-                        )
+                                    <ResponsiveRecord
+                                        recordTitle="Emergency Contact Email"
+                                        recordValue={email}
+                                        handleRecordPress={() => {
+                                        }}
+                                        isEmail={true}
+                                    />
+                                </Row>
+                            );
+                        })
+                    )
                 }
             </>
         </ScrollView>
@@ -917,5 +917,5 @@ const styles = StyleSheet.create({
         // alignItems:'flex-start',
         justifyContent: 'space-between'
     },
-    rowItem: { width: itemWidth }
+    rowItem: {width: itemWidth}
 });

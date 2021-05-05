@@ -21,19 +21,23 @@
 *TBD: Project build status if any*
 
 
-
 ## 🗂 Tech Stack & Project Dependencies
 
 ------
 
 Tech Stack
 
-- React Native
+- [React Native](https://reactnative.dev/docs/getting-started)
+- [Expo](https://docs.expo.io)
 
-Dependencies
 
-- Expo
-- NodeJs
+## Requirements
+
+- [Document Management Server](https://influx.smssoftwarestudio.com/insight/document-management-service/swagger)
+- [Document Generation Service](https://influx.smssoftwarestudio.com/insight/document-generation-service/swagger)
+- [Suites API]()
+- [Expo CLI](https://docs.expo.io/workflow/expo-cli/)
+
 
 
 
@@ -70,8 +74,8 @@ Follow the following steps for setting up this project on ur local maching.
 
 ------
 
-*TBD: Deployment Steps*
 
+- run `./deploy` to run fastlane script (NB. Ensure fastlane is installed on PC before execution of script)
 
 
 ## 🧪 Tests

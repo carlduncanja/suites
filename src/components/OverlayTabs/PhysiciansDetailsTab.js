@@ -23,6 +23,7 @@ const PhysiciansDetailsTab = ({physician}) => {
         emails,
         address,
         phones,
+        field,
         emergencyContact
     } = physician;
 
@@ -76,11 +77,11 @@ const PhysiciansDetailsTab = ({physician}) => {
         />,
         <Record
             recordTitle="Age"
-            recordValue={calcAge(dob) || ''}
+            recordValue={calcAge(dob) || '--'}
         />,
         <Record
             recordTitle="Gender"
-            recordValue={transformToSentence(gender)}
+            recordValue={gender && transformToSentence(gender)}
         />,
         <Record
             recordTitle="Date Of Birth"
@@ -89,6 +90,10 @@ const PhysiciansDetailsTab = ({physician}) => {
         <Record
             recordTitle="TRN"
             recordValue={formatTrn(trn)}
+        />,
+        <Record
+            recordTitle="Type"
+            recordValue={ field || "Neurosurgeon" }
         />
     ];
 

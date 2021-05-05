@@ -12,9 +12,9 @@ export const handleNumberValidation = (value, maxLength = 0) => {
     if (/^\d+$/g.test(value) || !value) return value;
 };
 
-export const formatTrn = value => value.replace(/(\d{3})(\d{3})(\d{3})/, '$1-$2-$3');
+export const formatTrn = value => value?.replace(/(\d{3})(\d{3})(\d{3})/, '$1-$2-$3');
 
-export const formatPhoneNumber = value => value.replace(/(\d{3})(\d{3})(\d{4})/, '$1 $2 $3');
+export const formatPhoneNumber = value => value?.replace(/(\d{3})(\d{3})(\d{4})/, '$1 $2 $3');
 
 export const isValidDOB = date => moment(date)
     .isBefore(new Date());

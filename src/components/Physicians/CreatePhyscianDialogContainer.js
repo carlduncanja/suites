@@ -60,7 +60,7 @@ const CreatePhysicianDialogContainer = ({
 
     const validatePhysician = () => {
         let isValid = true;
-        const requiredFields = ['firstName', 'surname', 'trn', 'gender', 'dob'];
+        const requiredFields = ['firstName', 'surname', 'phone'];
 
         const errorObj = {...errorFields} || {};
 
@@ -98,6 +98,10 @@ const CreatePhysicianDialogContainer = ({
         let isValid = true;
         const updatedFields = {
             ...fields,
+            phones: [{
+                phone: fields['phone'],
+                type: 'cell'
+            }]
             // trn : parseInt(fields['trn']) || ''
         };
 

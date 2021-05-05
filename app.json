@@ -7,7 +7,7 @@
     "platforms": [
       "ios"
     ],
-    "version": "1.0.3",
+    "version": "1.0.4",
     "orientation": "portrait",
     "icon": "./assets/TheSuitesLogo2.png",
     "splash": {
@@ -24,7 +24,7 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.smsja.suites",
-      "buildNumber": "1.0.13",
+      "buildNumber": "1.0.17",
       "config": {
         "usesNonExemptEncryption": false
       }
