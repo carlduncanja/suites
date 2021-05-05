@@ -143,7 +143,9 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
     const [currentTabs, setCurrentTabs] = useState(initialCurrentTabs);
     const [selectedMenuItem, setSelectedMenuItem] = useState(initialMenuItem);
 
-    const [pageState, setPageState] = useState({});
+    const [pageState, setPageState] = useState({
+        isEditMode : false,
+    });
     const [selectedCase, setSelectedCase] = useState({});
     const [userPermissions, setUserPermissions] = useState({});
 
@@ -155,7 +157,7 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
 
     // ############### Event Handlers
     const handleTabPressChange = tab => {
-        if (pageState.isEditMode === false) {
+        if (!pageState.isEditMode) {
             setSelectedTab(tab);
         }
     };
