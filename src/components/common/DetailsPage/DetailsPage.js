@@ -12,33 +12,6 @@ import {PageContext} from '../../../contexts/PageContext';
 import SvgIcon from '../../../../assets/SvgIcon';
 import BreadCrumbIcon from '../../../../assets/svg/BreadCrumbIcon';
 
-const DetailsPageWrapper = styled.View`
-    margin:0;
-    background-color: ${({theme}) => theme.colors['--default-shade-white']};
-`;
-
-const DetailsPageContainer = styled.View`
-    height:100%;
-    width:100%;
-`;
-
-const DetailsPageContentWrapper = styled.View`
-    flex:1;
-    margin : 0;
-    padding-top: ${({theme}) => theme.space['--space-32']};
-    padding-left: ${({theme}) => theme.space['--space-24']};
-    padding-right: ${({theme}) => theme.space['--space-24']};
-`;
-
-const DetailsPageContentContainer = styled.View`
-    display: flex;
-    flex:1;
-`;
-
-const TabsViewContainer = styled.View`
-    height: 54px;
-`;
-
 function DetailsPage({
     isArchive = false,
     hasIcon = null,
@@ -90,6 +63,33 @@ function DetailsPage({
         </DetailsPageWrapper>
     );
 }
+
+const DetailsPageWrapper = styled.View`
+    margin:0;
+    background-color: ${({theme}) => theme.colors['--default-shade-white']};
+`;
+
+const DetailsPageContainer = styled.View`
+    height:100%;
+    width:100%;
+`;
+
+const DetailsPageContentWrapper = styled.View`
+    flex:1;
+    margin : 0;
+    padding-top: ${({theme}) => theme.space['--space-32']};
+    padding-left: ${({theme}) => theme.space['--space-24']};
+    padding-right: ${({theme}) => theme.space['--space-24']};
+`;
+
+const DetailsPageContentContainer = styled.View`
+    display: flex;
+    flex:1;
+`;
+
+const TabsViewContainer = styled.View`
+    height: 54px;
+`;
 
 DetailsPage.propTypes = {};
 DetailsPage.defaultProps = {};
