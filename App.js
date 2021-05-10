@@ -4,7 +4,7 @@ import {ThemeProvider} from 'emotion-theming'
 import * as SplashScreen from 'expo-splash-screen';
 
 
-import { appReducer} from './src/redux/reducers/appReducer';
+import {appReducer} from './src/redux/reducers/appReducer';
 import {initialState} from './src/SuitesContext';
 
 import {SuitesContextProvider} from './src/contexts/SuitesContext';
@@ -41,7 +41,7 @@ const App = () => {
         }
 
         prepare().then(r => {
-        });
+        }).catch(e => console.log(e));
     }, []);
 
     return (
