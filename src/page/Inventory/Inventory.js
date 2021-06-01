@@ -41,6 +41,7 @@ import {
 import { useNextPaginator, usePreviousPaginator, selectAll, checkboxItemPress, handleUnauthorizedError } from '../../helpers/caseFilesHelpers';
 import { LONG_PRESS_TIMER } from '../../const';
 import { PageSettingsContext } from '../../contexts/PageSettingsContext';
+import UploadInventorySheet from '../../components/Inventory/UploadInventorySheet';
 
 const listHeaders = [
     {
@@ -444,7 +445,19 @@ function Inventory(props) {
         });
     };
 
-    const openUploadInventoryModal = () => {};
+    const openUploadInventoryModal = () => {
+        modal.closeModals('ActionContainerModal');
+        setTimeout(() => {
+            modal.openModal('OverlayInfoModal',
+                {
+                    overlayContent: <UploadInventorySheet
+                        onCreated={() => { setFloatingAction(false); }}
+                        onCancel={() => setFloatingAction(false)}
+                    />,
+                    onClose: () => setFloatingAction(false)
+                });
+        }, 200);
+    };
 
     const getLevels = (locations = []) => {
         const levelsTotal = {
