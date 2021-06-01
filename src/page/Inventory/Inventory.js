@@ -28,6 +28,7 @@ import SvgIcon from '../../../assets/SvgIcon';
 import WasteIcon from '../../../assets/svg/wasteIcon';
 import TransferIcon from '../../../assets/svg/transferIcon';
 import AddIcon from '../../../assets/svg/addIcon';
+import ExportIcon from '../../../assets/svg/exportIcon';
 
 import { numberFormatter } from '../../utils/formatter';
 import { setInventory } from '../../redux/actions/InventorActions';
@@ -384,11 +385,13 @@ function Inventory(props) {
                 touchable={!isRemoveGroupsDisabled}
             />
         );
+        const uploadInventory = <ActionItem title="Update Inventory" icon={<ExportIcon/>} onPress={openUploadInventoryModal}/>;
 
         return <ActionContainer
             floatingActions={[
                 deleteAction,
                 deleteInventoryItemAction,
+                uploadInventory,
                 createAction,
                 createGroup,
             ]}
@@ -440,6 +443,8 @@ function Inventory(props) {
             },
         });
     };
+
+    const openUploadInventoryModal = () => {};
 
     const getLevels = (locations = []) => {
         const levelsTotal = {
