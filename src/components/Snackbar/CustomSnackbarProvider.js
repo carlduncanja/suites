@@ -21,13 +21,14 @@ export const SnackbarContext = createContext({
 export function useSnackbar() {
     const {snackbar, setSnackBar} = useContext(SnackbarContext);
 
-    const showSnackbar = (message, duration = Snackbar.DURATION_SHORT, variant) => {
+    const showSnackbar = (message, duration = Snackbar.DURATION_SHORT, variant, success = false) => {
         console.log('my actions', setSnackBar);
         setSnackBar({
             message,
             duration,
             visible: true,
-            variant
+            variant,
+            success
         })
     }
 
@@ -70,13 +71,13 @@ function CustomSnackbarProvider(props) {
                         duration={snackbar?.duration || Snackbar.DURATION_MEDIUM}
                         theme={{
                             colors: {
-                                accent: theme.colors['--color-red-700'],
-                                surface: theme.colors['--color-red-700'],
+                                accent: !snackbar.success ? theme.colors['--color-red-700'] : theme.colors['--color-teal-700'],
+                                surface: !snackbar.success ? theme.colors['--color-red-700'] : theme.colors['--color-teal-700'],
                             }
                         }}
                         style={{
-                            backgroundColor: theme.colors['--color-red-200'],
-                            color: theme.colors['--color-red-700']
+                            backgroundColor: !snackbar.success ? theme.colors['--color-red-200'] : theme.colors['--color-teal-100'],
+                            color: !snackbar.success ? theme.colors['--color-red-700'] : theme.colors['--color-teal-700']
                         }}
                         action={{
                             label: 'x',
