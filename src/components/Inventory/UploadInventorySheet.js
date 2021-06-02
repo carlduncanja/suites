@@ -12,6 +12,7 @@ import ConfirmationComponent from '../ConfirmationComponent';
 import UploadIcon from '../../../assets/svg/uploadIcon';
 import ImageUploading from '../../../assets/svg/imageUploading';
 import FileUpload from '../../../assets/svg/fileUploadXLSX';
+import IncorrectFormat from '../../../assets/svg/incorrectFileFormat';
 
 import { uploadDocument } from '../../api/network';
 
@@ -21,6 +22,7 @@ function UploadInventorySheet({onCreated, onCancel}) {
 
     const [fileId, setFileId] = useState(null);
     const [isFileLoading, setIsFileLoading] = useState(false);
+    const [isIncorrectFormat, setIsIncorrectFormat] = useState(false);
 
     const handleCloseDialog = () => {
         modal.closeModals('OverlayInfoModal');
@@ -40,6 +42,7 @@ function UploadInventorySheet({onCreated, onCancel}) {
                         uploadInventoryDocument(res);
                         // setFile(res);
                     } else {
+                        setIsIncorrectFormat(true);
                         console.log('Rejected Document rewsult', res);
                     }
                 }
@@ -89,10 +92,20 @@ function UploadInventorySheet({onCreated, onCancel}) {
         </>
     );
 
+    const incorrectFormatView = (
+        <>
+            <IncorrectFormat/>
+            <UploadingText theme={theme}>Incorrect Format.</UploadingText>
+            <TouchableOpacity onPress={() => { setIsIncorrectFormat(false); }}>
+                <UploadLink>Re-upload file</UploadLink>
+            </TouchableOpacity>
+        </>
+    );
+
     const loadingView = (
         <>
             <ImageUploading/>
-            <UploadingText theme={theme}>Please wait...</UploadingText>
+            <UploadingText theme={theme} loading>Please wait...</UploadingText>
         </>
     );
 
@@ -100,12 +113,19 @@ function UploadInventorySheet({onCreated, onCancel}) {
         <>
             <FileUpload/>
             <UploadingText theme={theme}>File Uploaded!</UploadingText>
+            <TouchableOpacity onPress={() => { setFileId(); }}>
+                <UploadLink>Re-upload file</UploadLink>
+            </TouchableOpacity>
+            
         </>
     );
 
     const renderView = () => {
         if (!fileId) {
-            if (!isFileLoading) return uploadView;
+            if (!isFileLoading) {
+                if (isIncorrectFormat) return incorrectFormatView;
+                return uploadView;
+            }
             return loadingView;
         }
         return successView;
@@ -176,6 +196,19 @@ const UploadingText = styled.Text`
     font-size: 14px;
     line-height: 16px;
 
-    color: ${ ({theme}) => theme.colors['--color-blue-600']};
+    color: ${ ({theme, loading}) => (loading ? theme.colors['--color-blue-600'] : theme.colors['--color-gray-800'])};
     margin-top: ${ ({theme}) => theme.space['--space-12']};
+`;
+
+const UploadLink = styled.Text`
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: normal;
+    font-size: 12px;
+    line-height: 14px;
+    text-decoration: underline;
+    text-decoration-color: ${ ({theme}) => theme.colors['--color-blue-600']};
+
+    color: ${ ({theme}) => theme.colors['--color-blue-600']};
+    margin-top: ${ ({theme}) => theme.space['--space-16']};
 `;
