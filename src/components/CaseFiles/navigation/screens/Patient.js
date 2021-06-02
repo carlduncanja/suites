@@ -1,8 +1,8 @@
 import React, {useContext, useState} from 'react';
-import {View} from 'react-native';
+import {View, Text} from 'react-native';
 import moment from 'moment';
 import {SuitesContext} from '../../../../contexts/SuitesContext';
-import {Details, Diagnosis, Insurance, PatientRisk, EditablePatientDetails} from '../../OverlayPages/Patient';
+import {Details, Diagnosis, Insurance, PatientRisk, EditablePatientDetails, CovidTest} from '../../OverlayPages/Patient';
 
 const Patient = ({
     patient,
@@ -117,38 +117,91 @@ const Patient = ({
         address: handleAddresses()
     };
 
-    return (
-        selectedTab === 'Details' ?
-            (
-                <Details
-                    tabDetails={{
-                        ...updatedPatient,
-                        nextVisit,
-                    }}
-                    onUpdated={onPatientUpdated}
-                />
-            ) :
-            selectedTab === 'Insurance' ?
-                (
+    const renderPatientTab = () => {
+        console.log('Tab: ', selectedTab);
+        switch (selectedTab) {
+            case 'Details':
+                console.log('Details tab');
+                return (
+                    <Details
+                        tabDetails={{
+                            ...updatedPatient,
+                            nextVisit,
+                        }}
+                        onUpdated={onPatientUpdated}
+                    />
+                );
+            
+            case 'Insurance':
+                return (
                     <Insurance tabDetails={{
                         ...insurance,
                         patient: `${firstName} ${surname}`
                     }}
                     />
-                ) :
-                selectedTab === 'Diagnosis' ?
-                    (
-                        <Diagnosis
-                            tabDetails={diagnosis}
-                            isEditMode={isEditMode}
-                        />
-                    ) :
-                    (
-                        <PatientRisk
-                            tabDetails={risks}
-                            isEditMode={isEditMode}
-                        />
-                    )
+                );
+            
+            case 'Diagnosis':
+                return (
+                    <Diagnosis
+                        tabDetails={diagnosis}
+                        isEditMode={isEditMode}
+                    />
+                );
+            
+            case 'Patient Risk':
+                return (
+                    <PatientRisk
+                        tabDetails={risks}
+                        isEditMode={isEditMode}
+                    />
+                );
+            
+            case 'Covid Test':
+                return (
+                    <CovidTest/>
+                );
+  
+            default:
+                return (<View/>);
+        }
+    };
+
+    return (
+        <>
+            {renderPatientTab()}
+        </>
+        // selectedTab === 'Details' ?
+        //     (
+        //         <Details
+        //             tabDetails={{
+        //                 ...updatedPatient,
+        //                 nextVisit,
+        //             }}
+        //             onUpdated={onPatientUpdated}
+        //         />
+        //     ) :
+        //     selectedTab === 'Insurance' ?
+        //         (
+        //             <Insurance tabDetails={{
+        //                 ...insurance,
+        //                 patient: `${firstName} ${surname}`
+        //             }}
+        //             />
+        //         ) :
+        //         selectedTab === 'Diagnosis' ?
+        //             (
+        //                 <Diagnosis
+        //                     tabDetails={diagnosis}
+        //                     isEditMode={isEditMode}
+        //                 />
+        //             ) :
+        //             (
+        //                 <PatientRisk
+        //                     tabDetails={risks}
+        //                     isEditMode={isEditMode}
+        //                 />
+        //             )
     );
 };
 
