@@ -21,6 +21,7 @@ import ScheduleSearchContainer from '../components/common/Search/ScheduleSearchC
 import ScheduleOverlayContainer from '../components/Schedule/ScheduleOverlayContainer';
 import SchedulePageHeader from '../components/Schedule/SchedulePageHeader';
 import SchedulePageContent from '../components/Schedule/SchedulePageContent';
+import PrintSchedule from '../components/Schedule/PrintSchedule';
 
 const ScheduleWrapper = styled.View`
     flex:1;
@@ -81,6 +82,10 @@ const Schedule = props => {
     //filter state
     const [checkedRadioButton, setcheckedButton] = useState('');
     const [showDropDown, setShowDropDown] = useState(false);
+
+    // Print state
+    const [printOption, setPrintOption] = useState();
+    const [showPrintOptions, setShowPrintOptions] = useState(false);
 
     // const [type, setType] = useState(0);
 
@@ -208,6 +213,14 @@ const Schedule = props => {
         setSearchOpen(false);
     };
 
+    const handlePrintOptions = option => {
+        setPrintOption(option);
+        setShowPrintOptions(false);
+        modal.openModal('OverlayInfoModal', {
+            overlayContent: <PrintSchedule printOption={option}/>
+        });
+    };
+
     // ###### STYLED COMPONENTS
 
     return (
@@ -239,6 +252,10 @@ const Schedule = props => {
                         selectedMonth={selectedMonth}
                         onMonthUpdate={handleOnMonthUpdated}
                         onExpand={onExpandButtonPress}
+                        printOption={printOption}
+                        showPrintOptions={showPrintOptions}
+                        handlePrintOptions={(res) => handlePrintOptions(res)}
+                        openPrintOptions={setShowPrintOptions}
 
                     />
                     <SchedulePageContent

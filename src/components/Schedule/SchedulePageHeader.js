@@ -1,14 +1,16 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { View, StyleSheet, Dimensions, ActivityIndicator, Text } from 'react-native';
-import Button from '../common/Buttons/Button';
-import MonthSelector from "../Calendar/MonthSelector";
 import styled, { css } from '@emotion/native';
 import { useTheme } from 'emotion-theming';
-import ScheduleButton from './ScheduleButton';
-import { SuitesContext } from "../../contexts/SuitesContext";
-import FilterIcon from "../../../assets/svg/filterIcon";
-import { TouchableOpacity } from 'react-native-gesture-handler';
 import { RadioButton } from 'react-native-paper';
+import { TouchableOpacity } from 'react-native-gesture-handler';
+import Button from '../common/Buttons/Button';
+import MonthSelector from '../Calendar/MonthSelector';
+import ScheduleButton from './ScheduleButton';
+import { SuitesContext } from '../../contexts/SuitesContext';
+import FilterIcon from '../../../assets/svg/filterIcon';
+import PrintIcon from '../../../assets/svg/printIcon';
+import MultipleShadowsContainer from '../common/MultipleShadowContainer';
 
 const SchedulePageHeaderWrapper = styled.View`
     width: 100%;
@@ -31,13 +33,13 @@ const SchedulePageHeaderContainer = styled.View`
     justify-content: space-between;
     align-self: flex-start;
     align-items:center;
-    margin-bottom:${({ theme }) => theme.space["--space-16"]};
-    margin-top:${({ theme }) => theme.space["--space-6"]};
+    margin-bottom:${({ theme }) => theme.space['--space-16']};
+    margin-top:${({ theme }) => theme.space['--space-6']};
 `;
 
 const TextView = styled.Text`
-    font:${ ({ theme }) => theme.font["--text-2xl-medium"]};
-    color:${ ({ theme }) => theme.colors["--company"]};
+    font:${ ({ theme }) => theme.font['--text-2xl-medium']};
+    color:${ ({ theme }) => theme.colors['--company']};
 `;
 
 const ButtonView = styled.View`
@@ -46,7 +48,7 @@ const ButtonView = styled.View`
     padding-bottom:15px;
     padding:15px;
     border-top-width:1px;
-    border-top-color:${ ({ theme }) => theme.colors["--color-gray-400"]};
+    border-top-color:${ ({ theme }) => theme.colors['--color-gray-400']};
     /* background-color: yellow; */
     justify-content: space-between;
 `;
@@ -57,8 +59,8 @@ const GroupButtonContainer = styled.View`
 `;
 const ExpandButtonWrapper = styled.View`
     height: 24px;
-    margin-left:${({ theme }) => theme.space["--space-10"]};
-    margin-right:${({ theme }) => theme.space["--space-10"]};
+    margin-left:${({ theme }) => theme.space['--space-10']};
+    margin-right:${({ theme }) => theme.space['--space-10']};
     width: 140px;
    
   
@@ -67,7 +69,7 @@ const ExpandButtonWrapper = styled.View`
 const ExpandButton = styled.View`
     height: 100%;
     width: 100%;
-    background-color: ${ ({ theme, Expanded }) => Expanded ? theme.colors["--accent-button"] : theme.colors['--default-shade-white']};
+    background-color: ${ ({ theme, Expanded }) => (Expanded ? theme.colors['--accent-button'] : theme.colors['--default-shade-white'])};
     border-color: ${ ({ theme }) => theme.colors['--color-gray-400']};
     border-radius: 4px;
     border-width: 1px;
@@ -82,28 +84,28 @@ const PopUp = styled.View`
     top:30px;
     left:100px;
     height:185px;
-    background-color:${({ theme }) => theme.colors["--default-shade-white"]};
+    background-color:${({ theme }) => theme.colors['--default-shade-white']};
     z-index:10;
     box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
     border-radius:3.6px;
 
-`
+`;
 
 const PopupContainer = styled.View`
     align-items:center;
     flex-direction:row;
-    margin:${({ theme }) => theme.space["--space-2"]};
+    margin:${({ theme }) => theme.space['--space-2']};
 
-`
+`;
 
 const RadioContainer = styled.View`
-    background-color:${({ checkedButton, name, theme }) => checkedButton === name ? theme.colors["--color-blue-600"] : "white"};
-    border-color:${({ theme }) => theme.colors["--color-neutral-gray-300"]};
+    background-color:${({ checkedButton, name, theme }) => (checkedButton === name ? theme.colors['--color-blue-600'] : 'white')};
+    border-color:${({ theme }) => theme.colors['--color-neutral-gray-300']};
     border-width:2px;
     width:15px;
     height:15px;
     border-radius:7.5px;
-    margin-right:${({ theme }) => theme.space["--space-10"]};
+    margin-right:${({ theme }) => theme.space['--space-10']};
 
 `;
 
@@ -111,18 +113,18 @@ const OptionContainer = styled.TouchableOpacity`
     background-color:${({ item }) => item.color};
     border-radius:4.6px;
     height:25px;
-    margin:${({ theme }) => theme.space["--space-2"]};
+    margin:${({ theme }) => theme.space['--space-2']};
     align-items:center;
     justify-content:center;
     padding:2px 6px;
 `;
 
 const OptionText = styled.Text`
-    color:${({ theme }) => theme.colors["--default-shade-white"]};
-    font:${({ theme }) => theme.font["--text-sm-regular"]};
+    color:${({ theme }) => theme.colors['--default-shade-white']};
+    font:${({ theme }) => theme.font['--text-sm-regular']};
 `;
 
-const FilterContainer = styled.TouchableOpacity`
+const IconContainer = styled.TouchableOpacity`
     height : 24px;
     width : 24px;
     align-items : center;
@@ -137,62 +139,112 @@ const FilterIndicator = styled.View`
     height : 8px;
     width : 8px;
     position : absolute;
-    background-color : ${(backgroundColor)=>backgroundColor};
+    background-color : ${(backgroundColor) => backgroundColor};
     box-shadow : ${ ({shadowColor}) => `0px 1px 4px ${shadowColor}`};
     border-radius : 8px;
     top : -4;
     right : -2;
 `;
 
+const PrintDropdownContainer = styled.TouchableOpacity`
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    z-index: 3;
+    width: 96px;
+    /* top: 24px; */
+    padding: ${({theme}) => `${theme.space['--space-14']} ${theme.space['--space-12']}`};
+    background-color: ${({theme}) => theme.colors['--color-white']};
+`;
+const PrintOptionContainer = styled.TouchableOpacity`
+    padding: ${({theme}) => `${theme.space['--space-2']} ${theme.space['--space-4']}`};
+    background-color: ${({theme, isSelected}) => (isSelected ? theme.colors['--color-blue-100'] : theme.colors['--color-white'])};
+    margin-bottom: ${({theme}) => theme.space['--space-8']};
+`;
+const PrintOption = styled.Text`
+    font-style: normal;
+    font-weight: normal;
+    font-size: 10px;
+    line-height: 12px;
+    color: ${({theme, isSelected}) => (isSelected ? theme.colors['--color-blue-600'] : theme.colors['--color-gray-800'])};
+`;
+
+const shadows = [
+    {
+        shadowColor: 'black',
+        shadowOffset: { width: 10, height: 0 },
+        shadowOpacity: 0.2,
+        shadowRadius: 15
+    },
+    {
+        shadowColor: 'black',
+        shadowOffset: { width: 4, height: 0 },
+        shadowOpacity: 0.07,
+        shadowRadius: 6
+    },
+];
 
 function SchedulePageHeader({
     Expanded = false,
     showDropDown = false,
     showFilterMenu = () => { },
-    checkedRadioButton = "",
+    checkedRadioButton = '',
     onradioClick = () => { },
     searchButtonPress = () => { },
     gotoTodayButtonPress = () => { },
     onMonthUpdate = () => { },
     selectedMonth = new Date(),
-    onExpand = () => { }
+    onExpand = () => { },
+    printOption,
+    showPrintOptions = false,
+    handlePrintOptions = () => {},
+    openPrintOptions = () => {}
+
 }) {
     const theme = useTheme();
+    const [selectedPrintOption, setSelectedPrintOption] = useState();
 
     const optionList = [
         {
-            name: "Delivery",
-            color: theme.colors["--color-green-600"],
-            shadowColor : 'rgba(56, 161, 105, 0.45)'
+            name: 'Delivery',
+            color: theme.colors['--color-green-600'],
+            shadowColor: 'rgba(56, 161, 105, 0.45)'
         },
         {
-            name: "Inventory Re-Stock",
-            color: theme.colors["--color-yellow-600"],
-            shadowColor : 'rgba(214, 158, 46, 0.45)'
+            name: 'Inventory Re-Stock',
+            color: theme.colors['--color-yellow-600'],
+            shadowColor: 'rgba(214, 158, 46, 0.45)'
         },
         {
-            name: "Inventory Audit",
-            color: theme.colors["--color-pink-600"],
-            shadowColor : 'rgba(213, 63, 140, 0.45)'
+            name: 'Inventory Audit',
+            color: theme.colors['--color-pink-600'],
+            shadowColor: 'rgba(213, 63, 140, 0.45)'
 
         },
         {
-            name: "Equipment",
-            color: theme.colors["--color-blue-600"],
-            shadowColor : 'rgba(249, 130, 206, 0.45)'
+            name: 'Equipment',
+            color: theme.colors['--color-blue-600'],
+            shadowColor: 'rgba(249, 130, 206, 0.45)'
         },
         {
-            name: "Procedure",
-            color: theme.colors["--color-red-700"],
-            shadowColor : 'rgba(245, 101, 101, 0.45)'
+            name: 'Procedure',
+            color: theme.colors['--color-red-700'],
+            shadowColor: 'rgba(245, 101, 101, 0.45)'
         }
 
-    ]
+    ];
+
+    const printScheduleOptions = [
+        'Print Today',
+        'Last Week',
+        'This Month',
+        'Custom Date'
+    ];
 
     const [state] = useContext(SuitesContext);
 
     const renderDropDown = () => {
-        console.log(checkedRadioButton)
+        console.log(checkedRadioButton);
 
         const options = [...optionList];
         return (
@@ -215,15 +267,42 @@ function SchedulePageHeader({
                         </OptionContainer>
                     </PopupContainer>
 
-
-
-
-                    )
-
+                    );
                 })}</PopUp>
 
-        )
-    }
+        );
+    };
+
+    const renderPrintDropdown = (
+        <>
+            <MultipleShadowsContainer shadows={shadows}>
+                <PrintDropdownContainer theme={theme}>
+                    {
+                        printScheduleOptions.map((option, index) => {
+                            return (
+                                <PrintOptionContainer
+                                    theme={theme}
+                                    key={Math.random() + index}
+                                    isSelected={printOption === option}
+                                    style={{marginBottom: index === printScheduleOptions.length - 1 ? 0 : 8}}
+                                    activeOpacity={0.5}
+                                    onPress={() => handlePrintOptions(option)}
+                                >
+                                    <PrintOption
+                                        theme={theme}
+                                        isSelected={printOption === option}
+                                    >
+                                        {option}
+                                    </PrintOption>
+                                </PrintOptionContainer>
+                            );
+                        })
+                    }
+
+                </PrintDropdownContainer>
+            </MultipleShadowsContainer>
+        </>
+    );
 
     return (
         <SchedulePageHeaderWrapper theme={theme}>
@@ -238,15 +317,27 @@ function SchedulePageHeader({
                     />
                 </SchedulePageHeaderContainer>
 
-
                 <ButtonView theme={theme}>
 
-                    <ScheduleButton
-                        title="Search"
-                        onButtonPress={searchButtonPress}
-                    />
-
-
+                    <GroupButtonContainer>
+                        <ScheduleButton
+                            title="Search"
+                            onButtonPress={searchButtonPress}
+                        />
+                        <View style={{marginLeft: 14, display: 'flex', justifyContent: 'center'}}>
+                            <IconContainer
+                                activeOpacity={0.8}
+                                theme={theme}
+                                borderColor={!showPrintOptions ? '--color-gray-400' : '--accent-button'}
+                                backgroundColor={!showPrintOptions ? '--color-white' : '--accent-button'}
+                                onPress={() => openPrintOptions(!showPrintOptions)}
+                            >
+                                <PrintIcon strokeColor={!showPrintOptions ? theme.colors['--color-gray-700'] : theme.colors['--color-white']}/>
+                            </IconContainer>
+                            {showPrintOptions && renderPrintDropdown}
+                        </View>
+                        
+                    </GroupButtonContainer>
 
                     <GroupButtonContainer>
                         <ScheduleButton
@@ -256,41 +347,39 @@ function SchedulePageHeader({
                         <ExpandButtonWrapper>
                             <ExpandButton theme={theme} Expanded={Expanded}>
                                 <Button
-                                    title={Expanded ? "Collapse Calendar" : "Expand Calendar"}
+                                    title={Expanded ? 'Collapse Calendar' : 'Expand Calendar'}
                                     buttonPress={onExpand}
-                                    color={Expanded ? theme.colors["--default-shade-white"] : theme.colors['--color-gray-700']}
+                                    color={Expanded ? theme.colors['--default-shade-white'] : theme.colors['--color-gray-700']}
                                 />
                             </ExpandButton>
                         </ExpandButtonWrapper>
 
-                        <FilterContainer 
-                            theme = {theme}
-                            borderColor = {checkedRadioButton ? '--color-gray-400' : '--accent-button'}
-                            backgroundColor = {checkedRadioButton ? '--default-shade-white' : '--accent-button'}
+                        <IconContainer
+                            theme={theme}
+                            borderColor={checkedRadioButton ? '--color-gray-400' : '--accent-button'}
+                            backgroundColor={checkedRadioButton ? '--default-shade-white' : '--accent-button'}
                             onPress={showFilterMenu}
                         >
                             {
-                                checkedRadioButton !== "" && <FilterIndicator 
-                                    backgroundColor = {optionList.filter(item => item?.name === checkedRadioButton)[0].color || theme.colors['--default-shade-white']}
-                                    shadowColor = {optionList.filter(item => item?.name === checkedRadioButton)[0].shadowColor || theme.colors['--default-shade-white']}
+                                checkedRadioButton !== '' && <FilterIndicator
+                                    backgroundColor={optionList.filter(item => item?.name === checkedRadioButton)[0].color || theme.colors['--default-shade-white']}
+                                    shadowColor={optionList.filter(item => item?.name === checkedRadioButton)[0].shadowColor || theme.colors['--default-shade-white']}
                                 />
                             }
-                            <FilterIcon strokeColor = {checkedRadioButton ? theme.colors['--color-gray-700'] : theme.colors['--default-shade-white'] }/>
-                        </FilterContainer>
+                            <FilterIcon strokeColor={checkedRadioButton ? theme.colors['--color-gray-700'] : theme.colors['--default-shade-white']}/>
+                        </IconContainer>
 
                         {showDropDown ? renderDropDown() : <View />}
                     </GroupButtonContainer>
-
-
 
                 </ButtonView>
 
             </ScheduleHeaderContainer>
         </SchedulePageHeaderWrapper>
-    )
+    );
 }
 
-export default SchedulePageHeader
+export default SchedulePageHeader;
 
 const styles = StyleSheet.create({
     container: {
@@ -309,7 +398,7 @@ const styles = StyleSheet.create({
         marginTop: 32,
         flexDirection: 'row',
         justifyContent: 'space-between',
-        alignItems: "center"
+        alignItems: 'center'
     },
     scheduleCalendar: {
         flex: 1,
@@ -376,6 +465,6 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: "#FFFFFF"
+        backgroundColor: '#FFFFFF'
     }
 });
