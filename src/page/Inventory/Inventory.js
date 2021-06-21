@@ -398,7 +398,26 @@ function Inventory(props) {
                         onCreated={() => {
                             // refresh inventory view.
                             setFloatingAction(false);
-                            fetchInventory(1);
+
+                            modal.openModal('ConfirmationModal', {
+                                content: <ConfirmationComponent
+                                    isError={false}
+                                    isEditUpdate={false}
+                                    message="Inventory updated successfully!"
+                                    onAction={() => {
+                                        modal.closeModals('ConfirmationModal');
+                                        setTimeout(() => {
+                                            modal.closeModals('ActionContainerModal');
+                                            onRefresh();
+                                        }, 200);
+                                    }}
+                                />,
+                                onClose: () => {
+                                    modal.closeModals('ConfirmationModal');
+                                }
+                            });
+
+
                         }}
                         onCancel={() => setFloatingAction(false)}
                     />,
