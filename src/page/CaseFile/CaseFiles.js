@@ -1,20 +1,15 @@
-import React, {useState, useEffect, useContext} from 'react';
-import {View, Text, StyleSheet} from 'react-native';
+import React, {useState, useEffect} from 'react';
+import {View} from 'react-native';
 
 import {connect} from 'react-redux';
-import _, {isEmpty, forEach} from 'lodash';
-import {useModal, withModal} from 'react-native-modalfy';
+import _, {isEmpty} from 'lodash';
+import {useModal} from 'react-native-modalfy';
 import moment from 'moment';
 import styled, {css} from '@emotion/native';
 import {useTheme} from 'emotion-theming';
-import Page from '../../components/common/Page/Page';
 import ListItem from '../../components/common/List/ListItem';
-import RoundedPaginator from '../../components/common/Paginators/RoundedPaginator';
-import FloatingActionButton from '../../components/common/FloatingAction/FloatingActionButton';
-import CaseFileBottomSheet from '../../components/CaseFiles/CaseFileBottomSheet';
 import ActionContainer from '../../components/common/FloatingAction/ActionContainer';
 import ActionItem from '../../components/common/ActionItem';
-import CreateCaseDialogContainer from '../../components/CaseFiles/CreateCaseDialogContainer';
 import AddIcon from '../../../assets/svg/addIcon';
 import ArchiveIcon from '../../../assets/svg/archiveIcon';
 import DraftItem from '../../components/common/List/DraftItem';
@@ -29,15 +24,10 @@ import {
     checkboxItemPress, handleUnauthorizedError,
 } from '../../helpers/caseFilesHelpers';
 import {currencyFormatter, formatDate} from '../../utils/formatter';
-import {SuitesContext} from '../../contexts/SuitesContext';
 
-import caseFiles from '../../../data/CaseFiles';
-import Footer from '../../components/common/Page/Footer';
 import NavPage from '../../components/common/Page/NavPage';
-import Data from '../../components/common/Table/Data';
 import DataItem from '../../components/common/List/DataItem';
 import MultipleTextDataItem from '../../components/common/List/MultipleTextDataItem';
-import patient from '../../../assets/svg/newCasePatient';
 import {emptyFn, LONG_PRESS_TIMER} from "../../const";
 import {PageSettingsContext} from '../../contexts/PageSettingsContext';
 import LongPressWithFeedback from "../../components/common/LongPressWithFeedback";
@@ -388,7 +378,7 @@ function CaseFiles(props) {
                 )
             })
         }, 200);
-        
+
     }
 
     const handleArchiveCases = () => {
@@ -409,7 +399,7 @@ function CaseFiles(props) {
                                 setTimeout(() => {
                                     openViewArchivedCases();
                                 }, 200)
-                                
+
                             }}
                         />
                     )
@@ -519,7 +509,7 @@ function CaseFiles(props) {
                             buttonPress={openViewArchivedCases}
                         />
                     </ButtonContainer>
-                    
+
                 )}
 
                 listHeaders={listHeaders}
@@ -558,26 +548,3 @@ const mapStateToProps = state => {
 const mapDispatcherToProp = {setCaseFiles, removeDraft};
 
 export default connect(mapStateToProps, mapDispatcherToProp)(CaseFiles);
-
-const styles = StyleSheet.create({
-    item: {
-        flex: 1,
-        //flexDirection:'row',
-        alignItems: 'flex-start',
-        //justifyContent:'center',
-    },
-    itemText: {
-        fontSize: 14,
-        color: '#4E5664',
-    },
-    footer: {
-        flex: 1,
-        alignSelf: 'flex-end',
-        flexDirection: 'row',
-        position: 'absolute',
-        bottom: 0,
-        marginBottom: 20,
-        right: 0,
-        marginRight: 30,
-    },
-});

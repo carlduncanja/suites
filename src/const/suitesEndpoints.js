@@ -26,6 +26,7 @@ export const inventoriesEndpoint = '/inventories';
 export const inventoryEndpoint = id => `/inventories/${id}`;
 export const inventoryVariantEndpoint = id => `/inventories/${id}/variants`;
 export const inventoryGroups = '/inventory_groups';
+export const inventoryGroupsBulkUpload = '/inventory_groups/bulk_upload';
 export const inventoryGroup = groupId => `/inventory_groups/${groupId}`;
 export const inventoryGroupVariants = groupId => `/inventory_groups/${groupId}/variants`;
 export const inventoryGroupVariant = (groupId, variantId) => `/inventory_groups/${groupId}/variants/${variantId}`;
