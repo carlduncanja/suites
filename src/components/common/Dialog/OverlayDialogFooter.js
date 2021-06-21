@@ -39,16 +39,19 @@ const OverlayFooterContainer = styled.View`
   
 `;
  
-const FooterText = styled.Text( ({theme}) =>({
+const FooterText = styled.Text( ({theme, disabled}) =>({
   ...theme.font['--text-base-bold'],
-  color: theme.colors['--color-blue-600'],
+  color: disabled ? theme.colors['--color-gray-600'] : theme.colors['--color-blue-600'],
   marginRight : 10,
 }));
 
 
 function OverlayDialogFooter({ 
   onPositiveButtonPress = () => {}, 
-  positiveText = "DONE", buttonIcon = <View />}) {
+  positiveText = "DONE",
+  buttonIcon = <View />,
+  isButtonDisabled = false
+}) {
 
   const theme = useTheme();
   
@@ -56,7 +59,7 @@ function OverlayDialogFooter({
    
     <OverlayFooterWrapper onPress = {onPositiveButtonPress}>
         <OverlayFooterContainer>
-            <FooterText>{positiveText}</FooterText>
+            <FooterText disabled={isButtonDisabled}>{positiveText}</FooterText>
             {buttonIcon}
         </OverlayFooterContainer>
     </OverlayFooterWrapper> 
