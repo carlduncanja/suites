@@ -33,7 +33,7 @@ const App = () => {
         async function prepare() {
             try {
                 // Keep the splash screen visible while we fetch resources
-                await SplashScreen.preventAutoHideAsync();
+                // await SplashScreen.preventAutoHideAsync();
 
             } catch (e) {
                 console.warn('Failed to prevent splash screen hide', e);
