@@ -107,8 +107,8 @@ function LoginPage({navigation, signIn, expoPushToken}) {
         <PageWrapper theme={theme}>
 
             <LoginBackground/>
-            {/*<Text>{BASE_URL}</Text>*/}
-            {/*<Text>{NODE_ENV}</Text>*/}
+            {/*<Text>{process.env.BASE_URL}</Text>*/}
+            {/*<Text>{process.env.NODE_ENV}</Text>*/}
 
             <PageWrapper theme={theme}>
                 <PageContainer>
