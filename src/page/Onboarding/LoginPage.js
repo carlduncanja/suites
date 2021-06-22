@@ -3,7 +3,7 @@ import {
     View,
     StyleSheet,
     Alert,
-    ActivityIndicator,
+    ActivityIndicator, Text,
 } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage'
 import {connect} from 'react-redux';
@@ -107,7 +107,8 @@ function LoginPage({navigation, signIn, expoPushToken}) {
         <PageWrapper theme={theme}>
 
             <LoginBackground/>
-            {/*<Text>{process.env.BASE_URL}</Text>*/}
+            {/*<Text>{BASE_URL}</Text>*/}
+            {/*<Text>{NODE_ENV}</Text>*/}
 
             <PageWrapper theme={theme}>
                 <PageContainer>

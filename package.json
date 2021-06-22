@@ -1,11 +1,12 @@
 {
   "main": "node_modules/expo/AppEntry.js",
   "scripts": {
-    "start": "expo start --clear",
+    "start": "NODE_ENV=development expo start --clear",
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
     "eject": "expo eject",
+    "build:ios:simulator": "NODE_ENV=production expo build:ios -t simulator",
     "debug": "open 'rndebugger://set-debugger-loc?host=localhost&port=19001'",
     "dev": "REACT_DEBUGGER=\"unset ELECTRON_RUN_AS_NODE && open -g 'rndebugger://set-debugger-loc?port=19001' ||\" npm start"
   },
@@ -49,7 +50,6 @@
     "react-native-collapsible": "^1.5.2",
     "react-native-css-gradient": "^0.4.0",
     "react-native-datepicker": "git+https://github.com/codynguyen/react-native-datepicker.git#ios-datepicker-component",
-    "react-native-dotenv": "^2.4.2",
     "react-native-drawer-menu": "^0.2.5",
     "react-native-dropdown-menu": "^2.0.0",
     "react-native-elements": "^1.2.7",
