@@ -13,25 +13,6 @@ import styled from "@emotion/native";
 import {useTheme} from "emotion-theming";
 import InputUnitField from "../../common/Input Fields/InputUnitFields";
 
-const Space = styled.View`
-   width:  ${({theme}) => theme.space['--space-24']};
-`;
-
-const RowWrapper = styled.View`
-    flex-direction: row;
-    justify-content: space-between;
-    margin-bottom: ${({theme}) => theme.space['--space-20']};
-    z-index: ${({zIndex}) => zIndex};
-`
-
-const InputWrapper = styled.View`
-    flex: 1;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-    z-index: ${({zIndex}) => zIndex};
-`
-
 const ProcedureTab = ({
                           onProcedureInfoChange,
                           onProcedureSelected = () => {},
@@ -402,6 +383,26 @@ const ProcedureTab = ({
 };
 
 export default ProcedureTab;
+
+const Space = styled.View`
+   width:  ${({theme}) => theme.space['--space-24']};
+`;
+
+const RowWrapper = styled.View`
+    flex-direction: row;
+    justify-content: space-between;
+    margin-bottom: ${({theme}) => theme.space['--space-20']};
+    z-index: ${({zIndex}) => zIndex};
+`
+
+const InputWrapper = styled.View`
+    flex: 1;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    z-index: ${({zIndex}) => zIndex};
+`
+
 
 const styles = StyleSheet.create({
     sectionContainer: {

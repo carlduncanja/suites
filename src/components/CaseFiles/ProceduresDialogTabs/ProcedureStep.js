@@ -98,7 +98,11 @@ const ProcedureStep = ({onProcedureUpdate, procedures, patient = "--", selectedT
                     const start = moment(appointment?.startTime);
                     const end = moment(appointment?.endTime);
 
-                    const hasConflict = moment(start).isBetween(startTime, newEnd)|| moment(end).isBetween(startTime, newEnd);
+                    const hasConflict = moment(start).isBetween(newStart, newEnd)
+                        || moment(end).isBetween(newStart, newEnd)
+                        || moment(newStart).isBetween(start, end)
+                        || moment(newEnd).isBetween(start, end)
+
 
                     console.log("checking conflict time", appointment._id, start, end, startTime, hasConflict);
                     if (hasConflict) {
