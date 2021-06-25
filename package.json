@@ -7,6 +7,7 @@
     "web": "expo start --web",
     "eject": "expo eject",
     "build:ios:simulator": "NODE_ENV=production expo build:ios -t simulator",
+    "build:ios": "NODE_ENV=production expo build:ios",
     "debug": "open 'rndebugger://set-debugger-loc?host=localhost&port=19001'",
     "dev": "REACT_DEBUGGER=\"unset ELECTRON_RUN_AS_NODE && open -g 'rndebugger://set-debugger-loc?port=19001' ||\" npm start"
   },
