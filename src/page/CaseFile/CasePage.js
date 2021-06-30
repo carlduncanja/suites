@@ -78,7 +78,7 @@ import PayBalanceItem from './PayBalanceItem';
 const overlayMenu = [
     {
         name: 'Patient',
-        overlayTabs: ['Details', 'Insurance', 'Diagnosis', 'Patient Risk'],
+        overlayTabs: ['Details', 'Insurance', 'Diagnosis', 'Patient Risk', 'Covid Test'],
         selectedIcon: <PatientSelectedIcon/>,
         disabledIcon: <PatientDisabledIcon/>
     },
@@ -1916,14 +1916,14 @@ const mapStateToProps = state => ({auth: state.auth});
 export default connect(mapStateToProps, mapDispatchTopProp)(CasePage);
 
 function CasePageContent({
-                             overlayContent,
-                             overlayMenu,
-                             userPermissions,
-                             selectedMenuItem,
-                             onOverlayTabPress,
-                             toggleActionButton,
-                             actionDisabled
-                         }) {
+    overlayContent,
+    overlayMenu,
+    userPermissions,
+    selectedMenuItem,
+    onOverlayTabPress,
+    toggleActionButton,
+    actionDisabled
+}) {
     useEffect(() => {
         console.log('Case Page Create');
     }, []);
