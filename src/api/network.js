@@ -81,7 +81,7 @@ import {
     archiveSuppliersEndpoint,
     restoreArchivedSuppliersEndpoint,
     updatePurchaseOrderDocument,
-    purchaseOrderInvoice
+    purchaseOrderInvoice, inventoryGroupsBulkUpload
 
 
 } from '../const/suitesEndpoints';
@@ -225,6 +225,16 @@ export const removeTheatres = async data => suitesAxiosInstance
 
 export const getInventoriesGroup = async (query, max, page) => suitesAxiosInstance
     .get(inventoryGroups, {params: {query, max, page}})
+    .then(handleResponse)
+    .catch(handleError);
+
+/**
+ * send request to suites api to create and update inventory items.
+ * @param formData - file containing inventory data.
+ * @return {Promise<AxiosResponse<any>>}
+ */
+export const getInventoriesGroupBulkUploadRequest = async (formData) => suitesAxiosInstance
+    .post(inventoryGroupsBulkUpload, formData, {headers: {'Content-Type': 'multipart/form-data'}})
     .then(handleResponse)
     .catch(handleError);
 

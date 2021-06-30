@@ -47,6 +47,7 @@ function OverlayDialog(props) {
     onPositiveButtonPress = () => {}, 
     positiveText = "DONE",
     buttonIcon = <View />,
+    isButtonDisabled = false
     // handlePopovers = () =>{}
   } = props;
 
@@ -66,6 +67,7 @@ function OverlayDialog(props) {
           onPositiveButtonPress = {onPositiveButtonPress}
           positiveText = {positiveText}
           buttonIcon = {buttonIcon}
+          isButtonDisabled={isButtonDisabled}
         />
       
         <OverlayContentWrapper>
@@ -114,6 +116,7 @@ OverlayDialog.propTypes = {
   onClose: PropTypes.func,
   onPositiveButtonPress: PropTypes.func.isRequired,
   positiveText: PropTypes.string.isRequired,
+  isButtonDisabled: PropTypes.bool
 };
 OverlayDialog.defaultProps = {};
 

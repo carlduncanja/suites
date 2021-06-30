@@ -5,6 +5,11 @@ module.exports = function (api) {
     const plugins = [
         [
             'inline-dotenv'
+        ],
+        ["transform-inline-environment-variables", {
+            "include": [
+                "NODE_ENV"
+            ]}
         ]
     ];
 

@@ -31,7 +31,7 @@ npm install
 # fastlane supply --track 'production' --json_key '<path/to/json_key.json>' --package_name "<your-package-name>" --apk "app.apk" --skip_upload_metadata --skip_upload_images --skip_upload_screenshots
 
 #### 6. Building iOS Standalone App ####
-# Start building standalone android build using `production` release channel
+# Start building standalone ios build using `production` release channel
 expo build:ios --release-channel production --non-interactive
 
 # Download the artifact to current directory as `app.ipa`

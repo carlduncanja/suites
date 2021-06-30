@@ -32,24 +32,6 @@ const BodyContainer = styled.View`
     flex:1;
 `;
 
-const ScheduleContainer = styled.View`
-    display: flex;
-    flex:1;
-    width: 100%;
-    height: 100%;
-    justify-content: flex-start;
-`;
-
-const SchedulePageWrapper = styled.View`
-    flex:1;
-    margin:0px;
-`;
-const SchedulePageContainer = styled.View`
-    display: flex;
-    width: 100%;
-    height: 100%;
-`;
-
 const Schedule = props => {
     const {
         // Redux Props
