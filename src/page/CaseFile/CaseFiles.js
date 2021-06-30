@@ -7,11 +7,7 @@ import {useModal, withModal} from 'react-native-modalfy';
 import moment from 'moment';
 import styled, {css} from '@emotion/native';
 import {useTheme} from 'emotion-theming';
-import Page from '../../components/common/Page/Page';
 import ListItem from '../../components/common/List/ListItem';
-import RoundedPaginator from '../../components/common/Paginators/RoundedPaginator';
-import FloatingActionButton from '../../components/common/FloatingAction/FloatingActionButton';
-import CaseFileBottomSheet from '../../components/CaseFiles/CaseFileBottomSheet';
 import ActionContainer from '../../components/common/FloatingAction/ActionContainer';
 import ActionItem from '../../components/common/ActionItem';
 import CreateCaseDialogContainer from '../../components/CaseFiles/CreateCaseDialogContainer';
@@ -388,7 +384,7 @@ function CaseFiles(props) {
                 )
             })
         }, 200);
-        
+
     }
 
     const handleArchiveCases = () => {
@@ -409,7 +405,7 @@ function CaseFiles(props) {
                                 setTimeout(() => {
                                     openViewArchivedCases();
                                 }, 200)
-                                
+
                             }}
                         />
                     )
@@ -519,7 +515,7 @@ function CaseFiles(props) {
                             buttonPress={openViewArchivedCases}
                         />
                     </ButtonContainer>
-                    
+
                 )}
 
                 listHeaders={listHeaders}
