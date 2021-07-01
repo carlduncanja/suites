@@ -99,6 +99,11 @@ const Schedule = props => {
 
     //########### Event Listeners
     useEffect(() => {
+        /**
+         *  listen to changes in appointment range and fetches appointment with new range.
+         *
+         *  TODO consider appending appointments to existing list rather than re-fetching appointments
+         */
         fetchAppointments();
     }, [appointmentsEndDate, appointmentsStartDate])
 
