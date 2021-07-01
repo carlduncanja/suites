@@ -12,7 +12,7 @@ import ScheduleCalendar from '../components/Schedule/ScheduleCalendar';
 import MonthSelector from '../components/Calendar/MonthSelector';
 import SchedulesList from '../components/Schedule/SchedulesList';
 import {ScheduleContext} from '../contexts/ScheduleContext';
-import {getAppointments} from '../api/network';
+import {getAppointmentRequest, getAppointments} from '../api/network';
 import {getDaysForMonth} from '../utils';
 import {formatDate} from '../utils/formatter';
 import {setAppointments} from '../redux/actions/appointmentActions';
@@ -24,13 +24,31 @@ import SchedulePageContent from '../components/Schedule/SchedulePageContent';
 import PrintSchedule from '../components/Schedule/PrintSchedule';
 
 const ScheduleWrapper = styled.View`
-    flex:1;
-    background-color:${({theme}) => theme.colors['--default-neutral-gray']};
+  flex: 1;
+  background-color: ${({theme}) => theme.colors['--default-neutral-gray']};
 `;
 
 const BodyContainer = styled.View`
-    flex:1;
+  flex: 1;
 `;
+
+/**
+ * Return initial date used for appointment range.
+ * initial start date is 2 months before now.
+ * @return {Date}
+ */
+const getInitialStartDate = () => {
+    return moment().startOf('day').subtract(1, 'months').toDate()
+}
+
+/**
+ * Return initial end date used for appointments range.
+ * @return {Date}
+ */
+const getInitialEndDateRage = () => {
+    return moment().endOf('day').add(2, 'months').toDate()
+}
+
 
 const Schedule = props => {
     const {
@@ -38,6 +56,8 @@ const Schedule = props => {
         appointments,
         setAppointments
     } = props;
+
+
     const modal = useModal();
     const screenDimensions = Dimensions.get('window');
     const theme = useTheme();
@@ -47,8 +67,11 @@ const Schedule = props => {
     const initialDaysList = getDaysForMonth(currentDate);
     const initialIndex = getSelectedIndex(formatDate(currentDate, 'YYYY-MM-DD').toString(), initialDaysList);
 
+
     //########### States
-    // const [dimensions, setDimensions] = useState(Dimensions.get('window'));
+
+    const [appointmentsStartDate, setAppointmentsStartDate] = useState(getInitialStartDate())
+    const [appointmentsEndDate, setAppointmentsEndDate] = useState(getInitialEndDateRage())
 
     // calendar states
     const [selectedMonth, setSelectedMonth] = useState(currentDate);
@@ -56,13 +79,12 @@ const Schedule = props => {
     const [daysList, setDaysList] = useState(initialDaysList);
 
     // appointment states
-    const [selectedAppointment, setSelectedAppointment] = useState();
     const [sectionListIndex, setSectionListIndex] = useState(initialIndex);
     const [isFetchingAppointment, setFetchingAppointments] = useState(false);
     const [filteredAppointments, setFilteredAppointments] = useState([]);
 
     //filter state
-    const [checkedRadioButton, setcheckedButton] = useState('');
+    const [checkedRadioButton, setCheckedButton] = useState('');
     const [showDropDown, setShowDropDown] = useState(false);
 
     // Print state
@@ -75,6 +97,20 @@ const Schedule = props => {
     const [searchOpen, setSearchOpen] = useState(false);
     const [isExpanded, setisExpanded] = useState(false);
 
+    //########### Event Listeners
+    useEffect(() => {
+        fetchAppointments();
+    }, [appointmentsEndDate, appointmentsStartDate])
+
+
+    useEffect(() => {
+        console.log('filtered appointments state has:', filteredAppointments);
+        // console.log("Checked filter button: ", checkedRadioButton);
+        checkedRadioButton === '' ? fetchAppointments() : filter(appointments);
+    }, [checkedRadioButton]);
+
+
+
     const onExpandButtonPress = () => {
         setisExpanded(!isExpanded);
     };
@@ -84,32 +120,15 @@ const Schedule = props => {
     };
 
     const radioClicked = (item = '') => {
-        item.valueOf() === checkedRadioButton.valueOf() ? setcheckedButton('') :
-            setcheckedButton(item);
+        item.valueOf() === checkedRadioButton.valueOf() ? setCheckedButton('') :
+            setCheckedButton(item);
     };
-
-    // const filterBy = (category) => {
-    //     if (category === "Procedure") {
-    //         setType(1);
-    //     } else if (category === "Delivery") {
-    //         setType(2);
-    //     } else if (category === "Inventory Re-stock") {
-    //         setType(3);
-    //     } else if (category === "Inventory Audit") {
-    //         setType(4);
-    //     } else if (category === "Equipment") {
-    //         setType(5);
-    //     }
-
-    // }
 
     const fetchAppointments = () => {
         setFetchingAppointments(true);
 
-        getAppointments()
+        getAppointmentRequest({query: '', from: appointmentsStartDate, to: appointmentsEndDate})
             .then(data => {
-                //console.log("appointments", data);
-
                 setAppointments(data);
             })
             .catch(error => {
@@ -118,39 +137,11 @@ const Schedule = props => {
             .finally(_ => {
                 setFetchingAppointments(false);
             });
-        // console.log("what is in filtered is", filterd);
     };
 
     const filter = (appointmentArray = []) => {
         setFilteredAppointments([...appointmentArray.filter(item => item.type.name === checkedRadioButton)]);
     };
-
-    // animated states
-
-    //########### Event Listeners
-    // useEffect(() => {
-    //     Dimensions.addEventListener("change", onChange);
-    //     return () => {
-    //         Dimensions.removeEventListener("change", onChange);
-    //     };
-    // });
-
-    useEffect(() => {
-        console.log('filtered appointments state has:', filteredAppointments);
-        // console.log("Checked filter button: ", checkedRadioButton);
-        checkedRadioButton === '' ? fetchAppointments() : filter(appointments);
-    }, [checkedRadioButton]);
-
-    // useEffect(() => {
-
-    //     !showDropDown ? setcheckedButton("") : "";
-
-    // }, [showDropDown])
-
-    //########### Functions
-    // const onChange = (dimensions) => {
-    //     setDimensions(dimensions);
-    // };
 
     /*
      * @param date string "YYYY-MM-DD" for the selected day.
@@ -176,6 +167,22 @@ const Schedule = props => {
     const handleOnMonthUpdated = date => {
         setSelectedMonth(date);
         setDaysList(getDaysForMonth(date));
+
+        // check if month is after end date range then fetch appointments
+        const isAfterRange = moment(date).isAfter(appointmentsEndDate)
+        if (isAfterRange) {
+            // increase range
+            const newEndDate = moment(appointmentsEndDate).add(3, 'months').toDate();
+            setAppointmentsEndDate(newEndDate);
+        }
+
+        // check if month is before start date range then fetch appointments
+        const isBeforeRange = moment(date).isBefore(appointmentsStartDate);
+        if (isAfterRange) {
+            // increase range
+            const newStartDate = moment(appointmentsStartDate).subtract(3, 'months').toDate();
+            setAppointmentsStartDate(newStartDate);
+        }
     };
 
     const handleAppointmentPress = appointment => {
@@ -256,7 +263,6 @@ const Schedule = props => {
                 </BodyContainer>
             </Animated.View>
         </ScheduleWrapper>
-
     );
 };
 
