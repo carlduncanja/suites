@@ -25,14 +25,14 @@ import InputFieldWithIcon from './InputFieldWithIcon';
  */
 
 const InputFieldWrapper = styled.View`
-    flex:1;
-    position: relative;
+  flex: 1;
+  position: relative;
 `;
 
 const InputFieldContainer = styled.View`
-    width : 100%;
-    flex-direction: row;
-    align-items: center;
+  width: 100%;
+  flex-direction: row;
+  align-items: center;
 `;
 
 const LabelWrapper = styled.View(({theme, label}) => ({
@@ -41,74 +41,75 @@ const LabelWrapper = styled.View(({theme, label}) => ({
 }));
 
 const TextInputWrapper = styled.View`
-    flex:1;
-    height : 32px;
+  flex: 1;
+  height: 32px;
 `;
 const TextInputContainer = styled.View`
-    position: relative;
-    height : 100%;
-    width : 100%;
-    border-width: ${ ({hasBorder}) => hasBorder ? `1px` : 0};
-    border-color: ${({theme, hasError}) => (hasError ? theme.colors['--color-red-600'] : theme.colors['--color-gray-300'])};
-    //background-color : ${({theme, backgroundColor}) => (backgroundColor ? theme.colors[backgroundColor] : theme.colors['--default-shade-white'])};
-    background-color : ${({theme, enabled, backgroundColor}) => (backgroundColor ? theme.colors[backgroundColor] : !enabled ? theme.colors['--color-gray-100'] : theme.colors['--default-shade-white'])};
-    border-radius: 4px;
-    box-shadow : ${({isFocussed, theme}) => (isFocussed ? theme.shadow['--shadow-lg'] : null)};
-    flex-direction : row;
-    align-items:center;
-    padding-left : ${ ({hasIcon, theme}) => hasIcon ? theme.space['--space-4'] : 0};
+  position: relative;
+  height: 100%;
+  width: 100%;
+  border-width: ${({hasBorder}) => hasBorder ? `1px` : 0};
+  border-color: ${({
+                     theme,
+                     hasError
+                   }) => (hasError ? theme.colors['--color-red-600'] : theme.colors['--color-gray-300'])};
+    //background-color : ${({
+                              theme,
+                              backgroundColor
+                            }) => (backgroundColor ? theme.colors[backgroundColor] : theme.colors['--default-shade-white'])};
+  background-color: ${({
+                         theme,
+                         enabled,
+                         backgroundColor
+                       }) => (backgroundColor ? theme.colors[backgroundColor] : !enabled ? theme.colors['--color-gray-100'] : theme.colors['--default-shade-white'])};
+  border-radius: 4px;
+  box-shadow: ${({isFocussed, theme}) => (isFocussed ? theme.shadow['--shadow-lg'] : null)};
+  flex-direction: row;
+  align-items: center;
+  padding-left: ${({hasIcon, theme}) => hasIcon ? theme.space['--space-4'] : 0};
+  padding-right: ${({hasIconRight, theme}) => hasIconRight ? theme.space['--space-4'] : 0};
 `;
 
 const Input = styled.TextInput`
-    flex:1;
-    width : 85%;
-    padding-left : ${({theme}) => theme.space['--space-10']};
-    padding-right : ${({theme}) => theme.space['--space-32']};
+  flex: 1;
+  width: 85%;
+  padding-left: ${({theme}) => theme.space['--space-10']};
+  padding-right: ${({theme}) => theme.space['--space-32']};
 `;
 
-const ErrorContainer = styled.View`
-    position : absolute;
-    top : 16;
-    padding-left : 15px;
-`;
-
-const ErrorText = styled.Text(({theme}) => ({
-    ...theme.font['--text-xs-regular'],
-    color: theme.colors['--color-red-700']
-}));
 
 const IconContainer = styled.View`
-    position: absolute;
-    height: 100%;
-    right : -2px;
-    
+  //position: absolute;
+  height: 100%;
+  right: -2px;
 `;
 
 function InputField2({
-    label,
-    labelWidth,
-    secureTextEntry = false,
-    onChangeText = () => {
-    },
-    value = '',
-    enabled = true,
-    placeholder = '',
-    keyboardType,
-    onClear = () => {
-    },
-    hasError = false,
-    errorMessage = 'Error',
-    backgroundColor,
-    onFocus = () => {
-    },
-    onEndEditing = () => {
-    },
-    isFocussed = false,
-    autoCapitalize = 'sentences', // default from docs
-    hasBorder = true,
-    Icon,
-    maxLength
-}) {
+                         label,
+                         labelWidth,
+                         secureTextEntry = false,
+                         onChangeText = () => {
+                         },
+                         value = '',
+                         enabled = true,
+                         placeholder = '',
+                         keyboardType,
+                         onClear = () => {
+                         },
+                         hasError = false,
+                         errorMessage = 'Error',
+                         backgroundColor,
+                         onFocus = () => {
+                         },
+                         onEndEditing = () => {
+                         },
+                         isFocussed = false,
+                         autoCapitalize = 'sentences', // default from docs
+                         hasBorder = true,
+                         Icon,
+                         IconRight,
+                         maxLength
+                     }) {
     const theme = useTheme();
     const inputRef = useRef();
 
@@ -130,9 +131,12 @@ function InputField2({
                     theme={theme}
                     style={isFocussed ? styles.shadow : null}
                     hasBorder={hasBorder}
-                    hasIcon={Icon ? true : false}
+                    hasIcon={!!Icon}
+                    hasIconRight={!!IconRight}
                 >
+
                     {Icon}
+
                     <Input
                         theme={theme}
                         onChangeText={onChangeText}
@@ -167,7 +171,12 @@ function InputField2({
                         </IconContainer>
                     }
 
+                    {IconRight}
+
+
                 </TextInputContainer>
+
+
             </TextInputWrapper>
 
         </InputContainerComponent>

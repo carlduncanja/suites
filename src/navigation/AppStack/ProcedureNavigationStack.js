@@ -1,14 +1,14 @@
 import React from "react";
 import { createStackNavigator } from '@react-navigation/stack';
 
-import Procedures from "../../../page/Procedure/Procedures";
-import CreateProcedure from "../../../page/Procedure/CreateProcedure";
-import AddItems from "../../../page/Procedure/AddItems";
-import CreateCopy from "../../../page/Procedure/CreateCopy";
-import ProcedurePage from "../../../page/Procedure/ProcedurePage";
-import NotFound from "../../../page/NotFound";
+import Procedures from "../../page/Procedure/Procedures";
+import CreateProcedure from "../../page/Procedure/CreateProcedure";
+import AddItems from "../../page/Procedure/AddItems";
+import CreateCopy from "../../page/Procedure/CreateCopy";
+import ProcedurePage from "../../page/Procedure/ProcedurePage";
+import NotFound from "../../page/NotFound";
 import HeaderBackComponent from "../components/HeaderBackComponent";
-import PageHeader from "../../common/Page/PageHeader";
+import PageHeader from "../../components/common/Page/PageHeader";
 
 
 const Stack = createStackNavigator();

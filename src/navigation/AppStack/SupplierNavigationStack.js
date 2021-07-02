@@ -1,15 +1,15 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 
-import Suppliers from '../../../page/Suppliers';
-import SupplierPage from '../../../page/Suppliers/SupplierPage';
-import SupplierInvoiceUpload from '../../../page/Suppliers/SupplierInvoiceUpload';
-import NotFound from '../../../page/NotFound';
+import Suppliers from '../../page/Suppliers';
+import SupplierPage from '../../page/Suppliers/SupplierPage';
+import SupplierInvoiceUpload from '../../page/Suppliers/SupplierInvoiceUpload';
+import NotFound from '../../page/NotFound';
 import HeaderBackComponent from '../components/HeaderBackComponent';
-import ArchivedSuppliers from '../../../page/ArchivedSuppliers/ArchivedSuppliersPage';
-import ArchivedSupplier from '../../../page/ArchivedSuppliers/ArchivedSupplier';
-import SupplierProductPage from '../../../page/Suppliers/SupplierProductPage';
-import SupplierProductCreationPage from '../../../page/Suppliers/SupplierProductCreationPage';
+import ArchivedSuppliers from '../../page/ArchivedSuppliers/ArchivedSuppliersPage';
+import ArchivedSupplier from '../../page/ArchivedSuppliers/ArchivedSupplier';
+import SupplierProductPage from '../../page/Suppliers/SupplierProductPage';
+import SupplierProductCreationPage from '../../page/Suppliers/SupplierProductCreationPage';
 
 const Stack = createStackNavigator();
 

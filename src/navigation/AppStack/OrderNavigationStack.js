@@ -1,9 +1,9 @@
 import React from "react";
 import { createStackNavigator } from '@react-navigation/stack';
 
-import Orders from "../../../page/PurchaseOrders/Orders";
-import OrderItemPage from "../../../page/PurchaseOrders/OrderItemPage";
-import NotFound from "../../../page/NotFound";
+import Orders from "../../page/PurchaseOrders/Orders";
+import OrderItemPage from "../../page/PurchaseOrders/OrderItemPage";
+import NotFound from "../../page/NotFound";
 import HeaderBackComponent from "../components/HeaderBackComponent";
 
 

@@ -4,13 +4,13 @@ import {NavigationContainer} from "@react-navigation/native";
 import * as SplashScreen from 'expo-splash-screen';
 
 
-import AuthStack from "../src/components/navigation/AuthStack/AuthStack";
+import AuthStack from "./AuthStack/AuthStack";
 import {connect} from "react-redux";
 import {createStackNavigator} from "@react-navigation/stack";
-import SuitesNavigationStack from "./components/navigation/AppStack/SuitesNavigationStack";
-import {restoreToken} from "./redux/actions/authActions";
+import SuitesNavigationStack from "./AppStack/SuitesNavigationStack";
+import {restoreToken} from "../redux/actions/authActions";
 import AsyncStorage from "@react-native-community/async-storage";
-import {setBearerToken} from "./api";
+import {setBearerToken} from "../api";
 
 const Stack = createStackNavigator();
 

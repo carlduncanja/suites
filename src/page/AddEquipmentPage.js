@@ -130,10 +130,6 @@ const AddEquipmentPage = ({ navigation, route, modal }) => {
         setPhysicians(updatePhysicians)
     }
 
-
-
-
-
     useEffect(() => {
 
     }, [])
@@ -212,7 +208,7 @@ const AddEquipmentPage = ({ navigation, route, modal }) => {
             })
     };
 
- 
+
     const getTabContent = (selectedTab) => {
         switch (selectedTab) {
             case "Details":
@@ -233,7 +229,6 @@ const AddEquipmentPage = ({ navigation, route, modal }) => {
     return (
         <AddEquipmentPageWrapper theme={theme}>
             <AddEquipmentPageContainer theme={theme}>
-
 
                 <CreatePageHeader title='Add Equipment' onClose={closeTapped} />
 

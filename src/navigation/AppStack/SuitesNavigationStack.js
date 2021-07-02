@@ -4,17 +4,17 @@ import {connect} from 'react-redux';
 import {createSuitesSidebarNavigator} from '../SuiteNavigator';
 
 /* Screens */
-import Schedule from '../../../page/Schedule';
-import Theatres from '../../../page/Theatres/Theatres';
-import Inventory from '../../../page/Inventory/Inventory';
-import Storage from '../../../page/Storage';
-import Procedures from '../../../page/Procedures';
-import Physicians from '../../../page/Physicians';
-import Suppliers from '../../../page/Suppliers';
-import Equipment from '../../../page/Equipment/Equipment';
-import Orders from '../../../page/PurchaseOrders/Orders';
-import Alerts from '../../../page/Alerts';
-import Settings from '../../../page/Settings';
+import SchedulePage from '../../page/Schedule/SchedulePage';
+import Theatres from '../../page/Theatres/Theatres';
+import Inventory from '../../page/Inventory/Inventory';
+import Storage from '../../page/Storage';
+import Procedures from '../../page/Procedures';
+import Physicians from '../../page/Physicians';
+import Suppliers from '../../page/Suppliers';
+import Equipment from '../../page/Equipment/Equipment';
+import Orders from '../../page/PurchaseOrders/Orders';
+import Alerts from '../../page/Alerts';
+import Settings from '../../page/Settings';
 
 import ProcedureNavigationStack from './ProcedureNavigationStack';
 import CaseFileNavigationStack from './CaseFileNavigationStack';
@@ -28,28 +28,25 @@ import InventoryNavigationStack from './InventoryNavigationStack';
 import SettingsNavigationStack from './SettingsNavigationStack';
 
 /* Providers*/
-import NotFoundPage from '../../common/Page/NotFoundPage';
+import NotFoundPage from '../../components/common/Page/NotFoundPage';
 
 /* Icons */
-import ScheduleIcon from '../../../../assets/svg/schedule';
-import CaseFileIcon from '../../../../assets/svg/caseFile';
-import TheatreIcon from '../../../../assets/svg/theatre';
-import InventoryIcon from '../../../../assets/svg/inventory';
-import EquipmentIcon from '../../../../assets/svg/equipment';
-import OrdersIcon from '../../../../assets/svg/orders';
-import DeliveryIcon from '../../../../assets/svg/delivery';
-import InvoiceIcon from '../../../../assets/svg/invoices';
-import StorageIcon from '../../../../assets/svg/storage';
-import PhysiciansIcon from '../../../../assets/svg/physicians';
-import ProcedureIcon from '../../../../assets/svg/procedures';
-import SettingsIcon from '../../../../assets/svg/settingsIcon';
-import HelpIcon from '../../../../assets/svg/helpIcon';
-import NotificationIcon from '../../../../assets/svg/notificationIcon';
-import Invoices from '../../CaseFiles/OverlayPages/ChargeSheet/Invoices';
-import {ROLES} from '../../../const';
-import UserPageIcon from '../../../../assets/svg/UserPageIcon';
-import UsersPage from '../../../page/Users/UsersPage';
+import ScheduleIcon from '../../../assets/svg/schedule';
+import CaseFileIcon from '../../../assets/svg/caseFile';
+import TheatreIcon from '../../../assets/svg/theatre';
+import InventoryIcon from '../../../assets/svg/inventory';
+import EquipmentIcon from '../../../assets/svg/equipment';
+import OrdersIcon from '../../../assets/svg/orders';
+import DeliveryIcon from '../../../assets/svg/delivery';
+import StorageIcon from '../../../assets/svg/storage';
+import PhysiciansIcon from '../../../assets/svg/physicians';
+import ProcedureIcon from '../../../assets/svg/procedures';
+import SettingsIcon from '../../../assets/svg/settingsIcon';
+import NotificationIcon from '../../../assets/svg/notificationIcon';
+import {ROLES} from '../../const';
+import UserPageIcon from '../../../assets/svg/UserPageIcon';
 import UsersNavigationStack from './UsersNavigationStack';
+import ScheduleNavigationStack from "./ScheduleNavigationStack";
 
 const SuitesNavigator = createSuitesSidebarNavigator();
 
@@ -60,12 +57,12 @@ export const SuitesNavigationStack = ({auth = {}}) => {
 
     return (
         <SuitesNavigator.Navigator
-            initialRouteName="Schedule"
+            initialRouteName="SchedulePage"
         >
 
             <SuitesNavigator.Screen
-                name="Schedule"
-                component={Schedule}
+                name="SchedulePage"
+                component={ScheduleNavigationStack}
                 initialParams={{
                     icon: ScheduleIcon,
                     tabName: 'schedule',

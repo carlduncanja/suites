@@ -50,10 +50,6 @@ function UserPage({route, ...props}) {
         // Navigate to rest password page
         // On success, show confirmation screen and go back to user page.
         // On failure, show confirmation (failure) screen and go back to user page.
-        console.log("Navigate");
-        // navigation.navigate('ResetPasswordPage', {
-        //     onCancelReset: () => { console.log('Cancel'); navigation.goBack(); },
-        // });
         modal.openModal('OverlayInfoModal', {
             overlayContent: <ResetPasswordComponent
                 onClose={() => modal.closeModals('OverlayInfoModal')}

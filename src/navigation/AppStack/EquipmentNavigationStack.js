@@ -1,13 +1,13 @@
 import React from "react";
 import { createStackNavigator } from '@react-navigation/stack';
 
-import Equipment from "../../../page/Equipment/Equipment";
-import EquipmentItemPage from "../../Equipment/EquipmentItemPage";
-import EquipmentGroupDetailsPage from "../../../page/Equipment/EquipmentGroupDetailsPage";
-import AddEquipmentPage from "../../../page/AddEquipmentPage";
-import AssignEquipmentPage from "../../../page/AssignEquipmentPage";
-import AssignmentManagementPage from "../../../page/AssignmentManagementPage";
-import NotFound from "../../../page/NotFound";
+import Equipment from "../../page/Equipment/Equipment";
+import EquipmentItemPage from "../../components/Equipment/EquipmentItemPage";
+import EquipmentGroupDetailsPage from "../../page/Equipment/EquipmentGroupDetailsPage";
+import AddEquipmentPage from "../../page/AddEquipmentPage";
+import AssignEquipmentPage from "../../page/AssignEquipmentPage";
+import AssignmentManagementPage from "../../page/AssignmentManagementPage";
+import NotFound from "../../page/NotFound";
 import HeaderBackComponent from "../components/HeaderBackComponent";
 
 

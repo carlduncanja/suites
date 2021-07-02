@@ -1,27 +1,21 @@
-import React, {useState, useContext, useEffect} from 'react';
-import {View, StyleSheet, Dimensions, ActivityIndicator, Text} from 'react-native';
+import React, {useState, useEffect} from 'react';
+import {StyleSheet, Dimensions} from 'react-native';
 import Animated from 'react-native-reanimated';
 import moment from 'moment';
 import {connect} from 'react-redux';
 import {useModal} from 'react-native-modalfy';
-import styled, {css} from '@emotion/native';
+import styled from '@emotion/native';
 import {useTheme} from 'emotion-theming';
-import {isEmpty} from 'lodash';
-import Button from '../components/common/Buttons/Button';
-import ScheduleCalendar from '../components/Schedule/ScheduleCalendar';
-import MonthSelector from '../components/Calendar/MonthSelector';
-import SchedulesList from '../components/Schedule/SchedulesList';
-import {ScheduleContext} from '../contexts/ScheduleContext';
-import {getAppointmentRequest, getAppointments} from '../api/network';
-import {getDaysForMonth} from '../utils';
-import {formatDate} from '../utils/formatter';
-import {setAppointments} from '../redux/actions/appointmentActions';
-import {colors} from '../styles';
-import ScheduleSearchContainer from '../components/common/Search/ScheduleSearchContainer';
-import ScheduleOverlayContainer from '../components/Schedule/ScheduleOverlayContainer';
-import SchedulePageHeader from '../components/Schedule/SchedulePageHeader';
-import SchedulePageContent from '../components/Schedule/SchedulePageContent';
-import PrintSchedule from '../components/Schedule/PrintSchedule';
+import {getAppointmentRequest, getAppointments} from '../../api/network';
+import {getDaysForMonth} from '../../utils';
+import {formatDate} from '../../utils/formatter';
+import {setAppointments} from '../../redux/actions/appointmentActions';
+import ScheduleSearchContainer from '../../components/common/Search/ScheduleSearchContainer';
+import ScheduleOverlayContainer from '../../components/Schedule/ScheduleOverlayContainer';
+import SchedulePageHeader from '../../components/Schedule/SchedulePageHeader';
+import SchedulePageContent from '../../components/Schedule/SchedulePageContent';
+import PrintSchedule from '../../components/Schedule/PrintSchedule';
+import {useNavigation} from "@react-navigation/native";
 
 const ScheduleWrapper = styled.View`
   flex: 1;
@@ -50,13 +44,14 @@ const getInitialEndDateRage = () => {
 }
 
 
-const Schedule = props => {
+const SchedulePage = props => {
     const {
         // Redux Props
         appointments,
         setAppointments
     } = props;
 
+    const navigation = useNavigation();
 
     const modal = useModal();
     const screenDimensions = Dimensions.get('window');
@@ -113,7 +108,6 @@ const Schedule = props => {
         // console.log("Checked filter button: ", checkedRadioButton);
         checkedRadioButton === '' ? fetchAppointments() : filter(appointments);
     }, [checkedRadioButton]);
-
 
 
     const onExpandButtonPress = () => {
@@ -210,9 +204,13 @@ const Schedule = props => {
     const handlePrintOptions = option => {
         setPrintOption(option);
         setShowPrintOptions(false);
-        modal.openModal('OverlayInfoModal', {
-            overlayContent: <PrintSchedule printOption={option}/>
-        });
+
+        // modal.openModal('OverlayInfoModal', {
+        //     overlayContent: <PrintSchedule printOption={option}/>
+        // });
+
+
+        navigation.navigate('PrintSchedulePage', {option})
     };
 
     // ###### STYLED COMPONENTS
@@ -275,7 +273,7 @@ const mapStateToProps = state => ({appointments: state.appointments});
 
 const mapDispatcherToProp = {setAppointments};
 
-export default connect(mapStateToProps, mapDispatcherToProp)(Schedule);
+export default connect(mapStateToProps, mapDispatcherToProp)(SchedulePage);
 
 const styles = StyleSheet.create({
     container: {

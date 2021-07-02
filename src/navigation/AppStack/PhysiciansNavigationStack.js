@@ -1,24 +1,25 @@
 import React from "react";
 import { createStackNavigator } from '@react-navigation/stack';
 
-import Theatres from "../../../page/Theatres/Theatres";
-import TheatresPage from "../../../page/Theatres/TheatresPage";
-import NotFound from "../../../page/NotFound";
+import Physicians from "../../page/Physicians";
+import PhysicianPage from "../../components/Physicians/PhysicianPage";
+import NotFound from "../../page/NotFound";
 import HeaderBackComponent from "../components/HeaderBackComponent";
 
 
 const Stack = createStackNavigator();
+
 
 export default (props) => {
     const isAdmin = props.route.params.isAdmin || false;
 
     return (
         <Stack.Navigator
-            initialRouteName="Theatres"
+            initialRouteName="Physicians"
         >
             <Stack.Screen
-                name="Theatres"
-                component={Theatres}
+                name="Physicians"
+                component={Physicians}
                 options={{
                     headerShown: false
                 }}
@@ -27,8 +28,8 @@ export default (props) => {
 
 
             <Stack.Screen
-                name="TheatresPage"
-                component={TheatresPage}
+                name="PhysicianPage"
+                component={PhysicianPage}
                 options={{
                     headerShown: false,
                     headerLeft: (props) => (

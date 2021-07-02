@@ -1,8 +1,8 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 
-import Settings from '../../../page/Settings';
-import AppointmentBufferPage from '../../Settings/AppointmentBuffer/AppointmentBufferPage';
+import Settings from '../../page/Settings';
+import AppointmentBufferPage from '../../components/Settings/AppointmentBuffer/AppointmentBufferPage';
 
 const Stack = createStackNavigator();
 

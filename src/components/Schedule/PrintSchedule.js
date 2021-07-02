@@ -51,7 +51,7 @@ function PrintSchedule({printOption}) {
     return (
         <View style={{minHeight: 230, width: 500}}>
             <OverlayDialog
-                title="Print Schedule"
+                title="Print SchedulePage"
                 onClose={onCloseModal}
                 onPositiveButtonPress={onButtonPress}
                 positiveText="PRINT"
@@ -94,17 +94,17 @@ function PrintSchedule({printOption}) {
                             value={documentName}
                             onClear={() => setDocumentName()}
                             hasBorder={false}
-                            placeholder="Schedule"
+                            placeholder="SchedulePage"
                         />
                         <Extension>
                             .pdf
                         </Extension>
                     </NameContainer>
-                    
+
                 </PrintContent>
             </OverlayDialog>
         </View>
-        
+
     );
 }
 

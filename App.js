@@ -9,12 +9,12 @@ import {initialState} from './src/SuitesContext';
 
 import {SuitesContextProvider} from './src/contexts/SuitesContext';
 import configureStore from './src/redux/configureStore';
-import RootApplicationNavigator from './src/RootApplicationNavigator';
-import NotificationRegistry from './src/components/notifications/NotficationRegistry';
 
 import {root} from './src/styles';
-import Statusbar from './src/components/navigation/Statusbar';
+import Statusbar from './src/navigation/Statusbar';
 import {restoreToken} from "./src/redux/actions/authActions";
+import RootApplicationNavigator from "./src/navigation/RootApplicationNavigator";
+import NotificationRegistry from './src/components/notifications/NotficationRegistry';
 
 const store = configureStore({});
 
