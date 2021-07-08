@@ -14,6 +14,7 @@ import { formatDate } from "../../utils/formatter";
 import styled, { css } from '@emotion/native';
 import { useTheme } from 'emotion-theming';
 import SectionListHeader from './SectionListHeader';
+import {emptyFn} from "../../const";
 
 const ListWrapper = styled.View`
     margin : 0;
@@ -54,12 +55,10 @@ const Seperator = styled.View`
  * @returns {*}
  * @constructor
  */
-
-function SchedulesList({ appointments, selectedDay, month, onAppointmentPress, setAppointments }) {
+function SchedulesList({ appointments, selectedDay, month, onAppointmentPress, setAppointments, onRefresh = emptyFn, isRefreshing = false }) {
 
     const daysList = getDaysForMonth(month);
     const sectionListRef = useRef();
-    const [isRefreshing, setRefreshing] = useState(false);
     const theme = useTheme();
 
     useEffect(() => {
@@ -115,24 +114,12 @@ function SchedulesList({ appointments, selectedDay, month, onAppointmentPress, s
         })
     };
 
-    const onRefresh = () => {
-        // fetch the schedule
-        setRefreshing(true);
-        getAppointments()
-            .then(data => {
-                setAppointments(data);
-
-                const dayIndex = getSectionIndexForSelectedDay();
-                setTimeout(() => scrollToIndex(dayIndex, true), 250);
-
-            })
-            .catch(error => {
-                // TODO display toast or error to telling the user that something went wrong trying to fetch the data.
-                console.log("Failed to get Appointments", error);
-            })
-            .finally(() => {
-                setRefreshing(false)
-            })
+    const handleRefresh = () => {
+        // call refresh
+        onRefresh( () => { // callback fn
+            const dayIndex = getSectionIndexForSelectedDay();
+            setTimeout(() => scrollToIndex(dayIndex, true), 250);
+        })
     };
 
     return (
@@ -163,11 +150,6 @@ function SchedulesList({ appointments, selectedDay, month, onAppointmentPress, s
                     ItemSeparatorComponent={() => <Seperator />}
                     renderSectionHeader={({ section: { title } }) => (
                         <SectionListHeader title={title} />
-                        // <View style={[styles.dateLabelContainer,{opacity: isInMonth(title)}]}>
-                        //     <Text style={styles.dateLabel}>
-                        //         {title}
-                        //     </Text>
-                        // </View>
                     )}
                     renderItem={({ item }) => {
                         return <ScheduleItem

@@ -16,6 +16,7 @@ import SchedulePageHeader from '../../components/Schedule/SchedulePageHeader';
 import SchedulePageContent from '../../components/Schedule/SchedulePageContent';
 import PrintSchedule from '../../components/Schedule/PrintSchedule';
 import {useNavigation} from "@react-navigation/native";
+import {emptyFn} from "../../const";
 
 const ScheduleWrapper = styled.View`
   flex: 1;
@@ -72,6 +73,9 @@ const SchedulePage = props => {
     const [selectedMonth, setSelectedMonth] = useState(currentDate);
     const [selectedDay, setSelectedDay] = useState(currentDate);
     const [daysList, setDaysList] = useState(initialDaysList);
+
+    // schedule states
+    const [scheduleRefreshing, setScheduleRefreshing] = useState(false);
 
     // appointment states
     const [sectionListIndex, setSectionListIndex] = useState(initialIndex);
@@ -205,12 +209,24 @@ const SchedulePage = props => {
         setPrintOption(option);
         setShowPrintOptions(false);
 
-        // modal.openModal('OverlayInfoModal', {
-        //     overlayContent: <PrintSchedule printOption={option}/>
-        // });
-
-
         navigation.navigate('PrintSchedulePage', {option})
+    };
+
+    const handleScheduleRefresh = (successCallback = emptyFn) => {
+        // fetch the schedule
+        setScheduleRefreshing(true);
+        getAppointments()
+            .then(data => {
+                setAppointments(data);
+                successCallback()
+            })
+            .catch(error => {
+                // TODO display toast or error to telling the user that something went wrong trying to fetch the data.
+                console.log("Failed to get Appointments", error);
+            })
+            .finally(() => {
+                setScheduleRefreshing(false)
+            })
     };
 
     // ###### STYLED COMPONENTS
@@ -248,8 +264,8 @@ const SchedulePage = props => {
                         showPrintOptions={showPrintOptions}
                         handlePrintOptions={(res) => handlePrintOptions(res)}
                         openPrintOptions={setShowPrintOptions}
-
                     />
+
                     <SchedulePageContent
                         Expanded={isExpanded}
                         isFetchingAppointment={isFetchingAppointment}
@@ -262,6 +278,8 @@ const SchedulePage = props => {
                         selectedIndex={sectionListIndex}
                         onAppointmentPress={handleAppointmentPress}
                         selectedDay={selectedDay}
+                        onScheduleRefresh={handleScheduleRefresh}
+                        isRefreshing={scheduleRefreshing}
                     />
                 </BodyContainer>
             </Animated.View>
