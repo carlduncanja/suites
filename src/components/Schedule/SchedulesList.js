@@ -8,7 +8,7 @@ import sectionListGetItemLayout from 'react-native-section-list-get-item-layout'
 import { connect } from "react-redux";
 import { setAppointments } from "../../redux/actions/appointmentActions"
 import { getAppointments } from "../../api/network";
-import { getDaysForMonth } from "../../utils";
+import {getDaysForMonth, getDaysInRange} from "../../utils";
 import { formatDate } from "../../utils/formatter";
 
 import styled, { css } from '@emotion/native';
@@ -39,7 +39,7 @@ const TextView = styled.View({
 
 });
 
-const Seperator = styled.View`
+const Separator = styled.View`
     border-bottom-color: #CBD5E0;
     margin-top: 12px;
     margin-bottom: 12px;
@@ -47,24 +47,29 @@ const Seperator = styled.View`
 `;
 
 /**
- *
+ * Component that handles displaying the appointment scheduled over a specified month/date range.
  * @param days: array of date string ("YYYY-MM-DD")
  * @param appointments: and array of appointment
- * @param onAppointmentPress
- * @param setAppointments
+ * @param onAppointmentPress {Function} - Callback event fired when a appointment is touched.
+ * @param month {Date} - Current month being focused on the schedule
+ * @param selectedDay {Date} - current day in schedule to be highlighted.
+ * @param onRefresh {function} - Callback function fire when the schedule is refreshing.
+ * @param isRefreshing {boolean} - Flag used to signify when schedule list is refreshing.
+ * @param startDate? {Date} - Starting date range use for list
+ * @param endDate? {Date} - End range for schedule
  * @returns {*}
  * @constructor
  */
-function SchedulesList({ appointments, selectedDay, month, onAppointmentPress, setAppointments, onRefresh = emptyFn, isRefreshing = false }) {
+function SchedulesList({ appointments, selectedDay, month, onAppointmentPress, onRefresh = emptyFn, isRefreshing = false , startDate, endDate}) {
 
-    const daysList = getDaysForMonth(month);
+    const daysList = (startDate && endDate) ? getDaysInRange(startDate, endDate) : getDaysForMonth(month);
     const sectionListRef = useRef();
     const theme = useTheme();
 
     useEffect(() => {
         const dayIndex = getSectionIndexForSelectedDay();
         scrollToIndex(dayIndex, true);
-    }, [selectedDay, month]);
+    }, [selectedDay, month, startDate, endDate]);
 
     const getSectionIndexForSelectedDay = () => {
         const selectedDayString = moment(selectedDay).format("YYYY-MM-DD");
@@ -123,7 +128,6 @@ function SchedulesList({ appointments, selectedDay, month, onAppointmentPress, s
     };
 
     return (
-        // <ListWrapper>
         <View style={styles.scheduleContent}>
             <View style={styles.container}>
                 <SectionList
@@ -133,8 +137,6 @@ function SchedulesList({ appointments, selectedDay, month, onAppointmentPress, s
                     keyExtractor={item => {
                         return item.id + new Date().toString() + Math.random()
                     }}
-                    //onLayout={() => scrollToIndex(getSectionIndexForSelectedDay(), false)}
-                    // getItemLayout={(data, index) => ({length: 100, offset:  index * 24 + data.length * 20, index})}
                     getItemLayout={sectionListGetItemLayout({
                         getItemHeight: (rowData, sectionIndex, rowIndex) => 24,
                         getSeparatorHeight: () => 24,
@@ -142,12 +144,9 @@ function SchedulesList({ appointments, selectedDay, month, onAppointmentPress, s
                         getSectionFooterHeight: () => 0,
                         listHeaderHeight: 0
                     })}
-                    onScrollToIndexFailed={() => {
-
-                    }}
                     sections={getSectionListData(daysList, appointments)}
                     stickySectionHeadersEnabled={true}
-                    ItemSeparatorComponent={() => <Seperator />}
+                    ItemSeparatorComponent={() => <Separator />}
                     renderSectionHeader={({ section: { title } }) => (
                         <SectionListHeader title={title} />
                     )}
@@ -165,7 +164,6 @@ function SchedulesList({ appointments, selectedDay, month, onAppointmentPress, s
                 />
             </View>
         </View>
-        // </ListWrapper>
     );
 }
 
@@ -174,7 +172,6 @@ SchedulesList.propTypes = {
     appointments: PropTypes.array,
     onAppointmentPress: PropTypes.func,
     selectedIndex: PropTypes.number,
-    setAppointments: PropTypes.func
 };
 
 SchedulesList.defaultProps = {};
@@ -189,8 +186,6 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
         alignSelf: 'flex-start',
         width: '100%',
-        padding: 32,
-        paddingTop: 24,
     },
     container: {
         flex: 1,
@@ -213,7 +208,6 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-start',
     },
     dateLabelContainer: {
-        // backgroundColor: 'rgba(247, 250, 252, 1)',
         backgroundColor: '#FFFFFF',
         borderBottomColor: '#718096',
         borderBottomWidth: 1,

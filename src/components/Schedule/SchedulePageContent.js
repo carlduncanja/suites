@@ -45,19 +45,26 @@ function SchedulePageContent({
             {
                 isFetchingAppointment ?
                     <LoadingIndicator/> : (
-                        <SchedulesList
-                            appointments={appointments}
-                            selectedIndex={selectedIndex}
-                            onAppointmentPress={onAppointmentPress}
-                            selectedDay={selectedDay}
-                            month={month}
-                            onRefresh={onScheduleRefresh}
-                            isRefreshing={isRefreshing}
-                        />
+                        <ScheduleListWrapper>
+                            <SchedulesList
+                                appointments={appointments}
+                                selectedIndex={selectedIndex}
+                                onAppointmentPress={onAppointmentPress}
+                                selectedDay={selectedDay}
+                                month={month}
+                                onRefresh={onScheduleRefresh}
+                                isRefreshing={isRefreshing}
+                            />
+                        </ScheduleListWrapper>
                     )
             }
         </View>
     )
 }
+
+const ScheduleListWrapper = styled.View`
+  flex: 1;
+  padding: 24px 32px 32px 32px;
+`
 
 export default SchedulePageContent
