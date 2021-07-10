@@ -25,7 +25,7 @@ const LogoContainer = styled.View`
     align-items : center;
     justify-content : center;
 `;
- 
+
 const InformationContainer = styled.View`
     flex : 1;
     height : 100%;
@@ -48,7 +48,6 @@ const InformationText = styled.Text( ({theme}) => ({
 }));
 
 function ReportHeader () {
-
     const theme = useTheme();
     const header = require('../../../../assets/db.json').companyInformation;
 
@@ -59,7 +58,7 @@ function ReportHeader () {
                 <LogoContainer theme = {theme}>
                     <Logo height = "50" width = "50"/>
                 </LogoContainer>
-                
+
                 <InformationContainer>
 
                     <InformationContentContainer align = {'flex-start'}>
@@ -73,9 +72,9 @@ function ReportHeader () {
                         <InformationText>Halfway Tree Road</InformationText>
                         <InformationText>Kingston 10</InformationText>
                     </InformationContentContainer>
-                    
+
                 </InformationContainer>
-                
+
             </ReportHeaderContainer>
         </ReportHeaderWrapper>
     );

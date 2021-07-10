@@ -1,21 +1,26 @@
 import React, {useEffect, useState} from 'react';
 import {Text, TouchableOpacity, View} from "react-native";
-import Page from "../../components/common/Page/Page";
 import styled from "@emotion/native";
 import {useTheme} from "emotion-theming";
-import DefaultPage from "../../components/common/Page/DefaultPage";
+import DefaultPage from "../../../components/common/Page/DefaultPage";
 import {useNavigation} from "@react-navigation/native";
-import OverlayDialog from "../../components/common/Dialog/OverlayDialog";
-import DateInputField from "../../components/common/Input Fields/DateInputField";
-import CalendarIcon from "../../../assets/svg/calendar";
-import InputField2 from "../../components/common/Input Fields/InputField2";
+import DateInputField from "../../../components/common/Input Fields/DateInputField";
+import InputField2 from "../../../components/common/Input Fields/InputField2";
 import {useModal} from "react-native-modalfy";
 import moment from "moment";
-import OptionsField from "../../components/common/Input Fields/OptionsField";
-import {MenuOption, MenuOptions} from "react-native-popup-menu";
-import PageButton from "../../components/common/Page/PageButton";
-import ChevronLeft from "../../../assets/svg/ChevronLeft";
-import ChevronRight from "../../../assets/svg/ChevronRight";
+import PageButton from "../../../components/common/Page/PageButton";
+import SchedulesList from "../../../components/Schedule/SchedulesList";
+import {getAppointmentRequest} from "../../../api/network";
+import LoadingComponent from "../../../components/LoadingComponent";
+import PrintScheduleDayView from "./PrintScheduleDayView";
+
+
+const PrintOptions = {
+    today: "Print Today",
+    lastWeek: "Last Week",
+    thisMonth: "This Month",
+    custom: "Custom",
+}
 
 /**
  *
@@ -23,49 +28,90 @@ import ChevronRight from "../../../assets/svg/ChevronRight";
  * @return {JSX.Element}
  * @constructor
  */
-function PrintSchedulePage({option}) {
+function PrintSchedulePage({route, navigation}) {
+    const {option} = route.params;
+
     const theme = useTheme();
-    const navigation = useNavigation();
+    const date = new Date();
 
     const modal = useModal();
 
     const [startDate, setStartDate] = useState();
     const [endDate, setEndDate] = useState();
+    const [isLoading, setLoading] = useState(false);
     const [documentName, setDocumentName] = useState();
+    const [appointments, setAppointments] = useState();
 
     useEffect(() => {
         let start;
         let end;
         let today = moment();
-        if (option === 'Print Today') {
-            start = today;
-            end = today;
-        } else if (option === 'Last Week') {
+        if (option === PrintOptions.today) {
+            start = moment().startOf('day');
+            end = moment().endOf('day');
+        } else if (option === PrintOptions.lastWeek) {
             start = moment().subtract(1, 'weeks').startOf('week');
             end = moment().subtract(1, 'weeks').endOf('week');
-        } else if (option === 'This Month') {
+        } else if (option === PrintOptions.thisMonth) {
             start = moment().startOf('month');
             end = moment().endOf('month');
         }
         console.log('Option, start, end: ', option, start, end);
-        setStartDate(start);
-        setEndDate(end);
+
+        setStartDate(start?.toDate());
+        setEndDate(end?.toDate());
+
+        getAppointmentsInRange(startDate, endDate)
+
     }, []);
 
     const handleClosePress = () => {
         navigation.goBack();
     }
 
-    const onCloseModal = () => {
-        modal.closeModals('OverlayInfoModal');
-    };
-
-    const onButtonPress = () => {
-    };
-
     const onDocumentNameChange = value => {
         setDocumentName(value);
     };
+
+    /**
+     * Cancels print request, sends use back to schedule page.
+     */
+    const onCancelBtnPress = () => {
+        navigation.goBack();
+    }
+
+    /**
+     *  Start print request and generates documents.
+     */
+    const onPrintBtnPress = () => {
+        // display print modal
+        modal.openModal('PrintScheduleModal', {
+            content: <PrintScheduleDayView/>
+        })
+    }
+
+    /**
+     * Send request to SUITE API for appointments withing the given range.
+     *
+     * @param startDate {Date} start date for appointment range
+     * @param endDate {Date}|end date for appointment range
+     * @return {Promise<unknown>}
+     */
+    const getAppointmentsInRange = (startDate, endDate) => {
+        setLoading(true);
+        getAppointmentRequest({from: startDate, to: endDate})
+            .then(data => {
+                setAppointments(data);
+            })
+            .catch(error => {
+                console.log('Failed to get appointments in date ranges');
+                // TODO display error;
+            })
+            .finally(_ => {
+                setLoading(false);
+            })
+    }
+
 
     return (
         <DefaultPage
@@ -73,8 +119,11 @@ function PrintSchedulePage({option}) {
             onClosePress={handleClosePress}
         >
 
-            <View>
+            {
+                <LoadingComponent/>
+            }
 
+            <View>
                 <PrintContent theme={theme}>
                     <RowWrapper>
                         <InputWrapper>
@@ -154,7 +203,17 @@ function PrintSchedulePage({option}) {
 
             <PageContentWrapper>
                 <View style={{flex: 1}}>
-
+                    <ScheduleListWrapper>
+                        <SchedulesList
+                            appointments={appointments}
+                            onAppointmentPress={() => {
+                            }}
+                            selectedDay={date}
+                            month={date}
+                            startDate={startDate}
+                            endDate={endDate}
+                        />
+                    </ScheduleListWrapper>
                 </View>
             </PageContentWrapper>
 
@@ -166,7 +225,7 @@ function PrintSchedulePage({option}) {
                             backgroundColor={theme.colors['--color-gray-200']}
                             fontColor={theme.colors['--color-gray-600']}
                             text="Cancel"
-                            // onPress={onPreviousButtonPress}
+                            onPress={onCancelBtnPress}
                         />
                     </FooterButtonContainer>
 
@@ -175,16 +234,21 @@ function PrintSchedulePage({option}) {
                             backgroundColor={theme.colors['--color-blue-500']}
                             fontColor={theme.colors['--default-shade-white']}
                             text={'Print'}
-                            // onPress={onPositiveButtonPress}
+                            onPress={onPrintBtnPress}
                         />
                     </FooterButtonContainer>
                 </FooterContainer>
             </FooterWrapper>
-
-
         </DefaultPage>
     );
-}
+};
+
+
+const ScheduleListWrapper = styled.View`
+  flex: 1;
+  padding: 24px 32px 32px 32px;
+`
+
 
 const FooterWrapper = styled.View`
   bottom: 0;
@@ -241,39 +305,6 @@ const PrintContent = styled.View`
   height: 142px;
 `;
 
-const DatesContainer = styled.View`
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  margin-bottom: ${({theme}) => theme.space['--space-16']};
-`;
-
-const Date = styled.View`
-  min-width: 208px;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  padding-right: 8px;
-
-  background: ${({theme}) => theme.colors['--color-white']};
-  border: ${({theme}) => `1px solid ${theme.colors['--color-gray-300']}`};
-  box-sizing: border-box;
-  border-radius: 4px;
-`;
-
-const NameContainer = styled.View`
-  display: flex;
-  flex-direction: row;
-  padding-right: ${({theme}) => theme.space['--space-12']};
-  align-items: center;
-
-  background: ${({theme}) => theme.colors['--color-white']};
-
-  border: ${({theme}) => `1px solid ${theme.colors['--color-gray-300']}`};
-  box-sizing: border-box;
-  border-radius: 4px;
-
-`;
 
 const Extension = styled.Text`
   font-style: normal;

@@ -1,28 +1,28 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import PropTypes from 'prop-types';
-import { SectionList, StyleSheet, Text, View } from "react-native";
+import {SectionList, StyleSheet, Text, View} from "react-native";
 
 import moment from "moment";
 import ScheduleItem from "./ScheduleItem";
 import sectionListGetItemLayout from 'react-native-section-list-get-item-layout'
-import { connect } from "react-redux";
-import { setAppointments } from "../../redux/actions/appointmentActions"
-import { getAppointments } from "../../api/network";
+import {connect} from "react-redux";
+import {setAppointments} from "../../redux/actions/appointmentActions"
+import {getAppointments} from "../../api/network";
 import {getDaysForMonth, getDaysInRange} from "../../utils";
-import { formatDate } from "../../utils/formatter";
+import {formatDate} from "../../utils/formatter";
 
-import styled, { css } from '@emotion/native';
-import { useTheme } from 'emotion-theming';
+import styled, {css} from '@emotion/native';
+import {useTheme} from 'emotion-theming';
 import SectionListHeader from './SectionListHeader';
 import {emptyFn} from "../../const";
 
 const ListWrapper = styled.View`
-    margin : 0;
-    flex-direction: column;
-    align-self: flex-start;
-    padding: 32px;
-    paddingTop: 24px;
-    backgroundColor:red;
+  margin: 0;
+  flex-direction: column;
+  align-self: flex-start;
+  padding: 32px;
+  paddingTop: 24px;
+  backgroundColor: red;
 `;
 
 const ListContainer = styled.View({
@@ -35,15 +35,13 @@ const ListContainer = styled.View({
     paddingLeft: 24,
 });
 
-const TextView = styled.View({
-
-});
+const TextView = styled.View({});
 
 const Separator = styled.View`
-    border-bottom-color: #CBD5E0;
-    margin-top: 12px;
-    margin-bottom: 12px;
-    border-bottom-width: 1px;
+  border-bottom-color: #CBD5E0;
+  margin-top: 12px;
+  margin-bottom: 12px;
+  border-bottom-width: 1px;
 `;
 
 /**
@@ -57,10 +55,21 @@ const Separator = styled.View`
  * @param isRefreshing {boolean} - Flag used to signify when schedule list is refreshing.
  * @param startDate? {Date} - Starting date range use for list
  * @param endDate? {Date} - End range for schedule
+ * @param showBorder {boolean} - Flag used for showing border
  * @returns {*}
  * @constructor
  */
-function SchedulesList({ appointments, selectedDay, month, onAppointmentPress, onRefresh = emptyFn, isRefreshing = false , startDate, endDate}) {
+function SchedulesList({
+                           appointments,
+                           selectedDay,
+                           month,
+                           onAppointmentPress,
+                           onRefresh = emptyFn,
+                           isRefreshing = false,
+                           startDate,
+                           endDate,
+                           showBorder = true,
+                       }) {
 
     const daysList = (startDate && endDate) ? getDaysInRange(startDate, endDate) : getDaysForMonth(month);
     const sectionListRef = useRef();
@@ -121,15 +130,16 @@ function SchedulesList({ appointments, selectedDay, month, onAppointmentPress, o
 
     const handleRefresh = () => {
         // call refresh
-        onRefresh( () => { // callback fn
+        onRefresh(() => { // callback fn
             const dayIndex = getSectionIndexForSelectedDay();
             setTimeout(() => scrollToIndex(dayIndex, true), 250);
         })
     };
 
     return (
-        <View style={styles.scheduleContent}>
-            <View style={styles.container}>
+        <View style={ showBorder ? styles.scheduleContent : {} } >
+            <View style={ showBorder ? styles.container : {} }>
+
                 <SectionList
                     ref={sectionListRef}
                     onRefresh={onRefresh}
@@ -146,11 +156,11 @@ function SchedulesList({ appointments, selectedDay, month, onAppointmentPress, o
                     })}
                     sections={getSectionListData(daysList, appointments)}
                     stickySectionHeadersEnabled={true}
-                    ItemSeparatorComponent={() => <Separator />}
-                    renderSectionHeader={({ section: { title } }) => (
-                        <SectionListHeader title={title} />
+                    ItemSeparatorComponent={() => <Separator/>}
+                    renderSectionHeader={({section: {title}}) => (
+                        <SectionListHeader title={title}/>
                     )}
-                    renderItem={({ item }) => {
+                    renderItem={({item}) => {
                         return <ScheduleItem
                             key={item.id}
                             startTime={item.startTime}
@@ -162,6 +172,7 @@ function SchedulesList({ appointments, selectedDay, month, onAppointmentPress, o
                         />
                     }}
                 />
+
             </View>
         </View>
     );

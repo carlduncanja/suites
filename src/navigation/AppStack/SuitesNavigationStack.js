@@ -4,7 +4,7 @@ import {connect} from 'react-redux';
 import {createSuitesSidebarNavigator} from '../SuiteNavigator';
 
 /* Screens */
-import SchedulePage from '../../page/Schedule/SchedulePage';
+import SchedulePage from '../../page/Schedule/SchedulePage/SchedulePage';
 import Theatres from '../../page/Theatres/Theatres';
 import Inventory from '../../page/Inventory/Inventory';
 import Storage from '../../page/Storage';

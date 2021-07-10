@@ -6,17 +6,17 @@ import {connect} from 'react-redux';
 import {useModal} from 'react-native-modalfy';
 import styled from '@emotion/native';
 import {useTheme} from 'emotion-theming';
-import {getAppointmentRequest, getAppointments} from '../../api/network';
-import {getDaysForMonth} from '../../utils';
-import {formatDate} from '../../utils/formatter';
-import {setAppointments} from '../../redux/actions/appointmentActions';
-import ScheduleSearchContainer from '../../components/common/Search/ScheduleSearchContainer';
-import ScheduleOverlayContainer from '../../components/Schedule/ScheduleOverlayContainer';
-import SchedulePageHeader from '../../components/Schedule/SchedulePageHeader';
-import SchedulePageContent from '../../components/Schedule/SchedulePageContent';
-import PrintSchedule from '../../components/Schedule/PrintSchedule';
+import {getAppointmentRequest, getAppointments} from '../../../api/network';
+import {getDaysForMonth} from '../../../utils';
+import {formatDate} from '../../../utils/formatter';
+import {setAppointments} from '../../../redux/actions/appointmentActions';
+import ScheduleSearchContainer from '../../../components/common/Search/ScheduleSearchContainer';
+import ScheduleOverlayContainer from '../../../components/Schedule/ScheduleOverlayContainer';
+import SchedulePageHeader from './SchedulePageHeader';
+import SchedulePageContent from './SchedulePageContent';
+import PrintSchedule from '../../../components/Schedule/PrintSchedule';
 import {useNavigation} from "@react-navigation/native";
-import {emptyFn} from "../../const";
+import {emptyFn} from "../../../const";
 
 const ScheduleWrapper = styled.View`
   flex: 1;

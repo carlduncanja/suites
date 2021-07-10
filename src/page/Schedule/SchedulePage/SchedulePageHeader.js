@@ -4,13 +4,13 @@ import styled, { css } from '@emotion/native';
 import { useTheme } from 'emotion-theming';
 import { RadioButton } from 'react-native-paper';
 import { TouchableOpacity } from 'react-native-gesture-handler';
-import Button from '../common/Buttons/Button';
-import MonthSelector from '../Calendar/MonthSelector';
-import ScheduleButton from './ScheduleButton';
-import { SuitesContext } from '../../contexts/SuitesContext';
-import FilterIcon from '../../../assets/svg/filterIcon';
-import PrintIcon from '../../../assets/svg/printIcon';
-import MultipleShadowsContainer from '../common/MultipleShadowContainer';
+import Button from '../../../components/common/Buttons/Button';
+import MonthSelector from '../../../components/Calendar/MonthSelector';
+import ScheduleButton from '../../../components/Schedule/ScheduleButton';
+import { SuitesContext } from '../../../contexts/SuitesContext';
+import FilterIcon from '../../../../assets/svg/filterIcon';
+import PrintIcon from '../../../../assets/svg/printIcon';
+import MultipleShadowsContainer from '../../../components/common/MultipleShadowContainer';
 
 const SchedulePageHeaderWrapper = styled.View`
     width: 100%;
@@ -336,7 +336,7 @@ function SchedulePageHeader({
                             </IconContainer>
                             {showPrintOptions && renderPrintDropdown}
                         </View>
-                        
+
                     </GroupButtonContainer>
 
                     <GroupButtonContainer>

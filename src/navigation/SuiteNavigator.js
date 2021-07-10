@@ -41,6 +41,7 @@ import {logout} from '../api/network';
 import CustomSnackbarProvider from '../components/Snackbar/CustomSnackbarProvider';
 import UnauthorizedSubscription from '../UnauthorizedSubscription';
 import {setBearerToken} from "../api";
+import PrintScheduleModal from "../modals/PrintScheduleModal";
 
 /**
  * Custom navigator wrapper for application.
@@ -83,6 +84,7 @@ const SuitesCustomNavigator = ({
         OverlayModal,
         ActionContainerModal,
         ReportPreviewModal,
+        PrintScheduleModal,
         OverlayInfoModal,
         BottomSheetModal,
         QuickActionsModal,

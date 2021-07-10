@@ -1,8 +1,8 @@
 import React from "react";
 import { createStackNavigator } from '@react-navigation/stack';
 
-import SchedulePage from "../../page/Schedule/SchedulePage";
-import PrintSchedulePage from "../../page/Schedule/PrintSchedulePage";
+import SchedulePage from "../../page/Schedule/SchedulePage/SchedulePage";
+import PrintSchedulePage from "../../page/Schedule/PrintSchedule/PrintSchedulePage";
 
 const Stack = createStackNavigator();
 
