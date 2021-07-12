@@ -25,72 +25,72 @@ import DefaultPage from "../../components/common/Page/DefaultPage";
 
 
 const PageWrapper = styled.View`
-    height : 100%;
-    width : 100%;
-    background-color : ${({theme}) => theme.colors['--default-shade-white']}; 
+  height: 100%;
+  width: 100%;
+  background-color: ${({theme}) => theme.colors['--default-shade-white']};
 `;
 
 const TabsContainer = styled.View`
-    height : 59px;
+  height: 59px;
 `;
 
 const ContentWrapper = styled.View`
-    height : 780px;
-    margin-left : ${({theme}) => theme.space['--space-8']};
-    margin-right :${({theme}) => theme.space['--space-16']};
-    padding-left : ${({theme}) => theme.space['--space-14']};
-    padding-right :${({theme}) => theme.space['--space-14']};
-    padding-top :${({theme}) => theme.space['--space-32']};
+  height: 780px;
+  margin-left: ${({theme}) => theme.space['--space-8']};
+  margin-right: ${({theme}) => theme.space['--space-16']};
+  padding-left: ${({theme}) => theme.space['--space-14']};
+  padding-right: ${({theme}) => theme.space['--space-14']};
+  padding-top: ${({theme}) => theme.space['--space-32']};
 
 `;
 
 const ContentContaienr = styled.View`
-    height : 100%;
-    position : relative;
+  height: 100%;
+  position: relative;
 `;
 
 const ContentFooterContainer = styled.View`
-    height : 32px;
-    width : 100%;
-    flex-direction : row;
-    justify-content : space-between;
-    position : absolute;
-    bottom: 0;
-    align-items : center;
+  height: 32px;
+  width: 100%;
+  flex-direction: row;
+  justify-content: space-between;
+  position: absolute;
+  bottom: 0;
+  align-items: center;
 `;
 
 const AddItemsWrapper = styled.View`
-    height : 360px;
-    width : 100%;
+  height: 360px;
+  width: 100%;
 `;
 const AddItemsContainer = styled.View`
-    flex : 1;
+  flex: 1;
 `;
 
 const SearchableFieldContainer = styled.View`
-    z-index : 1;
-    margin-bottom : ${({theme}) => theme.space['--space-24']}; 
+  z-index: 1;
+  margin-bottom: ${({theme}) => theme.space['--space-24']};
 
-    /* margin-bottom : 24px; */
+  /* margin-bottom : 24px; */
 `
 
 const ListContainer = styled.View`
-    flex:1;
-    margin-top : ${({theme}) => theme.space['--space-40']}; 
-    /* background-color : red; */
+  flex: 1;
+  margin-top: ${({theme}) => theme.space['--space-40']};
+  /* background-color : red; */
 `;
 const Row = styled.View`
-    /* width : 100%; */
-    height : 20px;
-    flex-direction : row;
-    margin-bottom : ${({theme}) => theme.space['--space-24']}; 
+  /* width : 100%; */
+  height: 20px;
+  flex-direction: row;
+  margin-bottom: ${({theme}) => theme.space['--space-24']};
 
 `
 const PaginatorContainer = styled.View`
-    height : 100%;
-    width : 122px;
-    border : 1px solid ${({theme}) => theme.colors['--color-gray-400']};
-    border-radius : 4px;
+  height: 100%;
+  width: 122px;
+  border: 1px solid ${({theme}) => theme.colors['--color-gray-400']};
+  border-radius: 4px;
 `;
 
 const ContentFooterText = styled.Text(({theme}) => ({
@@ -99,24 +99,24 @@ const ContentFooterText = styled.Text(({theme}) => ({
 }));
 
 const Divider = styled.View`
-    margin-left : ${({theme}) => theme.space['--space-24']};
-    margin-right :${({theme}) => theme.space['--space-32']};
-    margin-top : ${({theme}) => theme.space['--space-24']};
-    margin-bottom : ${({theme}) => theme.space['--space-24']};
+  margin-left: ${({theme}) => theme.space['--space-24']};
+  margin-right: ${({theme}) => theme.space['--space-32']};
+  margin-top: ${({theme}) => theme.space['--space-24']};
+  margin-bottom: ${({theme}) => theme.space['--space-24']};
 `
 
 const FooterWrapper = styled.View`
-    width : 100%;
-    position : absolute;
-    bottom : 0;
-    margin-bottom : ${({theme}) => theme.space['--space-24']};
+  width: 100%;
+  position: absolute;
+  bottom: 0;
+  margin-bottom: ${({theme}) => theme.space['--space-24']};
     /* margin-top : ${({theme}) => theme.space['--space-24']}; */
-    padding-left : ${({theme}) => theme.space['--space-24']};
-    padding-right :${({theme}) => theme.space['--space-24']};
+  padding-left: ${({theme}) => theme.space['--space-24']};
+  padding-right: ${({theme}) => theme.space['--space-24']};
 `;
 
 const FooterContainer = styled.View`
-    flex:1;
+  flex: 1;
 `;
 
 
@@ -217,7 +217,11 @@ function AddChargeSheetItem({navigation, route}) {
 
     const goToNextPage = () => {
         if (currentPagePosition < totalPages) {
-            let {currentPage, currentListMin, currentListMax} = useNextPaginator(currentPagePosition, recordsPerPage, currentPageListMin, currentPageListMax)
+            let {
+                currentPage,
+                currentListMin,
+                currentListMax
+            } = useNextPaginator(currentPagePosition, recordsPerPage, currentPageListMin, currentPageListMax)
             setCurrentPagePosition(currentPage);
             setCurrentPageListMin(currentListMin);
             setCurrentPageListMax(currentListMax)
@@ -226,7 +230,11 @@ function AddChargeSheetItem({navigation, route}) {
 
     const goToPreviousPage = () => {
         if (currentPagePosition > 1) {
-            let {currentPage, currentListMin, currentListMax} = usePreviousPaginator(currentPagePosition, recordsPerPage, currentPageListMin, currentPageListMax)
+            let {
+                currentPage,
+                currentListMin,
+                currentListMax
+            } = usePreviousPaginator(currentPagePosition, recordsPerPage, currentPageListMin, currentPageListMax)
             setCurrentPagePosition(currentPage);
             setCurrentPageListMin(currentListMin);
             setCurrentPageListMax(currentListMax)
@@ -433,78 +441,78 @@ function AddChargeSheetItem({navigation, route}) {
             <ContentWrapper theme={theme}>
                 <ContentContaienr>
 
-                    <AddItemsWrapper>
-                        <AddItemsContainer>
+                        <AddItemsWrapper>
+                            <AddItemsContainer>
 
-                            <SearchableFieldContainer>
-                                <SearchableOptionsField
-                                    value={selectedItem}
-                                    text={searchValue}
-                                    oneOptionsSelected={(item) => {
-                                        onItemSelected(item)
-                                        setSearchResults([])
-                                        setSearchValue('')
-                                    }}
-                                    onChangeText={(value) => {
-                                        setSearchValue(value)
-                                    }}
-                                    onClear={onClearItem}
-                                    options={searchResults}
-                                    shouldShowValue={false}
-                                    borderColor={theme.colors['--color-gray-400']}
+                                <SearchableFieldContainer>
+                                    <SearchableOptionsField
+                                        value={selectedItem}
+                                        text={searchValue}
+                                        oneOptionsSelected={(item) => {
+                                            onItemSelected(item)
+                                            setSearchResults([])
+                                            setSearchValue('')
+                                        }}
+                                        onChangeText={(value) => {
+                                            setSearchValue(value)
+                                        }}
+                                        onClear={onClearItem}
+                                        options={searchResults}
+                                        shouldShowValue={false}
+                                        borderColor={theme.colors['--color-gray-400']}
+                                    />
+                                </SearchableFieldContainer>
+
+                                <ListContainer>
+                                    <Table
+                                        data={dataToDisplay}
+                                        currentListMin={currentPageListMin}
+                                        currentListMax={currentPageListMax}
+                                        listItemFormat={listItemFormat}
+                                        headers={headers}
+                                        isCheckbox={false}
+                                    />
+                                </ListContainer>
+
+                            </AddItemsContainer>
+                        </AddItemsWrapper>
+
+                        <ContentFooterContainer>
+
+                            <PaginatorContainer>
+                                <Paginator
+                                    currentPage={currentPagePosition}
+                                    totalPages={totalPages === 0 ? 1 : totalPages}
+                                    goToNextPage={goToNextPage}
+                                    goToPreviousPage={goToPreviousPage}
+                                    hasNumberBorder={false}
+                                    isNextDisabled={isNextDisabled}
+                                    isPreviousDisabled={isPreviousDisabled}
                                 />
-                            </SearchableFieldContainer>
+                            </PaginatorContainer>
+                            <ContentFooterText>
+                                Showing {
+                                dataLength === recordsPerPage
+                                    ? recordsPerPage
+                                    : dataLength
 
-                            <ListContainer>
-                                <Table
-                                    data={dataToDisplay}
-                                    currentListMin={currentPageListMin}
-                                    currentListMax={currentPageListMax}
-                                    listItemFormat={listItemFormat}
-                                    headers={headers}
-                                    isCheckbox={false}
-                                />
-                            </ListContainer>
+                            } of {dataLength}
+                            </ContentFooterText>
+                        </ContentFooterContainer>
 
-                        </AddItemsContainer>
-                    </AddItemsWrapper>
+                    </ContentContaienr>
+                </ContentWrapper>
 
-                    <ContentFooterContainer>
-
-                        <PaginatorContainer>
-                            <Paginator
-                                currentPage={currentPagePosition}
-                                totalPages={totalPages === 0 ? 1 : totalPages}
-                                goToNextPage={goToNextPage}
-                                goToPreviousPage={goToPreviousPage}
-                                hasNumberBorder={false}
-                                isNextDisabled={isNextDisabled}
-                                isPreviousDisabled={isPreviousDisabled}
-                            />
-                        </PaginatorContainer>
-                        <ContentFooterText>
-                            Showing {
-                            dataLength === recordsPerPage
-                                ? recordsPerPage
-                                : dataLength
-
-                        } of {dataLength}
-                        </ContentFooterText>
-                    </ContentFooterContainer>
-
-                </ContentContaienr>
-            </ContentWrapper>
-
-            <Divider>
-                <LineDivider/>
-            </Divider>
+                <Divider>
+                    <LineDivider/>
+                </Divider>
 
 
-            <FooterWrapper theme={theme}>
-                <FooterContainer>
-                    <CreatePageDoneFooter onFooterPress={onFooterPress}/>
-                </FooterContainer>
-            </FooterWrapper>
+                <FooterWrapper theme={theme}>
+                    <FooterContainer>
+                        <CreatePageDoneFooter onFooterPress={onFooterPress}/>
+                    </FooterContainer>
+                </FooterWrapper>
 
         </DefaultPage>
     )
