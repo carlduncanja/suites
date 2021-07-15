@@ -135,6 +135,7 @@ function PrintSchedulePage({route, navigation}) {
         // find the appointments for the day and group them.
         return {
             "key": "suites_print_schedule_day_view",
+            "file_name": documentName,
             "persist": false,
             "is_pdf": true,
             "from_html": true,
