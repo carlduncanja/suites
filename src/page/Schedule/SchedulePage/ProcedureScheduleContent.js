@@ -2,6 +2,8 @@ import React, {useState} from 'react';
 import {ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import moment from 'moment';
 import SvgIcon from '../../../../assets/SvgIcon';
+import GenerateIcon from "../../../../assets/svg/generateIcon";
+import {useNavigation} from "@react-navigation/native";
 
 /**
  * Visual component for rendering procedure appointments.
@@ -10,6 +12,7 @@ import SvgIcon from '../../../../assets/SvgIcon';
  * @constructor
  */
 function ProcedureScheduleContent({appointmentDetails, physicians, nurses = [], leadPhysicianId}) {
+    const navigation = useNavigation()
     const {
         _id = '',
         item = {},
@@ -117,6 +120,19 @@ function ProcedureScheduleContent({appointmentDetails, physicians, nurses = [], 
         </View>
     );
 
+    const handleOnCaseIdPress = () => {
+        navigation.navigate('CaseFiles',
+            {
+                screen: 'Case',
+                params: {
+                    initial: false,
+                    caseId: caseItem._id,
+                    isEdit: false
+                }
+            });
+
+    };
+
     return (
         <TouchableOpacity style={{flex: 1}} activeOpacity={1}>
             <ScrollView style={styles.container}>
@@ -125,9 +141,16 @@ function ProcedureScheduleContent({appointmentDetails, physicians, nurses = [], 
                     <View style={styles.cardTitle}>
 
                         <View style={{flexDirection: 'row', justifyContent: 'space-between', paddingBottom: 5}}>
-                            <Text style={styles.idText}>
-                                #{caseNumber}
-                            </Text>
+                            <TouchableOpacity style={{flexDirection: "row"}} onPress={handleOnCaseIdPress}>
+                                <Text style={styles.idText}>
+                                    #{caseNumber}
+                                </Text>
+
+                                <View style={{paddingTop: 2}}>
+                                    <GenerateIcon strokeColor={"#104587"}/>
+                                </View>
+                            </TouchableOpacity>
+
                             <View style={styles.statusWrapper}>
                                 <Text style={{
                                     color: '#A0AEC0',
@@ -210,6 +233,7 @@ const styles = StyleSheet.create({
         fontSize: 16,
         color: '#104587',
         marginBottom: 10,
+        marginRight: 4,
     },
     subjectText: {
         fontSize: 20,
