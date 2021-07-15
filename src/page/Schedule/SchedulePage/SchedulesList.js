@@ -6,15 +6,15 @@ import moment from "moment";
 import ScheduleItem from "./ScheduleItem";
 import sectionListGetItemLayout from 'react-native-section-list-get-item-layout'
 import {connect} from "react-redux";
-import {setAppointments} from "../../redux/actions/appointmentActions"
-import {getAppointments} from "../../api/network";
-import {getDaysForMonth, getDaysInRange} from "../../utils";
-import {formatDate} from "../../utils/formatter";
+import {setAppointments} from "../../../redux/actions/appointmentActions"
+import {getAppointments} from "../../../api/network";
+import {getDaysForMonth, getDaysInRange} from "../../../utils";
+import {formatDate} from "../../../utils/formatter";
 
 import styled, {css} from '@emotion/native';
 import {useTheme} from 'emotion-theming';
 import SectionListHeader from './SectionListHeader';
-import {emptyFn} from "../../const";
+import {emptyFn} from "../../../const";
 
 const ListWrapper = styled.View`
   margin: 0;

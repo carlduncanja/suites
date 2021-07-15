@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import moment from 'moment';
-import SvgIcon from '../../../assets/SvgIcon';
+import SvgIcon from '../../../../assets/SvgIcon';
 
 /**
  * Visual component for rendering procedure appointments.

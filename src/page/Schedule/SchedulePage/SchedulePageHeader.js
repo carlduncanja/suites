@@ -6,7 +6,7 @@ import { RadioButton } from 'react-native-paper';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import Button from '../../../components/common/Buttons/Button';
 import MonthSelector from '../../../components/Calendar/MonthSelector';
-import ScheduleButton from '../../../components/Schedule/ScheduleButton';
+import ScheduleButton from './ScheduleButton';
 import { SuitesContext } from '../../../contexts/SuitesContext';
 import FilterIcon from '../../../../assets/svg/filterIcon';
 import PrintIcon from '../../../../assets/svg/printIcon';

@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
 import {Text, View, StyleSheet, ScrollView, TextInput, TouchableOpacity} from 'react-native';
 import moment from "moment";
-import { formatDate } from '../../utils/formatter';
+import { formatDate } from '../../../utils/formatter';
 
 import styled, { css } from '@emotion/native';
 import { useTheme } from 'emotion-theming';
@@ -24,7 +24,7 @@ export const SCHEDULE_TYPES = {
  * @param startTime dateObject
  * @param endTime dateObject
  * @param onScheduleClick function that returns and event
- * @param isInMonthOpacity: number 
+ * @param isInMonthOpacity: number
  * @returns {*}
  * @constructor
  */
@@ -60,21 +60,21 @@ function ScheduleItem({color, title, startTime, endTime, onScheduleClick, isInMo
     return (
         <ScheduleItemWrapper>
             <ScheduleItemContainer style={[{opacity:isInMonthOpacity}]}>
-        
+
             <AppointmentColorIdentifier
                 style={{
                     elevation: 5,
                     opacity : isInMonthOpacity,
                 }}
             />
-            
+
             <ScheduleItemTitle
                 onScheduleClick = {onScheduleClick}
                 title = {title}
                 startTime = {getTime(startTime)}
                 endTime = {getTime(endTime)}
             />
-          
+
             </ScheduleItemContainer>
         </ScheduleItemWrapper>
     )

@@ -1,12 +1,12 @@
 import React, { useState, useContext } from 'react';
 import ScheduleSearch from './ScheduleSearch';
 import {View, StyleSheet} from 'react-native';
-import Button from '../common/Buttons/Button';
+import Button from '../../../components/common/Buttons/Button';
 import moment from 'moment';
-import Month from '../Calendar/Month';
-import { ScheduleContext } from '../../contexts/ScheduleContext';
-import { scheduleActions } from '../../redux/reducers/scheduleReducer';
-import { formatDate } from "../../utils/formatter";
+import Month from '../../../components/Calendar/Month';
+import { ScheduleContext } from '../../../contexts/ScheduleContext';
+import { scheduleActions } from '../../../redux/reducers/scheduleReducer';
+import { formatDate } from "../../../utils/formatter";
 
 export default ScheduleTopBar = (props) => {
     [searchAppointmentStatus, setSearchAppointmentStatus] = useState(true);

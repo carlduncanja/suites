@@ -5,8 +5,8 @@ import {scheduleActions} from '../../../redux/reducers/scheduleReducer';
 import {ScheduleContext} from '../../../contexts/ScheduleContext';
 import BottomSheet from 'reanimated-bottom-sheet'
 import Button from '../Buttons/Button';
-import moment from 'moment'; 
-import ScheduleItem from '../../Schedule/ScheduleItem';
+import moment from 'moment';
+import ScheduleItem from '../../../page/Schedule/SchedulePage/ScheduleItem';
 import { formatDate } from '../../../utils/formatter';
 
 import styled, { css } from '@emotion/native';
@@ -44,14 +44,14 @@ function SuggestionsControllerComponent({
         getPreviousResults = ()=>{},
         getNextResults = ()=>{}
     }){
-    
+
 
     const theme = useTheme();
     // STYLED COMPONENTS
 
-   
+
     return (
-        
+
         <SuggestionsControllerWrapper>
             <SuggestionsControllerContainer>
 
@@ -69,7 +69,7 @@ function SuggestionsControllerComponent({
                         color={theme.colors['--accent-button']}
                     />
                 </ButtonContainer>
-            
+
             </SuggestionsControllerContainer>
         </SuggestionsControllerWrapper>
 

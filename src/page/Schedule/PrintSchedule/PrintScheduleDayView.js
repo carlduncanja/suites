@@ -6,7 +6,7 @@ import {useTheme} from 'emotion-theming';
 import ReportHeader from "../../../components/CaseFiles/Reports/ReportHeader";
 import Logo from "../../../../assets/svg/logo";
 import moment from "moment";
-import SchedulesList from "../../../components/Schedule/SchedulesList";
+import SchedulesList from "../SchedulePage/SchedulesList";
 
 
 const Rectangle = () => (

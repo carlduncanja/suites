@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import {View, Text, TouchableOpacity, FlatList, StyleSheet, TouchableWithoutFeedback, ScrollView } from 'react-native';
 import moment from 'moment';
-import SvgIcon from '../../../assets/SvgIcon';
+import SvgIcon from '../../../../assets/SvgIcon';
 
 export default class ScrollableAppointmentCard extends Component {
     constructor(props){

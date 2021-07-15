@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import moment from 'moment';
 import { View, StyleSheet, Text, TouchableOpacity } from 'react-native';
-import RowCalendar from '../Calendar/RowCalendar';
-import DayOfMonth from "../Calendar/DayOfMonth";
-import Calendar from "../Calendar/Calendar";
-import { formatDate } from '../../utils/formatter';
+import RowCalendar from '../../../components/Calendar/RowCalendar';
+import DayOfMonth from "../../../components/Calendar/DayOfMonth";
+import Calendar from "../../../components/Calendar/Calendar";
+import { formatDate } from '../../../utils/formatter';
 import styled, { css } from '@emotion/native';
 import { useTheme } from 'emotion-theming';
-import Button from '../common/Buttons/Button';
+import Button from '../../../components/common/Buttons/Button';
 
 /**
  *

@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {ScrollView, StyleSheet, Text, TouchableOpacity, View, Button} from "react-native";
 import moment from "moment";
-import SvgIcon from "../../../assets/SvgIcon";
+import SvgIcon from "../../../../assets/SvgIcon";
 
 /**
  * Visual component for rendering details of a delivery appointments.

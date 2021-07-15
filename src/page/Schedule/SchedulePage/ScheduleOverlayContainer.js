@@ -1,9 +1,9 @@
 import React, {useEffect, useState} from 'react';
 import {StyleSheet, ActivityIndicator, Text, TouchableOpacity, View} from 'react-native';
-import {getAppointmentById, getAppointments} from '../../api/network';
+import {getAppointmentById, getAppointments} from '../../../api/network';
 import ProcedureScheduleContent from './ProcedureScheduleContent';
 import DefaultScheduleContent from './DefaultScheduleContent';
-import {colors} from '../../styles';
+import {colors} from '../../../styles';
 import DeliveryScheduleContent from './DeliveryScheduleContent';
 import RestockScheduleContent from './RestockScheduleContent';
 

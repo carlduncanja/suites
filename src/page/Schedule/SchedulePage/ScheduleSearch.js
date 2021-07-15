@@ -2,11 +2,11 @@ import React, { useState, useContext } from 'react';
 import {View, StyleSheet, ScrollView, Text, Easing, Animated, Dimensions, TouchableOpacity} from 'react-native';
 import SearchBar from '../common/SearchBar';
 import TransparentScreen from '../common/TransparentScreen';
-import { scheduleActions } from '../../redux/reducers/scheduleReducer';
-import { ScheduleContext } from '../../contexts/ScheduleContext';
-import { useCloseTransparent } from '../../hooks/useScheduleService';
+import { scheduleActions } from '../../../redux/reducers/scheduleReducer';
+import { ScheduleContext } from '../../../contexts/ScheduleContext';
+import { useCloseTransparent } from '../../../hooks/useScheduleService';
 import moment from 'moment';
-import { formatDate } from "../../utils/formatter";
+import { formatDate } from "../../../utils/formatter";
 
 export default ScheduleSearch = (props) => {
     [selectedAppEvents, setSelectedAppEvents] = useState([]);
@@ -31,14 +31,14 @@ export default ScheduleSearch = (props) => {
     }
 
     const getSearchAppointment = (select) =>  {
-        let appointments = require('../../../assets/db.json').appointments
+        let appointments = require('../../../../assets/db.json').appointments
         let sAppEvents = []
         let selectedDayEvents = []
         for (i = 0; i < appointments.length; i++){
             if (appointments[i].title === select && formatDate(appointments[i].startTime,"M") === state.currentDate.format("M")){
                 filterDayEvent = state.datePositions.filter(date => formatDate(date.day,"YYYY MM D") === formatDate(appointments[i].startTime,"YYYY MM D"))
                 filterAppEvent = props.appointmentDates.filter(date => formatDate(date.day,"YYYY MM D") === formatDate(appointments[i].startTime,"YYYY MM D"))
-                
+
                 sAppEvents.push(filterAppEvent[0].event)
                 selectedDayEvents.push({"day":moment(appointments[i].startTime), "event":filterDayEvent[0].event})
             }

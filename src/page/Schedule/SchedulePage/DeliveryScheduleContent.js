@@ -3,8 +3,8 @@ import {ScrollView, StyleSheet, Text, TouchableOpacity, View, Button} from 'reac
 import moment from 'moment';
 import {useTheme} from 'emotion-theming';
 import styled, {css} from '@emotion/native';
-import SvgIcon from '../../../assets/SvgIcon';
-import { formatDate, currencyFormatter } from '../../utils/formatter';
+import SvgIcon from '../../../../assets/SvgIcon';
+import { formatDate, currencyFormatter } from '../../../utils/formatter';
 
 const DeliveryCardContainer = styled.View`
     flex: 1;

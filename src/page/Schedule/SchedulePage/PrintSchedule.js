@@ -5,11 +5,11 @@ import { useModal } from 'react-native-modalfy';
 import { useTheme } from 'emotion-theming';
 
 import moment from 'moment';
-import OverlayDialog from '../common/Dialog/OverlayDialog';
-import DateInputField from '../common/Input Fields/DateInputField';
+import OverlayDialog from '../../../components/common/Dialog/OverlayDialog';
+import DateInputField from '../../../components/common/Input Fields/DateInputField';
 
-import CalendarIcon from '../../../assets/svg/calendar';
-import InputField2 from '../common/Input Fields/InputField2';
+import CalendarIcon from '../../../../assets/svg/calendar';
+import InputField2 from '../../../components/common/Input Fields/InputField2';
 
 function PrintSchedule({printOption}) {
     const modal = useModal();

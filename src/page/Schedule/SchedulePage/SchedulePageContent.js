@@ -1,7 +1,7 @@
 import React, {useState, useContext, useEffect} from 'react';
 import {View, StyleSheet, Dimensions, ActivityIndicator, Text} from 'react-native';
-import ScheduleCalendar from '../../../components/Schedule/ScheduleCalendar';
-import SchedulesList from "../../../components/Schedule/SchedulesList";
+import ScheduleCalendar from './ScheduleCalendar';
+import SchedulesList from "./SchedulesList";
 import LoadingIndicator from '../../../components/common/LoadingIndicator';
 
 import styled, {css} from '@emotion/native';

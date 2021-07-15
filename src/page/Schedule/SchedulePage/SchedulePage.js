@@ -11,10 +11,10 @@ import {getDaysForMonth} from '../../../utils';
 import {formatDate} from '../../../utils/formatter';
 import {setAppointments} from '../../../redux/actions/appointmentActions';
 import ScheduleSearchContainer from '../../../components/common/Search/ScheduleSearchContainer';
-import ScheduleOverlayContainer from '../../../components/Schedule/ScheduleOverlayContainer';
+import ScheduleOverlayContainer from './ScheduleOverlayContainer';
 import SchedulePageHeader from './SchedulePageHeader';
 import SchedulePageContent from './SchedulePageContent';
-import PrintSchedule from '../../../components/Schedule/PrintSchedule';
+import PrintSchedule from './PrintSchedule';
 import {useNavigation} from "@react-navigation/native";
 import {emptyFn} from "../../../const";
 

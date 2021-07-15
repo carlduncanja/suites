@@ -8,7 +8,7 @@ import InputField2 from "../../../components/common/Input Fields/InputField2";
 import {useModal} from "react-native-modalfy";
 import moment from "moment";
 import PageButton from "../../../components/common/Page/PageButton";
-import SchedulesList from "../../../components/Schedule/SchedulesList";
+import SchedulesList from "../SchedulePage/SchedulesList";
 import {generateDocumentLink, getAppointmentRequest} from "../../../api/network";
 import LoadingComponent from "../../../components/LoadingComponent";
 import * as Sharing from "expo-sharing";

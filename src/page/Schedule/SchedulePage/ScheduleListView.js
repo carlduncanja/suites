@@ -2,13 +2,13 @@ import React, { useContext, useEffect } from 'react';
 import { StyleSheet, Text, View, FlatList, ScrollView, Dimensions} from 'react-native';
 import DailyAppointmentCard from './DailyAppointmentCard';
 import moment from 'moment';
-import ActionContainer from '../common/FloatingAction/ActionContainer';
-import { useStartDays, useCurrentDays, useEndDays, useAnimateSlide } from '../../hooks/useScheduleService';
-import { ScheduleContext } from '../../contexts/ScheduleContext';
-import { scheduleActions } from '../../redux/reducers/scheduleReducer';
+import ActionContainer from '../../../components/common/FloatingAction/ActionContainer';
+import { useStartDays, useCurrentDays, useEndDays, useAnimateSlide } from '../../../hooks/useScheduleService';
+import { ScheduleContext } from '../../../contexts/ScheduleContext';
+import { scheduleActions } from '../../../redux/reducers/scheduleReducer';
 
 
-const APPS = require('../../../assets/db.json').appointments;
+const APPS = require('../../../../assets/db.json').appointments;
 
 const getAppointments = (date) => {
     const dateAppointments = [];

@@ -1,13 +1,13 @@
 import React, {Component} from 'react';
 import {View, Text, StyleSheet, ScrollView} from 'react-native';
-import RowCalendar from '../Calendar/RowCalendar';
-import Calendar from '../Calendar/Calendar';
+import RowCalendar from '../../../components/Calendar/RowCalendar';
+import Calendar from '../../../components/Calendar/Calendar';
 import ScheduleListView from './ScheduleListView';
-import Month from '../Calendar/Month';
-import Button from '../common/Buttons/Button';
-import Divider from '../common/Divider';
+import Month from '../../../components/Calendar/Month';
+import Button from '../../../components/common/Buttons/Button';
+import Divider from '../../../components/common/Divider';
 import AppointmentCard from './AppointmentCard';
-import ExtendedCalendar from '../Calendar/ExtendedCalendar';
+import ExtendedCalendar from '../../../components/Calendar/ExtendedCalendar';
 import SearchBar from '../common/SearchBar';
 
 export default class LandscapeSchedule extends Component{
