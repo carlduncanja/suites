@@ -1,9 +1,9 @@
 import React from "react";
 import { createStackNavigator } from '@react-navigation/stack';
 
-import Storage from "../../../page/Storage";
-import StoragePage from "../../Storage/StoragePage";
-import NotFound from "../../../page/NotFound";
+import Storage from "../../page/Storage";
+import StoragePage from "../../components/Storage/StoragePage";
+import NotFound from "../../page/NotFound";
 import HeaderBackComponent from "../components/HeaderBackComponent";
 
 

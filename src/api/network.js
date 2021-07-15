@@ -175,6 +175,10 @@ export const getAppointments = async (
     .then(handleResponse)
     .catch(handleError);
 
+export const getAppointmentRequest = (params = {}) => suitesAxiosInstance.get(appointmentsEndpoint, { params })
+    .then(handleResponse)
+    .catch(handleError);
+
 export const getAppointmentById = async id => suitesAxiosInstance
     .get(appointmentEndpoint(id))
     .then(handleResponse)
@@ -734,7 +738,7 @@ export const getFiletData = async id => documentManagementInstance.get(documentD
     .then(handleResponse)
     .catch(handleError);
 
-export const getDocumentById = async id => documentManagementInstance.get(documentById(id), { responseType: 'blob' })
+export const getDocumentById = async id => documentManagementInstance.get(documentById(id), {responseType: 'blob'})
     .then(handleResponse)
     .catch(handleError);
 

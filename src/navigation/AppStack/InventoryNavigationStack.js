@@ -1,17 +1,17 @@
 import React from "react";
 import { createStackNavigator } from '@react-navigation/stack';
 
-import Inventory from "../../../page/Inventory/Inventory";
-import InventoryPage from "../../../page/Inventory/InventoryPage";
-import InventoryVariantPage from "../../../page/Inventory/InventoryVariantPage";
-import CreateInventoryGroupDialogContainer from "../../Inventory/CreateInventoryGroupDialogContainer";
-import CreateInventoryDialogContainer from "../../Inventory/CreateInventoryDialogContainer";
-import NotFound from "../../../page/NotFound";
+import Inventory from "../../page/Inventory/Inventory";
+import InventoryPage from "../../page/Inventory/InventoryPage";
+import InventoryVariantPage from "../../page/Inventory/InventoryVariantPage";
+import CreateInventoryGroupDialogContainer from "../../components/Inventory/CreateInventoryGroupDialogContainer";
+import CreateInventoryDialogContainer from "../../components/Inventory/CreateInventoryDialogContainer";
+import NotFound from "../../page/NotFound";
 import HeaderBackComponent from "../components/HeaderBackComponent";
-import PageHeader from "../../common/Page/PageHeader";
+import PageHeader from "../../components/common/Page/PageHeader";
 
 
-const Stack = createStackNavigator(); 
+const Stack = createStackNavigator();
 
 export default (props) => {
     const isAdmin = props.route.params.isAdmin || false;

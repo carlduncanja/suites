@@ -1,13 +1,13 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 
-import Theatres from '../../../page/Theatres/Theatres';
-import TheatresPage from '../../../page/Theatres/TheatresPage';
-import NotFound from '../../../page/NotFound';
+import Theatres from '../../page/Theatres/Theatres';
+import TheatresPage from '../../page/Theatres/TheatresPage';
+import NotFound from '../../page/NotFound';
 import HeaderBackComponent from '../components/HeaderBackComponent';
-import UsersPage from '../../../page/Users/UsersPage';
-import UserPage from '../../../page/Users/UserPage';
-import ResetPasswordPage from '../../../page/Users/ResetPasswordPage';
+import UsersPage from '../../page/Users/UsersPage';
+import UserPage from '../../page/Users/UserPage';
+import ResetPasswordPage from '../../page/Users/ResetPasswordPage';
 
 const Stack = createStackNavigator();
 

@@ -1,14 +1,14 @@
 import React from "react";
 import { createStackNavigator } from '@react-navigation/stack';
 
-import CaseFiles from "../../../page/CaseFile/CaseFiles";
-import AddAppointmentPage from "../../../page/CaseFile/AddAppointmentPage";
-import AddChargeSheetItem from "../../../page/CaseFile/AddChargeSheetItem";
-import ArchiveCasesPage from "../../../page/CaseFile/ArchiveCasesPage";
-import NotFound from "../../../page/NotFound";
-import CreateCasePage from "../../../page/CaseFile/CreateCasePage";
+import CaseFiles from "../../page/CaseFile/CaseFiles";
+import AddAppointmentPage from "../../page/CaseFile/AddAppointmentPage";
+import AddChargeSheetItem from "../../page/CaseFile/AddChargeSheetItem";
+import ArchiveCasesPage from "../../page/CaseFile/ArchiveCasesPage";
+import NotFound from "../../page/NotFound";
+import CreateCasePage from "../../page/CaseFile/CreateCasePage";
 import HeaderBackComponent from "../components/HeaderBackComponent";
-import CasePage from "../../../page/CaseFile/CasePage";
+import CasePage from "../../page/CaseFile/CasePage";
 
 const Stack = createStackNavigator();
 
@@ -54,7 +54,7 @@ export default (props) => {
                     //     <HeaderBackComponent
                     //         {...props}
                     //     />
-                    // ), 
+                    // ),
                     // headerStyle: {
                     //     height: 100,
                     //

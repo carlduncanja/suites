@@ -21,26 +21,27 @@ import jwtDecode from 'jwt-decode';
 import {
     SuitesContext,
     SuitesContextProvider,
-} from '../../contexts/SuitesContext';
+} from '../contexts/SuitesContext';
 
-import SideBarComponent from '../SideBar/SideBarComponent';
+import SideBarComponent from '../components/SideBar/SideBarComponent';
 
-import OverlaySlidePanelModal from '../../modals/OverlaySlidePanelModal';
-import OverlayModal from '../../modals/OverlayModal';
-import ActionContainerModal from '../../modals/ActionContainerModal';
-import ReportPreviewModal from '../../modals/ReportPreviewModal';
-import OverlayInfoModal from '../../modals/OverlayInfoModal';
-import BottomSheetModal from '../../modals/BottomSheetModal';
-import {appActions} from '../../redux/reducers/suitesAppReducer';
-import {signIn, signOut} from '../../redux/actions/authActions';
-import QuickActionsModal from '../../modals/QuickActionsModal';
-import Notifier from '../notifications/Notifier';
-import NotificationRegistry from '../notifications/NotficationRegistry';
-import ConfirmationModal from '../../modals/ConfirmationModal';
-import {logout} from '../../api/network';
-import CustomSnackbarProvider from '../Snackbar/CustomSnackbarProvider';
-import UnauthorizedSubscription from '../../UnauthorizedSubscription';
-import {setBearerToken} from "../../api";
+import OverlaySlidePanelModal from '../modals/OverlaySlidePanelModal';
+import OverlayModal from '../modals/OverlayModal';
+import ActionContainerModal from '../modals/ActionContainerModal';
+import ReportPreviewModal from '../modals/ReportPreviewModal';
+import OverlayInfoModal from '../modals/OverlayInfoModal';
+import BottomSheetModal from '../modals/BottomSheetModal';
+import {appActions} from '../redux/reducers/suitesAppReducer';
+import {signIn, signOut} from '../redux/actions/authActions';
+import QuickActionsModal from '../modals/QuickActionsModal';
+import Notifier from '../components/notifications/Notifier';
+import NotificationRegistry from '../components/notifications/NotficationRegistry';
+import ConfirmationModal from '../modals/ConfirmationModal';
+import {logout} from '../api/network';
+import CustomSnackbarProvider from '../components/Snackbar/CustomSnackbarProvider';
+import UnauthorizedSubscription from '../UnauthorizedSubscription';
+import {setBearerToken} from "../api";
+import PrintScheduleModal from "../modals/PrintScheduleModal";
 
 /**
  * Custom navigator wrapper for application.
@@ -83,6 +84,7 @@ const SuitesCustomNavigator = ({
         OverlayModal,
         ActionContainerModal,
         ReportPreviewModal,
+        PrintScheduleModal,
         OverlayInfoModal,
         BottomSheetModal,
         QuickActionsModal,

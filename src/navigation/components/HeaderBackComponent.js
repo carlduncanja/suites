@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Text, View, StyleSheet, TouchableOpacity } from "react-native";
 import styled, { css } from "@emotion/native";
 import { useTheme } from "emotion-theming";
-import SmallLeftTriangle from "../../../../assets/svg/smallLeftTriangle"
+import SmallLeftTriangle from "../../../assets/svg/smallLeftTriangle"
 
 function HeaderBackComponent({ onPress, label }) {
 
