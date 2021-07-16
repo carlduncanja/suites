@@ -478,6 +478,7 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
             })
             .catch(error => {
                 console.log('Failed to get case', error);
+                navigation.replace("CaseFiles");
                 Alert.alert(('Failed', 'Failed to get details for case'));
             })
             .finally(_ => {
