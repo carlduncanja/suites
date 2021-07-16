@@ -191,7 +191,9 @@ const SchedulePage = props => {
     const handleAppointmentPress = appointment => {
         modal.openModal('BottomSheetModal', {
             // content: <ScheduleOverlayContainer appointment={appointment}/>,
-            content: <ScheduleOverlayContainer appointment={appointment}/>,
+            content: <ScheduleOverlayContainer appointment={appointment} closeOverlay={() => {
+                modal.closeAllModals();
+            }}/>,
             initialSnap: 2,
             snapPoints: [600, 500, 0]
         });

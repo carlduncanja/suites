@@ -4,6 +4,8 @@ import moment from 'moment';
 import SvgIcon from '../../../../assets/SvgIcon';
 import GenerateIcon from "../../../../assets/svg/generateIcon";
 import {useNavigation} from "@react-navigation/native";
+import {emptyFn} from "../../../const";
+import {useModal} from "react-native-modalfy";
 
 /**
  * Visual component for rendering procedure appointments.
@@ -11,8 +13,16 @@ import {useNavigation} from "@react-navigation/native";
  * @returns {*}
  * @constructor
  */
-function ProcedureScheduleContent({appointmentDetails, physicians, nurses = [], leadPhysicianId}) {
+function ProcedureScheduleContent({
+                                      appointmentDetails,
+                                      physicians,
+                                      nurses = [],
+                                      leadPhysicianId,
+                                      closeOverlay = emptyFn
+                                  }) {
     const navigation = useNavigation()
+    const modal = useModal();
+
     const {
         _id = '',
         item = {},
@@ -130,7 +140,7 @@ function ProcedureScheduleContent({appointmentDetails, physicians, nurses = [], 
                     isEdit: false
                 }
             });
-
+        closeOverlay()
     };
 
     return (
@@ -176,9 +186,7 @@ function ProcedureScheduleContent({appointmentDetails, physicians, nurses = [], 
                     </View>
 
                     <View style={[styles.doctors]}>
-
                         <View style={styles.cardDescription}>
-
                             <View style={{flexDirection: 'column'}}>
                                 <Text style={{fontSize: 14, paddingBottom: 10, color: '#718096'}}>Theatre</Text>
                                 <Text style={[styles.detailText]}>{location}</Text>
@@ -207,7 +215,6 @@ function ProcedureScheduleContent({appointmentDetails, physicians, nurses = [], 
                         </View>
 
                         {/* Additional Information */}
-
                         <View style={styles.cardDoctors}>
                             {renderPhysicians(physicians, leadPhysicianId)}
                             {nurses.length > 0 && renderNurses(nurses)}

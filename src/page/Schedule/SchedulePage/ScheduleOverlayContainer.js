@@ -6,6 +6,7 @@ import DefaultScheduleContent from './DefaultScheduleContent';
 import {colors} from '../../../styles';
 import DeliveryScheduleContent from './DeliveryScheduleContent';
 import RestockScheduleContent from './RestockScheduleContent';
+import {emptyFn} from "../../../const";
 
 /**
  * Component fetches and prepare the required data for displaying the appointment
@@ -14,7 +15,7 @@ import RestockScheduleContent from './RestockScheduleContent';
  * @returns {*}
  * @constructor
  */
-function ScheduleOverlayContainer({appointment = {}}) {
+function ScheduleOverlayContainer({appointment = {}, closeOverlay = emptyFn}) {
     const [appointmentDetails, setAppointmentDetails] = useState(undefined);
     const [isFetchingDetails, setFetchingDetails] = useState(false);
 
@@ -25,6 +26,10 @@ function ScheduleOverlayContainer({appointment = {}}) {
 
         setTimeout(() => getAppointment(appointment._id), 200);
     }, []);
+
+    const handleCloseOverlay = () => {
+        closeOverlay();
+    }
 
     const getAppointment = id => {
         setFetchingDetails(true);
@@ -83,6 +88,7 @@ function ScheduleOverlayContainer({appointment = {}}) {
                     physicians={physicians}
                     leadPhysicianId={caseFile.staff.leadPhysician}
                     nurses={nurses}
+                    closeOverlay={ handleCloseOverlay }
                 />;
             }
             case scheduleTypes.DELIVERY: {
