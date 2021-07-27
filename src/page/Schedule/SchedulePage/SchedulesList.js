@@ -166,6 +166,7 @@ function SchedulesList({
                             startTime={item.startTime}
                             endTime={item.endTime}
                             title={`${item.title} - ${item.subject}`}
+                            subtitle={`${item.description}`}
                             onScheduleClick={() => onAppointmentPress(item)}
                             color={item.type && item.type.color || 'gray'}
                             isInMonthOpacity={isInMonth(item.startTime)}
