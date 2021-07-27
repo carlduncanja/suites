@@ -16,6 +16,7 @@ import {useModal} from "react-native-modalfy";
 function ProcedureScheduleContent({
                                       appointmentDetails,
                                       physicians,
+                                      patient,
                                       nurses = [],
                                       leadPhysicianId,
                                       closeOverlay = emptyFn
@@ -66,6 +67,12 @@ function ProcedureScheduleContent({
         }
         return 'Ended';
     };
+
+    const displayPatient = (patient = {}) => {
+        const {firstName = '', surname = ''} = patient;
+
+        return ( firstName && surname ) ? `${firstName} ${surname}` : 'N/A'
+    }
 
     const staffItem = (key, name, position, isBold, isSupporting) => (
         <View
@@ -213,6 +220,16 @@ function ProcedureScheduleContent({
                                 </View>
                             </View>
                         </View>
+
+                        <View style={styles.cardDescription}>
+                            <View style={{flexDirection: 'column'}}>
+                                <Text style={{fontSize: 14, paddingBottom: 10, color: '#718096'}}>Patient</Text>
+                                <Text style={[styles.detailText]}>{displayPatient(patient)}</Text>
+                            </View>
+
+                            <View style={{flexDirection: 'row'}}/>
+                        </View>
+
 
                         {/* Additional Information */}
                         <View style={styles.cardDoctors}>

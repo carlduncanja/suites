@@ -1,12 +1,21 @@
 import React, {useEffect, useState} from 'react';
 import {StyleSheet, ActivityIndicator, Text, TouchableOpacity, View} from 'react-native';
-import {getAppointmentById, getAppointments} from '../../../api/network';
+import {getAppointmentById, getAppointments, getCaseFileById} from '../../../api/network';
 import ProcedureScheduleContent from './ProcedureScheduleContent';
 import DefaultScheduleContent from './DefaultScheduleContent';
 import {colors} from '../../../styles';
 import DeliveryScheduleContent from './DeliveryScheduleContent';
 import RestockScheduleContent from './RestockScheduleContent';
 import {emptyFn} from "../../../const";
+
+
+const APPOINTMENT_TYPES = {
+    SURGERY: 'Procedure',
+    DELIVERY: 'Delivery',
+    RESTOCK: 'Restock',
+    EQUIPMENT: 'Equipment',
+    SUPPLIER: 'Supplier',
+};
 
 /**
  * Component fetches and prepare the required data for displaying the appointment
@@ -16,16 +25,53 @@ import {emptyFn} from "../../../const";
  * @constructor
  */
 function ScheduleOverlayContainer({appointment = {}, closeOverlay = emptyFn}) {
-    const [appointmentDetails, setAppointmentDetails] = useState(undefined);
+
+    const [appointmentDetails, setAppointmentDetails] = useState();
     const [isFetchingDetails, setFetchingDetails] = useState(false);
+    const [caseFile, setCaseFile] = useState();
 
     // On Mount
     useEffect(() => {
         // fetch appointment
         // console.log("fetching data for: ", appointment._id);
-
         setTimeout(() => getAppointment(appointment._id), 200);
     }, []);
+
+    useEffect(() => {
+        // fetch addition data for appointment
+
+
+        if (appointmentDetails) {
+            const {type} = appointmentDetails;
+
+            switch (type.name) {
+                case APPOINTMENT_TYPES.SURGERY: {
+                    // fetch case file info
+                    let caseFile = appointmentDetails.item.case;
+
+                    console.log('fetching case');
+
+                    setFetchingDetails(true);
+                    getCaseFileById(appointmentDetails.item?.case?._id)
+                        .then(response => {
+                            setCaseFile(response);
+                        })
+                        .catch(error => {
+                            console.log('Failed to fetch case by id');
+
+                        })
+                        .finally(_ => {
+                            setFetchingDetails(false);
+                        })
+                    return;
+                }
+                default: {
+
+                }
+            }
+        }
+
+    }, [appointmentDetails])
 
     const handleCloseOverlay = () => {
         closeOverlay();
@@ -47,13 +93,6 @@ function ScheduleOverlayContainer({appointment = {}, closeOverlay = emptyFn}) {
     };
 
     const renderAppointmentDetails = appointment => {
-        const scheduleTypes = {
-            SURGERY: 'Procedure',
-            DELIVERY: 'Delivery',
-            RESTOCK: 'Restock',
-            EQUIPMENT: 'Equipment',
-            SUPPLIER: 'Supplier',
-        };
 
         const {type = {}} = appointment;
         appointment = {
@@ -62,10 +101,16 @@ function ScheduleOverlayContainer({appointment = {}, closeOverlay = emptyFn}) {
         };
 
         switch (type.name) {
-            case scheduleTypes.SURGERY: {
-                // todo prepare procedure data.
-                const caseFile = appointment.item.case;
+            case APPOINTMENT_TYPES.SURGERY: {
 
+                /**
+                 * If No case file was found return default view
+                 */
+                if (!caseFile) return <DefaultScheduleContent
+                    scheduleDetails={appointment}
+                />;
+
+                // fetch case file info
                 const physicians = caseFile.staff && caseFile.staff.physicians.map(item => ({
                     _id: item._id,
                     firstName: item.firstName,
@@ -80,18 +125,22 @@ function ScheduleOverlayContainer({appointment = {}, closeOverlay = emptyFn}) {
                     lastName: item.last_name
                 }));
 
+                const patient = caseFile.patient;
+
                 // console.log("procedure", physicians);
-                // console.log("caseFile", appointment);
+                console.log("caseFile", patient);
+
 
                 return <ProcedureScheduleContent
                     appointmentDetails={appointment}
                     physicians={physicians}
+                    patient={patient}
                     leadPhysicianId={caseFile.staff.leadPhysician}
                     nurses={nurses}
-                    closeOverlay={ handleCloseOverlay }
+                    closeOverlay={handleCloseOverlay}
                 />;
             }
-            case scheduleTypes.DELIVERY: {
+            case APPOINTMENT_TYPES.DELIVERY: {
                 return <DeliveryScheduleContent
                     appointmentDetails={appointmentDetails}
                     pickupPerson="Olivia Grant"
@@ -101,7 +150,7 @@ function ScheduleOverlayContainer({appointment = {}, closeOverlay = emptyFn}) {
                     }
                 />;
             }
-            case scheduleTypes.RESTOCK: {
+            case APPOINTMENT_TYPES.RESTOCK: {
                 const itemName = appointment.title.replace('Restock ', '');
                 // TODO prepare data when models are finalized.
 
@@ -114,7 +163,7 @@ function ScheduleOverlayContainer({appointment = {}, closeOverlay = emptyFn}) {
                     storageLocation="OR1: Cabinet 3"
                 />;
             }
-            case scheduleTypes.EQUIPMENT:
+            case APPOINTMENT_TYPES.EQUIPMENT:
             default: {
                 // TODO make no appointment found view
                 return <DefaultScheduleContent
@@ -127,7 +176,7 @@ function ScheduleOverlayContainer({appointment = {}, closeOverlay = emptyFn}) {
     return (
         <View style={styles.container}>
             {
-                appointmentDetails ? renderAppointmentDetails(appointmentDetails) : null
+                (appointmentDetails && !isFetchingDetails) ? renderAppointmentDetails(appointmentDetails) : null
             }
 
             {
