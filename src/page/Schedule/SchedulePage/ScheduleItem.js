@@ -57,7 +57,7 @@ function ScheduleItem({color, title, subtitle = "", startTime, endTime, onSchedu
                     />
 
                     {
-                        subtitle && <SubTextWrapper theme={theme}>{subtitle}</SubTextWrapper>
+                        (subtitle && subtitle !== 'undefined')  && <SubTextWrapper theme={theme}>{subtitle}</SubTextWrapper>
                     }
 
                 </ScheduleInfoContainer>
