@@ -13,11 +13,11 @@ import LoadingComponent from "../../../LoadingComponent";
 import {useTheme} from "emotion-theming";
 
 const ProcedureCardWrapper = styled.View`
-   flex: 1;
+  flex: 1;
 `
 
 const ProcedureCardContainer = styled.View`
-   flex: 1;
+  flex: 1;
 `
 const ProcedureCardHeader = styled.View`
   height: 41px;
@@ -25,9 +25,9 @@ const ProcedureCardHeader = styled.View`
 `
 
 const ProcedureCardContent = styled.View`
-  // background-color: ${({theme}) => {
+    // background-color: ${({theme}) => {
     theme.colors['--color-default-white'];
-}};
+  }};
 `
 
 
@@ -39,7 +39,10 @@ const getAppointmentFields = ({location, startTime, endTime}) => {
     }
 }
 
-const getAppointmentDurations = ({startTime, endTime}) => moment.duration(moment(endTime).diff(moment(startTime))).asHours()
+const getAppointmentDurations = ({
+                                     startTime,
+                                     endTime
+                                 }) => moment.duration(moment(endTime).diff(moment(startTime))).asHours()
 
 
 const FrameProcedureCard = ({
@@ -58,7 +61,7 @@ const FrameProcedureCard = ({
     const recoveryAppointment = recovery?.appointment || false
 
     const [hasRecovery, setRecovery] = useState(!!recoveryAppointment);
-    
+
 
     // STATES
     const [appointmentFields, setAppointmentFields] = useState(getAppointmentFields(appointment));
