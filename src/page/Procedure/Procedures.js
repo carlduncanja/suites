@@ -20,7 +20,7 @@ import AddIcon from '../../../assets/svg/addIcon';
 import {useNextPaginator, usePreviousPaginator, checkboxItemPress, selectAll, handleUnauthorizedError} from '../../helpers/caseFilesHelpers';
 
 import {setProcedures} from '../../redux/actions/proceduresActions';
-import {getProcedures, removeProcedures} from '../../api/network';
+import {bulkUploadProcedureRequest, getProcedures, removeProcedures} from '../../api/network';
 
 import {DISABLED_COLOR, LONG_PRESS_TIMER} from '../../const';
 import ConfirmationComponent from '../../components/ConfirmationComponent';
@@ -29,6 +29,9 @@ import RightBorderDataItem from '../../components/common/List/RightBorderDataIte
 import TouchableDataItem from '../../components/common/List/TouchableDataItem';
 
 import { PageSettingsContext } from '../../contexts/PageSettingsContext';
+import ExportIcon from "../../../assets/svg/exportIcon";
+import UploadInventorySheet from "../Inventory/UploadInventorySheet";
+import FileUploadComponent from "../../components/FileUploadComponent";
 
 const Procedures = props => {
     // ############# Const data
@@ -249,6 +252,43 @@ const Procedures = props => {
         );
     };
 
+    const openUploadProceduresModal = () => {
+        modal.closeModals('ActionContainerModal');
+        setTimeout(() => {
+            modal.openModal('OverlayInfoModal',
+                {
+                    overlayContent: <FileUploadComponent
+                        onCreated={() => {
+                            // refresh inventory view.
+
+                            setFloatingAction(false);
+                            modal.openModal('ConfirmationModal', {
+                                content: <ConfirmationComponent
+                                    isError={false}
+                                    isEditUpdate={false}
+                                    message="Procedures Uploaded successfully!"
+                                    onAction={() => {
+                                        modal.closeModals('ConfirmationModal');
+                                        setTimeout(() => {
+                                            modal.closeModals('ActionContainerModal');
+                                            fetchProceduresData(currentPagePosition)
+                                        }, 200);
+                                    }}
+                                />,
+                                onClose: () => {
+                                    modal.closeModals('ConfirmationModal');
+                                }
+                            });
+                        }}
+                        onCancel={() => setFloatingAction(false)}
+                        sendFilePromise={bulkUploadProcedureRequest}
+                        title="Upload Procedure List."
+                    />,
+                    onClose: () => setFloatingAction(false)
+                });
+        }, 200);
+    };
+
     const getFabActions = () => {
         const isDeleteDisabled = selectedProcedures.length < 1; // displayed if no items are selected.
         const deleteAction = (
@@ -286,11 +326,15 @@ const Procedures = props => {
             />
         );
 
+        const uploadProcedures = <ActionItem title="Upload Procedures" icon={<ExportIcon/>}
+                                            onPress={openUploadProceduresModal}/>;
+
         return <ActionContainer
             floatingActions={[
                 deleteAction,
                 createCopy,
-                createNewProcedure
+                createNewProcedure,
+                uploadProcedures
             ]}
             title="PROCEDURES ACTIONS"
         />;

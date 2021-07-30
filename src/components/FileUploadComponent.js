@@ -1,20 +1,33 @@
 import React, {useState} from 'react';
-import {View, Text, TouchableOpacity} from 'react-native';
+import {View, Text, TouchableOpacity, Alert} from 'react-native';
 import styled, {css} from '@emotion/native';
 import * as DocumentPicker from 'expo-document-picker';
 
 import {useModal} from 'react-native-modalfy';
 import {useTheme} from 'emotion-theming';
-import OverlayDialog from '../common/Dialog/OverlayDialog';
+import OverlayDialog from './common/Dialog/OverlayDialog';
 
-import UploadIcon from '../../../assets/svg/uploadIcon';
-import ImageUploading from '../../../assets/svg/imageUploading';
-import FileUpload from '../../../assets/svg/fileUploadXLSX';
-import IncorrectFormat from '../../../assets/svg/incorrectFileFormat';
+import UploadIcon from '../../assets/svg/uploadIcon';
+import ImageUploading from '../../assets/svg/imageUploading';
+import FileUpload from '../../assets/svg/fileUploadXLSX';
+import IncorrectFormat from '../../assets/svg/incorrectFileFormat';
 
-import {getInventoriesGroupBulkUploadRequest} from '../../api/network';
+import {emptyFn} from "../const";
 
-function UploadInventorySheet({onCreated, onCancel}) {
+/**
+ * Component used for upload operations.
+ *
+ * @param {function} onCreated - callback function fired when file upload is finished.
+ * @param {function} onCancel - callback function fired when operation is cancelled.
+ * @param {function(formData): Promise} sendFilePromise
+ * @param {string} title - tile message for display modal
+ */
+function FileUploadComponent({
+                                  onCreated = emptyFn,
+                                  onCancel = emptyFn,
+                                  sendFilePromise,
+                                  title = "Click to Upload File",
+                              }) {
     const modal = useModal();
     const theme = useTheme();
 
@@ -55,19 +68,20 @@ function UploadInventorySheet({onCreated, onCancel}) {
         setFormData(formData);
     };
 
-    const updateInventoryItems = async () => {
+    const sendFile = async () => {
         if (!formData && isFileLoading)
             return;
 
         setIsFileLoading(true);
-        await getInventoriesGroupBulkUploadRequest(formData)
+        await sendFilePromise(formData)
             .then(res => {
-                console.log('Response for inventory doc upload', res);
+                console.log('Response for file upload', res);
                 modal.closeModals('OverlayInfoModal');
                 onCreated();
             })
             .catch(err => {
                 console.log('Error for inventory doc upload', err);
+                Alert.alert("Failed to upload file.", err.message);
             })
             .finally(() => setIsFileLoading(false));
     };
@@ -83,7 +97,7 @@ function UploadInventorySheet({onCreated, onCancel}) {
             </TouchableOpacity>
 
             <Instructions theme={theme}>
-                Click to Upload Inventory Lists
+                {title}
             </Instructions>
             <SubInstructions theme={theme}>
                 Supports <Format theme={theme}>.xlsm</Format>, <Format theme={theme}>.xlsx</Format>, <Format
@@ -140,7 +154,7 @@ function UploadInventorySheet({onCreated, onCancel}) {
         <View style={{width: 500, minHeight: 400}}>
             <OverlayDialog
                 title="Update Inventory"
-                onPositiveButtonPress={updateInventoryItems}
+                onPositiveButtonPress={sendFile}
                 onClose={handleCloseDialog}
                 positiveText="UPDATE ITEMS"
                 isButtonDisabled={!formData || isFileLoading}
@@ -156,7 +170,7 @@ function UploadInventorySheet({onCreated, onCancel}) {
     );
 }
 
-export default UploadInventorySheet;
+export default FileUploadComponent;
 
 const ContentWrapper = styled.View`
   /* min-height: 120px;

@@ -47,7 +47,7 @@ import {
 } from '../../helpers/caseFilesHelpers';
 import {LONG_PRESS_TIMER} from '../../const';
 import {PageSettingsContext} from '../../contexts/PageSettingsContext';
-import UploadInventorySheet from '../../components/Inventory/UploadInventorySheet';
+import UploadInventorySheet from './UploadInventorySheet';
 
 function Inventory(props) {
     const {
@@ -329,7 +329,7 @@ function Inventory(props) {
                 touchable={!isRemoveGroupsDisabled}
             />
         );
-        const uploadInventory = <ActionItem title="Update Inventory" icon={<ExportIcon/>}
+        const uploadInventory = <ActionItem title="Upload Inventory" icon={<ExportIcon/>}
                                             onPress={openUploadInventoryModal}/>;
 
         return <ActionContainer

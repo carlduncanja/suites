@@ -43,6 +43,7 @@ export const physicianEndpoint = id => `/physicians/${id}`;
 
 // ##### PROCEDURES
 export const proceduresEndpoint = '/procedures';
+export const proceduresUploadEndpoint = '/procedures/bulk_upload';
 export const procedureEndpoint = id => `/procedures/${id}`;
 
 // ##### EQUIPMENTS

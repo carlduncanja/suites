@@ -81,7 +81,7 @@ import {
     archiveSuppliersEndpoint,
     restoreArchivedSuppliersEndpoint,
     updatePurchaseOrderDocument,
-    purchaseOrderInvoice, inventoryGroupsBulkUpload
+    purchaseOrderInvoice, inventoryGroupsBulkUpload, proceduresUploadEndpoint
 
 
 } from '../const/suitesEndpoints';
@@ -457,6 +457,11 @@ export const getProcedureById = async id => suitesAxiosInstance
 
 export const createNewProcedure = async procedureToCreate => suitesAxiosInstance
     .post(proceduresEndpoint, procedureToCreate)
+    .then(handleResponse)
+    .catch(handleError);
+
+export const bulkUploadProcedureRequest = async formData => suitesAxiosInstance
+    .post(proceduresUploadEndpoint, formData, {headers: {'Content-Type': 'multipart/form-data'}})
     .then(handleResponse)
     .catch(handleError);
 
