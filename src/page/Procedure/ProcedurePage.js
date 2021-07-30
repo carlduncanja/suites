@@ -20,8 +20,9 @@ import ConfirmationComponent from '../../components/ConfirmationComponent';
 import {updateProcedure, getProcedureById} from '../../api/network';
 import {setProcedureEdit} from '../../redux/actions/procedurePageActions';
 import {PageContext} from '../../contexts/PageContext';
+import {formatPhysician} from "../../utils";
 
-function ProcedurePage({route, setProcedureEdit, navigation}) {
+function ProcedurePage({route, navigation}) {
     const currentTabs = ['Configuration', 'Consumables', 'Equipment', 'Notes', 'Theatres'];
     const modal = useModal();
     // const { pageState } = useContext(PageContext);
@@ -36,7 +37,7 @@ function ProcedurePage({route, setProcedureEdit, navigation}) {
         hasRecovery,
         duration,
         custom = false,
-        physician
+        physician = {},
     } = procedure;
 
     // ##### States
@@ -45,15 +46,6 @@ function ProcedurePage({route, setProcedureEdit, navigation}) {
     const [pageState, setPageState] = useState({});
     const [selectedProcedure, setSelectedProcedure] = useState({});
     const [isInfoUpdated, setIsInfoUpdated] = useState(false);
-    // console.log("Selected procedure: ", selectedProcedure);
-
-    // const [fields, setFields] = useState({
-    //     name: name,
-    //     hasRecovery: hasRecovery,
-    //     duration: duration.toString(),
-    //     custom: true,
-    //     physician: physician,
-    // })
 
     const [fields, setFields] = useState({
         description,
@@ -63,7 +55,7 @@ function ProcedurePage({route, setProcedureEdit, navigation}) {
         custom,
         physician: {
             ...physician,
-            name: `Dr. ${physician?.firstName || ''} ${physician?.surname || ''}`
+            name: formatPhysician(physician)
         }
     });
 
@@ -76,7 +68,7 @@ function ProcedurePage({route, setProcedureEdit, navigation}) {
 
     // ##### Lifecycle Methods
     useEffect(() => {
-        fetchProcdure(_id);
+        fetchProcedure(_id);
     }, []);
 
     useEffect(() => {
@@ -174,7 +166,7 @@ function ProcedurePage({route, setProcedureEdit, navigation}) {
         }
     };
 
-    const fetchProcdure = id => {
+    const fetchProcedure = id => {
         setPageLoading(true);
         getProcedureById(id)
             .then(data => {
@@ -276,12 +268,6 @@ function ProcedurePage({route, setProcedureEdit, navigation}) {
         // updateProcedureCall(updatedObj)
     };
 
-    // const handleEquipmentUpdate = (data) => {
-    //     const procedure = {...selectedProcedure, equipments: data}
-    //     setSelectedProcedure(procedure)
-    //     setIsInfoUpdated(true)
-    // };
-
     const handleEquipmentDelete = data => {
         const procedure = {
             ...selectedProcedure,
@@ -325,7 +311,7 @@ function ProcedurePage({route, setProcedureEdit, navigation}) {
             .then(data => {
                 // getProcedures()
                 onUpdate();
-                fetchProcdure(_id);
+                fetchProcedure(_id);
                 console.log('Success: ', data);
 
                 modal.openModal('ConfirmationModal', {
@@ -414,23 +400,6 @@ function ProcedurePage({route, setProcedureEdit, navigation}) {
         const {inventories = [], equipments = [], notes = '', supportedRooms = []} = selectedProcedure;
         switch (selectedTab) {
             case 'Configuration':
-                // return currentTab === 'Configuration' && pageState.isEditMode ?
-                // <TouchableOpacity
-                //     style={{flex: 1}}
-                //     activeOpacity={1}
-                //     onPress={() => {
-                //         handlePopovers(false)()
-                //     }}
-                // >
-                //     <EditableProceduresConfig
-                //         fields={fields}
-                //         onFieldChange={onFieldChange}
-                //         popoverList={popoverList}
-                //         handlePopovers={handlePopovers}
-                //     />
-                // </TouchableOpacity>
-
-                // :
                 return <Configuration
                     procedure={selectedProcedure}
                     onDetailsUpdate={onDetailsUpdate}
@@ -487,7 +456,7 @@ function ProcedurePage({route, setProcedureEdit, navigation}) {
                 return false;
         }
     };
-    const physicianName = `Dr. ${physician?.firstName && physician?.surname ? `${physician?.firstName[0]}. ${physician?.surname}` : physician?.firstName || (physician?.surname || '')}`;
+    const physicianName = formatPhysician(physician);
 
     return (
         <PageContext.Provider value={{
@@ -522,21 +491,3 @@ ProcedurePage.propTypes = {};
 ProcedurePage.defaultProps = {};
 
 export default connect(null, mapDispatchToProps)(ProcedurePage);
-
-const styles = StyleSheet.create({
-    item: {flex: 1},
-    itemText: {
-        fontSize: 16,
-        color: '#4A5568',
-    },
-    footer: {
-        // alignSelf: 'flex-end',
-        // flexDirection: 'row',
-        position: 'absolute',
-        bottom: 20,
-        // marginBottom: 20,
-        right: 30,
-        // marginRight: 30,
-        // backgroundColor:'red'
-    }
-});

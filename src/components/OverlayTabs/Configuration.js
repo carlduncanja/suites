@@ -14,6 +14,7 @@ import {getPhysicians, updateProcedure} from '../../api/network';
 import Row from '../common/Row';
 import TextArea from '../common/Input Fields/TextArea';
 import {PageContext} from '../../contexts/PageContext';
+import {formatPhysician} from "../../utils";
 
 const Configuration = ({procedure, fields, onFieldChange, onDetailsUpdate}) => {
     const {pageState, setPageState} = useContext(PageContext);
@@ -36,7 +37,7 @@ const Configuration = ({procedure, fields, onFieldChange, onDetailsUpdate}) => {
     const {
         firstName = '',
         surname = ''
-    } = physician;
+    } = physician || {};
 
     const BOOLOBJECT = {
         false: 'No',
@@ -90,16 +91,7 @@ const Configuration = ({procedure, fields, onFieldChange, onDetailsUpdate}) => {
 
     const recovery = BOOLOBJECT[fields.hasRecovery];
     const customStatus = BOOLOBJECT[fields.custom];
-    const physicianName = `Dr. ${fields.physician?.firstName && fields.physician?.surname ? `${fields.physician?.firstName} ${fields.physician?.surname}` : fields.physician?.firstName || (fields.physician?.surname || '')}`;
-    // console.log("Phys name:", physician);
-
-    // const onFieldChange = (fieldName) => (value) => {
-    //     setFields({
-    //         ...fields,
-    //         [fieldName]: value
-    //     })
-    //     setUpdated(true)
-    // };
+    const physicianName = formatPhysician(fields.physician);
 
     useEffect(() => {
         baseStateRef.current = {
@@ -115,42 +107,11 @@ const Configuration = ({procedure, fields, onFieldChange, onDetailsUpdate}) => {
         };
     }, []);
 
-    // useEffect(() => {
-    //     if (isUpdated && !isEditMode) {
-    //         modal.openModal('ConfirmationModal', {
-    //             content: (
-    //                 <ConfirmationComponent
-    //                     error={false}//boolean to show whether an error icon or success icon
-    //                     isEditUpdate={true}
-    //                     onCancel={() => {
-    //                         // resetState()
-    //                         setPageState({...pageState, isEditMode: true})
-    //                         modal.closeAllModals();
-    //                     }}
-    //                     onAction={() => {
-    //                         modal.closeAllModals();
-    //                         updateProcedure();
-    //                     }}
-    //                     message="Do you want to save these changes?"//general message you can send to be displayed
-    //                     action="Yes"
-    //                 />
-    //             ),
-    //             onClose: () => {
-    //                 console.log('Modal closed');
-    //             },
-    //         });
-    //     }
-    // },[isEditMode])
-
     const resetState = () => {
         setFields(baseStateRef.current);
         // setUpdated(false);
     };
 
-    // const updateProcedure = () => {
-    //     console.log("Update procedure: ", fields)
-    // }
- 
     return (
         <>
             <Row>
@@ -256,26 +217,6 @@ const Configuration = ({procedure, fields, onFieldChange, onDetailsUpdate}) => {
                 hasPaginator={false}
                 hasActions={false}
             />
-            
-            {/* <View style={styles.description}>
-                <Text style={{fontSize:16, color:'#718096', paddingBottom:10}}>Description</Text>
-                {
-                    description ?
-                        <Text>{description}</Text>
-                        :
-                        <Text style={{fontSize:16, color:'#A0AEC0'}}>No description available</Text>
-
-                }
-            </View>
-            <View style={styles.detailsContainer}>
-                <ColumnSection
-                    data = {section}
-                    numOfColumns = {3}
-                />
-            </View>
-            <View style={{marginTop:15}}>
-                <Text style={{color:'#718096', fontSize:16 }}>This Procedure is available at these Locations</Text>
-            </View>  */}
         </>
     );
 };

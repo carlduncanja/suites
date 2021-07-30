@@ -30,7 +30,6 @@ import TouchableDataItem from '../../components/common/List/TouchableDataItem';
 
 import { PageSettingsContext } from '../../contexts/PageSettingsContext';
 
-
 const Procedures = props => {
     // ############# Const data
     const recordsPerPage = 10;
@@ -146,9 +145,6 @@ const Procedures = props => {
                 }
             }
         });
-        // modal.openModal('BottomSheetModal',{
-        //     content : <ProceduresBottomSheet procedure = {item} isOpenEditable = {isOpenEditable}/>
-        // })
     };
 
     const goToNextPage = () => {
@@ -243,40 +239,12 @@ const Procedures = props => {
     const procedureItem = item => {
         const {physician = {}} = item;
         const {firstName = '', surname = ''} = physician;
-        const physicianName = firstName && surname ? `${firstName} ${surname}` : firstName || (surname || '');
+        const physicianName = firstName && surname ? `Dr. ${firstName} ${surname}` : 'Unassigned';
         return (
             <>
                 <RightBorderDataItem flex={1.5} fontStyle="--text-base-regular" color="--color-gray-800" text={item?.name}/>
-                <TouchableDataItem flex={1} fontStyle="--text-base-regular" text={`Dr. ${physicianName}`} isDisabled={true}/>
+                <TouchableDataItem flex={1} fontStyle="--text-base-regular" text={`${physicianName}`} isDisabled={true}/>
                 <DataItem flex={1} fontStyle="--text-base-regular" align="center" color="--color-blue-600" text={`${item.duration || 1} hours`}/>
-
-                {/* <View style={[styles.item, {
-                    ...styles.rowBorderRight,
-                    flex: 1.5
-                }]}
-                >
-                    <Text numberOfLines={1} style={[styles.itemText, {color: '#323843'}]}>{item.name}</Text>
-                </View>
-                <View style={[styles.item, {
-                    flex: 1,
-                    alignItems: 'flex-start'
-                }]}
-                >
-                    <Text
-                        numberOfLines={1}
-                        style={[styles.itemText, {color: '#3182CE'}]}
-                    >
-                        Dr. {firstName && surname ? `${firstName} ${surname}` : firstName || (surname || '')}
-                    </Text>
-                </View>
-                <View style={[styles.item, {
-                    flex: 1,
-                    alignItems: 'center'
-                }]}
-                >
-                    <Text numberOfLines={1} style={[styles.itemText, {color: '#3182CE'}]}>{`${item.duration || 1} hours`}</Text>
-                </View>
-             */}
             </>
         );
     };
@@ -515,7 +483,7 @@ const Procedures = props => {
                 isPreviousDisabled={isPreviousDisabled}
             />
         </PageSettingsContext.Provider>
-        
+
     );
 };
 
@@ -525,24 +493,3 @@ const mapDispatcherToProp = {setProcedures};
 
 export default connect(mapStateToProps, mapDispatcherToProp)(Procedures);
 
-const styles = StyleSheet.create({
-    item: {
-        // flex:1
-    },
-    itemText: {fontSize: 16},
-    footer: {
-        flex: 1,
-        alignSelf: 'flex-end',
-        flexDirection: 'row',
-        position: 'absolute',
-        bottom: 0,
-        marginBottom: 20,
-        right: 0,
-        marginRight: 30,
-    },
-    rowBorderRight: {
-        borderRightColor: '#E3E8EF',
-        borderRightWidth: 1,
-        marginRight: 20,
-    }
-});
