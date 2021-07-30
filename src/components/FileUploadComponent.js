@@ -26,13 +26,13 @@ function FileUploadComponent({
                                   onCreated = emptyFn,
                                   onCancel = emptyFn,
                                   sendFilePromise,
-                                  title = "Click to Upload File",
+                                  title = "Upload File.",
                               }) {
     const modal = useModal();
     const theme = useTheme();
 
     const [formData, setFormData] = useState(null);
-    const [isFileLoading, setIsFileLoading] = useState(false);
+    const [isFileLoading, sezsFileLoading] = useState(false);
     const [isIncorrectFormat, setIsIncorrectFormat] = useState(false);
 
     const handleCloseDialog = () => {
@@ -97,7 +97,7 @@ function FileUploadComponent({
             </TouchableOpacity>
 
             <Instructions theme={theme}>
-                {title}
+                Click to Upload File
             </Instructions>
             <SubInstructions theme={theme}>
                 Supports <Format theme={theme}>.xlsm</Format>, <Format theme={theme}>.xlsx</Format>, <Format
@@ -153,7 +153,7 @@ function FileUploadComponent({
     return (
         <View style={{width: 500, minHeight: 400}}>
             <OverlayDialog
-                title="Update Inventory"
+                title={title}
                 onPositiveButtonPress={sendFile}
                 onClose={handleCloseDialog}
                 positiveText="UPDATE ITEMS"

@@ -33,7 +33,7 @@ import ExportIcon from '../../../assets/svg/exportIcon';
 import {numberFormatter} from '../../utils/formatter';
 import {setInventory} from '../../redux/actions/InventorActions';
 import {
-    getInventoriesGroup,
+    getInventoriesGroup, getInventoriesGroupBulkUploadRequest,
     removeInventoryGroup,
     removeInventoryGroups,
     removeInventoryVariants
@@ -47,7 +47,7 @@ import {
 } from '../../helpers/caseFilesHelpers';
 import {LONG_PRESS_TIMER} from '../../const';
 import {PageSettingsContext} from '../../contexts/PageSettingsContext';
-import UploadInventorySheet from './UploadInventorySheet';
+import FileUploadComponent from "../../components/FileUploadComponent";
 
 function Inventory(props) {
     const {
@@ -394,11 +394,10 @@ function Inventory(props) {
         setTimeout(() => {
             modal.openModal('OverlayInfoModal',
                 {
-                    overlayContent: <UploadInventorySheet
+                    overlayContent: <FileUploadComponent
                         onCreated={() => {
                             // refresh inventory view.
                             setFloatingAction(false);
-
                             modal.openModal('ConfirmationModal', {
                                 content: <ConfirmationComponent
                                     isError={false}
@@ -416,10 +415,10 @@ function Inventory(props) {
                                     modal.closeModals('ConfirmationModal');
                                 }
                             });
-
-
                         }}
                         onCancel={() => setFloatingAction(false)}
+                        sendFilePromise={getInventoriesGroupBulkUploadRequest}
+                        title="Upload Inventory"
                     />,
                     onClose: () => setFloatingAction(false)
                 });

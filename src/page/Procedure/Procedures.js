@@ -30,7 +30,6 @@ import TouchableDataItem from '../../components/common/List/TouchableDataItem';
 
 import { PageSettingsContext } from '../../contexts/PageSettingsContext';
 import ExportIcon from "../../../assets/svg/exportIcon";
-import UploadInventorySheet from "../Inventory/UploadInventorySheet";
 import FileUploadComponent from "../../components/FileUploadComponent";
 
 const Procedures = props => {
@@ -282,7 +281,7 @@ const Procedures = props => {
                         }}
                         onCancel={() => setFloatingAction(false)}
                         sendFilePromise={bulkUploadProcedureRequest}
-                        title="Upload Procedure List."
+                        title="Upload Procedure"
                     />,
                     onClose: () => setFloatingAction(false)
                 });
