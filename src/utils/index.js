@@ -34,3 +34,21 @@ export const getDaysInRange = (startDate, endDate) => {
 
     return days
 }
+
+/**
+ * Format and displays physician's information.
+ * @param {string} physician.firstName
+ * @param {string} physician.surname
+ * @param {object} physician
+ * @param {boolean} showFull - displays full firstname
+ * @param {string} defaultString - default string shown if firstname and surname values are null.
+ * @return {string}
+ */
+export const formatPhysician = (physician = {}, showFull = true, defaultString = 'Unassigned') => {
+    const {firstName = '', surname = ''} = physician;
+
+    if (!firstName && !surname) return defaultString;
+    else if (firstName && surname) return showFull ? `Dr. ${firstName} ${surname}` : `Dr. ${firstName[0]}. ${surname}`
+    else if (firstName) return `Dr. ${firstName}`
+    else return `Dr. ${surname}`
+}
