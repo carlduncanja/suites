@@ -84,3 +84,6 @@ export const LONG_PRESS_TIMER = {
 };
 
 export const emptyFn = () => {}
+
+
+export const DISABLED_COLOR = (theme) => theme.colors['--color-gray-600'];

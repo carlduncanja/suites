@@ -22,7 +22,7 @@ import {useNextPaginator, usePreviousPaginator, checkboxItemPress, selectAll, ha
 import {setProcedures} from '../../redux/actions/proceduresActions';
 import {getProcedures, removeProcedures} from '../../api/network';
 
-import {LONG_PRESS_TIMER} from '../../const';
+import {DISABLED_COLOR, LONG_PRESS_TIMER} from '../../const';
 import ConfirmationComponent from '../../components/ConfirmationComponent';
 import DataItem from '../../components/common/List/DataItem';
 import RightBorderDataItem from '../../components/common/List/RightBorderDataItem';
@@ -250,16 +250,17 @@ const Procedures = props => {
     };
 
     const getFabActions = () => {
+        const isDeleteDisabled = selectedProcedures.length < 1; // displayed if no items are selected.
         const deleteAction = (
             <LongPressWithFeedback
                 pressTimer={LONG_PRESS_TIMER.MEDIUM}
                 onLongPress={removeProceduresLongPress}
+                isDisabled={isDeleteDisabled}
             >
                 <ActionItem
                     title="Hold to Delete"
-                    icon={<WasteIcon/>}
-                    onPress={() => {
-                    }}
+                    disabled={isDeleteDisabled}
+                    icon={<WasteIcon strokeColor={isDeleteDisabled ? DISABLED_COLOR(theme) : "#C53030"}/>}
                     touchable={false}
                 />
             </LongPressWithFeedback>
