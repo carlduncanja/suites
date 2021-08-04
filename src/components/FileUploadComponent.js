@@ -32,7 +32,7 @@ function FileUploadComponent({
     const theme = useTheme();
 
     const [formData, setFormData] = useState(null);
-    const [isFileLoading, sezsFileLoading] = useState(false);
+    const [isFileLoading, setIsFileLoading] = useState(false);
     const [isIncorrectFormat, setIsIncorrectFormat] = useState(false);
 
     const handleCloseDialog = () => {
