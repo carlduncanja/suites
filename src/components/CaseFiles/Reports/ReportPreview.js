@@ -13,34 +13,6 @@ import {currencyFormatter} from '../../../utils/formatter';
 
 import DataItem from '../../common/List/DataItem';
 
-const ReportPreviewWrapper = styled.View`
-  margin: 0;
-  flex: 1;
-`;
-
-const ReportPreviewContainer = styled.ScrollView`
-  height: 100%;
-  width: 100%;
-  background-color: ${({theme}) => theme.colors['--default-shade-white']};
-`;
-const ContentWrapper = styled.ScrollView`
-  flex: 1;
-  padding: ${({theme}) => `${theme.space['--space-30']} ${theme.space['--space-32']}`};
-`;
-
-const ContentContainer = styled.View`
-  height: 100%;
-  width: 100%;
-`;
-
-const ItemRow = styled.View`
-  flex-direction: row;
-  width: 100%;
-  padding: 0px ${({theme}) => theme.space['--space-16']};
-  height: 48px;
-  align-items: center;
-`;
-
 const Rectangle = () => (
     <View
         style={{
@@ -52,13 +24,22 @@ const Rectangle = () => (
     />
 );
 
+/**
+ *
+ * @param type
+ * @param details
+ * @param reportDetails
+ * @return {JSX.Element}
+ * @constructor
+ */
 const ReportPreview = ({
-    type = '',
-    details = {},
-    reportDetails
-}) => {
-    // console.log(" quite details: ", details.quotationNumber);
+                           type = '',
+                           details = {},
+                           reportDetails
+                       }) => {
     const theme = useTheme();
+
+
     const {
         billingDetails = {},
         customerDetails = {},
@@ -68,6 +49,8 @@ const ReportPreview = ({
         quotationNumber = '',
         invoiceNumber = ''
     } = details;
+
+
     const {
         address = {},
         email = '',
@@ -83,6 +66,9 @@ const ReportPreview = ({
         hasDiscount = false,
         tax = 0
     } = reportDetails;
+
+    console.log('report details', reportDetails);
+
     // console.log("Procedures details: ", procedures);
     const procedureNames = [];
     procedures.map(item => {
@@ -90,11 +76,11 @@ const ReportPreview = ({
             procedureNames.push(procedure?.name);
         });
     });
+
     const billedFor = [...new Set(procedureNames)];
     const reportTotal = hasDiscount ? (amountDue - (amountDue * discount)) * (1 + tax) : (amountDue) * (1 + tax);
     const formatDiscount = amountDue * discount;
 
-    console.log('ReportDetails: ', reportDetails);
 
     const headers = [
         {
@@ -116,13 +102,14 @@ const ReportPreview = ({
     ];
 
     const listItemFormat = item => {
-        const total = item?.cost * item?.amount || item?.cost || 0;
+        console.log(item);
+        const total = item?.unitPrice * item?.quantity || item?.unitPrice || 0;
         return (
             <ItemRow>
                 <DataItem text={item?.name} fontStyle="--text-base-regular" color="--color-gray-700"/>
-                <DataItem text={item?.amount} fontStyle="--text-base-regular" color="--color-gray-700"/>
+                <DataItem text={item?.quantity} fontStyle="--text-base-regular" color="--color-gray-700"/>
                 <DataItem
-                    text={`$ ${currencyFormatter(item.cost)}`}
+                    text={`$ ${currencyFormatter(item.unitPrice)}`}
                     align="center"
                     fontStyle="--text-base-regular"
                     color="--color-gray-700"
@@ -159,6 +146,7 @@ const ReportPreview = ({
 
                         <ReportDetails
                             reportList={procedures}
+                            reportData={details}
                             listItemFormat={listItemFormat}
                             headers={headers}
                         />
@@ -180,10 +168,31 @@ const ReportPreview = ({
 
 export default ReportPreview;
 
-const styles = StyleSheet.create({
-    textContainer: {flex: 1},
-    text: {
-        color: '#4E5664',
-        fontSize: 16
-    }
-});
+const ReportPreviewWrapper = styled.View`
+  margin: 0;
+  flex: 1;
+`;
+
+const ReportPreviewContainer = styled.ScrollView`
+  height: 100%;
+  width: 100%;
+  background-color: ${({theme}) => theme.colors['--default-shade-white']};
+`;
+
+const ContentWrapper = styled.ScrollView`
+  flex: 1;
+  padding: ${({theme}) => `${theme.space['--space-30']} ${theme.space['--space-32']}`};
+`;
+
+const ContentContainer = styled.View`
+  height: 100%;
+  width: 100%;
+`;
+
+const ItemRow = styled.View`
+  flex-direction: row;
+  width: 100%;
+  padding: 0px ${({theme}) => theme.space['--space-16']};
+  height: 48px;
+  align-items: center;
+`;

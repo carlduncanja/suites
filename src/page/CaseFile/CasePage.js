@@ -144,7 +144,7 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
     const [selectedMenuItem, setSelectedMenuItem] = useState(initialMenuItem);
 
     const [pageState, setPageState] = useState({
-        isEditMode : false,
+        isEditMode: false,
     });
     const [selectedCase, setSelectedCase] = useState({});
     const [userPermissions, setUserPermissions] = useState({});
@@ -322,21 +322,52 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
     const onPreviewInvoice = () => {
         const billingData = getBillingData();
         const {total = 0} = getBillingData();
-        const {createdAt} = selectedCase?.chargeSheet || {};
+
+        /**
+         * Prepare Report Preview details from ChargeSheet data.
+         *
+         * Reports Data Requirements
+         * 1. array of inventory list items that contains { name, unitCost, quantity }
+         * 1. array of equipment list items that contains { name, unitCost, quantity }
+         * 1. array of procedure list items that contains { procedureName, total }
+         */
+
+        const chargeSheet = selectedCase?.chargeSheet;
+        let details = {
+            ...chargeSheet,
+            inventoryList: chargeSheet.inventoryList.map(item => {
+                return {
+                    name: item?.inventory?.name,
+                    unitPrice: item?.inventory?.unitCost,
+                    quantity: item.amount,
+                }
+            }),
+            equipmentList: chargeSheet.equipmentList.map(item => {
+                return {
+                    name: item?.equipment?.name,
+                    unitPrice: item?.equipment?.unitPrice,
+                    quantity: item?.amount,
+                }
+            }),
+            proceduresBillableItems: chargeSheet.proceduresBillableItems.map(item => {
+                return {
+                    procedureName: item?.procedureId?.name,
+                    total: item?.total
+                }
+
+            })
+        }
 
         modal.openModal('ReportPreviewModal', {
             content: <ReportPreview
                 type="Invoice"
-                details={{
-                    amountDue: total,
-                    createdAt
-                }}
+                details={details}
                 reportDetails={billingData}
             />,
             onClose: () => {
                 modal.closeModals('ActionContainerModal');
             }
-        });
+        })
     };
 
     const onApplyDiscount = () => {
@@ -1220,7 +1251,7 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
                         <ActionItem
                             title="Preview Invoice"
                             icon={<PreviewIcon/>}
-                            onPress={() => onPreviewInvoice()}
+                            onPress={onPreviewInvoice}
                         />
                     );
 
@@ -1379,7 +1410,7 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
                 inventory: item?.inventory?._id,
                 amount: item.amount,
                 name: item.inventory?.name,
-                cost: item.inventory?.unitCost || 0,
+                unitCost: item.inventory?.unitCost || 0,
             }));
 
             billingItem.equipments = equipments.map(item => ({
@@ -1387,7 +1418,7 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
                 equipment: item.equipment?._id,
                 amount: item.amount,
                 name: item.equipment?.name,
-                cost: item.equipment?.unitPrice || 0,
+                unitCost: item.equipment?.unitPrice || 0,
             }));
 
             billing.procedures.push(billingItem);
@@ -1501,7 +1532,13 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
                 let inventoriesArray = [];
 
                 billing.procedures.map(item => {
-                    const {physicians = [], services = [], procedures = [], inventories = [], equipments = []} = item;
+                    const {
+                        physicians = [],
+                        services = [],
+                        procedures = [],
+                        inventories = [],
+                        equipments = []
+                    } = item;
                     physicians.map(physician => {
                         physiciansArray.push({
                             name: physician.name || '',
@@ -1699,7 +1736,13 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
                 let inventoriesArray = [];
 
                 billing.procedures.map(item => {
-                    const {physicians = [], services = [], procedures = [], inventories = [], equipments = []} = item;
+                    const {
+                        physicians = [],
+                        services = [],
+                        procedures = [],
+                        inventories = [],
+                        equipments = []
+                    } = item;
                     physicians.map(physician => {
                         physiciansArray.push({
                             name: physician.name || '',
@@ -1917,14 +1960,14 @@ const mapStateToProps = state => ({auth: state.auth});
 export default connect(mapStateToProps, mapDispatchTopProp)(CasePage);
 
 function CasePageContent({
-    overlayContent,
-    overlayMenu,
-    userPermissions,
-    selectedMenuItem,
-    onOverlayTabPress,
-    toggleActionButton,
-    actionDisabled
-}) {
+                             overlayContent,
+                             overlayMenu,
+                             userPermissions,
+                             selectedMenuItem,
+                             onOverlayTabPress,
+                             toggleActionButton,
+                             actionDisabled
+                         }) {
     useEffect(() => {
         console.log('Case Page Create');
     }, []);

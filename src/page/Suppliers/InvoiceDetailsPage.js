@@ -16,98 +16,6 @@ import { View } from 'react-native';
 import { Image } from 'react-native';
 import * as FileSystem from 'expo-file-system';
 
-const PageWrapper = styled.View`
-    margin: 0;
-    height: 100%;
-`;
-
-const PurchaseOrderContainer = styled.View`
-    height: 100px;
-    border: ${({theme}) => `1px solid ${theme.colors['--color-gray-300']}`};
-    margin-bottom: ${({theme}) => theme.space['--space-40']};
-    border-width: 0 0 1px;
-`;
-
-const InvoiceWrapper = styled.View`
-    display: flex;
-`;
-
-const InvoiceUploadContainer = styled.TouchableOpacity`
-    width: 100%;
-    height: 258px;
-    border: ${({theme}) => `2.3px dashed ${theme.colors['--color-gray-200']}`};
-    background-color: ${({theme}) => theme.colors['--color-gray-100']};
-
-    align-items: center;
-    justify-content: center;
-`;
-
-const ImageContainer = styled.View`
-    width: 100%;
-    height: 356px;
-    border: ${({theme}) => `1px solid ${theme.colors['--color-gray-400']}`};
-    background-color: ${({theme}) => theme.colors['--color-gray-300']};
-    border-radius: 4px;
-`;
-
-const ImageTitleContainer = styled.View`
-    display: flex;
-    justify-content: space-between;
-    flex-direction: row;
-    background-color: ${({theme}) => theme.colors['--color-white']};
-    padding: ${({theme}) => theme.space['--space-12']};
-    border-color: ${({theme}) => theme.colors['--color-gray-400']};
-    border-style: solid;
-    border-width: 0 0 1px;
-    border-top-left-radius: 4px;
-    border-top-right-radius: 4px;
-`;
-
-const ViewImageContainer = styled.View`
-    display: flex;
-    flex:1;
-    align-items: center;
-    margin: 60px;
-    margin-top: 0;
-    margin-bottom: 0;
-`;
-
-const UploadedImageContainer = styled.TouchableOpacity`
-    display: flex;
-    flex:1;
-    align-items: center;
-    margin: 60px;
-    margin-top: 0;
-    margin-bottom: 0;
-`;
-
-const PreviewImage = styled.Image`
-    width: 100%;
-    height: 100%;
-`;
-
-const RejectedPreviewContainer = styled.View`
-    flex: 1;
-    align-items: center;
-    margin: ${({theme}) => theme.space['--space-40']}; 
-    margin-top: 120px;
-    margin-bottom: 0;
-    text-align: center;
-`;
-
-const IconConatiner = styled.View`
-    flex: 1;
-    align-items: flex-end;
-    justify-content: flex-end;
-`;
-
-const PageText = styled.Text(({ theme, textColor = '--color-gray-600', font = '--confirm-title'}) => ({
-    ...theme.font[font],
-    color: theme.colors[textColor],
-    paddingTop: 2,
-    lineHeight: 16,
-    textAlign: 'center'
-}));
 
 const InvoiceDetailsPage = ({
     onImageUpload = () => {},
@@ -207,7 +115,7 @@ const InvoiceDetailsPage = ({
     const removeImage = () => {
         if (invoice?.documentId) {
             setDocumentImageData();
-        } 
+        }
         removeInvoice();
     }
 
@@ -241,7 +149,7 @@ const InvoiceDetailsPage = ({
                         source={{ uri: invoiceImage?.uri }}
                     />
                 </UploadedImageContainer>
-                
+
             )
         }
     }
@@ -270,8 +178,8 @@ const InvoiceDetailsPage = ({
             }
 
             {/* {
-                isImageUpdating ? <LoadingIndicator/> : 
-                documentImageData ? 
+                isImageUpdating ? <LoadingIndicator/> :
+                documentImageData ?
                     <ViewImageContainer>
                         <PreviewImage
                             source={{uri: canUpdateDoc ? `` : uri}}
@@ -300,7 +208,7 @@ const InvoiceDetailsPage = ({
                         </RejectedPreviewContainer>
                     )
             } */}
-            
+
         </ImageContainer>
     );
 
@@ -329,5 +237,99 @@ const InvoiceDetailsPage = ({
         </PageWrapper>
     )
 }
+
+const PageWrapper = styled.View`
+    margin: 0;
+    height: 100%;
+`;
+
+const PurchaseOrderContainer = styled.View`
+    height: 100px;
+    border: ${({theme}) => `1px solid ${theme.colors['--color-gray-300']}`};
+    margin-bottom: ${({theme}) => theme.space['--space-40']};
+    border-width: 0 0 1px;
+`;
+
+const InvoiceWrapper = styled.View`
+    display: flex;
+`;
+
+const InvoiceUploadContainer = styled.TouchableOpacity`
+    width: 100%;
+    height: 258px;
+    border: ${({theme}) => `2.3px dashed ${theme.colors['--color-gray-200']}`};
+    background-color: ${({theme}) => theme.colors['--color-gray-100']};
+
+    align-items: center;
+    justify-content: center;
+`;
+
+const ImageContainer = styled.View`
+    width: 100%;
+    height: 356px;
+    border: ${({theme}) => `1px solid ${theme.colors['--color-gray-400']}`};
+    background-color: ${({theme}) => theme.colors['--color-gray-300']};
+    border-radius: 4px;
+`;
+
+const ImageTitleContainer = styled.View`
+    display: flex;
+    justify-content: space-between;
+    flex-direction: row;
+    background-color: ${({theme}) => theme.colors['--color-white']};
+    padding: ${({theme}) => theme.space['--space-12']};
+    border-color: ${({theme}) => theme.colors['--color-gray-400']};
+    border-style: solid;
+    border-width: 0 0 1px;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+`;
+
+const ViewImageContainer = styled.View`
+    display: flex;
+    flex:1;
+    align-items: center;
+    margin: 60px;
+    margin-top: 0;
+    margin-bottom: 0;
+`;
+
+const UploadedImageContainer = styled.TouchableOpacity`
+    display: flex;
+    flex:1;
+    align-items: center;
+    margin: 60px;
+    margin-top: 0;
+    margin-bottom: 0;
+`;
+
+const PreviewImage = styled.Image`
+    width: 100%;
+    height: 100%;
+`;
+
+const RejectedPreviewContainer = styled.View`
+    flex: 1;
+    align-items: center;
+    margin: ${({theme}) => theme.space['--space-40']}; 
+    margin-top: 120px;
+    margin-bottom: 0;
+    text-align: center;
+`;
+
+const IconConatiner = styled.View`
+    flex: 1;
+    align-items: flex-end;
+    justify-content: flex-end;
+`;
+
+const PageText = styled.Text(({ theme, textColor = '--color-gray-600', font = '--confirm-title'}) => ({
+    ...theme.font[font],
+    color: theme.colors[textColor],
+    paddingTop: 2,
+    lineHeight: 16,
+    textAlign: 'center'
+}));
+
 
 export default InvoiceDetailsPage;
