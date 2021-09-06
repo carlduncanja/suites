@@ -74,9 +74,16 @@ Follow the following steps for setting up this project on ur local maching.
 
 ------
 
+### Transporter
+- log into Apple account on transporter.
+- run `npm run build:ios:simulator`.
+- drag and drop `ipa` file into transporter.
 
+> *NB*: ensure the account has developer permissions 
+
+### Fastlane 
 - run `./deploy` to run fastlane script (NB. Ensure fastlane is installed on PC before execution of script)
-
+> *NB*: ensure that the developer account that is being used has maintainer role.
 
 ## 🧪 Tests
 
@@ -87,6 +94,10 @@ Follow the following steps for setting up this project on ur local maching.
 
 
 ## *⃣ Available Scripts 
+
+- `npm un build:ios:simulator` used to prepare release candidates. This generates application that to be loaded onto iOS simulators
+- `npm run build:ios` used to prepare build file for production. Generates .ipa file that is uploaded to the apple store.
+- `npm run start` for local development starts up `expo` application on ios simulator.
 
 ------
 
