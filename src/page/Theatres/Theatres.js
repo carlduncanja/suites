@@ -1,3 +1,5 @@
+
+// theatresPage.js
 import React, {useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
 import {View, StyleSheet, Text} from 'react-native';
@@ -471,6 +473,7 @@ function Theatres(props) {
             setPageSettingState
         }}
         >
+            {/*nav bar at the top of theatre page*/}
             <NavPage
                 placeholderText="Search by theatre name"
                 routeName={pageTitle}

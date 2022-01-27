@@ -56,7 +56,8 @@ function SideBarComponent({routes, selectedIndex, screenDimensions, onTabPressed
     const showQuickMenuModal = () => {
         modal.openModal('QuickActionsModal')
     }
-
+    
+    // renders the side bar menu
     return (
         <View style={{
             flexDirection: 'row',

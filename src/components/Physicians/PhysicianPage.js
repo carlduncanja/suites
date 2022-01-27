@@ -146,6 +146,9 @@ function PhysicianPage({route, navigation}) {
 
     // ##### Helper functions
 
+    // handles updating doctor info.
+    // so you'd click the edit button at the top right
+    // after clicking on a specific doctor
     const updatePhysicianCall = updatedFields => {
         updatePhysician(_id, updatedFields)
             .then(data => {
@@ -165,7 +168,7 @@ function PhysicianPage({route, navigation}) {
                             onAction={() => {
                                 modal.closeAllModals();
                             }}
-                            message="Changes were successful."//general message you can send to be displayed
+                            message="Changes were successful my boy."//general message you can send to be displayed
                             action="Yes"
                         />
                     ),
@@ -190,6 +193,10 @@ function PhysicianPage({route, navigation}) {
         return updatedArray;
     };
 
+    // once you click on a doctor's name
+    // you get several tabs to select from
+    // i suppose this handles what gets displayed
+    // when you click a specific tab
     const getTabContent = selectedTab => {
         const {cases = [], procedures = []} = selectedPhysician;
         switch (selectedTab) {
@@ -239,6 +246,7 @@ function PhysicianPage({route, navigation}) {
             });
     };
 
+    // happens when switching tabs
     const setPageLoading = value => {
         setPageState({
             ...pageState,
@@ -247,6 +255,9 @@ function PhysicianPage({route, navigation}) {
         });
     };
 
+    // takes in doctor id and their info
+    // allows you to edit it and save the new info 
+    // in a state
     const updatePhysicianFn = (id, data) => {
         updatePhysician(id, data)
             .then((data, id) => {

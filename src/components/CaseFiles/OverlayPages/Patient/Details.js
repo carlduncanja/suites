@@ -1,3 +1,4 @@
+// Details.js
 import React, {useContext, useEffect, useRef, useState} from 'react';
 import {ScrollView, View, StyleSheet, TouchableOpacity} from 'react-native';
 import moment from 'moment';

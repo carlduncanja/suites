@@ -22,7 +22,8 @@ const UiData = {
     physician: "Dr. H. Mansingh",
     availableOn: new Date(2020, 12, 13, 23, 0),
 };
- 
+
+// popup modal for theatres
 function TheatresDetailsTab({ 
                                 description = "",
                                 theatreId,
@@ -73,6 +74,8 @@ function TheatresDetailsTab({
         }
     }, [])
 
+    // triggers when edit button clicked
+    // does a confirmation before saving
     useEffect(() => {
         if (isUpdated && !isEditMode) {
             modal.openModal('ConfirmationModal', {

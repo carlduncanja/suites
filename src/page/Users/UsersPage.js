@@ -22,7 +22,8 @@ import CreateUserOverlayDialog from "../../components/Users/CreateUserOverlayDia
 import {useNavigation} from "@react-navigation/native"
 import _ from "lodash";
 
-
+// this affects the header titles
+// for users page
 const listHeaders = [
     {
         name: "User",
@@ -49,6 +50,7 @@ const listHeaders = [
 function UsersPage() {
 
     const theme = useTheme();
+    // affects page title top left
     const pageTitle = "Users";
     const navigation = useNavigation();
     const modal = useModal();
@@ -313,6 +315,7 @@ function UsersPage() {
                 isDisabled={!isUsersSelected}
                 onLongPress={onDeleteUsers}
             >
+                {/*a part of the botton at the bottom right for deleting users*/}
                 <ActionItem
                     title="Hold to Delete"
                     icon={<WasteIcon strokeColor={deleteColor}/>}
@@ -322,6 +325,8 @@ function UsersPage() {
             </LongPressWithFeedback>
         </View>
 
+        // button apart of the popup
+        // at the bottom right
         const CreateUserAction = <ActionItem
             title="New User"
             icon={<AddIcon/>}
@@ -329,6 +334,9 @@ function UsersPage() {
             touchable={true}
         />
 
+        // popup at the bottom right 
+        // on users page
+        // used to create and delete users
         return (
             <ActionContainer
                 floatingActions={[DeleteUserAction, CreateUserAction]}
@@ -350,7 +358,8 @@ function UsersPage() {
 
         const itemView = userItem(userName, item.email, group, onActionClick);
 
-
+        // selectedIds.includes() checks if an id is within the array
+        // the below component seems to handle box ticks
         return (
             <ListItem
                 isChecked={selectedIds.includes(item._id)}
@@ -362,8 +371,13 @@ function UsersPage() {
     };
 
     const fetchUsers = (pagePosition) => {
-
+        // gets called when using search bar
+        // in top search bar
         setFetchingData(true);
+        // searchValue is a state
+        // taken from search box upon form submit
+        // page position probably tracks page number
+        // basic pagination
         getUsersCall(searchValue, pagePosition, 20)
             .then(data => {
                 let currentPosition = pagePosition ? pagePosition : 1;
@@ -386,7 +400,7 @@ function UsersPage() {
 
     // endregion
 
-
+    // this looks like the search bar at the top of the users page
     return (
         <NavPage
             placeholderText={"Search by user name or email."}

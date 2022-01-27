@@ -1,3 +1,4 @@
+// SuiteNavigator.js
 import React, {useContext, useEffect} from 'react';
 import {View, StyleSheet, Dimensions, SafeAreaView, Text} from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -48,6 +49,9 @@ import PrintScheduleModal from "../modals/PrintScheduleModal";
  *
  * https://reactnavigation.org/docs/custom-navigators
  */
+
+// navigation bar at the left side
+// 
 const SuitesCustomNavigator = ({
                                    initialRouteName,
                                    children,
@@ -66,6 +70,7 @@ const SuitesCustomNavigator = ({
 
     useEffect(() => {
         // get user token from state,
+        // navigation
         AsyncStorage.getItem('userToken')
             .then(token => {
                 // navigation.navigate("App")

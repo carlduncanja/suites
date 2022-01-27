@@ -81,7 +81,7 @@ import {
     archiveSuppliersEndpoint,
     restoreArchivedSuppliersEndpoint,
     updatePurchaseOrderDocument,
-    purchaseOrderInvoice, inventoryGroupsBulkUpload, proceduresUploadEndpoint
+    purchaseOrderInvoice, inventoryGroupsBulkUpload, proceduresUploadEndpoint, deleteCaseFileEndpoint
 
 
 } from '../const/suitesEndpoints';
@@ -181,6 +181,16 @@ export const getAppointmentRequest = (params = {}) => suitesAxiosInstance.get(ap
 
 export const getAppointmentById = async id => suitesAxiosInstance
     .get(appointmentEndpoint(id))
+    .then(handleResponse)
+    .catch(handleError);
+
+export const deleteAppointmentById = async id => suitesAxiosInstance
+    .delete(appointmentEndpoint(id))
+    .then(handleResponse)
+    .catch(handleError);
+ 
+export const updateAppointmentById = async (id, data) => suitesAxiosInstance
+    .put(appointmentEndpoint(id), data)
     .then(handleResponse)
     .catch(handleError);
 
@@ -325,6 +335,11 @@ export const getCaseFileById = async id => suitesAxiosInstance
     .then(handleResponse)
     .catch(handleError);
 
+export const updateCaseFile = async (id, caseId) => suitesAxiosInstance
+    .put(caseFileEndpoint(id), caseId)
+    .then(handleResponse)
+    .catch(handleError);
+
 export const getArchivedCaseFiles = async (query, max, page) => suitesAxiosInstance
     .get(archivedCaseFilesEndpoint, {params: {query, max, page}})
     .then(handleResponse)
@@ -410,6 +425,11 @@ export const removeQuotationCall = async (caseId, quotationsId) => suitesAxiosIn
 
 export const removeCaseFiles = async (data) => suitesAxiosInstance
     .delete(removeCaseFilesEndpoint, {data})
+    .then(handleResponse)
+    .catch(handleError);
+
+export const deleteCaseFile = async (data) => suitesAxiosInstance
+    .delete(deleteCaseFileEndpoint(data))
     .then(handleResponse)
     .catch(handleError);
 

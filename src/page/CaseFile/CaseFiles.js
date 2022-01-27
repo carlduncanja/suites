@@ -1,3 +1,4 @@
+// CaseFiles.js
 import React, {useState, useEffect} from 'react';
 import {View} from 'react-native';
 
@@ -36,6 +37,7 @@ import {removeDraft} from "../../redux/actions/draftActions";
 import Button from '../../components/common/Buttons/Button';
 import ConfirmationComponent from '../../components/ConfirmationComponent';
 
+// controls the title headers for case
 const listHeaders = [
     {
         name: 'Patient',
@@ -55,6 +57,7 @@ const listHeaders = [
     },
 ];
 
+// style for the top left "view archive button"
 const ButtonContainer = styled.View`
     width: 105px;
     height: 26px;
@@ -131,7 +134,8 @@ function CaseFiles(props) {
         }
 
         // wait 300ms before search. cancel any prev request before executing current.
-
+        // controls how long the search takes to trigger
+        // 300 ms
         const search = _.debounce(fetchCaseFilesData, 300);
 
         setSearchQuery(prevSearch => {
@@ -178,6 +182,9 @@ function CaseFiles(props) {
         fetchCaseFilesData(currentPage);
     };
 
+    // checks if patient info is empty
+    // if not pops up the case page
+    // else create case page
     const handleOnItemPress = (item, isOpenEditable) => () => {
         if (item !== null) {
             isEmpty(item?.patient?.medicalInfo) ?
@@ -201,6 +208,7 @@ function CaseFiles(props) {
 
     const handleOnSelectAll = () => {
         const updatedCases = selectAll(caseFiles, selectedCaseIds);
+        console.log("box clicked")
         setSelectedCaseIds(updatedCases);
     };
 
@@ -273,7 +281,7 @@ function CaseFiles(props) {
         const {patient = {}} = item;
 
         // console.log("what's pssed to render?", item.patient);
-
+        // displays the case files in a list format
         return <>
             <ListItem
                 hasCheckBox={true}
@@ -492,6 +500,7 @@ function CaseFiles(props) {
             setPageSettingState
         }}
         >
+            {/*search bar and archives button*/}
             <NavPage
                 isFetchingData={isFetchingCaseFiles}
                 onRefresh={handleDataRefresh}
@@ -503,7 +512,7 @@ function CaseFiles(props) {
                 TopButton={() => (
                     <ButtonContainer theme={theme}>
                         <Button
-                            title="View Archive"
+                            title="Archives"
                             color={theme.colors['--color-gray-500']}
                             font="--text-sm-regular"
                             buttonPress={openViewArchivedCases}
