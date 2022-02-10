@@ -55,6 +55,9 @@ function NewProcedureOverlayContainer({appointment={}, editMode=false}) {
     const [generatedAssistantSurgeon, setGeneratedAssistantSurgeon] = useState();
     const [generatedNurse, setGeneratedNurse] = useState();
 
+    const [attemptedSubmit, setAttemptedSubmit] = useState(false);
+    const [allowedToSubmit, setAllowedToSubmit] = useState(false)
+
     const RowWrapper = styled.View`
     flex-direction: row;
     justify-content: space-between;
@@ -131,10 +134,57 @@ function NewProcedureOverlayContainer({appointment={}, editMode=false}) {
             [fieldName]: value
         })
     });
-    const [allowCaseCreation, setAllowCaseCreation] = useState(false)
-    function handleCreateCaseButton() {
+
+    function validateAllFieldsFilled() {
+        let foundInvalidField = true;
+        const locationCheck = location;
+        const procedureCheck = procedure;
+        const staffCheck = staffInfo.length
+       
+        if(locationCheck !== undefined &&
+            procedureCheck !== undefined && 
+            staffCheck >= 4
+        ) {
+            foundInvalidField = true;
         
-        const nameToken = fields.firstName.split(" ");
+        }
+
+        else {
+            foundInvalidField = false;
+        }
+        return foundInvalidField
+    }
+
+    function handleCreateCaseButton() {
+        const validateAllFields = validateAllFieldsFilled();
+        setAttemptedSubmit(true);
+
+        if (validateAllFields) {
+            setAllowedToSubmit(true)
+        }
+
+        else {
+            modal.openModal('ConfirmationModal',{
+                content: <ConfirmationComponent
+                    isError={false}
+                    isEditUpdate={true}
+                    onCancel={() => modal.closeModals('ConfirmationModal') }
+                    onAction={() => {
+                        setAllowedToSubmit(true);
+                        modal.closeModals("ConfirmationModal")
+                    }}
+                    message="Your appointment may be missing key information. Do you want to continue without updating?"
+                    action="Yes"
+                />
+            })
+        }
+        
+        
+    }
+
+    useEffect(() => {
+        if(allowedToSubmit) {
+            const nameToken = fields.firstName.split(" ");
 
         // size 1 ? firstname
         if(nameToken.length === 1) {
@@ -197,17 +247,29 @@ function NewProcedureOverlayContainer({appointment={}, editMode=false}) {
             
         })
 
+        let updatedLocation = "";
+
+        if(location === undefined) {
+            updatedLocation = "5ea05a3886d32b41d5b291e7"
+        }
+
+        else {
+            updatedLocation = location._id
+        }
+
         caseFileData.staff.leadPhysician = leadObj;
         caseFileData.caseProcedures = [{
-            procedure: procedure._id,
-            location: location._id,
-            startTime: procedure.startTime || startTime,
-            duration: procedure.duration || 2,
+            procedure: procedure !== undefined ? procedure._id : "5ea05a3886d32b41d5b291e7",
+            location: updatedLocation,
+            startTime: procedure?.startTime || startTime,
+            duration: procedure?.duration || 2,
         }];
 
         if(patientID !== "Patient ID:--") {
             caseFileData.patient._id = patientID;
         }
+
+        
         /*
         const roleKeys = [];
 
@@ -221,8 +283,18 @@ function NewProcedureOverlayContainer({appointment={}, editMode=false}) {
         //delete caseFileData.staff.leadPhysician.tag;
 
         caseFileData.roleKeys = staffInfo
-        // adding procedure info
+        if(caseFileData.staff.leadPhysician._id === undefined) {
+            // moving away from using leadSurgeon
+            // this allows for blank lead field
+            caseFileData.staff.leadPhysician = {
+                "_id": "5ea05a3886d32b41d5b291e7",
+                "name": " ",
+                "tag": "Lead Surgeon",
+                "type": "Physician",
+              }
+        }
         
+        // adding procedure info
         if(!editMode) {
             createCaseFile(caseFileData)
             .then(data => {
@@ -249,17 +321,17 @@ function NewProcedureOverlayContainer({appointment={}, editMode=false}) {
                 {
                     description: `${patientFields.firstName} ${patientFields.surname}`,
                     subject: leadDoc,
-                    startTime: procedure.startTime ,
-                    endTime: moment(procedure.startTime ).add(2, 'hours'),
-                    title: procedure.name,
-                    location: location._id
+                    startTime: caseFileData.caseProcedures[0].startTime ,
+                    endTime: moment(caseFileData.caseProcedures[0].startTime).add(2, 'hours'),
+                    title: procedure?.name || "",
+                    location: updatedLocation
                 })
                 .catch(err => {
                     console.log(err)
             })
            
         }
-        
+
         modal.openModal('ConfirmationModal',
         {
             content: <ConfirmationComponent
@@ -278,11 +350,10 @@ function NewProcedureOverlayContainer({appointment={}, editMode=false}) {
                     onClose: () => {
                         modal.closeModals('ConfirmationModal');
                     }
-        });     
-        
-        
+        }); 
         
     }
+    }, [allowedToSubmit])
    
     const handlePatient = (value) => {
   
@@ -689,11 +760,14 @@ function NewProcedureOverlayContainer({appointment={}, editMode=false}) {
                 const procedureName = res.caseProcedures[0].appointment.title;
                 const resultTime = appointment.startTime;
                 const endTime = moment(appointment.startTime);
-
-                handleLocationChange({
-                    _id: resultLocation._id,
-                    name: resultLocation.name
-                });
+                
+                if(resultLocation !== null) {
+                    handleLocationChange({
+                        _id: resultLocation._id,
+                        name: resultLocation.name
+                    });
+                }
+                
 
                 handlePatient({
                     _id: resultPatient._id,
@@ -702,11 +776,14 @@ function NewProcedureOverlayContainer({appointment={}, editMode=false}) {
 
                 onFieldChange('firstName')(`${resultPatient.firstName} ${resultPatient.surname}`);
                 onPatientFieldChange('firstName')(`${resultPatient.firstName} ${resultPatient.surname}`);
-
-                handleProcedure({
-                    _id: procedureId,
-                    name: procedureName
-                });
+            
+                if(procedureName.length > 0) {
+                    handleProcedure({
+                        _id: procedureId,
+                        name: procedureName
+                    });
+                }
+                
 
                 setDate(moment(resultTime));
                 setStartTime(endTime);
@@ -766,6 +843,10 @@ function NewProcedureOverlayContainer({appointment={}, editMode=false}) {
 
     }
 
+    function findStaffByTag(tag) {
+        return staffInfo.filter(item => item.tag === tag);
+    }
+
   return (
         <>
         <View style={styles.container}>
@@ -807,6 +888,7 @@ function NewProcedureOverlayContainer({appointment={}, editMode=false}) {
                 <Space />
 
                 <SearchableOptionsField 
+                    emptyAfterSubmit={attemptedSubmit && procedure === undefined ? true : false}
                     updateDB={updateProcedureDB}
                     highlightOn={true}
                     highlightColor="#F6F8F8"
@@ -833,6 +915,7 @@ function NewProcedureOverlayContainer({appointment={}, editMode=false}) {
                     </View> 
 
                     <SearchableOptionsField
+                        emptyAfterSubmit={attemptedSubmit && location === undefined ? true : false}
                         updateDB={updateTheatreDB}
                         showActionButton={true}
                         value={location}
@@ -849,6 +932,7 @@ function NewProcedureOverlayContainer({appointment={}, editMode=false}) {
 
                 <Space />
 
+            <View style={styles.groupItem}>
                 <View style={styles.column}>
                     <View style={styles.textContainer}>
                         <Text style={styles.labels}>Date</Text>
@@ -867,7 +951,7 @@ function NewProcedureOverlayContainer({appointment={}, editMode=false}) {
                     </View>
                 </View>
                 
-                <Space />
+                <TinySpace />
 
                 <View style={styles.column}>  
                     <View style={styles.textContainer}>
@@ -884,6 +968,9 @@ function NewProcedureOverlayContainer({appointment={}, editMode=false}) {
                         />
                     </View>
                 </View>
+
+            </View>
+
             </View>
 
             <Accent />
@@ -893,6 +980,7 @@ function NewProcedureOverlayContainer({appointment={}, editMode=false}) {
                 <View style={[styles.row, {zIndex:10}]}>
                     <View style={styles.staffField}>
                         <SearchableOptionsField 
+                            emptyAfterSubmit={findStaffByTag("Lead Surgeon").length < 1 && attemptedSubmit ? true : false}
                             updateDB={updatePhysicianDB}
                             showActionButton={true}
                             placeholder="Select Surgeon"
@@ -940,6 +1028,7 @@ function NewProcedureOverlayContainer({appointment={}, editMode=false}) {
                 <View style={[styles.row, {zIndex:9}]}>
                     <View style={styles.staffField}>
                         <SearchableOptionsField 
+                            emptyAfterSubmit={findStaffByTag("Anaesthesiologist").length < 1 && attemptedSubmit ? true : false}
                             handlePatient={handleSurgeon}
                             updateDB={updatePhysicianDB}
                             value={generatedAnaesthesiologist}
@@ -987,6 +1076,7 @@ function NewProcedureOverlayContainer({appointment={}, editMode=false}) {
                 <View style={[styles.row, {zIndex:8}]}>
                     <View style={styles.staffField}>
                         <SearchableOptionsField 
+                            emptyAfterSubmit={findStaffByTag("Assistant Surgeon").length < 1 && attemptedSubmit ? true : false}
                             handlePatient={handleSurgeon}
                             updateDB={updatePhysicianDB}
                             value={generatedAssistantSurgeon}
@@ -1039,6 +1129,7 @@ function NewProcedureOverlayContainer({appointment={}, editMode=false}) {
                 <View style={[styles.row, {zIndex:7}]}>
                         <View style={styles.staffField}>
                             <SearchableOptionsField 
+                                emptyAfterSubmit={findStaffByTag("Nurse").length < 1 && attemptedSubmit ? true : false}
                                 value={generatedNurse}
                                 handlePatient={handleSurgeon}
                                 updateDB={updatePhysicianDB}
@@ -1104,7 +1195,13 @@ const Space = styled.View`
    width:  ${({theme}) => theme.space['--space-24']};
 `;
 
+const TinySpace = styled.View`
+   width:  ${({theme}) => theme.space['--space-10']};
+`;
+
 const styles = StyleSheet.create({
+
+    
 
     editText: {
         color: '#E3E8EF',
@@ -1152,6 +1249,15 @@ const styles = StyleSheet.create({
         flex: 1,
         // backgroundColor: 'red',
     },  
+
+    groupItem: {
+        display: 'flex',
+        height: '100%',
+        flex: 1,
+        flexDirection: 'row',
+        marginLeft: 45,
+        minWidth: 100
+    },
 
     inputWrapper: {
         // flex: 1,

@@ -173,8 +173,6 @@ function ProcedureScheduleContent({
         <View style={styles.box}>
             {
                 nurses.map((item, index) => {
-                    console.log("meat")
-                    console.log(item)
                     const name = `${item.name}` || "No Data";
                     const position = `Nurse`;
                     return staffItem(index, name, position, false, false);

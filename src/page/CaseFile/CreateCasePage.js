@@ -355,6 +355,7 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, removeDraft, route}
         }
 
         if (!isValid) {
+            console.log("freckles")
             return;
         }
 

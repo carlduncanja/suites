@@ -14,8 +14,12 @@ const Patient = ({
 }) => {
     const dates = procedures.map(item => {
         const {appointment} = item;
-        const {startTime} = appointment;
-        return moment(startTime);
+        //const {startTime} = appointment;
+        
+        const startTime = appointment?.startTime || "";
+        
+        return moment(startTime)
+
     });
 
     const getDate = dates => {

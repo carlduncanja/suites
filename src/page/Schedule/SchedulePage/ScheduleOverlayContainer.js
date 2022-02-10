@@ -174,7 +174,6 @@ function ScheduleOverlayContainer({appointment = {}, closeOverlay = emptyFn}) {
                 const patient = caseFile.patient;
 
                 const finalRoleKeys = appointment.item.case.roleKeys
-                // this is a test
                 const finalPhysicians = finalRoleKeys.filter(target => target.type !== "Nurse");
                 const finalNurses = finalRoleKeys.filter(target => target.type !== "Physician");;
 

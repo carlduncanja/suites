@@ -137,10 +137,6 @@ const TextInputContainer = styled.View`
   width: 100%;
   justify-content: center;
   border-width: 1px;
-  border-color: ${({
-                     theme,
-                     hasError
-                   }) => (hasError ? theme.colors['--color-red-600'] : theme.colors['--color-gray-300'])};
   background-color: ${({
                          theme,
                          enabled
@@ -194,7 +190,8 @@ function SearchableOptionsField({
                                     highlightColor = "#EBF8FF",
                                     handlePatient = () => {},
                                     updateDB = () => {},
-                                    inputIndex = ''
+                                    inputIndex = '',
+                                    emptyAfterSubmit=false
                                 }) {
     const textInputRef = useRef();
 
@@ -241,6 +238,16 @@ function SearchableOptionsField({
         margin-bottom: 10px;
     `;
 
+    let currentErrorHandling = "";
+
+    if(hasError) {
+        currentErrorHandling = hasError ? theme.colors['--color-red-600'] : theme.colors['--color-gray-300']
+    }
+
+    else {
+        currentErrorHandling = emptyAfterSubmit ? theme.colors['--color-red-600'] : theme.colors['--color-gray-300']
+    }
+
     return (
         <InputContainerComponent>
             {
@@ -248,16 +255,30 @@ function SearchableOptionsField({
             }
 
             <TextInputWrapper theme={theme} enabled={enabled}>
-                <TextInputContainer enabled={enabled}>
+                <TextInputContainer style={{
+                    borderColor: currentErrorHandling
+                }} enabled={enabled}>
                     {
                         (enabled && !!selectedValue) ?
                             (
                                 <>
-                                    <ValueContainer style={highlightOn ? {width: "auto", backgroundColor: highlightColor, borderWidth: 1, borderStyle: "solid", borderColor: "#90CDF4"} : {}}>
+                                    <ValueContainer style={highlightOn ? {
+        
+                                        } : {}}>
                                         <InputText
-                                            numberOfLines={1}
-                                            fontStyle="--text-sm-regular"
-                                            textColor="--color-gray-700"
+                                                numberOfLines={1}
+                                                fontStyle="--text-sm-regular"
+                                                textColor="--color-gray-700"
+                                                style={{
+                                                display: 'flex', 
+                                                width: "auto", 
+                                                paddingRight: 5,
+                                                paddingLeft: 5,
+                                                backgroundColor: highlightOn ? highlightColor : "white", 
+                                                borderWidth: highlightOn ? 1 : 0, 
+                                                borderStyle:  "solid", 
+                                                borderColor: "#90CDF4"
+                                            }}
                                         >{selectedValue?.name || ''}</InputText>
                                     </ValueContainer>
 

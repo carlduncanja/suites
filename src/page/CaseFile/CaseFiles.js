@@ -494,6 +494,8 @@ function CaseFiles(props) {
     // prepare case files to display
     const caseFilesToDisplay = [...caseFiles];
 
+    console.log("milk")
+    console.log(caseFilesToDisplay)
     return (
         <PageSettingsContext.Provider value={{
             pageSettingState,
