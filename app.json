@@ -2,7 +2,6 @@
   "expo": {
     "name": "Suites",
     "slug": "smsja-suites",
-    "owner": "smart-mobile-solutions",
     "privacy": "public",
     "platforms": [
       "ios"

@@ -1,7 +1,7 @@
 // SuiteNavigator.js
 import React, {useContext, useEffect} from 'react';
 import {View, StyleSheet, Dimensions, SafeAreaView, Text} from 'react-native';
-import AsyncStorage from '@react-native-community/async-storage';
+import AsyncStorage from '@react-native-async-storage/async-storage'
 import * as Notifications from 'expo-notifications';
 
 import {

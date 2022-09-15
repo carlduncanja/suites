@@ -16,7 +16,7 @@ import ArchiveIcon from '../../../assets/svg/archiveIcon';
 import DraftItem from '../../components/common/List/DraftItem';
 
 import {setCaseFiles} from '../../redux/actions/caseFilesActions';
-import {getCaseFiles, removeCaseFiles} from '../../api/network';
+import {deleteCaseFile, getCaseFiles, removeCaseFiles, removeCaseFilesId} from '../../api/network';
 
 import {
     useNextPaginator,
@@ -366,7 +366,7 @@ function CaseFiles(props) {
         removeDraft(id);
         setFloatingAction(false);
     }
-
+    
     const onArchivePress = () => {
         modal.closeModals('ActionContainerModal');
         setTimeout(() => {
@@ -427,6 +427,88 @@ function CaseFiles(props) {
             })
     };
 
+    const openErrorConfirmation = () => {
+        modal.openModal(
+            'ConfirmationModal',
+            {
+                content: <ConfirmationComponent
+                    isError={true}
+                    isEditUpdate={false}
+                    onCancel={() => modal.closeModals('ConfirmationModal')}
+                />,
+                onClose: () => {
+                    modal.closeModals('ConfirmationModal');
+                }
+            }
+        );
+    };
+
+    const handleRemoveCase = async (id) => {
+         openDeletionConfirm({ids: [...selectedCaseIds]})
+    }
+
+    const removeCaseFilesCall = data => {
+        removeCaseFilesId(data)
+            .then(_ => {
+                modal.openModal(
+                    'ConfirmationModal',
+                    {
+                        content: <ConfirmationComponent
+                            isError={false}
+                            isEditUpdate={false}
+                            onAction={() => {
+                                modal.closeModals('ConfirmationModal');
+                                setTimeout(() => {
+                                    modal.closeModals('ActionContainerModal');
+                                    handleDataRefresh();
+                                }, 200);
+                            }}
+                        />,
+                        onClose: () => {
+                            modal.closeModals('ConfirmationModal');
+                        }
+                    }
+                );
+                
+                setSelectedCaseIds([]);
+            })
+            .catch(error => {
+                openErrorConfirmation();
+                setTimeout(() => {
+                    modal.closeModals('ActionContainerModal');
+                }, 200);
+                console.log('Failed to remove case file: ', error);
+            })
+            .finally(_ => {
+                setFloatingAction(false);
+            });
+    }
+
+    const openDeletionConfirm = data => {
+        modal.openModal(
+            'ConfirmationModal',
+            {
+                content: <ConfirmationComponent
+                    isError={false}
+                    isEditUpdate={true}
+                    onCancel={() => modal.closeModals('ConfirmationModal')}
+                    onAction={() => {
+                        modal.closeModals('ConfirmationModal');
+                        removeCaseFilesCall(data);
+                        
+                    }}
+                    // onAction = { () => confirmAction()}
+                    message="Do you want to delete these item(s)?"
+                />,
+                onClose: () => {
+                    
+                    modal.closeModals('ConfirmationModal');
+                }
+            }
+        );
+        
+    };
+
     const getFabActions = () => {
         const disabled = !!isEmpty(selectedCaseIds);
         const archiveCase = (
@@ -464,12 +546,38 @@ function CaseFiles(props) {
         );
 
         const createNewCase = <ActionItem title="New Case" icon={<AddIcon/>} onPress={openCreateCaseFile}/>;
+        const deleteAction = (
+            <View style={{
+                borderRadius: 6,
+                flex: 1,
+                overflow: 'hidden'
+            }}
+            >
+                <LongPressWithFeedback
+                    pressTimer={LONG_PRESS_TIMER.MEDIUM}
+                    isDisabled={disabled}
+                    onLongPress={() => handleRemoveCase(selectedCaseIds[0])}
+                >
+                    <ActionItem
+                        title="Hold to Delete Case"
+                        icon={(
+                            <WasteIcon
+                                strokeColor={disabled ? theme.colors['--color-gray-600'] : theme.colors['--color-red-700']}
+                            />
+                        )}
+                        touchable={false}
+                        disabled={disabled}
+                    />
+                </LongPressWithFeedback>
+            </View>
+        );
 
         return <ActionContainer
             floatingActions={[
                 archiveCase,
                 deleteDraftAction,
-                createNewCase,
+                deleteAction,
+                createNewCase
             ]}
             title="CASE ACTIONS"
         />;
@@ -494,8 +602,6 @@ function CaseFiles(props) {
     // prepare case files to display
     const caseFilesToDisplay = [...caseFiles];
 
-    console.log("milk")
-    console.log(caseFilesToDisplay)
     return (
         <PageSettingsContext.Provider value={{
             pageSettingState,

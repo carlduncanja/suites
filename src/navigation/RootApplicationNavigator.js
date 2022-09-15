@@ -9,7 +9,7 @@ import {connect} from "react-redux";
 import {createStackNavigator} from "@react-navigation/stack";
 import SuitesNavigationStack from "./AppStack/SuitesNavigationStack";
 import {restoreToken} from "../redux/actions/authActions";
-import AsyncStorage from "@react-native-community/async-storage";
+import AsyncStorage from '@react-native-async-storage/async-storage'
 import {setBearerToken} from "../api";
 
 const Stack = createStackNavigator();

@@ -29,7 +29,6 @@ const HeaderContainer = styled.TouchableOpacity`
     width: 100%;
     height: 52px;
     flex-direction: row;
-    background-color: black;
     border-top-left-radius: 8px;
     border-top-right-radius: 8px;
     // padding-left: ${({theme}) => theme.space['--space-18']};

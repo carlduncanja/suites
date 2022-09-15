@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { Text, View, Button, Alert } from 'react-native';
-import AsyncStorage from '@react-native-community/async-storage';
+import AsyncStorage from '@react-native-async-storage/async-storage'
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { withModal, useModal } from 'react-native-modalfy';
