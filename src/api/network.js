@@ -330,6 +330,11 @@ export const getCaseFiles = async (query, max, page) => suitesAxiosInstance
     .then(handleResponse)
     .catch(handleError);
 
+export const removeCaseFilesId = async data => suitesAxiosInstance
+    .delete(caseFilesEndpoint, {data})
+    .then(handleResponse)
+    .catch(handleError)
+    
 export const getCaseFileById = async id => suitesAxiosInstance
     .get(caseFileEndpoint(id))
     .then(handleResponse)
@@ -621,6 +626,11 @@ export const addCategory = async (category = []) => suitesAxiosInstance
     .catch(handleError);
 
 // ################# Suppliers Endpoints
+export const deleteSuppliersId = async (data) => suitesAxiosInstance
+    .delete(suppliersEndpoint, {data})
+    .then(handleResponse)
+    .catch(handleError);
+
 export const getSuppliers = async (query, max, page) => suitesAxiosInstance
     .get(suppliersEndpoint, {params: {query, max, page}})
     .then(handleResponse)

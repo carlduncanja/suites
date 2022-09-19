@@ -25,7 +25,7 @@ import DataItem from '../components/common/List/DataItem';
 import { useNextPaginator, usePreviousPaginator, checkboxItemPress, selectAll, handleUnauthorizedError } from '../helpers/caseFilesHelpers';
 
 import { setSuppliers } from '../redux/actions/suppliersActions';
-import { getSuppliers, archiveSupplier, archiveSuppliers } from '../api/network';
+import { getSuppliers, archiveSupplier, archiveSuppliers, deleteSuppliersId } from '../api/network';
 
 import suppliersTest from '../../data/Suppliers';
 import SuppliersBottomSheet from './Suppliers/SupplierPage';
@@ -34,6 +34,8 @@ import Button from '../components/common/OverlayButtons/OverlayButton';
 import TouchableDataItem from '../components/common/List/TouchableDataItem';
 
 import { PageSettingsContext } from '../contexts/PageSettingsContext';
+import WasteIcon from '../../assets/svg/wasteIcon';
+import { LONG_PRESS_TIMER } from '../const';
 
 
 const ArchiveButton = styled.TouchableOpacity`
@@ -349,6 +351,72 @@ const Suppliers = props => {
             })
     };
 
+    const handleRemoveSupplier = () => {
+        openDeletionConfirm({ids: [...selectedSuppliers]})
+    };
+
+    const removeSuppliersCall = data => {
+        deleteSuppliersId(data)
+            .then(_ => {
+                modal.openModal(
+                    'ConfirmationModal',
+                    {
+                        content: <ConfirmationComponent
+                            isError={false}
+                            isEditUpdate={false}
+                            onAction={() => {
+                                modal.closeModals('ConfirmationModal');
+                                setTimeout(() => {
+                                    modal.closeModals('ActionContainerModal');
+                                    handleDataRefresh();
+                                }, 200);
+                            }}
+                        />,
+                        onClose: () => {
+                            modal.closeModals('ConfirmationModal');
+                        }
+                    }
+                );
+                
+                setSelectedSuppliers([]);
+            })
+            .catch(error => {
+                openErrorConfirmation();
+                setTimeout(() => {
+                    modal.closeModals('ActionContainerModal');
+                }, 200);
+                console.log('Failed to remove suppliers: ', error);
+            })
+            .finally(_ => {
+                setFloatingAction(false);
+            });
+    }   
+
+    const openDeletionConfirm = data => {
+        modal.openModal(
+            'ConfirmationModal',
+            {
+                content: <ConfirmationComponent
+                    isError={false}
+                    isEditUpdate={true}
+                    onCancel={() => modal.closeModals('ConfirmationModal')}
+                    onAction={() => {
+                        modal.closeModals('ConfirmationModal');
+                        removeSuppliersCall(data)
+
+                    }}
+                    // onAction = { () => confirmAction()}
+                    message="Do you want to delete these item(s)?"
+                />,
+                onClose: () => {
+                    
+                    modal.closeModals('ConfirmationModal');
+                }
+            }
+        );
+        
+    };
+
     const getFabActions = () => {
         const archiveCase = (
             <ActionItem
@@ -361,11 +429,36 @@ const Suppliers = props => {
             />
         );
         const createNewSupplier = <ActionItem title="Add Supplier" icon={<AddIcon />} onPress={onOpenCreateSupplier} />;
-
+        const deleteAction = (
+            <View style={{
+                borderRadius: 6,
+                flex: 1,
+                overflow: 'hidden'
+            }}
+            >
+                <LongPressWithFeedback
+                    pressTimer={LONG_PRESS_TIMER.MEDIUM}
+                    isDisabled={!!isEmpty(selectedSuppliers)}
+                    onLongPress={handleRemoveSupplier}
+                >
+                    <ActionItem
+                        title="Hold to Delete Case"
+                        icon={(
+                            <WasteIcon
+                                strokeColor={!!isEmpty(selectedSuppliers) ? theme.colors['--color-gray-600'] : theme.colors['--color-red-700']}
+                            />
+                        )}
+                        touchable={false}
+                        disabled={!!isEmpty(selectedSuppliers)}
+                    />
+                </LongPressWithFeedback>
+            </View>
+        );
         return <ActionContainer
             floatingActions={[
                 archiveCase,
-                createNewSupplier
+                createNewSupplier,
+                deleteAction
             ]}
             title="SUPPLIER ACTIONS"
         />;

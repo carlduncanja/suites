@@ -92,7 +92,7 @@ const CaseFileOverlayMenu = ({selectedMenuItem, overlayMenu, permissions = {}, h
                                     const icon = selectedMenuItem === name ? selectedIcon : disabledIcon;
 
                                     return (
-                                        <IconWrapper theme={theme}>
+                                        <IconWrapper theme={theme} key={index}>
                                             <IconContainer theme={theme}>
                                                 <IconButton
                                                     Icon={icon}

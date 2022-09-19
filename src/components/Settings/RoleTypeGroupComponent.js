@@ -17,7 +17,6 @@ const HeaderContainer = styled.TouchableOpacity`
     width: 100%;
     height: 52px;
     flex-direction: row;
-    background-color: pink;  
 `;
 
 const RoleContent = styled.View`
@@ -26,7 +25,6 @@ const RoleContent = styled.View`
 
 // manipulate the style for content under permission header
 const ContentContainer = styled.View`
-    background-color: orange;
     display: flex;
     // margin-bottom: ${({theme}) => theme.space['--space-18']};
 `;
@@ -35,7 +33,6 @@ const ContentContainer = styled.View`
 const Divider = styled.View`
   height: 1px;
   background: ${({theme}) => theme.colors['--color-gray-300']};
-  background-color: red;
 `;
 
 function RoleTypeGroupComponent({
