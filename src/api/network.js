@@ -800,8 +800,13 @@ export const updateBuffer = async time => suitesAxiosInstance
     .then(handleResponse)
     .catch(handleError);
 
-// ################# 
+// ################# Invoices Endpoints
 export const getInvoices = async (query, max, page, invoiceId) => suitesAxiosInstance
     .get(invoicesEndpoint, {params: {query, max, page, invoiceId}})
+    .then(handleResponse)
+    .catch(handleError);
+
+export const deleteInvoices = async (item) => suitesAxiosInstance
+    .put(invoicesEndpoint, item)
     .then(handleResponse)
     .catch(handleError);

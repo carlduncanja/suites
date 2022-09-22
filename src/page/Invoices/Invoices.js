@@ -5,7 +5,7 @@ import { useModal } from 'react-native-modalfy';
 import {connect} from 'react-redux';
 import {setInvoices} from '../../redux/actions/invoicesActions'; 
 import {PageSettingsContext} from '../../contexts/PageSettingsContext';
-import { getInvoices } from '../../api/network';
+import { deleteInvoices, getInvoices } from '../../api/network';
 import { useNextPaginator, usePreviousPaginator, selectAll, checkboxItemPress, handleUnauthorizedError } from '../../helpers/caseFilesHelpers';
 
 import ActionContainer from '../../components/common/FloatingAction/ActionContainer';
@@ -228,21 +228,20 @@ function Invoices(props) {
             formattedItem,
         );
 
-        const onCheckBoxPress = item => () => {
-
-            const { _id } = item;
-    
-            const updatedStorage = checkboxItemPress(_id, selectedIds);
-    
-            setSelectedIds(updatedStorage);
-        };
-
         return <ListItem
             isChecked={selectedIds.includes(item._id)}
-            onCheckBoxPress={onCheckBoxPress}
+            onCheckBoxPress={() => onCheckBoxPress(item)}
             onItemPress={() => console.log('asda')}
             itemView={itemView}
         />;
+    };
+    const onCheckBoxPress = item => {
+        const { _id } = item;
+
+        const updateInvioces = checkboxItemPress(_id, selectedIds);
+
+        setSelectedIds(updateInvioces);
+
     };
 
     const getFabActions = () => {
@@ -266,20 +265,9 @@ function Invoices(props) {
             </View>
         );
 
-        const createAction = (
-            <ActionItem
-                title="New Location"
-                icon={<AddIcon />}
-                onPress={
-                    openCreateStorageModel
-                }
-            />
-        );
-
         return <ActionContainer
             floatingActions={[
-                deleteAction,
-                createAction
+                deleteAction
             ]}
             title="INVOICE ACTIONS"
         />;
@@ -292,6 +280,43 @@ function Invoices(props) {
         else openErrorConfirmation();
     };
 
+    const removeInvoiceCall= (data) => {
+        deleteInvoices(data)
+            .then(_ => {
+                modal.openModal(
+                    'ConfirmationModal',
+                    {
+                        content: <ConfirmationComponent
+                            isError={false}
+                            isEditUpdate={false}
+                            onAction={() => {
+                                modal.closeModals('ConfirmationModal');
+                                setTimeout(() => {
+                                    modal.closeModals('ActionContainerModal');
+                                    onRefresh();
+                                }, 200);
+                            }}
+                        />,
+                        onClose: () => {
+                            modal.closeModals('ConfirmationModal');
+                        }
+                    }
+                );
+
+                setSelectedIds([]);
+            })
+            .catch(error => {
+                openErrorConfirmation();
+                setTimeout(() => {
+                    modal.closeModals('ActionContainerModal');
+                }, 200);
+                console.log('Failed to remove invoices: ', error);
+            })
+            .finally(_ => {
+                setFloatingAction(false);
+            });
+    }
+
     const openDeletionConfirm = data => {
         modal.openModal(
             'ConfirmationModal',
@@ -302,7 +327,7 @@ function Invoices(props) {
                     onCancel={() => modal.closeModals('ConfirmationModal')}
                     onAction={() => {
                         modal.closeModals('ConfirmationModal');
-                        removeStorageLocationsCall(data);
+                        removeInvoiceCall(data);
                     }}
                     // onAction = { () => confirmAction()}
                     message="Do you want to delete these item(s)?"
@@ -334,8 +359,22 @@ function Invoices(props) {
 
     const onSelectAll = () => {
 
-        const updatedStorage = selectAll(storageLocations, selectedIds);
-        setSelectedIds(updatedStorage);
+        const updatedInvoices = selectAll(allInvoices , selectedIds);
+        console.log(updatedInvoices)
+        setSelectedIds(updatedInvoices);
+    };
+    
+    const toggleActionButton = () => {
+        setFloatingAction(true);
+        modal.openModal("ActionContainerModal", {
+            actions: getFabActions(),
+            title: "INVOICE ACTIONS",
+            onClose: () => {
+                setFloatingAction(false);
+            },
+
+        });
+
     };
 
     return (
@@ -345,7 +384,7 @@ function Invoices(props) {
         }}
         >
             <NavPage
-                placeholderText="Search by room name."
+                placeholderText="Search by Invoices"
                 routeName={pageTitle}
                 listData={invoicesToDisplay }
                 inputText={searchValue}
@@ -361,7 +400,7 @@ function Invoices(props) {
                 goToNextPage={goToNextPage}
                 goToPreviousPage={goToPreviousPage}
                 isDisabled={isFloatingActionDisabled}
-                toggleActionButton={() => console.log('sad')}
+                toggleActionButton={toggleActionButton}
                 hasPaginator={true}
                 hasActionButton={true}
                 hasActions={true}
