@@ -24,4 +24,5 @@ export default {
     archivedCases:[],
     casePage: {isEdit: false},
     procedurePage: {isEdit: false},
+    invoices: []
 };

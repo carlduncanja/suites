@@ -31,6 +31,7 @@ import SettingsNavigationStack from './SettingsNavigationStack';
 import NotFoundPage from '../../components/common/Page/NotFoundPage';
 
 /* Icons */
+import InvoiceIcon from '../../../assets/svg/invoices';
 import ScheduleIcon from '../../../assets/svg/schedule';
 import CaseFileIcon from '../../../assets/svg/caseFile';
 import TheatreIcon from '../../../assets/svg/theatre';
@@ -47,6 +48,8 @@ import {ROLES} from '../../const';
 import UserPageIcon from '../../../assets/svg/UserPageIcon';
 import UsersNavigationStack from './UsersNavigationStack';
 import ScheduleNavigationStack from "./ScheduleNavigationStack";
+import InvoicesNavigationStack from './InvoicesNavigationStack';
+
 
 const SuitesNavigator = createSuitesSidebarNavigator();
 
@@ -129,14 +132,14 @@ export const SuitesNavigationStack = ({auth = {}}) => {
                 }}
             />
 
-            {/* <SuitesNavigator.Screen
+            <SuitesNavigator.Screen
                 name="Invoices"
-                component={NotFound}
+                component={InvoicesNavigationStack}
                 initialParams={{
                     icon: InvoiceIcon,
                     tabName: 'Invoices',
                 }}
-            /> */}
+            />
 
             <SuitesNavigator.Screen
                 name="Storage"

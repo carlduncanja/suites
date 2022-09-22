@@ -81,9 +81,8 @@ import {
     archiveSuppliersEndpoint,
     restoreArchivedSuppliersEndpoint,
     updatePurchaseOrderDocument,
-    purchaseOrderInvoice, inventoryGroupsBulkUpload, proceduresUploadEndpoint, deleteCaseFileEndpoint
-
-
+    purchaseOrderInvoice, inventoryGroupsBulkUpload, proceduresUploadEndpoint, deleteCaseFileEndpoint,
+    invoicesEndpoint
 } from '../const/suitesEndpoints';
 import {createDocumentLink, documentById, documentData, documentUpload} from '../const/documentGenerationEndpoints';
 
@@ -798,5 +797,11 @@ export const getConfigurations = async () => suitesAxiosInstance
 
 export const updateBuffer = async time => suitesAxiosInstance
     .put(updateBufferEndpoint, time)
+    .then(handleResponse)
+    .catch(handleError);
+
+// ################# 
+export const getInvoices = async (query, max, page, invoiceId) => suitesAxiosInstance
+    .get(invoicesEndpoint, {params: {query, max, page, invoiceId}})
     .then(handleResponse)
     .catch(handleError);
