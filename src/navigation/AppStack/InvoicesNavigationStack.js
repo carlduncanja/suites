@@ -20,6 +20,26 @@ export default (props) => {
                 initialParams={{ isAdmin }}
             />
 
+            <Stack.Screen
+                name="InvoicesPage"
+                component={InvoicesPage}
+                options={{
+                    headerShown: false,
+                    headerLeft: (props) => (
+                        <HeaderBackComponent
+
+                            {...props}
+
+                        />
+                    ),
+                    headerStyle: {
+                        height: 100,
+                    },
+                    headerTitle: ""
+                }}
+                initialParams={{ isAdmin }}
+            />
+
         </Stack.Navigator>
     );
 }

@@ -22,30 +22,30 @@ import { LONG_PRESS_TIMER } from '../../const';
 import styled, { css } from '@emotion/native';
 import ListItem from '../../components/common/List/ListItem';
 import _ from 'lodash';
+import InvoicesPage from './InvoicesPage';
 
 // here
  const listHeaders = [
     {
         name: 'Invoices',
-        alignment: 'center',
+        alignment: 'flext-start',
         flex: 1
     },
 
     {
         name: 'Status',
-        alignment: 'center',
-        flex: 1,
+        alignment: 'left'
     },
 
     {
         name: 'Delivery Date',
-        alignment: 'center',
+        alignment: 'flext-start',
         flex: 1
     } ,
 
     {
         name: 'Supplier',
-        alignment: 'center',
+        alignment: 'flext-start',
         flex: 1.5
     }
 ];  
@@ -180,33 +180,36 @@ function Invoices(props) {
             });
     }; 
 
+    // here
     const invoiceItem = ({ name, status, deliveryDate, supplier, transfers }) => (
         <>
             <RightBorderDataItem
                 fontStyle={'--text-base-regular'}
                 color={'--color-gray-800'}
                 text={name}
-                align="center"
+                align="flext-start"
                 flex={1}
             />
             <DataItem
                 fontStyle={'--text-base-medium'}
                 color={'--color-gray-800'}
                 text={status}
-                align="center"
+                align="flext-start"
                 flex={1}
             />
             <DataItem
                 fontStyle={'--text-base-medium'}
                 color={'--color-blue-600'}
-                align="center"
+                align="flext-start"
                 text={deliveryDate}
+                flex={1}
             /> 
             <DataItem
                 fontStyle={'--text-base-medium'}
                 color={'--color-blue-600'}
-                align="center"
+                align="flext-start"
                 text={supplier}
+                flex={1}
             />
         </>
     );
@@ -231,10 +234,22 @@ function Invoices(props) {
         return <ListItem
             isChecked={selectedIds.includes(item._id)}
             onCheckBoxPress={() => onCheckBoxPress(item)}
-            onItemPress={() => console.log('asda')}
+            onItemPress={() => handleOnItemPress(item, false)}
             itemView={itemView}
         />;
     };
+
+    const handleOnItemPress = (item, isOpenEditable) => {
+        props.navigation.navigate("InvoicesPage", {
+            initial: false,
+            invoiceItem: item,
+            isEditable: isOpenEditable,
+            updateInvoices: () => {
+                onRefresh();
+            }
+        });
+    } 
+
     const onCheckBoxPress = item => {
         const { _id } = item;
 
