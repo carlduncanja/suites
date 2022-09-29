@@ -119,4 +119,5 @@ export const configEndpoint = '/configurations';
 export const updateBufferEndpoint = '/configurations/buffer';
 
 // #### INVOICES
-export const invoicesEndpoint =  '/invoices';
+export const invoicesEndpoint =  '/invoices';   
+export const invoiceEndpoint= id =>`./invioces/${id}`

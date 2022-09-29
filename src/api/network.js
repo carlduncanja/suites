@@ -809,4 +809,9 @@ export const getInvoices = async (query, max, page, invoiceId) => suitesAxiosIns
 export const deleteInvoices = async (item) => suitesAxiosInstance
     .put(invoicesEndpoint, item)
     .then(handleResponse)
+    .catch(handleError);  
+    
+export const getInvoiceById = async id => suitesAxiosInstance
+    .get(purchaseOrderEndpoint(id))
+    .then(handleResponse)
     .catch(handleError);

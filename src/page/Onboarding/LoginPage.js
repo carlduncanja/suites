@@ -57,7 +57,8 @@ function LoginPage({navigation, signIn, expoPushToken}) {
     // throws error if not
     const onLoginButtonPress = () => {
         if (!isFormFieldsValid()) return;
-
+        //console.log(fields) 
+        
         setLoading(true);
         login(fields.email, fields.password, expoPushToken)
             .then(async data => {
