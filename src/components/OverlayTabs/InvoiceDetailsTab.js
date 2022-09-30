@@ -224,7 +224,7 @@ const InvoiceDetailsTab =({
                     /> 
                     <ResponsiveRecord
                                 recordTitle="Storage Location"
-                                recordValue={fields?.storageLocation || '--'}
+                                recordValue={'--'}
                             />
                     
 
