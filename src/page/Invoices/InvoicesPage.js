@@ -54,7 +54,8 @@ function InvoicesPage({ route, navigation }) {
         const {invoice =[]}=invoiceItem || {};
         setSelectedInvoice(invoiceItem)
         setInvoiceItems(invoice)
-        console.log("Gaza",invoice) 
+        //console.log("Gaza",invoiceItem) 
+        
         /*setPageLoading(true);
         getPurchaseOrderById(id)
             .then(data => {
@@ -71,18 +72,20 @@ function InvoicesPage({ route, navigation }) {
             })
             .finally(_ => {
                 setPageLoading(false)
-            })*/
+            })*/ 
+
+
     };
     
     const getTabContent = (selectedTab)=>{
          switch(selectedTab){
-            case 'Detials' :
+            case 'Details' :
                 return <InvoiceDetailsTab
                 invoice={selectedInvoice}
                 /> 
             case 'Items':
                 return <InvoiceItemTab
-                    invoice={orderItems}
+                    invoice={invoiceItem}
                     isEditMode={()=>console.log("")}
                     onItemChange={()=>console.log("")}
                     supplierId={()=>console.log("")}

@@ -119,14 +119,26 @@ const InvoiceItemTab = ({
             </>
         );
     };
+
+    const renderItemFn = (item, index) => (
+        <Item
+            hasCheckBox={true}
+            isChecked={selectedItems.includes(item._id)}
+            onCheckBoxPress={()=>console.log("")}
+            onItemPress={() => {
+            }}
+            itemView={listItemFormat(item, index)}
+        />
+    );
+
     let itemsToDisplay;
     if (searchValue) {
         itemsToDisplay = invoice.filter(order => order?.productId?.name.toLowerCase() || ''
             .includes(searchValue.toLowerCase() || order?.productId?.sku.toLowerCase() || ''
                 .includes(searchValue.toLowerCase())
             ));
-    } else itemsToDisplay = [...invoice];
-
+    } else itemsToDisplay = [{...invoice}];
+    
 
     itemsToDisplay = itemsToDisplay.slice(currentPageListMin, currentPageListMax);
 
@@ -144,7 +156,7 @@ const InvoiceItemTab = ({
                 listItemFormat={renderItemFn}
                 headers={headers}
                 isCheckbox={true}
-                toggleHeaderCheckbox={handleOnSelectAll}
+                toggleHeaderCheckbox={()=>console.log("")}
                 itemSelected={selectedItems}
             />
 
@@ -154,7 +166,7 @@ const InvoiceItemTab = ({
                 goToNextPage={goToNextPage}
                 goToPreviousPage={goToPreviousPage}
                 isDisabled={isFloatingActionDisabled}
-                toggleActionButton={toggleActionButton}
+                toggleActionButton={()=>console.log("")}
                 isNextDisabled={currentPagePosition >= totalPages}
                 isPreviousDisabled={(currentPagePosition === 1)}
             />

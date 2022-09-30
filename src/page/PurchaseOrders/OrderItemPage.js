@@ -242,6 +242,7 @@ function OrderItemPage({ route, navigation }) {
         getPurchaseOrderById(id)
             .then(data => {
                 const { orders = [] } = data || {};
+                
                 setSelectedOrder(data)
                 setOrderItems(orders)
             })

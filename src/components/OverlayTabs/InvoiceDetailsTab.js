@@ -43,7 +43,7 @@ const InvoiceDetailsTab =({
         purchaseOrder={},
         supplier={},
         description="",
-        total="",
+        total=0,
         amountDue="",
         lineItems="",
         equipmentList =[],
@@ -51,12 +51,15 @@ const InvoiceDetailsTab =({
         proceduresBillableItems=[],
         createdAt= "",
         updatedAt= "",
+        approvedBy = {},
+        receivedBy = {},
+        requestedBy = {}
     }=invoice
     
     const { representatives = [] } = supplier;
     const {storageLocation=""}=purchaseOrder
     
-    const [feilds,setFields]=useState({
+    const [fields,setFields]=useState({
         description,
         createdAt,
         storageLocation
@@ -169,11 +172,13 @@ const InvoiceDetailsTab =({
                         recordValue={fields['description']}
                         editMode={isEditMode}
                         recordPlaceholder={'No description available'}
-                        editable={true}
+                        editable={false}
                         useTextArea={true}
-                        onRecordUpdate={onFieldChange('description')}
+                        onRecordUpdate={() => {
+                            console.log("")
+                        }}
                         onClearValue={() => {
-                            onFieldChange('description')('')
+                            console.log("")
                         }}
                     />
                 </Row>
@@ -181,7 +186,7 @@ const InvoiceDetailsTab =({
                 <Row>
                     <ResponsiveRecord
                         recordTitle="Purchase Order ID"
-                        recordValue={invoice?.invoiceNumber || ""}
+                        recordValue={purchaseOrder?._id|| ""}
                     />
 
                     <Record
@@ -215,36 +220,12 @@ const InvoiceDetailsTab =({
                         onRecordUpdate={(date) => {
                             onFieldChange('deliveryDate')(date)
                         }}
-                    />
-
-                    {
-                        isEditMode
-                            ? <InputWrapper zIndex={3}>
-                                <InputLabelComponent label={'Storage Location'} />
-                                <SearchableOptionsField
-                                    value={fields.storageLocation}
-                                    text={locationSearchText}
-                                    options={locationSearchResults}
-                                    oneOptionsSelected={(value) => {
-                                        setLocationSearchResults([]);
-                                        setLocationSearchText('');
-                                        onFieldChange('storageLocation')(value)
-                                    }}
-                                    onClear={() => {
-                                        setLocationSearchResults([]);
-                                        setLocationSearchText('');
-                                        // onFieldChange('storageLocation')(value)
-                                        onFieldChange('storageLocation')()
-                                    }}
-                                    onChangeText={onLocationSearchTextUpdated}
-                                />
-                            </InputWrapper>
-                            : <ResponsiveRecord
+                    /> 
+                    <ResponsiveRecord
                                 recordTitle="Storage Location"
-                                recordValue={fields?.storageLocation?.name || '--'}
+                                recordValue={fields?.storageLocation || '--'}
                             />
-                    }
-
+                    
 
                 </Row>
 
