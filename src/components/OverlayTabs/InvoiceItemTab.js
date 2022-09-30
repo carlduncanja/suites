@@ -82,7 +82,8 @@ const InvoiceItemTab = ({
     const [selectedItems, setSelectedItems] = useState([]);
 
     useEffect(() => {
-        setTotalPages(Math.ceil(invoice.length / recordsPerPage));
+        setTotalPages(Math.ceil(invoice.length / recordsPerPage)); 
+        
     }, []);
 
     const goToNextPage = () => {
@@ -105,8 +106,9 @@ const InvoiceItemTab = ({
 
 
     const listItemFormat = (item, index) => {
-        const { amount = 0, productId = {} } = item;
-        const { name = '', sku = '', unitPrice = 0, unit = '' } = productId || {};
+       
+        const { amount = 0, name = '', sku = '', unitPrice = 0, unit = ''} = item;
+        //const { name = '', sku = '', unitPrice = 0, unit = '' } = productId || {};
 
         return (
             <>
@@ -137,7 +139,7 @@ const InvoiceItemTab = ({
             .includes(searchValue.toLowerCase() || order?.productId?.sku.toLowerCase() || ''
                 .includes(searchValue.toLowerCase())
             ));
-    } else itemsToDisplay = [{...invoice}];
+    } else itemsToDisplay = [...invoice.productList];
     
 
     itemsToDisplay = itemsToDisplay.slice(currentPageListMin, currentPageListMax);

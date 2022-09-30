@@ -53,7 +53,8 @@ const InvoiceDetailsTab =({
         updatedAt= "",
         approvedBy = {},
         receivedBy = {},
-        requestedBy = {}
+        requestedBy = {},
+       
     }=invoice
     
     const { representatives = [] } = supplier;
@@ -186,7 +187,7 @@ const InvoiceDetailsTab =({
                 <Row>
                     <ResponsiveRecord
                         recordTitle="Purchase Order ID"
-                        recordValue={purchaseOrder?._id|| ""}
+                        recordValue={purchaseOrder?.purchaseOrderNumber|| ""}
                     />
 
                     <Record
