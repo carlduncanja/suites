@@ -7,6 +7,7 @@ import {setInvoices} from '../../redux/actions/invoicesActions';
 import {PageSettingsContext} from '../../contexts/PageSettingsContext';
 import { deleteInvoices, getInvoices } from '../../api/network';
 import { useNextPaginator, usePreviousPaginator, selectAll, checkboxItemPress, handleUnauthorizedError } from '../../helpers/caseFilesHelpers';
+import { formatDate } from "../../utils/formatter"
 
 import ActionContainer from '../../components/common/FloatingAction/ActionContainer';
 import ActionItem from '../../components/common/ActionItem';
@@ -201,7 +202,8 @@ function Invoices(props) {
                 fontStyle={'--text-base-medium'}
                 color={'--color-blue-600'}
                 align="flext-start"
-                text={deliveryDate}
+                text={ formatDate(deliveryDate, 'DD/MM/YYYY')}
+                //text={deliveryDate}
                 flex={1}
             /> 
             <DataItem

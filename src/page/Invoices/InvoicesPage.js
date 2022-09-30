@@ -40,7 +40,7 @@ function InvoicesPage({ route, navigation }) {
     useEffect(() => {
 
         if (pageState.isEditMode) {
-            baseStateRef.current = orderItems // save the base state for as we enter edit mode.
+            baseStateRef.current = invoiceItem // save the base state for as we enter edit mode.
         }
 
         if (pageState.isEditMode === false && isUpdateDone) {

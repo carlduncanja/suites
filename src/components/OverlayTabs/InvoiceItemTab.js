@@ -71,7 +71,7 @@ const InvoiceItemTab = ({
 
     const recordsPerPage = 15;
 
-    const [isFloatingActionDisabled, setFloatingAction] = useState(false);
+    const [isFloatingActionDisabled, setFloatingAction] = useState(true);
 
     const [totalPages, setTotalPages] = useState(0);
     const [currentPageListMin, setCurrentPageListMin] = useState(0);
