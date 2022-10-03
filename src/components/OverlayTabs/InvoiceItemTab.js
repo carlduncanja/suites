@@ -106,8 +106,8 @@ const InvoiceItemTab = ({
 
 
     const listItemFormat = (item, index) => {
-       
-        const { amount = 0, name = '', sku = '', unitPrice = 0, unit = ''} = item;
+        console.log("girls",item)
+        const { amount = 0, name = '', sku = '', unitPrice = 0, unit = '',quantity=0} = item;
         //const { name = '', sku = '', unitPrice = 0, unit = '' } = productId || {};
 
         return (
@@ -115,7 +115,7 @@ const InvoiceItemTab = ({
                 <DataItem text={name} flex={2} fontStyle="--text-base-medium" color="--color-blue-600" />
                 <DataItem text={sku === '' ? 'n/a' : sku} align="center" flex={1} fontStyle="--text-base-medium" color="--color-gray-800" />
 
-                <DataItem text={unit} align="center" flex={1} fontStyle="--text-base-medium" color="--color-gray-800" />
+                <DataItem text={quantity} align="center" flex={1} fontStyle="--text-base-medium" color="--color-gray-800" />
                 <DataItem text={`$ ${currencyFormatter(unitPrice)}`} align="flex-end" flex={1} fontStyle="--text-base-medium" color="--color-gray-800" />
 
             </>
@@ -123,6 +123,7 @@ const InvoiceItemTab = ({
     };
 
     const renderItemFn = (item, index) => (
+        
         <Item
             hasCheckBox={true}
             isChecked={selectedItems.includes(item._id)}

@@ -82,7 +82,7 @@ import {
     restoreArchivedSuppliersEndpoint,
     updatePurchaseOrderDocument,
     purchaseOrderInvoice, inventoryGroupsBulkUpload, proceduresUploadEndpoint, deleteCaseFileEndpoint,
-    invoicesEndpoint
+    invoicesEndpoint,invoiceEndpoint,updateInvoiceDetailsEndpoint
 } from '../const/suitesEndpoints';
 import {createDocumentLink, documentById, documentData, documentUpload} from '../const/documentGenerationEndpoints';
 
@@ -812,6 +812,19 @@ export const deleteInvoices = async (item) => suitesAxiosInstance
     .catch(handleError);  
     
 export const getInvoiceById = async id => suitesAxiosInstance
-    .get(purchaseOrderEndpoint(id))
+    .get(invoiceEndpoint(id))
     .then(handleResponse)
     .catch(handleError);
+
+export const updateInvoiceDetails= async (invoiceId,data)=>suitesAxiosInstance
+    .put(updateInvoiceDetailsEndpoint(invoiceId),data)
+    .then(handleResponse)
+    .catch(handleError) 
+
+
+
+
+
+
+
+    

@@ -120,4 +120,5 @@ export const updateBufferEndpoint = '/configurations/buffer';
 
 // #### INVOICES
 export const invoicesEndpoint =  '/invoices';   
-export const invoiceEndpoint= id =>`./invioces/${id}`
+export const invoiceEndpoint = id =>`/invoices/${id}`; 
+export const updateInvoiceDetailsEndpoint= id => `/invoices/${id}`

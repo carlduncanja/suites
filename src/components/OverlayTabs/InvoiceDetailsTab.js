@@ -12,7 +12,7 @@ import styled, { css } from '@emotion/native';
 import { useTheme } from 'emotion-theming';
 import { PageContext } from "../../contexts/PageContext";
 import ConfirmationComponent from '../ConfirmationComponent';
-import { getStorage, updatePurchaseOrder, updatePurchaseOrderDetails } from '../../api/network';
+import { updateInvoiceDetails} from '../../api/network';
 import { useModal } from "react-native-modalfy";
 import FieldContainer from "../common/FieldContainerComponent";
 import InputWrapper from "../common/Input Fields/InputWrapper";
@@ -104,29 +104,6 @@ const InvoiceDetailsTab =({
         }
     }, [pageState.isEditMode])
     
-    useEffect(() => {
-        if (!locationSearchResults) {
-            // empty search values and cancel any out going request.
-            setLocationSearchResults([]);
-            if (searchLocationQuery.cancel) searchLocationQuery.cancel();
-            return;
-        }
-
-        // wait 300ms before search. cancel any prev request before executing current.
-
-        const search = _.debounce(fetchStorageLocation, 300);
-
-        setSearchLocationQuery((prevSearch) => {
-            if (prevSearch && prevSearch.cancel) {
-                prevSearch.cancel();
-            }
-            return search;
-        });
-
-        search();
-    }, [locationSearchText]); 
-
-
 
     const onFieldChange = (fieldName) => (value) => {
         setFields({
@@ -134,6 +111,11 @@ const InvoiceDetailsTab =({
             [fieldName]: value
         });
         setUpdated(true);
+    }; 
+
+    const resetState = () => {
+        setFields(baseStateRef.current);
+        setUpdated(false);
     };
 
     const handleDetailsUpdate = () => {
@@ -161,7 +143,62 @@ const InvoiceDetailsTab =({
                     modal.closeModals('ConfirmationModal')
                 }
             })
-    } 
+    }  
+
+    const updateDetails =()=>{
+        let updatedField={
+            ...fields,
+            description: fields["description"]
+        } 
+        updateInvoiceDetails(_id,updatedField)
+        .then(_ =>{
+            console.log("Sucess")
+            modal.openModal('ConfirmationModal',
+                    {
+                        content: <ConfirmationComponent
+                            isError={false}
+                            isEditUpdate={false}
+                            onAction={() => {
+                                modal.closeModals('ConfirmationModal')
+                            }}
+                            onCancel={() => {
+                                modal.closeModals('ConfirmationModal')
+                            }}
+                        />
+                        , onClose: () => {
+                            modal.closeModals('ConfirmationModal')
+                        }
+                    })
+        }) 
+        .catch(error => {
+            console.log("Update Invioce description error: ", error);
+            modal.openModal('ConfirmationModal',
+                {
+                    content: <ConfirmationComponent
+                        isError={isError}
+                        isEditUpdate={false}
+                        onAction={() => {
+                            modal.closeModals('ConfirmationModal')
+                        }}
+
+                        onCancel={() => {
+                            setPageState({
+                                ...pageState,
+                                isEditMode: true
+                            });
+                            modal.closeModals('ConfirmationModal')
+                        }}
+                    />
+                    ,
+                    onClose: () => {
+                        modal.closeModals('ConfirmationModal')
+                    }
+                })
+        }) 
+        .finally(_ => {
+            onUpdate()
+        })
+    }
 
     return (
         <>
@@ -173,13 +210,11 @@ const InvoiceDetailsTab =({
                         recordValue={fields['description']}
                         editMode={isEditMode}
                         recordPlaceholder={'No description available'}
-                        editable={false}
+                        editable={true}
                         useTextArea={true}
-                        onRecordUpdate={() => {
-                            console.log("")
-                        }}
+                        onRecordUpdate={onFieldChange('description')}
                         onClearValue={() => {
-                            console.log("")
+                            onFieldChange('description')('')
                         }}
                     />
                 </Row>
@@ -210,17 +245,7 @@ const InvoiceDetailsTab =({
 
                     <Record
                         recordTitle="Delivered On"
-                        recordValue={isEditMode ? fields['deliveryDate'] : formatDate(updatedAt, 'DD/MM/YYYY')}
-                        editMode={isEditMode}
-                        editable={true}
-                        useDateField={true}
-                        minDate={new Date()}
-                        onClearValue={() => {
-                            onFieldChange('deliveryDate')('')
-                        }}
-                        onRecordUpdate={(date) => {
-                            onFieldChange('deliveryDate')(date)
-                        }}
+                        recordValue={ formatDate(updatedAt, 'DD/MM/YYYY')}
                     /> 
                     <ResponsiveRecord
                                 recordTitle="Storage Location"
