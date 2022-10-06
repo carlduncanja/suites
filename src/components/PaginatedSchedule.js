@@ -1,11 +1,21 @@
-import React, {Component, useState, useEffect} from 'react';
-import {getAppointments} from '../api/network';
+import React, { Component, useState, useEffect} from 'react';
+import {View, StyleSheet, Text, FlatList, ScrollView} from 'react-native';
+import { getAppointments,getAppointmentRequest } from '../api/network';
 import SchedulePaginator from './common/Paginators/SchedulePaginator';
 import ScheduleDisplayComponent from './ScheduleDisplay/ScheduleDisplayComponent';
-import {formatDate} from '../utils/formatter';
+import { formatDate } from '../utils/formatter';
 import moment from "moment";
+import { useModal } from 'react-native-modalfy';
+import { useTheme } from 'emotion-theming';
+import ActionContainer from '../components/common/FloatingAction/ActionContainer';
+import LongPressWithFeedback from '../components/common/LongPressWithFeedback';
+import ActionItem from '../components/common/ActionItem';
+import WasteIcon from '../../assets/svg/wasteIcon';
+import AddIcon from '../../assets/svg/addIcon';
+import { LONG_PRESS_TIMER } from '../const';
+import NewProcedureOverlayContainer from '../page/Schedule/SchedulePage/NewProcedureOverlayContainer';
 
-function PaginatedSchedule({ID, isPhysician}) {
+function PaginatedSchedule({ ID, isPhysician }) {
     const weekday = new Array(7);
     weekday[0] = 'Sunday';
     weekday[1] = 'Monday';
@@ -18,22 +28,22 @@ function PaginatedSchedule({ID, isPhysician}) {
     const dateFormatter = item => {
         const datetobePassed =
             `${weekday[item.getDay()]
-            } ${
-                item.getFullYear()
-            }/${
-                item.getMonth() + 1
-            }/${
-                item.getDate()}`;
+            } ${item.getFullYear()
+            }/${item.getMonth() + 1
+            }/${item.getDate()}`;
         // console.log("The new formatted date is:", datetobePassed);
         return datetobePassed;
     };
-
+    const modal = useModal();
+    const theme = useTheme();
+    
     const [relevantAppointment, setrelevantApppointments] = useState([]);
     const [isFetchingAppointment, setFetchingAppointment] = useState(false);
     const [dateObj, setdateObj] = useState(new Date());
     const [testDate, settestDate] = useState(new Date());
-
+    const [isFloatingActionDisabled, setFloatingAction] = useState(false);
     const [alteredDate, setalteredDate] = useState(dateFormatter(dateObj));
+    const [currentAppointment, setCurrentAppointment] = useState({});
 
     // console.log("Altered date: ", typeof alteredDate);
     // console.log("Moment Altered date: ", typeof formatDate(dateObj, 'dddd MMM/D/YYYY'));
@@ -64,15 +74,24 @@ function PaginatedSchedule({ID, isPhysician}) {
 
     const fetchAppointments = (id, datePassed = new Date()) => {
         setFetchingAppointment(true);
-
-        getAppointments('', !isPhysician ? id : '', datePassed, datePassed, '', !isPhysician ? '' : id)
+        
+        let tommorrow= new Date(datePassed);
+        tommorrow=tommorrow.setDate(tommorrow.getDate()+1)
+        
+        let fromDate=formatDate(datePassed, 'YYYY/MM/DD');
+        let toDate=formatDate(tommorrow, 'YYYY/MM/DD') 
+        
+        console.log("date passed",fromDate,toDate,id)
+        
+        getAppointments("","",fromDate,toDate,'',id)
             .then(data => {
                 //console.log("Objected values:", Object.values(data));
                 console.log('The appointment data received is:', data);
                 relevantAppointment.length = 0;
+                //console.log("data visualization", relevantAppointment)
 
                 const appointmentData = data.map(item => {
-                    let modifiedAppointment = {...item};
+                    let modifiedAppointment = { ...item };
                     let today = new Date();
                     // const mm = moment(item.startTime);
                     const start = moment(modifiedAppointment.startTime);
@@ -84,7 +103,7 @@ function PaginatedSchedule({ID, isPhysician}) {
                         modifiedAppointment.type = 3;
                     } else (isActive) ? (modifiedAppointment.type = 0) : (modifiedAppointment.type = 1);
 
-                    return {...modifiedAppointment,}
+                    return { ...modifiedAppointment, }
                 })
 
                 setrelevantApppointments(relevantAppointment.concat(appointmentData));
@@ -95,14 +114,74 @@ function PaginatedSchedule({ID, isPhysician}) {
             .finally(_ => {
                 setFetchingAppointment(false);
             });
-    };
+    }; 
+    
+    const toggleActionButton=()=>{
+        setFloatingAction(true);
+        modal.openModal("ActionContainerModal",{
+            title: "INVOICE ACTIONS",
+            actions: getFabActions(),
+            onClose: () => {
+                setFloatingAction(false);
+            },
+        })
+    } 
+
+    const getFabActions = () => {
+        const isDisabled = false;
+        const deleteAction = (
+            <View style={{ borderRadius: 6, flex: 1, overflow: 'hidden' }}>
+                <LongPressWithFeedback
+                    pressTimer={LONG_PRESS_TIMER.LONG}
+                    onLongPress={console.log()}
+                    isDisabled={isDisabled}
+                >
+                    <ActionItem
+                        title="Hold to Delete"
+                        icon={<WasteIcon strokeColor={isDisabled ? theme.colors['--color-gray-600'] : theme.colors['--color-red-700']} />}
+                        onPress={() => {
+                        }}
+                        touchable={false}
+                        disabled={isDisabled}
+                    />
+                </LongPressWithFeedback>
+            </View>
+        );
+        const addWorkItem =(<ActionItem title="Add Work Item" icon={<AddIcon />} onPress={handleNewProcedurePress} />);
+        
+        return <ActionContainer
+            floatingActions={[
+                deleteAction,
+                addWorkItem 
+            ]}
+            title="SCHEDULE ACTIONS"
+        />;
+    };  
+    
+    const handleNewProcedurePress= procedure => {
+        console.log("here")
+        modal.openModal('BottomSheetModal', {
+            content: <NewProcedureOverlayContainer />,
+            initialSnap: 2,
+            snapPoints: [600, 500, 0]
+        }); 
+
+    }; 
+
+    
 
     return (
         <>
-            <ScheduleDisplayComponent appointments={Array.from(relevantAppointment)} date={alteredDate}/>
+            <ScheduleDisplayComponent appointments={Array.from(relevantAppointment)} date={alteredDate} />
 
-            <SchedulePaginator date={formatDate(dateObj, 'dddd MMM / D / YYYY')} goToPreviousDay={goToPreviousDayApp}
-                               goToNextDay={goToNextDayApp}/>
+            <SchedulePaginator date={formatDate(dateObj, 'dddd MMM / D / YYYY')} 
+            goToPreviousDay={goToPreviousDayApp}
+            goToNextDay={goToNextDayApp} 
+            toggleActionButton={toggleActionButton}
+            />  
+            
+            
+
 
         </>
     );

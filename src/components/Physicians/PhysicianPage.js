@@ -11,7 +11,7 @@ import BottomSheetContainer from '../common/BottomSheetContainer';
 import {getAppointments, getPhysicianById, updatePhysician} from '../../api/network';
 import PaginatedSchedule from '../PaginatedSchedule';
 import {colors} from '../../styles';
-
+import Footer from "../common/Page/Footer";
 import {updatePhysicianRecord} from '../../redux/actions/physiciansActions';
 import {PageContext} from '../../contexts/PageContext';
 import DetailsPage from '../common/DetailsPage/DetailsPage';
@@ -63,7 +63,7 @@ function PhysicianPage({route, navigation}) {
     // ##### Lifecycle Methods
     useEffect(() => {
         fetchPhysician(_id);
-        console.log('and mek yuh touch yuh tonsil');
+        //console.log('and mek yuh touch yuh tonsil');
     }, []);
 
     useEffect(() => {
@@ -231,6 +231,7 @@ function PhysicianPage({route, navigation}) {
         setPageLoading(true);
         getPhysicianById(id)
             .then(data => {
+                console.log("Docter Data",data)
                 setSelectedPhysician(data);
 
                 const {firstName, surname} = data;
@@ -292,6 +293,7 @@ function PhysicianPage({route, navigation}) {
                     headerChildren={[name]}
                     onBackPress={backTapped}
                     isArchive={getIsEditable()}
+                   
                     pageTabs={(
                         <TabsContainer
                             tabs={currentTabs}
@@ -303,7 +305,9 @@ function PhysicianPage({route, navigation}) {
 
                     {getTabContent(currentTab)}
 
-                </DetailsPage>
+                </DetailsPage> 
+                
+
             </PageContext.Provider>
         </>
     );
