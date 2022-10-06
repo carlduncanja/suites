@@ -81,9 +81,8 @@ import {
     archiveSuppliersEndpoint,
     restoreArchivedSuppliersEndpoint,
     updatePurchaseOrderDocument,
-    purchaseOrderInvoice, inventoryGroupsBulkUpload, proceduresUploadEndpoint, deleteCaseFileEndpoint
-
-
+    purchaseOrderInvoice, inventoryGroupsBulkUpload, proceduresUploadEndpoint, deleteCaseFileEndpoint,
+    invoicesEndpoint,invoiceEndpoint,updateInvoiceDetailsEndpoint
 } from '../const/suitesEndpoints';
 import {createDocumentLink, documentById, documentData, documentUpload} from '../const/documentGenerationEndpoints';
 
@@ -800,3 +799,32 @@ export const updateBuffer = async time => suitesAxiosInstance
     .put(updateBufferEndpoint, time)
     .then(handleResponse)
     .catch(handleError);
+
+// ################# Invoices Endpoints
+export const getInvoices = async (query, max, page, invoiceId) => suitesAxiosInstance
+    .get(invoicesEndpoint, {params: {query, max, page, invoiceId}})
+    .then(handleResponse)
+    .catch(handleError);
+
+export const deleteInvoices = async (item) => suitesAxiosInstance
+    .put(invoicesEndpoint, item)
+    .then(handleResponse)
+    .catch(handleError);  
+    
+export const getInvoiceById = async id => suitesAxiosInstance
+    .get(invoiceEndpoint(id))
+    .then(handleResponse)
+    .catch(handleError);
+
+export const updateInvoiceDetails= async (invoiceId,data)=>suitesAxiosInstance
+    .put(updateInvoiceDetailsEndpoint(invoiceId),data)
+    .then(handleResponse)
+    .catch(handleError) 
+
+
+
+
+
+
+
+    
