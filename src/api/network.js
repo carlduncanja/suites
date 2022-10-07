@@ -191,7 +191,13 @@ export const deleteAppointmentById = async id => suitesAxiosInstance
 export const updateAppointmentById = async (id, data) => suitesAxiosInstance
     .put(appointmentEndpoint(id), data)
     .then(handleResponse)
-    .catch(handleError);
+    .catch(handleError); 
+
+
+export const createAppointment = async (data) => suitesAxiosInstance
+.post(appointmentEndpoint,data)
+.then(handleResponse)
+.catch(handleError)
 
 export const searchSchedule = async query => {
     if (!query) return []; //  don't search for empty string;

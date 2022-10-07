@@ -13,7 +13,7 @@ import ActionItem from '../components/common/ActionItem';
 import WasteIcon from '../../assets/svg/wasteIcon';
 import AddIcon from '../../assets/svg/addIcon';
 import { LONG_PRESS_TIMER } from '../const';
-import NewProcedureOverlayContainer from '../page/Schedule/SchedulePage/NewProcedureOverlayContainer';
+import CreateWorkItemDialogContainer from '../components/Physicians/CreateWorkItemDialog'
 
 function PaginatedSchedule({ ID, isPhysician }) {
     const weekday = new Array(7);
@@ -160,12 +160,14 @@ function PaginatedSchedule({ ID, isPhysician }) {
     
     const handleNewProcedurePress= procedure => {
         console.log("here")
-        modal.openModal('BottomSheetModal', {
-            content: <NewProcedureOverlayContainer />,
-            initialSnap: 2,
-            snapPoints: [600, 500, 0]
-        }); 
-
+        modal.openModal('OverlayModal', {
+            content: (<CreateWorkItemDialogContainer
+                onCancel={() => setFloatingAction(false)}
+                addWorkItem={{"id":ID}}
+            />),
+            onClose: () => setFloatingAction(false)
+        });
+        
     }; 
 
     

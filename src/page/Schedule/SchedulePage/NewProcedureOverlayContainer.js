@@ -1,29 +1,29 @@
-import React, {useState, useEffect} from 'react';
-import {View, StyleSheet, Text} from 'react-native';
-import {MenuOptions, MenuOption} from 'react-native-popup-menu';
+import React, { useState, useEffect } from 'react';
+import { View, StyleSheet, Text } from 'react-native';
+import { MenuOptions, MenuOption } from 'react-native-popup-menu';
 import InputField2 from '../../../components/common/Input Fields/InputField2';
 import DateInputField from '../../../components/common/Input Fields/DateInputField';
 import OptionsField from '../../../components/common/Input Fields/OptionsField';
-import {getTheatres, createPhysician, createTheatre, createNewProcedure, updateCaseFile, updateAppointmentById, updatePatient as patientUpdater, getUsersCall} from '../../../api/network';
+import { getTheatres, createPhysician, createTheatre, createNewProcedure, updateCaseFile, updateAppointmentById, updatePatient as patientUpdater, getUsersCall } from '../../../api/network';
 import styled, { css } from '@emotion/native';
 import { useTheme } from 'emotion-theming';
-import {createCaseFile} from '../../../api/network'
-import {addCaseFile} from '../../../redux/actions/caseFilesActions';
+import { createCaseFile } from '../../../api/network'
+import { addCaseFile } from '../../../redux/actions/caseFilesActions';
 import SearchableOptionsField from '../../../components/common/Input Fields/SearchableOptionsField';
 import _, { reduce, set } from "lodash";
-import {getProcedures, getPhysicians, getCaseFileById} from '../../../api/network';
+import { getProcedures, getPhysicians, getCaseFileById } from '../../../api/network';
 import moment from 'moment';
-import {useModal} from 'react-native-modalfy';
+import { useModal } from 'react-native-modalfy';
 import ConfirmationComponent from '../../../components/ConfirmationComponent';
 import ActionItem from '../../../components/common/ActionItem';
 import AddIcon from '../../../../assets/svg/addIcon';
 import { appointments } from '../../../../data/Appointments';
 
-function NewProcedureOverlayContainer({appointment={}, editMode=false}) {
-    
+function NewProcedureOverlayContainer({ appointment = {}, editMode = false }) {
+
     const theme = useTheme();
     const modal = useModal();
-    const [patientID, setPatientID] = useState(appointment.item !== undefined ? appointment.item.case.patient._id  : "Patient ID:--")
+    const [patientID, setPatientID] = useState(appointment.item !== undefined ? appointment.item.case.patient._id : "Patient ID:--")
     const [patientValue, setPatient] = useState(undefined);
     const [searchPatientValue, setSearchPatientValue] = useState("");
     const [searchPatientResult, setSearchPatientResult] = useState([]);
@@ -38,7 +38,7 @@ function NewProcedureOverlayContainer({appointment={}, editMode=false}) {
     const [searchLocationValue, setSearchLocationValue] = useState("");
     const [searchLocationResult, setSearchLocationResult] = useState([]);
     const [searchLocationQuery, setSearchLocationQuery] = useState({});
-    
+
     const [searchValue, setSearchValue] = useState('')
     const [searchQuery, setSearchQuery] = useState({})
     const [searchResult, setSearchResults] = useState([]);
@@ -61,8 +61,8 @@ function NewProcedureOverlayContainer({appointment={}, editMode=false}) {
     const RowWrapper = styled.View`
     flex-direction: row;
     justify-content: space-between;
-    margin-bottom: ${({theme}) => theme.space['--space-20']};
-    z-index: ${({zIndex}) => zIndex};
+    margin-bottom: ${({ theme }) => theme.space['--space-20']};
+    z-index: ${({ zIndex }) => zIndex};
 `
 
     const InputWrapper = styled.View`
@@ -70,7 +70,7 @@ function NewProcedureOverlayContainer({appointment={}, editMode=false}) {
         flex-direction: row;
         justify-content: space-between;
         align-items: center;
-        z-index: ${({zIndex}) => zIndex};
+        z-index: ${({ zIndex }) => zIndex};
     `
 
     const NewProcedureButton = styled.TouchableOpacity`
@@ -100,12 +100,12 @@ function NewProcedureOverlayContainer({appointment={}, editMode=false}) {
     // manual case creation o,o
     const [patientFields, setPatientFields] = useState();
 
-    const [staffInfo, setStaffInfo]  = useState([]);
+    const [staffInfo, setStaffInfo] = useState([]);
 
     const [caseProceduresInfo, setCaseProceduresInfo] = useState([]);
     const [isComplete, setComplete] = useState(false);
     const [fields, setFields] = useState({
-        firstName : '',
+        firstName: '',
         surname: '',
         procedure: '',
         location: '',
@@ -117,7 +117,7 @@ function NewProcedureOverlayContainer({appointment={}, editMode=false}) {
         setFields({
             ...fields,
             [fieldName]: value,
-            id : selectedItem._id || '',
+            id: selectedItem._id || '',
         });
     };
 
@@ -140,13 +140,13 @@ function NewProcedureOverlayContainer({appointment={}, editMode=false}) {
         const locationCheck = location;
         const procedureCheck = procedure;
         const staffCheck = staffInfo.length
-       
-        if(locationCheck !== undefined &&
-            procedureCheck !== undefined && 
+
+        if (locationCheck !== undefined &&
+            procedureCheck !== undefined &&
             staffCheck >= 4
         ) {
             foundInvalidField = true;
-        
+
         }
 
         else {
@@ -164,11 +164,11 @@ function NewProcedureOverlayContainer({appointment={}, editMode=false}) {
         }
 
         else {
-            modal.openModal('ConfirmationModal',{
+            modal.openModal('ConfirmationModal', {
                 content: <ConfirmationComponent
                     isError={false}
                     isEditUpdate={true}
-                    onCancel={() => modal.closeModals('ConfirmationModal') }
+                    onCancel={() => modal.closeModals('ConfirmationModal')}
                     onAction={() => {
                         setAllowedToSubmit(true);
                         modal.closeModals("ConfirmationModal")
@@ -178,163 +178,163 @@ function NewProcedureOverlayContainer({appointment={}, editMode=false}) {
                 />
             })
         }
-        
-        
+
+
     }
 
     useEffect(() => {
-        if(allowedToSubmit) {
+        if (allowedToSubmit) {
             const nameToken = fields.firstName.split(" ");
 
-        // size 1 ? firstname
-        if(nameToken.length === 1) {
-            patientFields.firstName = nameToken[0];
-            patientFields.middleName = " ";
-            patientFields.surname = " ";
-        }
-        // size 2 ? firstname lastname
-        if(nameToken.length === 2) {
-            patientFields.firstName = nameToken[0];
-            patientFields.middleName = " ";
-            patientFields.surname = nameToken[1];
-        }
-        // size 3 ? firstname middlename lastname
-        if(nameToken.length === 3) {
-            patientFields.firstName = nameToken[0];
-            patientFields.middleName = nameToken[1];
-            patientFields.surname = nameToken[2]
-        }
-
-        // size > 3 ? firstname middlename... lastname 
-        if(nameToken.length > 3) {
-            patientFields.firstName = nameToken[0]
-            patientFields.surname = nameToken[nameToken.length - 1];
-            patientFields.middleName = nameToken.slice(1, nameToken.length - 1).join(' ')
-        }
-
-        const caseFileData = {
-            name: `${patientFields.firstName} ${patientFields.middleName} ${patientFields.surname}`,
-            patient: {
-                firstName: patientFields.firstName,
-                middleName: patientFields.middleName,
-                surname: patientFields.surname
-            },
-            caseProcedures: [],
-            staff: {
-                physicians: [],
-                nurses: [],
-            },
-        };
-
-        // adding patient info
-        caseFileData.patient = patientFields;
-        
-        // adding staff info
-        for (const staffInfoElement of staffInfo) {
-            if (staffInfoElement.type === 'Physician') {
-                caseFileData.staff.physicians.push(staffInfoElement._id);
-            } else {
-                caseFileData.staff.nurses.push(staffInfoElement._id);
+            // size 1 ? firstname
+            if (nameToken.length === 1) {
+                patientFields.firstName = nameToken[0];
+                patientFields.middleName = " ";
+                patientFields.surname = " ";
             }
-        }
-        let leadDoc = "";
-        let leadObj = {};
-        staffInfo.filter(item => {
-            if(item.tag === "Lead Surgeon") {
-                leadDoc = item.name;
-                leadObj = item;
+            // size 2 ? firstname lastname
+            if (nameToken.length === 2) {
+                patientFields.firstName = nameToken[0];
+                patientFields.middleName = " ";
+                patientFields.surname = nameToken[1];
             }
-            
-        })
+            // size 3 ? firstname middlename lastname
+            if (nameToken.length === 3) {
+                patientFields.firstName = nameToken[0];
+                patientFields.middleName = nameToken[1];
+                patientFields.surname = nameToken[2]
+            }
 
-        let updatedLocation = "";
+            // size > 3 ? firstname middlename... lastname 
+            if (nameToken.length > 3) {
+                patientFields.firstName = nameToken[0]
+                patientFields.surname = nameToken[nameToken.length - 1];
+                patientFields.middleName = nameToken.slice(1, nameToken.length - 1).join(' ')
+            }
 
-        if(location === undefined) {
-            updatedLocation = "5ea05a3886d32b41d5b291e7"
-        }
+            const caseFileData = {
+                name: `${patientFields.firstName} ${patientFields.middleName} ${patientFields.surname}`,
+                patient: {
+                    firstName: patientFields.firstName,
+                    middleName: patientFields.middleName,
+                    surname: patientFields.surname
+                },
+                caseProcedures: [],
+                staff: {
+                    physicians: [],
+                    nurses: [],
+                },
+            };
 
-        else {
-            updatedLocation = location._id
-        }
+            // adding patient info
+            caseFileData.patient = patientFields;
 
-        caseFileData.staff.leadPhysician = leadObj;
-        caseFileData.caseProcedures = [{
-            procedure: procedure !== undefined ? procedure._id : "5ea05a3886d32b41d5b291e7",
-            location: updatedLocation,
-            startTime: procedure?.startTime || startTime,
-            duration: procedure?.duration || 2,
-        }];
+            // adding staff info
+            for (const staffInfoElement of staffInfo) {
+                if (staffInfoElement.type === 'Physician') {
+                    caseFileData.staff.physicians.push(staffInfoElement._id);
+                } else {
+                    caseFileData.staff.nurses.push(staffInfoElement._id);
+                }
+            }
+            let leadDoc = "";
+            let leadObj = {};
+            staffInfo.filter(item => {
+                if (item.tag === "Lead Surgeon") {
+                    leadDoc = item.name;
+                    leadObj = item;
+                }
 
-        if(patientID !== "Patient ID:--") {
-            caseFileData.patient._id = patientID;
-        }
-
-        
-        /*
-        const roleKeys = [];
-
-        staffInfo.map(currentKey => {
-            roleKeys.push({
-                _id: currentKey._id,
-                tag: currentKey.tag || "Nurse"
-            });
-        })
-        */
-        //delete caseFileData.staff.leadPhysician.tag;
-
-        caseFileData.roleKeys = staffInfo
-        if(caseFileData.staff.leadPhysician._id === undefined) {
-            // moving away from using leadSurgeon
-            // this allows for blank lead field
-            caseFileData.staff.leadPhysician = {
-                "_id": "5ea05a3886d32b41d5b291e7",
-                "name": " ",
-                "tag": "Lead Surgeon",
-                "type": "Physician",
-              }
-        }
-        
-        // adding procedure info
-        if(!editMode) {
-            createCaseFile(caseFileData)
-            .then(data => {
-                addCaseFile(data);
             })
-            .catch(error => {
-                console.log('failed to create case file', error.message);
-                console.log('failed to create case file', error.response);
+
+            let updatedLocation = "";
+
+            if (location === undefined) {
+                updatedLocation = "5ea05a3886d32b41d5b291e7"
+            }
+
+            else {
+                updatedLocation = location._id
+            }
+
+            caseFileData.staff.leadPhysician = leadObj;
+            caseFileData.caseProcedures = [{
+                procedure: procedure !== undefined ? procedure._id : "5ea05a3886d32b41d5b291e7",
+                location: updatedLocation,
+                startTime: procedure?.startTime || startTime,
+                duration: procedure?.duration || 2,
+            }];
+
+            if (patientID !== "Patient ID:--") {
+                caseFileData.patient._id = patientID;
+            }
+
+
+            /*
+            const roleKeys = [];
+    
+            staffInfo.map(currentKey => {
+                roleKeys.push({
+                    _id: currentKey._id,
+                    tag: currentKey.tag || "Nurse"
+                });
             })
-            .finally(_ => {
-                console.log("finally done")
-            });
-        }
-        
-        if(editMode) {
-            patientUpdater(appointment.item.case.patient._id, {
-                firstName: patientFields.firstName,
-                surname: patientFields.surname
-            })
-            updateCaseFile(appointment.item.case._id, {staff: caseFileData.staff, roleKeys: caseFileData.roleKeys})
-           
-            const appointmentID = appointment._id;
-            updateAppointmentById(appointmentID, 
-                {
-                    description: `${patientFields.firstName} ${patientFields.surname}`,
-                    subject: leadDoc,
-                    startTime: caseFileData.caseProcedures[0].startTime ,
-                    endTime: moment(caseFileData.caseProcedures[0].startTime).add(2, 'hours'),
-                    title: procedure?.name || "",
-                    location: updatedLocation
+            */
+            //delete caseFileData.staff.leadPhysician.tag;
+
+            caseFileData.roleKeys = staffInfo
+            if (caseFileData.staff.leadPhysician._id === undefined) {
+                // moving away from using leadSurgeon
+                // this allows for blank lead field
+                caseFileData.staff.leadPhysician = {
+                    "_id": "5ea05a3886d32b41d5b291e7",
+                    "name": " ",
+                    "tag": "Lead Surgeon",
+                    "type": "Physician",
+                }
+            }
+
+            // adding procedure info
+            if (!editMode) {
+                createCaseFile(caseFileData)
+                    .then(data => {
+                        addCaseFile(data);
+                    })
+                    .catch(error => {
+                        console.log('failed to create case file', error.message);
+                        console.log('failed to create case file', error.response);
+                    })
+                    .finally(_ => {
+                        console.log("finally done")
+                    });
+            }
+
+            if (editMode) {
+                patientUpdater(appointment.item.case.patient._id, {
+                    firstName: patientFields.firstName,
+                    surname: patientFields.surname
                 })
-                .catch(err => {
-                    console.log(err)
-            })
-           
-        }
+                updateCaseFile(appointment.item.case._id, { staff: caseFileData.staff, roleKeys: caseFileData.roleKeys })
 
-        modal.openModal('ConfirmationModal',
-        {
-            content: <ConfirmationComponent
+                const appointmentID = appointment._id;
+                updateAppointmentById(appointmentID,
+                    {
+                        description: `${patientFields.firstName} ${patientFields.surname}`,
+                        subject: leadDoc,
+                        startTime: caseFileData.caseProcedures[0].startTime,
+                        endTime: moment(caseFileData.caseProcedures[0].startTime).add(2, 'hours'),
+                        title: procedure?.name || "",
+                        location: updatedLocation
+                    })
+                    .catch(err => {
+                        console.log(err)
+                    })
+
+            }
+
+            modal.openModal('ConfirmationModal',
+                {
+                    content: <ConfirmationComponent
                         isError={false}
                         isEditUpdate={false}
                         onCancel={() => {
@@ -342,21 +342,21 @@ function NewProcedureOverlayContainer({appointment={}, editMode=false}) {
                         }}
                         onAction={() => {
                             modal.closeAllModals();
-                            
+
                         }}
                         message="Completed Successfully!"
-                            // onAction = { () => confirmAction()}
+                    // onAction = { () => confirmAction()}
                     />,
                     onClose: () => {
                         modal.closeModals('ConfirmationModal');
                     }
-        }); 
-        
-    }
+                });
+
+        }
     }, [allowedToSubmit])
-   
+
     const handlePatient = (value) => {
-  
+
         setPatient(value
             ? {
                 _id: value._id,
@@ -364,26 +364,26 @@ function NewProcedureOverlayContainer({appointment={}, editMode=false}) {
             }
             : value);
 
-            setSearchPatientValue('')
-            setSearchPatientResult([]);
-            setSearchPatientQuery(undefined);
+        setSearchPatientValue('')
+        setSearchPatientResult([]);
+        setSearchPatientQuery(undefined);
     };
 
     const handleSurgeon = (value) => {
         const staff = {
-            _id : value?._id,
-            name : value?.name,
+            _id: value?._id,
+            name: value?.name,
             tag: value?.tag,
-            type : "Physician"
+            type: "Physician"
         }
-        
+
         setStaffInfo([
             ...staffInfo,
             staff
         ])
     }
-  
-   
+
+
     const handleProcedure = (value) => {
         setProcedure(value
             ? {
@@ -393,9 +393,9 @@ function NewProcedureOverlayContainer({appointment={}, editMode=false}) {
             }
             : value);
 
-            setSearchProcedureValue('')
-            setSearchProcedureResult([]);
-            setSearchProcedureQuery(undefined);
+        setSearchProcedureValue('')
+        setSearchProcedureResult([]);
+        setSearchProcedureQuery(undefined);
     };
 
     const handleLocationChange = (value) => {
@@ -419,7 +419,7 @@ function NewProcedureOverlayContainer({appointment={}, editMode=false}) {
             name: "bob ross"
         }*/
 
-       // const data = [];
+        // const data = [];
 
         setSearchPatientResult([])
     }
@@ -427,7 +427,7 @@ function NewProcedureOverlayContainer({appointment={}, editMode=false}) {
     const fetchProcedures = () => {
         getProcedures(searchProcedureValue, 5)
             .then((procedureInfo) => {
-                const {data = [], pages} = procedureInfo;
+                const { data = [], pages } = procedureInfo;
                 setSearchProcedureResult(data || []);
             })
             .catch((error) => {
@@ -440,7 +440,7 @@ function NewProcedureOverlayContainer({appointment={}, editMode=false}) {
     const fetchLocations = () => {
         getTheatres(searchLocationValue, 5)
             .then((locationsInfo) => {
-                const {data = [], pages} = locationsInfo;
+                const { data = [], pages } = locationsInfo;
                 setSearchLocationResult(data || []);
             })
             .catch((error) => {
@@ -540,10 +540,10 @@ function NewProcedureOverlayContainer({appointment={}, editMode=false}) {
     }, [searchValue])
 
     const fetchNurses = () => {
-        getUsersCall(searchValue, 1,5)
+        getUsersCall(searchValue, 1, 5)
             .then((userResult = []) => {
                 const { data = [], pages = 0 } = userResult
-                const filterUser = data.filter( user => user?.role?.name === 'Nurse');
+                const filterUser = data.filter(user => user?.role?.name === 'Nurse');
                 const results = filterUser.map(item => ({
                     name: `Nurse ${item.last_name}`,
                     ...item
@@ -670,16 +670,16 @@ function NewProcedureOverlayContainer({appointment={}, editMode=false}) {
             "firstName": token[0],
             "surname": token[1]
         },
-        await createPhysician(item).then(res => {
-            result = {
-                _id: res._id,
-                name: `${res.firstName} ${res.surname}`
-            }
-        }).then(res => {
-            // fuck
-            handlePatientFunc(result);
-            setSelectedValueFunc(result);
-        })
+            await createPhysician(item).then(res => {
+                result = {
+                    _id: res._id,
+                    name: `${res.firstName} ${res.surname}`
+                }
+            }).then(res => {
+                // fuck
+                handlePatientFunc(result);
+                setSelectedValueFunc(result);
+            })
     }
 
     async function updateTheatreDB(item, handlePatientFunc, setSelectedValueFunc) {
@@ -697,7 +697,7 @@ function NewProcedureOverlayContainer({appointment={}, editMode=false}) {
             }
 
         }).then(res => {
-            
+
             handlePatientFunc(result);
             setSelectedValueFunc(result);
         })
@@ -717,15 +717,15 @@ function NewProcedureOverlayContainer({appointment={}, editMode=false}) {
 
         const result = {
             // reference :'',
-            name : item,
-            duration : 2,
+            name: item,
+            duration: 2,
             // notes:'',
             // isTemplate : false,
-            hasRecovery : false,
+            hasRecovery: false,
             physician: {
                 "_id": "5ea05a3886d32b41d5b291e6",
                 "active": "active",
-                "address": Array [
+                "address": Array[
                     {
                         "_id": "5ea05969a75843f64322d913",
                         "line1": "Barbican Road, Kingston",
@@ -752,7 +752,7 @@ function NewProcedureOverlayContainer({appointment={}, editMode=false}) {
     }
 
     useEffect(() => {
-        if(appointment._id !== undefined) {
+        if (appointment._id !== undefined) {
             getCaseFileById(appointment.item.case._id).then(res => {
                 const resultLocation = res.caseProcedures[0].appointment.location;
                 const resultPatient = appointment.item.case.patient;
@@ -760,14 +760,14 @@ function NewProcedureOverlayContainer({appointment={}, editMode=false}) {
                 const procedureName = res.caseProcedures[0].appointment.title;
                 const resultTime = appointment.startTime;
                 const endTime = moment(appointment.startTime);
-                
-                if(resultLocation !== null) {
+
+                if (resultLocation !== null) {
                     handleLocationChange({
                         _id: resultLocation._id,
                         name: resultLocation.name
                     });
                 }
-                
+
 
                 handlePatient({
                     _id: resultPatient._id,
@@ -776,19 +776,19 @@ function NewProcedureOverlayContainer({appointment={}, editMode=false}) {
 
                 onFieldChange('firstName')(`${resultPatient.firstName} ${resultPatient.surname}`);
                 onPatientFieldChange('firstName')(`${resultPatient.firstName} ${resultPatient.surname}`);
-            
-                if(procedureName.length > 0) {
+
+                if (procedureName.length > 0) {
                     handleProcedure({
                         _id: procedureId,
                         name: procedureName
                     });
                 }
-                
+
 
                 setDate(moment(resultTime));
                 setStartTime(endTime);
                 const container = [];
-              
+
                 function findStaffByTag(tag) {
                     const resultItem = res.roleKeys.filter(itemTag => tag === itemTag.tag);
 
@@ -801,45 +801,45 @@ function NewProcedureOverlayContainer({appointment={}, editMode=false}) {
                 const finalAssitantSurgeon = findStaffByTag("Assistant Surgeon");
                 const finalNurse = findStaffByTag("Nurse");
 
-                if(finalLeadSurgeon !== null) {
+                if (finalLeadSurgeon !== null) {
                     container.push(finalLeadSurgeon);
                     setGeneratedLeadSurgeon(finalLeadSurgeon);
                 }
 
-                if(finalAnaesthesiologist !== null) {
+                if (finalAnaesthesiologist !== null) {
                     container.push(finalAnaesthesiologist);
                     setGeneratedAnaesthesiologist(finalAnaesthesiologist);
                 }
 
-                if(finalAssitantSurgeon !== null) {
+                if (finalAssitantSurgeon !== null) {
                     container.push(finalAssitantSurgeon);
                     setGeneratedAssistantSurgeon(finalAssitantSurgeon)
                 }
 
-                if(finalNurse !== null) {
+                if (finalNurse !== null) {
                     container.push(finalNurse);
                     setGeneratedNurse(
                         {
-                            _id : finalNurse._id,
-                            name : `${finalNurse.name}`,
-                            type : "Nurse",
+                            _id: finalNurse._id,
+                            name: `${finalNurse.name}`,
+                            type: "Nurse",
                             tag: "Nurse"
                         }
                     )
                 }
-                
-                setStaffInfo(container)            
+
+                setStaffInfo(container)
             })
         }
     }, []);
- 
+
     function deleteSurgeonTag(tag) {
         let staffClone = staffInfo;
         let indx;
-       
-       const result = staffClone.filter(item => item.tag !== tag);
-  
-       setStaffInfo(result);
+
+        const result = staffClone.filter(item => item.tag !== tag);
+
+        setStaffInfo(result);
 
     }
 
@@ -847,288 +847,288 @@ function NewProcedureOverlayContainer({appointment={}, editMode=false}) {
         return staffInfo.filter(item => item.tag === tag);
     }
 
-  return (
+    return (
         <>
-        <View style={styles.container}>
-            
-            <View style={styles.row}>
-                <SectionListHeaderTitle>{patientID}</SectionListHeaderTitle>
-                <StatusLabel>
-                    <Text style={styles.textDisplay} >Not yet started</Text>
-                </StatusLabel>
-            </View>
+            <View style={styles.container}>
 
-            <View style={[styles.row, {zIndex:10}]}>
-                <SearchableOptionsField 
-                    updateDB={updatePatientDB}
-                    highlightOn={true}
-                    title = {"Patient"}
-                    showActionButton={true}
-                    text={searchPatientValue}
-                    value={patientValue}
-                    oneOptionsSelected={handlePatient}
-                    onChangeText={(value) => {
-                        setSearchPatientValue(value);
-                        onFieldChange('firstName')(value);
-                        onPatientFieldChange('firstName')(value);
-                    }}
-                    onClear={() => console.log("clear")}
-                    options={searchPatientResult}
-                    isPopoverOpen={searchPatientQuery}
-                    placeholder="Select Patient"
-                    handlePatient={handlePatient}
-                />  
+                <View style={styles.row}>
+                    <SectionListHeaderTitle>{patientID}</SectionListHeaderTitle>
+                    <StatusLabel>
+                        <Text style={styles.textDisplay} >Not yet started</Text>
+                    </StatusLabel>
+                </View>
 
-                <Space />
-                <Space />
-                <Space />
-                <Space />
-                <Space />
-                <Space />
-                <Space />
+                <View style={[styles.row, { zIndex: 10 }]}>
+                    <SearchableOptionsField
+                        updateDB={updatePatientDB}
+                        highlightOn={true}
+                        title={"Patient"}
+                        showActionButton={true}
+                        text={searchPatientValue}
+                        value={patientValue}
+                        oneOptionsSelected={handlePatient}
+                        onChangeText={(value) => {
+                            setSearchPatientValue(value);
+                            onFieldChange('firstName')(value);
+                            onPatientFieldChange('firstName')(value);
+                        }}
+                        onClear={() => console.log("clear")}
+                        options={searchPatientResult}
+                        isPopoverOpen={searchPatientQuery}
+                        placeholder="Select Patient"
+                        handlePatient={handlePatient}
+                    />
 
-                <SearchableOptionsField 
-                    emptyAfterSubmit={attemptedSubmit && procedure === undefined ? true : false}
-                    updateDB={updateProcedureDB}
-                    highlightOn={true}
-                    highlightColor="#F6F8F8"
-                    showActionButton={true}
-                    text={searchProcedureValue}
-                    value={procedure}
-                    oneOptionsSelected={handleProcedure}
-                    onChangeText={(value) => setSearchProcedureValue(value)}
-                    onClear={handleProcedure}
-                    options={searchProcedureResult}
-                    isPopoverOpen={searchProcedureQuery}
-                    placeholder="Select Procedure"
-                    handlePatient={handleProcedure}
-                />  
-            </View>
-
-            <Accent />
-
-            <View style={[styles.row, {zIndex:1}]}>
-                <View style={styles.column}>
-
-                    <View style={styles.textContainer}>
-                        <Text style={styles.labels}>Theatre</Text>
-                    </View> 
+                    <Space />
+                    <Space />
+                    <Space />
+                    <Space />
+                    <Space />
+                    <Space />
+                    <Space />
 
                     <SearchableOptionsField
-                        emptyAfterSubmit={attemptedSubmit && location === undefined ? true : false}
-                        updateDB={updateTheatreDB}
+                        emptyAfterSubmit={attemptedSubmit && procedure === undefined ? true : false}
+                        updateDB={updateProcedureDB}
+                        highlightOn={true}
+                        highlightColor="#F6F8F8"
                         showActionButton={true}
-                        value={location}
-                        placeholder="Select Location"
-                        text={searchLocationValue}
-                        oneOptionsSelected={handleLocationChange}
-                        onChangeText={(value) => setSearchLocationValue(value)}
-                        onClear={handleLocationChange}
-                        options={searchLocationResult}
-                        isPopoverOpen={searchLocationQuery}
-                        handlePatient={handleLocationChange}
+                        text={searchProcedureValue}
+                        value={procedure}
+                        oneOptionsSelected={handleProcedure}
+                        onChangeText={(value) => setSearchProcedureValue(value)}
+                        onClear={handleProcedure}
+                        options={searchProcedureResult}
+                        isPopoverOpen={searchProcedureQuery}
+                        placeholder="Select Procedure"
+                        handlePatient={handleProcedure}
                     />
                 </View>
 
+                <Accent />
+
+                <View style={[styles.row, { zIndex: 1 }]}>
+                    <View style={styles.column}>
+
+                        <View style={styles.textContainer}>
+                            <Text style={styles.labels}>Theatre</Text>
+                        </View>
+
+                        <SearchableOptionsField
+                            emptyAfterSubmit={attemptedSubmit && location === undefined ? true : false}
+                            updateDB={updateTheatreDB}
+                            showActionButton={true}
+                            value={location}
+                            placeholder="Select Location"
+                            text={searchLocationValue}
+                            oneOptionsSelected={handleLocationChange}
+                            onChangeText={(value) => setSearchLocationValue(value)}
+                            onClear={handleLocationChange}
+                            options={searchLocationResult}
+                            isPopoverOpen={searchLocationQuery}
+                            handlePatient={handleLocationChange}
+                        />
+                    </View>
+
+                    <Space />
+
+                    <View style={styles.groupItem}>
+                        <View style={styles.column}>
+                            <View style={styles.textContainer}>
+                                <Text style={styles.labels}>Date</Text>
+                            </View>
+
+                            <View style={styles.inputWrapper}>
+                                <DateInputField
+                                    value={selectedDate}
+                                    onClear={() => { setDate(undefined) }}
+                                    keyboardType="number-pad"
+                                    mode={'date'}
+                                    format={"DD/MM/YYYY"}
+                                    placeholder="DD/MM/YYYY"
+                                    onDateChange={onDateUpdate}
+                                />
+                            </View>
+                        </View>
+
+                        <TinySpace />
+
+                        <View style={styles.column}>
+                            <View style={styles.textContainer}>
+                                <Text style={styles.labels}>Time</Text>
+                            </View>
+                            <View style={styles.inputWrapper}>
+                                <DateInputField
+                                    onDateChange={onTimeUpdate("startTime")}
+                                    value={startTime}
+                                    mode={"time"}
+                                    format={"hh:mm A"}
+                                    onClear={() => setStartTime(undefined)}
+                                    placeholder="HH:MM"
+                                />
+                            </View>
+                        </View>
+
+                    </View>
+
+                </View>
+
+                <Accent />
+
+                <View style={styles.staffContainer}>
+
+                    <View style={[styles.row, { zIndex: 10 }]}>
+                        <View style={styles.staffField}>
+                            <SearchableOptionsField
+                                emptyAfterSubmit={findStaffByTag("Lead Surgeon").length < 1 && attemptedSubmit ? true : false}
+                                updateDB={updatePhysicianDB}
+                                showActionButton={true}
+                                placeholder="Select Surgeon"
+                                text={currentIndex === 1 ? searchValue : ''}
+                                value={generatedLeadSurgeon}
+                                onChangeText={(value) => {
+                                    setSearchValue(value);
+                                    setCurrentIndex(1);
+                                    setSelectedType("Physician")
+                                }}
+                                oneOptionsSelected={(value) => {
+                                    const staff = {
+                                        _id: value?._id,
+                                        name: value?.name,
+                                        type: "Physician",
+                                        tag: "Lead Surgeon"
+                                    }
+                                    setSearchValue('')
+                                    onStaffChange(staff);
+
+                                }}
+                                handlePatient={handleSurgeon}
+                                options={searchResult}
+                                onClear={() => {
+                                    setSearchValue('');
+                                    deleteSurgeonTag('Lead Surgeon');
+                                }}
+                                isPopoverOpen={currentIndex === 1 ? true : false}
+                            />
+
+                            <Space />
+                            <Space />
+                            <Space />
+                            <Space />
+                            <Space />
+                            <Space />
+
+                            <View style={styles.staffText}>
+                                <Text style={styles.labels}>Lead Surgeon</Text>
+                            </View>
+
+                        </View>
+                    </View>
+
+                    <View style={[styles.row, { zIndex: 9 }]}>
+                        <View style={styles.staffField}>
+                            <SearchableOptionsField
+                                emptyAfterSubmit={findStaffByTag("Anaesthesiologist").length < 1 && attemptedSubmit ? true : false}
+                                handlePatient={handleSurgeon}
+                                updateDB={updatePhysicianDB}
+                                value={generatedAnaesthesiologist}
+                                showActionButton={true}
+                                placeholder="Select Staff"
+                                text={currentIndex === 2 ? searchValue : ''}
+                                onChangeText={(value) => {
+                                    setSearchValue(value);
+                                    setCurrentIndex(2);
+                                    setSelectedType("Physician")
+                                }}
+                                oneOptionsSelected={(value) => {
+
+                                    const staff = {
+                                        _id: value?._id,
+                                        name: value?.name,
+                                        type: "Physician",
+                                        tag: "Anaesthesiologist"
+                                    }
+                                    setSearchValue('')
+                                    onStaffChange(staff)
+                                }}
+                                options={searchResult}
+                                onClear={() => {
+                                    setSearchValue('')
+                                    deleteSurgeonTag("Anaesthesiologist")
+                                }}
+                                isPopoverOpen={currentIndex === 2 ? true : false}
+                            />
+
+                            <Space />
+                            <Space />
+                            <Space />
+                            <Space />
+                            <Space />
+                            <Space />
+
+                            <View style={styles.staffText}>
+                                <Text style={styles.labels}>Anaesthesiologist</Text>
+                            </View>
+
+                        </View>
+                    </View>
+
+                    <View style={[styles.row, { zIndex: 8 }]}>
+                        <View style={styles.staffField}>
+                            <SearchableOptionsField
+                                emptyAfterSubmit={findStaffByTag("Assistant Surgeon").length < 1 && attemptedSubmit ? true : false}
+                                handlePatient={handleSurgeon}
+                                updateDB={updatePhysicianDB}
+                                value={generatedAssistantSurgeon}
+                                showActionButton={true}
+                                placeholder="Select Staff"
+                                text={currentIndex === 3 ? searchValue : ''}
+                                onChangeText={(value) => {
+                                    setSearchValue(value);
+                                    setCurrentIndex(3);
+                                    setSelectedType("Physician");
+                                }}
+                                oneOptionsSelected={(value) => {
+
+                                    const staff = {
+                                        _id: value?._id,
+                                        name: value?.name,
+                                        type: "Physician",
+                                        tag: "Assistant Surgeon"
+                                    }
+                                    setSearchValue('')
+                                    onStaffChange(staff)
+                                }}
+                                options={searchResult}
+                                onClear={() => {
+                                    setSearchValue('');
+                                    deleteSurgeonTag("Assistant Surgeon");
+                                }}
+                                isPopoverOpen={currentIndex === 3 ? true : false}
+                            />
+
+                            <Space />
+                            <Space />
+                            <Space />
+                            <Space />
+                            <Space />
+                            <Space />
+
+                            <View style={styles.staffText}>
+                                <Text style={styles.labels}>Assistant Surgeon</Text>
+                            </View>
+
+                        </View>
+                    </View>
+
+                </View>
+
                 <Space />
 
-            <View style={styles.groupItem}>
-                <View style={styles.column}>
-                    <View style={styles.textContainer}>
-                        <Text style={styles.labels}>Date</Text>
-                    </View> 
-                    
-                    <View style={styles.inputWrapper}>
-                        <DateInputField
-                            value={selectedDate}
-                            onClear={() => {setDate(undefined)}}
-                            keyboardType="number-pad"
-                            mode={'date'}
-                            format={"DD/MM/YYYY"}
-                            placeholder="DD/MM/YYYY"
-                            onDateChange={onDateUpdate}
-                        />
-                    </View>
-                </View>
-                
-                <TinySpace />
-
-                <View style={styles.column}>  
-                    <View style={styles.textContainer}>
-                        <Text style={styles.labels}>Time</Text>
-                    </View> 
-                    <View style={styles.inputWrapper}>
-                        <DateInputField
-                            onDateChange={onTimeUpdate("startTime")}
-                            value={startTime}
-                            mode={"time"}
-                            format={"hh:mm A"}
-                            onClear={() => setStartTime(undefined)}
-                            placeholder="HH:MM"
-                        />
-                    </View>
-                </View>
-
-            </View>
-
-            </View>
-
-            <Accent />
-
-            <View style={styles.staffContainer}>
-
-                <View style={[styles.row, {zIndex:10}]}>
-                    <View style={styles.staffField}>
-                        <SearchableOptionsField 
-                            emptyAfterSubmit={findStaffByTag("Lead Surgeon").length < 1 && attemptedSubmit ? true : false}
-                            updateDB={updatePhysicianDB}
-                            showActionButton={true}
-                            placeholder="Select Surgeon"
-                            text={currentIndex === 1 ? searchValue : ''}
-                            value={generatedLeadSurgeon}
-                            onChangeText={(value) => {
-                                setSearchValue(value);
-                                setCurrentIndex(1);
-                                setSelectedType("Physician")
-                            }}
-                            oneOptionsSelected={(value) => {
-                                const staff = {
-                                    _id : value?._id,
-                                    name : value?.name,
-                                    type : "Physician",
-                                    tag: "Lead Surgeon"
-                                }
-                                setSearchValue('')
-                                onStaffChange(staff);
-                            
-                            }}
-                            handlePatient={handleSurgeon}
-                            options={searchResult}
-                            onClear={() => {
-                                setSearchValue('');
-                                deleteSurgeonTag('Lead Surgeon');
-                            }}
-                            isPopoverOpen={currentIndex === 1 ? true : false}
-                        />
-
-                        <Space />
-                        <Space />
-                        <Space />
-                        <Space />
-                        <Space />
-                        <Space />
-
-                        <View style={styles.staffText}>
-                            <Text style={styles.labels}>Lead Surgeon</Text>
-                        </View> 
-
-                    </View>
-                </View>
-
-                <View style={[styles.row, {zIndex:9}]}>
-                    <View style={styles.staffField}>
-                        <SearchableOptionsField 
-                            emptyAfterSubmit={findStaffByTag("Anaesthesiologist").length < 1 && attemptedSubmit ? true : false}
-                            handlePatient={handleSurgeon}
-                            updateDB={updatePhysicianDB}
-                            value={generatedAnaesthesiologist}
-                            showActionButton={true}
-                            placeholder="Select Staff"
-                            text={currentIndex === 2 ? searchValue : ''}
-                            onChangeText={(value) => {
-                                setSearchValue(value);
-                                setCurrentIndex(2);
-                                setSelectedType("Physician")
-                            }}
-                            oneOptionsSelected={(value) => {
-
-                                const staff = {
-                                    _id : value?._id,
-                                    name : value?.name,
-                                    type : "Physician",
-                                    tag: "Anaesthesiologist"
-                                }
-                                setSearchValue('')
-                                onStaffChange(staff)
-                            }}
-                            options={searchResult}
-                            onClear={() => {
-                                setSearchValue('')
-                                deleteSurgeonTag("Anaesthesiologist")
-                            }}
-                            isPopoverOpen={currentIndex === 2 ? true : false}
-                        />
-
-                        <Space />
-                        <Space />
-                        <Space />
-                        <Space />
-                        <Space />
-                        <Space />
-
-                        <View style={styles.staffText}>
-                            <Text style={styles.labels}>Anaesthesiologist</Text>
-                        </View> 
-
-                    </View>
-                </View>
-
-                <View style={[styles.row, {zIndex:8}]}>
-                    <View style={styles.staffField}>
-                        <SearchableOptionsField 
-                            emptyAfterSubmit={findStaffByTag("Assistant Surgeon").length < 1 && attemptedSubmit ? true : false}
-                            handlePatient={handleSurgeon}
-                            updateDB={updatePhysicianDB}
-                            value={generatedAssistantSurgeon}
-                            showActionButton={true}
-                            placeholder="Select Staff"
-                            text={currentIndex === 3 ? searchValue : ''}
-                            onChangeText={(value) => {
-                                setSearchValue(value);
-                                setCurrentIndex(3);
-                                setSelectedType("Physician");
-                            }}
-                            oneOptionsSelected={(value) => {
-
-                                const staff = {
-                                    _id : value?._id,
-                                    name : value?.name,
-                                    type : "Physician",
-                                    tag: "Assistant Surgeon"
-                                }
-                                setSearchValue('')
-                                onStaffChange(staff)
-                            }}
-                            options={searchResult}
-                            onClear={() => {
-                                setSearchValue('');
-                                deleteSurgeonTag("Assistant Surgeon");
-                            }}
-                            isPopoverOpen={currentIndex === 3 ? true : false}
-                        />
-
-                        <Space />
-                        <Space />
-                        <Space />
-                        <Space />
-                        <Space />
-                        <Space />
-
-                        <View style={styles.staffText}>
-                            <Text style={styles.labels}>Assistant Surgeon</Text>
-                        </View> 
-
-                    </View>
-                </View>
-
-            </View>
-            
-            <Space />
-
-            <View style={styles.staffContainer}>
-                <View style={[styles.row, {zIndex:7}]}>
+                <View style={styles.staffContainer}>
+                    <View style={[styles.row, { zIndex: 7 }]}>
                         <View style={styles.staffField}>
-                            <SearchableOptionsField 
+                            <SearchableOptionsField
                                 emptyAfterSubmit={findStaffByTag("Nurse").length < 1 && attemptedSubmit ? true : false}
                                 value={generatedNurse}
                                 handlePatient={handleSurgeon}
@@ -1144,9 +1144,9 @@ function NewProcedureOverlayContainer({appointment={}, editMode=false}) {
                                 oneOptionsSelected={(value) => {
 
                                     const staff = {
-                                        _id : value?._id,
-                                        name : value?.name,
-                                        type : "Nurse",
+                                        _id: value?._id,
+                                        name: value?.name,
+                                        type: "Nurse",
                                         tag: "Nurse"
                                     }
                                     setSearchValue('')
@@ -1169,39 +1169,39 @@ function NewProcedureOverlayContainer({appointment={}, editMode=false}) {
 
                             <View style={styles.staffText}>
                                 <Text style={styles.labels}>Nurse</Text>
-                            </View> 
+                            </View>
 
                         </View>
                     </View>
-            </View>
+                </View>
 
-            
-        </View>  
-        <View style={styles.editContainer}>
-            <Text style={styles.editText} >Now in edit mode</Text>
-            <View style={styles.buttonHolder}>
+
+            </View>
+            <View style={styles.editContainer}>
+                <Text style={styles.editText} >Now in edit mode</Text>
+                <View style={styles.buttonHolder}>
                     <NewProcedureButton theme={theme} onPress={() => handleCreateCaseButton()}>
-                            <NewProcedureButtonText>Done</NewProcedureButtonText>
+                        <NewProcedureButtonText>Done</NewProcedureButtonText>
                     </NewProcedureButton>
-            </View>   
-        </View>
-        </>        
+                </View>
+            </View>
+        </>
     )
 }
 
 export default NewProcedureOverlayContainer;
 
 const Space = styled.View`
-   width:  ${({theme}) => theme.space['--space-24']};
+   width:  ${({ theme }) => theme.space['--space-24']};
 `;
 
 const TinySpace = styled.View`
-   width:  ${({theme}) => theme.space['--space-10']};
+   width:  ${({ theme }) => theme.space['--space-10']};
 `;
 
 const styles = StyleSheet.create({
 
-    
+
 
     editText: {
         color: '#E3E8EF',
@@ -1213,7 +1213,7 @@ const styles = StyleSheet.create({
 
     editContainer: {
         height: 50,
-        zIndex:100,
+        zIndex: 100,
         backgroundColor: '#0CB0E7',
         display: 'flex',
         flexDirection: 'row',
@@ -1229,7 +1229,7 @@ const styles = StyleSheet.create({
         padding: 35
     },
     sectionContainer: {
-        height:150,
+        height: 150,
         backgroundColor: '#FFFFFF',
         flexDirection: 'column',
         padding: 24,
@@ -1240,15 +1240,15 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         marginBottom: 20,
         // backgroundColor:'red'
-        
+
     },
 
     column: {
-        display:'flex',
+        display: 'flex',
         flexDirection: 'column',
         flex: 1,
         // backgroundColor: 'red',
-    },  
+    },
 
     groupItem: {
         display: 'flex',
@@ -1266,10 +1266,10 @@ const styles = StyleSheet.create({
         // backgroundColor: 'blue'
     },
 
-    fieldWrapper:{
-        flex:1,
-        marginRight:35,
-        flexDirection:'column'
+    fieldWrapper: {
+        flex: 1,
+        marginRight: 35,
+        flexDirection: 'column'
     },
 
     textDisplay: {
@@ -1291,7 +1291,7 @@ const styles = StyleSheet.create({
         color: '#718096',
         fontWeight: "400",
         fontSize: 14
-        
+
     },
 
     staffContainer: {
@@ -1323,7 +1323,7 @@ const styles = StyleSheet.create({
         // backgroundColor: 'red'
     },
 
-    
+
     buttonHolder: {
         flex: 1,
         // backgroundColor: 'black',
@@ -1331,5 +1331,5 @@ const styles = StyleSheet.create({
         alignItems: 'flex-end',
 
     }
-   
+
 })
