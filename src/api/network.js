@@ -195,7 +195,7 @@ export const updateAppointmentById = async (id, data) => suitesAxiosInstance
 
 
 export const createAppointment = async (data) => suitesAxiosInstance
-.post(appointmentEndpoint,data)
+.post(appointmentsEndpoint,data)
 .then(handleResponse)
 .catch(handleError)
 

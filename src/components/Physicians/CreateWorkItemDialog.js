@@ -4,7 +4,8 @@ import OverlayDialog from "../common/Dialog/OverlayDialog";
 import DialogTabs from "../common/Dialog/DialogTabs";
 import InputField2 from "../common/Input Fields/InputField2";
 import DropdownInputField from "../common/Input Fields/DropdownInputField";
-import { useModal } from "react-native-modalfy";
+import { withModal, useModal } from 'react-native-modalfy';
+import ConfirmationComponent from '../ConfirmationComponent';
 import InputUnitField from "../common/Input Fields/InputUnitFields";
 import SearchableOptionsField from '../../components/common/Input Fields/SearchableOptionsField';
 import DateInputField from '../../components/common/Input Fields/DateInputField';
@@ -35,6 +36,7 @@ const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem }) => 
 
     const [searchProcedureValue, setSearchProcedureValue] = useState("");
     const [attemptedSubmit, setAttemptedSubmit] = useState(false);
+    const [isFloatingActionDisabled, setFloatingAction] = useState(false);
 
     const [procedure, setProcedure] = useState(undefined);
     const [searchProcedureResult, setSearchProcedureResult] = useState([]);
@@ -126,7 +128,7 @@ const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem }) => 
             .then((procedureInfo) => {
                 const { data = [], pages } = procedureInfo;
                 setSearchProcedureResult(data || []);
-                console.log("procedures",procedureInfo)
+                console.log("procedures", procedureInfo)
             })
             .catch((error) => {
                 // TODO handle error
@@ -228,7 +230,7 @@ const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem }) => 
 
         item = {
             name: `${token[0]} ${token[1]}`
-            
+
         }
         await createCaseFile(item).then(res => {
             result = {
@@ -259,16 +261,18 @@ const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem }) => 
     };
 
     const handleCaseChange = (value) => {
+
         setCaseItem(value
             ? {
                 _id: value._id,
-                name: value.name
+                name: value.caseNumber
             } :
             value);
-        onFieldChange("caseItem")(caseItem)
+
         setSearchCaseValue('')
-        setSearchLocationResult([])
+        setSearchCaseResult([])
         setSearchCaseQuery(undefined)
+        console.log("selected case", caseItem)
     }
 
     const fetchLocations = () => {
@@ -291,10 +295,8 @@ const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem }) => 
         getCaseFiles()
             .then(caseResult => {
                 const { data = [], pages = 0 } = caseResult;
+
                 setSearchCaseResult(data || [])
-                
-
-
             })
             .catch(error => {
                 console.log('failed to get case files', error);
@@ -364,156 +366,200 @@ const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem }) => 
 
 
     const createWorkItem = () => {
-        
-        let physicianId = addWorkItem.id;
-        let LocationId =location.id
-        console.log(caseItem)
+
+        let workItem = {
+            "startTime": startTime,
+            "endTime": endTime,
+            "LocationId": location._id,
+            "caseId": caseItem._id,
+            "procedureId": procedure._id,
+            "physicianId": addWorkItem.id,
+            "isRecovery": false,
+            "authInfo": addWorkItem.id
+        }
+
+        createAppointment(workItem)
+            .then(data => {
+                console.log('work item new ', data)
+                modal.openModal(
+                    'ConfirmationModal',
+                    {
+                        content: <ConfirmationComponent
+                            isError={false}
+                            isEditUpdate={false}
+                            onAction={() => {
+                                modal.closeModals('ConfirmationModal');
+                                setTimeout(() => {
+                                    modal.closeModals('ActionContainerModal');
+                                }, 200);
+                            }}
+                        />,
+                        onClose: () => {
+                            modal.closeModals('ConfirmationModal');
+                        }
+                    }
+                );
+            })
+            .catch(error => {
+                setTimeout(() => {
+                    modal.closeModals('ActionContainerModal');
+                }, 200);
+                console.log('Failed to add work item', error);
+            })
+            .finally(_ => {
+                setFloatingAction(false);
+            });
+
 
     }
 
     return (
-        <OverlayDialog
-            title={"New Work Item"}
-            onPositiveButtonPress={createWorkItem}
-            onClose={handleCloseDialog}
-            positiveText={"DONE"}
-        >
-            <View style={styles.container}>
-                <DialogTabs
-                    tabs={dialogTabs}
-                    tab={selectedIndex}
-                />
-                <View style={styles.sectionContainer}>
+            
+            <OverlayDialog
+                title={"New Work Item"}
+                onPositiveButtonPress={createWorkItem}
+                onClose={handleCloseDialog}
+                positiveText={"DONE"}
+            >
+                <View style={styles.container}>
+                    <DialogTabs
+                        tabs={dialogTabs}
+                        tab={selectedIndex}
+                        onTabPress={()=>{}}
+                    />
+                    <View style={styles.sectionContainer}>
 
-                    <View style={[styles.row, { zIndex: 8 }]}>
+                        <View style={[styles.row, { zIndex: 8 }]}>
 
-                        <View style={styles.inputWrapper}>
-                            <View style={styles.textContainer}>
-                                <Text style={styles.labels}>Task</Text>
-                            </View>
-
-                            <SearchableOptionsField
-                                emptyAfterSubmit={attemptedSubmit && procedure === undefined ? true : false}
-                                updateDB={updateProcedureDB}
-                                highlightOn={true}
-                                highlightColor="#F6F8F8"
-                                showActionButton={true}
-                                text={searchProcedureValue}
-                                value={procedure}
-                                oneOptionsSelected={handleProcedure}
-                                onChangeText={(value) => setSearchProcedureValue(value)}
-                                onClear={handleProcedure}
-                                options={searchProcedureResult}
-                                isPopoverOpen={searchProcedureQuery}
-                                placeholder="Select Procedure"
-                                handlePatient={handleProcedure}
-                            />
-
-                        </View>
-                        <View style={[styles.inputWrapper]}>
-                            <View style={styles.textContainer}>
-                                <Text style={styles.labels}>Location</Text>
-                            </View>
-
-                            <SearchableOptionsField
-                                emptyAfterSubmit={attemptedSubmit && location === undefined ? true : false}
-                                updateDB={updateTheatreDB}
-                                showActionButton={true}
-                                value={location}
-                                placeholder="Select Location"
-                                text={searchLocationValue}
-                                oneOptionsSelected={handleLocationChange}
-                                onChangeText={(value) => setSearchLocationValue(value)}
-                                onClear={handleLocationChange}
-                                options={searchLocationResult}
-                                isPopoverOpen={searchLocationQuery}
-                                handlePatient={handleLocationChange}
-                            />
-
-                        </View>
-
-                    </View>
-
-                    <View style={[styles.row, { zIndex: 7 }]}>
-                        <View style={styles.inputWrapper}>
-                            <View style={styles.textContainer}>
-                                <Text style={styles.labels}>Case</Text>
-                            </View>
                             <View style={styles.inputWrapper}>
+                                <View style={styles.textContainer}>
+                                    <Text style={styles.labels}>Task</Text>
+                                </View>
+                                
+                                    <SearchableOptionsField
+                                        emptyAfterSubmit={attemptedSubmit && procedure === undefined ? true : false}
+                                        updateDB={updateProcedureDB}
+                                        highlightOn={true}
+                                        highlightColor="#F6F8F8"
+                                        showActionButton={true}
+                                        text={searchProcedureValue}
+                                        value={procedure}
+                                        oneOptionsSelected={handleProcedure}
+                                        onChangeText={(value) => setSearchProcedureValue(value)}
+                                        onClear={handleProcedure}
+                                        options={searchProcedureResult}
+                                        isPopoverOpen={searchProcedureQuery}
+                                        placeholder="Select Procedure"
+                                        handlePatient={handleProcedure}
+                                    />
+                               
+
+                            </View>
+                            <View style={[styles.inputWrapper]}>
+                                <View style={styles.textContainer}>
+                                    <Text style={styles.labels}>Location</Text>
+                                </View>
+
                                 <SearchableOptionsField
-                                    emptyAfterSubmit={attemptedSubmit && caseItem === undefined ? true : false}
-                                    updateDB={updateCaseDB}
+                                    emptyAfterSubmit={attemptedSubmit && location === undefined ? true : false}
+                                    updateDB={updateTheatreDB}
                                     showActionButton={true}
-                                    value={caseItem}
-                                    placeholder="Select Case"
-                                    text={searchCaseValue}
-                                    oneOptionsSelected={handleCaseChange}
-                                    onChangeText={(value) => setSearchCaseValue(value)}
-                                    onClear={handleCaseChange}
+                                    value={location}
+                                    placeholder="Select Location"
+                                    text={searchLocationValue}
+                                    oneOptionsSelected={handleLocationChange}
+                                    onChangeText={(value) => setSearchLocationValue(value)}
+                                    onClear={handleLocationChange}
                                     options={searchLocationResult}
                                     isPopoverOpen={searchLocationQuery}
-                                    handlePatient={handleCaseChange}
+                                    handlePatient={handleLocationChange}
                                 />
+
                             </View>
+
                         </View>
 
-                        <View style={styles.inputWrapper}>
-                            <View style={styles.textContainer}>
-                                <Text style={styles.labels}>Date</Text>
+                        <View style={[styles.row, { zIndex: 7 }]}>
+                            <View style={styles.inputWrapper}>
+                                <View style={styles.textContainer}>
+                                    <Text style={styles.labels}>Case</Text>
+                                </View>
+                                
+                                    <SearchableOptionsField
+                                        emptyAfterSubmit={attemptedSubmit && caseItem === undefined ? true : false}
+                                        updateDB={updateCaseDB}
+                                        showActionButton={true}
+                                        value={caseItem}
+                                        placeholder="Select Case"
+                                        text={searchCaseValue}
+                                        oneOptionsSelected={handleCaseChange}
+                                        onChangeText={(value) => setSearchCaseValue(value)}
+                                        onClear={handleCaseChange}
+                                        options={searchCaseResult}
+                                        isPopoverOpen={searchCaseQuery}
+                                        handlePatient={handleCaseChange}
+                                    />
+                                
                             </View>
 
-                            <DateInputField
-                                value={selectedDate}
-                                onClear={() => { setDate(undefined) }}
-                                keyboardType="number-pad"
-                                mode={'date'}
-                                format={"DD/MM/YYYY"}
-                                placeholder="DD/MM/YYYY"
-                                onDateChange={onDateUpdate}
-                            />
+                            <View style={styles.inputWrapper}>
+                                <View style={styles.textContainer}>
+                                    <Text style={styles.labels}>Date</Text>
+                                </View>
+
+                                <DateInputField
+                                    value={selectedDate}
+                                    onClear={() => { setDate(undefined) }}
+                                    keyboardType="number-pad"
+                                    mode={'date'}
+                                    format={"DD/MM/YYYY"}
+                                    placeholder="DD/MM/YYYY"
+                                    onDateChange={onDateUpdate}
+                                />
+
+                            </View>
+
+                        </View>
+
+                        <View style={[styles.row]}>
+
+                            <View style={styles.inputWrapper}>
+                                <View style={styles.textContainer}>
+                                    <Text style={styles.labels}>Start</Text>
+                                </View>
+                                
+                                    <DateInputField
+                                        onDateChange={onTimeUpdate("startTime")}
+                                        value={startTime}
+                                        mode={"time"}
+                                        format={"hh:mm A"}
+                                        onClear={() => setStartTime(undefined)}
+                                        placeholder="HH:MM"
+                                    />
+                                
+                            </View>
+                            <View style={styles.inputWrapper}>
+                                <View style={styles.textContainer}>
+                                    <Text style={styles.labels}>End</Text>
+                                </View>
+                                
+                                    <DateInputField
+                                        onDateChange={EndTimeUpdate("startTime")}
+                                        value={endTime}
+                                        mode={"time"}
+                                        format={"hh:mm A"}
+                                        onClear={() => setEndTime(undefined)}
+                                        placeholder="HH:MM"
+                                    />
+                                
+                            </View>
 
                         </View>
 
                     </View>
-
-                    <View style={[styles.row]}>
-
-                        <View style={styles.inputWrapper}>
-                            <View style={styles.textContainer}>
-                                <Text style={styles.labels}>Start</Text>
-                            </View>
-                            <View style={styles.inputWrapper}>
-                                <DateInputField
-                                    onDateChange={onTimeUpdate("startTime")}
-                                    value={startTime}
-                                    mode={"time"}
-                                    format={"hh:mm A"}
-                                    onClear={() => setStartTime(undefined)}
-                                    placeholder="HH:MM"
-                                />
-                            </View>
-                        </View>
-                        <View style={styles.inputWrapper}>
-                            <View style={styles.textContainer}>
-                                <Text style={styles.labels}>End</Text>
-                            </View>
-                            <View style={styles.inputWrapper}>
-                                <DateInputField
-                                    onDateChange={EndTimeUpdate("startTime")}
-                                    value={endTime}
-                                    mode={"time"}
-                                    format={"hh:mm A"}
-                                    onClear={() => setEndTime(undefined)}
-                                    placeholder="HH:MM"
-                                />
-                            </View>
-                        </View>
-
-                    </View>
-
                 </View>
-            </View>
-        </OverlayDialog>
+            </OverlayDialog>
+        
     )
 }
 
@@ -529,8 +575,8 @@ const styles = StyleSheet.create({
         flex: 1,
         width: 636,
         flexDirection: 'column',
-        backgroundColor: 'white',
-        alignSelf:'center'
+        backgroundColor: 'black',
+        alignSelf: 'center'
     },
     sectionContainer: {
         height: 200,
@@ -562,9 +608,11 @@ const styles = StyleSheet.create({
     },
     textContainer: {
         // backgroundColor: 'blue',
-        height: 20,
+        height: 32,
+        width:98,
         color: 'yellow',
-        marginBottom: 5
+        
+        
     },
     textLabel: {
         marginRight: 20,
@@ -578,4 +626,9 @@ const styles = StyleSheet.create({
         fontSize: 14
 
     },
+   
+ selectorWrapper:{
+    height:184,
+    width:32
+ }
 });

@@ -1263,6 +1263,7 @@ const styles = StyleSheet.create({
         // flex: 1,
         width: '100%',
         flexDirection: 'row',
+        marginRight:10
         // backgroundColor: 'blue'
     },
 
