@@ -262,7 +262,7 @@ function Invoices(props) {
     };
 
     const getFabActions = () => {
-        const isDisabled = false;
+        const isDisabled = selectedIds.length === 0;
         const deleteAction = (
             <View style={{ borderRadius: 6, flex: 1, overflow: 'hidden' }}>
                 <LongPressWithFeedback

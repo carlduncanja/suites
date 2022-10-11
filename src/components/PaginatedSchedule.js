@@ -1,6 +1,6 @@
-import React, { Component, useState, useEffect} from 'react';
-import {View, StyleSheet, Text, FlatList, ScrollView} from 'react-native';
-import { getAppointments,getAppointmentRequest } from '../api/network';
+import React, { Component, useState, useEffect } from 'react';
+import { View, StyleSheet, Text, FlatList, ScrollView } from 'react-native';
+import { getAppointments, getAppointmentRequest } from '../api/network';
 import SchedulePaginator from './common/Paginators/SchedulePaginator';
 import ScheduleDisplayComponent from './ScheduleDisplay/ScheduleDisplayComponent';
 import { formatDate } from '../utils/formatter';
@@ -13,7 +13,7 @@ import ActionItem from '../components/common/ActionItem';
 import WasteIcon from '../../assets/svg/wasteIcon';
 import AddIcon from '../../assets/svg/addIcon';
 import { LONG_PRESS_TIMER } from '../const';
-import NewProcedureOverlayContainer from '../page/Schedule/SchedulePage/NewProcedureOverlayContainer';
+import CreateWorkItemDialogContainer from '../components/Physicians/CreateWorkItemDialog'
 
 function PaginatedSchedule({ ID, isPhysician }) {
     const weekday = new Array(7);
@@ -36,7 +36,7 @@ function PaginatedSchedule({ ID, isPhysician }) {
     };
     const modal = useModal();
     const theme = useTheme();
-    
+
     const [relevantAppointment, setrelevantApppointments] = useState([]);
     const [isFetchingAppointment, setFetchingAppointment] = useState(false);
     const [dateObj, setdateObj] = useState(new Date());
@@ -74,16 +74,16 @@ function PaginatedSchedule({ ID, isPhysician }) {
 
     const fetchAppointments = (id, datePassed = new Date()) => {
         setFetchingAppointment(true);
-        
-        let tommorrow= new Date(datePassed);
-        tommorrow=tommorrow.setDate(tommorrow.getDate()+1)
-        
-        let fromDate=formatDate(datePassed, 'YYYY/MM/DD');
-        let toDate=formatDate(tommorrow, 'YYYY/MM/DD') 
-        
-        console.log("date passed",fromDate,toDate,id)
-        
-        getAppointments("","",fromDate,toDate,'',id)
+
+        let tommorrow = new Date(datePassed);
+        tommorrow = tommorrow.setDate(tommorrow.getDate() + 1)
+
+        let fromDate = formatDate(datePassed, 'YYYY/MM/DD');
+        let toDate = formatDate(tommorrow, 'YYYY/MM/DD')
+
+        console.log("date passed", fromDate, toDate, id)
+,
+        getAppointments("", "", fromDate,fromDate, '', id)
             .then(data => {
                 //console.log("Objected values:", Object.values(data));
                 console.log('The appointment data received is:', data);
@@ -114,18 +114,18 @@ function PaginatedSchedule({ ID, isPhysician }) {
             .finally(_ => {
                 setFetchingAppointment(false);
             });
-    }; 
-    
-    const toggleActionButton=()=>{
+    };
+
+    const toggleActionButton = () => {
         setFloatingAction(true);
-        modal.openModal("ActionContainerModal",{
+        modal.openModal("ActionContainerModal", {
             title: "INVOICE ACTIONS",
             actions: getFabActions(),
             onClose: () => {
                 setFloatingAction(false);
             },
         })
-    } 
+    }
 
     const getFabActions = () => {
         const isDisabled = false;
@@ -147,40 +147,48 @@ function PaginatedSchedule({ ID, isPhysician }) {
                 </LongPressWithFeedback>
             </View>
         );
-        const addWorkItem =(<ActionItem title="Add Work Item" icon={<AddIcon />} onPress={handleNewProcedurePress} />);
-        
+        const addWorkItem = (
+            <View>
+                <ActionItem title="Add Work Item" icon={<AddIcon />} onPress={handleNewProcedurePress} />
+            </View>
+        );
+
         return <ActionContainer
             floatingActions={[
                 deleteAction,
-                addWorkItem 
+                addWorkItem
             ]}
             title="SCHEDULE ACTIONS"
         />;
-    };  
-    
-    const handleNewProcedurePress= procedure => {
+    };
+
+    const handleNewProcedurePress = procedure => {
         console.log("here")
-        modal.openModal('BottomSheetModal', {
-            content: <NewProcedureOverlayContainer />,
-            initialSnap: 2,
-            snapPoints: [600, 500, 0]
-        }); 
+        modal.openModal('AddWorkItemModal', {
+            content: (
+                <CreateWorkItemDialogContainer
+                    onCancel={() => setFloatingAction(false)}
+                    addWorkItem={{ "id": ID }}
+                />
+            ),
+            onClose: () => setFloatingAction(false)
+        });
 
-    }; 
+    };
 
-    
+
 
     return (
         <>
             <ScheduleDisplayComponent appointments={Array.from(relevantAppointment)} date={alteredDate} />
 
-            <SchedulePaginator date={formatDate(dateObj, 'dddd MMM / D / YYYY')} 
-            goToPreviousDay={goToPreviousDayApp}
-            goToNextDay={goToNextDayApp} 
-            toggleActionButton={toggleActionButton}
-            />  
-            
-            
+            <SchedulePaginator date={formatDate(dateObj, 'dddd MMM / D / YYYY')}
+                goToPreviousDay={goToPreviousDayApp}
+                goToNextDay={goToNextDayApp}
+                toggleActionButton={toggleActionButton}
+            />
+
+
 
 
         </>
