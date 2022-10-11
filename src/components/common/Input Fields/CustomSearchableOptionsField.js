@@ -116,9 +116,6 @@ const ValueContainer = styled.View`
   width: auto;
   box-sizing: border-box;
 `;
-/* border : 1px solid ${ ({theme}) => theme.colors['--color-red-300']};
-   background-color : ${ ({theme}) => theme.colors['--color-red-100']};
-   border-radius: 2px; */
 
 const LabelContainer = styled.View(({theme, label}) => ({
     // ...theme.font['--text-xs-medium'],
