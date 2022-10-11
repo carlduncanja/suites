@@ -82,8 +82,8 @@ function PaginatedSchedule({ ID, isPhysician }) {
         let toDate = formatDate(tommorrow, 'YYYY/MM/DD')
 
         console.log("date passed", fromDate, toDate, id)
-
-        getAppointments("", "", fromDate, toDate, '', id)
+,
+        getAppointments("", "", fromDate,fromDate, '', id)
             .then(data => {
                 //console.log("Objected values:", Object.values(data));
                 console.log('The appointment data received is:', data);

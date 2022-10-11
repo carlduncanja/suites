@@ -168,9 +168,9 @@ export const getAppointments = async (
     from,
     to,
     type,
-    user
+    users
 ) => suitesAxiosInstance
-    .get(appointmentsEndpoint, {params: {query, location, from, to, type, user}})
+    .get(appointmentsEndpoint, {params: { from, to,users}})
     .then(handleResponse)
     .catch(handleError);
 

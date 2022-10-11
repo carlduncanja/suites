@@ -8,11 +8,13 @@ import { withModal, useModal } from 'react-native-modalfy';
 import ConfirmationComponent from '../ConfirmationComponent';
 import InputUnitField from "../common/Input Fields/InputUnitFields";
 import SearchableOptionsField from '../../components/common/Input Fields/SearchableOptionsField';
+import CustomSearchableOptionsField from '../../components/common/Input Fields/CustomSearchableOptionsField';
 import DateInputField from '../../components/common/Input Fields/DateInputField';
 import { connect } from 'react-redux';
 import { getTheatres, createTheatre, createNewProcedure, updateCaseFile, updateAppointmentById, updatePatient as patientUpdater, getUsersCall, getProcedures, getCaseFiles, createCaseFile, createAppointment } from '../../api/network';
 import _, { reduce, set } from "lodash";
 import moment from 'moment';
+import { formatDate } from '../../utils/formatter';
 /**
  * Component to handle the create storage process.
  *
@@ -128,7 +130,7 @@ const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem }) => 
             .then((procedureInfo) => {
                 const { data = [], pages } = procedureInfo;
                 setSearchProcedureResult(data || []);
-                console.log("procedures", procedureInfo)
+                
             })
             .catch((error) => {
                 // TODO handle error
@@ -235,7 +237,7 @@ const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem }) => 
         await createCaseFile(item).then(res => {
             result = {
                 _id: res[0]._id,
-                name: `${res[0].name}`
+                name: `${res[0].caseNumber}`
             }
 
         }).then(res => {
@@ -268,17 +270,18 @@ const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem }) => 
                 name: value.caseNumber
             } :
             value);
-
+        onFieldChange("caseItem")(caseItem);
         setSearchCaseValue('')
         setSearchCaseResult([])
         setSearchCaseQuery(undefined)
-        console.log("selected case", caseItem)
+       
     }
 
     const fetchLocations = () => {
         getTheatres(searchLocationValue, 5)
             .then((locationsInfo) => {
                 const { data = [], pages } = locationsInfo;
+                console.log("all Locations",data)
                 setSearchLocationResult(data || []);
             })
             .catch((error) => {
@@ -295,7 +298,7 @@ const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem }) => 
         getCaseFiles()
             .then(caseResult => {
                 const { data = [], pages = 0 } = caseResult;
-
+                console.log("alll the cases",data)
                 setSearchCaseResult(data || [])
             })
             .catch(error => {
@@ -336,7 +339,7 @@ const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem }) => 
                 .date(dateMoment.date());
         }
 
-        setStartTime(newTime)
+        setStartTime(newTime) 
         setProcedure({
             ...procedure,
             [field]: newTime.toDate(),
@@ -366,10 +369,13 @@ const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem }) => 
 
 
     const createWorkItem = () => {
-
+        
+        let from=formatDate(startTime, 'YYYY/MM/DD')
+        let to=formatDate(endTime, 'YYYY/MM/DD')
+        
         let workItem = {
-            "startTime": startTime,
-            "endTime": endTime,
+            "startTime": from,
+            "endTime": to,
             "LocationId": location._id,
             "caseId": caseItem._id,
             "procedureId": procedure._id,
@@ -485,7 +491,7 @@ const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem }) => 
                                     <Text style={styles.labels}>Case</Text>
                                 </View>
                                 
-                                    <SearchableOptionsField
+                                    <CustomSearchableOptionsField
                                         emptyAfterSubmit={attemptedSubmit && caseItem === undefined ? true : false}
                                         updateDB={updateCaseDB}
                                         showActionButton={true}
@@ -498,6 +504,7 @@ const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem }) => 
                                         options={searchCaseResult}
                                         isPopoverOpen={searchCaseQuery}
                                         handlePatient={handleCaseChange}
+                                        searchFeild='caseNumber'
                                     />
                                 
                             </View>
