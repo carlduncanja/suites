@@ -63,6 +63,26 @@ const ArchiveCasesPage = ({archivedCases, SetArchivedCases, navigation, route}) 
     const [isNextDisabled, setNextDisabled] = useState(true);
     const [isPreviousDisabled, setPreviousDisabled] = useState(true);
     const [isFloatingActionDisabled, setFloatingAction] = useState(false);
+    
+    const [searchResults, setSearchResult] = useState([]);
+    const [searchQuery, setSearchQuery] = useState({});
+    
+    useEffect(() => {
+            if (!searchValue) {
+                setSearchResult([]);
+                fetchArchivedCases();
+                return;
+            }
+        const search =  _.debounce(fetchArchivedCases, 100);
+        setSearchQuery(prevSearch => {
+                if (prevSearch && prevSearch.cancel) {
+                    prevSearch.cancel();
+                }
+                return search;
+            });
+        search();
+        setCurrentPagePosition(1);
+    }, [searchValue]);
 
     useEffect(() => {
         if (!archivedCases.length) fetchArchivedCases(currentPagePosition)
