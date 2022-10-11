@@ -663,7 +663,6 @@ function NewProcedureOverlayContainer({ appointment = {}, editMode = false }) {
                     name: `${res.firstName} ${res.surname}`
                 }
             }).then(res => {
-                // fuck
                 handlePatientFunc(result);
                 setSelectedValueFunc(result);
             })
