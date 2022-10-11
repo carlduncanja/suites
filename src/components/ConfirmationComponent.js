@@ -217,6 +217,7 @@ function ConfirmationComponent({
     titleText = 'Confirm Action',
     message = '',
     action = 'Save',
+    type = ''
 }) {
     const theme = useTheme();
 
@@ -231,7 +232,7 @@ function ConfirmationComponent({
 
                 <ButtonView theme={theme}>
                     <ButtonContainer onPress={onCancel} theme={theme} background='--color-gray-300'>
-                        <ModalText theme={theme} textColor="--color-gray-500" font="--text-base-bold">CANCEL</ModalText>
+                        <ModalText theme={theme} textColor="--color-gray-500" font="--text-base-bold">{type === 'binary' ? 'NO' : 'CANCEL'}</ModalText>
 
                     </ButtonContainer>
                     <ButtonContainer
@@ -239,7 +240,7 @@ function ConfirmationComponent({
                         theme={theme}
                         background="--color-blue-600"
                     >
-                        <ModalText theme={theme} textColor="--default-shade-white" font="--text-base-bold">SAVE</ModalText>
+                        <ModalText theme={theme} textColor="--default-shade-white" font="--text-base-bold">{type === 'binary' ? 'YES' : 'SAVE'}</ModalText>
                     </ButtonContainer>
                 </ButtonView>
             </>);

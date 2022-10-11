@@ -161,9 +161,54 @@ const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem }) => 
             [fieldName]: value
         })
     };
+
+    const removeEmpty = (obj) => {
+        // REVIEW
+        let newObj = {};
+        Object.keys(obj).forEach((key) => {
+          if (obj[key] === Object(obj[key])) newObj[key] = removeEmpty(obj[key]);
+          else if (obj[key] !== undefined) newObj[key] = obj[key];
+        });
+        return newObj;
+    };
+
     const handleCloseDialog = () => {
-        onCancel;
-        modal.closeAllModals();
+        onCancel();
+        // check if fields are empty
+        // add confirmation modal here
+        //modal.closeAllModals();
+        console.log('king');
+        const allFields = {
+            procedure,
+            location,
+            caseItem,
+            selectedDate,
+            startTime,
+            endTime
+        }
+        // check if fields are empty/undefined
+        const checkEmpty = removeEmpty(allFields);
+        const hasEmptyField = Object.keys(checkEmpty).length === 0;
+        if (!hasEmptyField) {
+            // open confirm modal
+            modal.openModal('ConfirmationModal', {
+                content: <ConfirmationComponent
+                    isError={false}
+                    isEditUpdate={true}
+                    onCancel={() => modal.closeModals('ConfirmationModal')}
+                    onAction={() => {
+                        modal.closeAllModals();
+                    }}
+                    message="Are you sure you want to exit? Changes will not be saved"
+                    action="Save"
+                    type='binary'
+                />
+            })
+        }
+        else {
+            modal.closeAllModals();
+        }
+        // check if removeEmpty is length 0
     };
 
     async function updateProcedureDB(item, handlePatientFunc, setSelectedValueFunc) {
@@ -414,26 +459,25 @@ const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem }) => 
 
             createAppointment(workItem)
                 .then(data => {
-                    console.log('work item new ', data)
                     modal.openModal(
                         'ConfirmationModal',
                         {
                             content: <ConfirmationComponent
+                                message={'New Work Item added to schedule'}
                                 isError={false}
                                 isEditUpdate={false}
                                 onAction={() => {
                                     modal.closeModals('ConfirmationModal');
-                                    setTimeout(() => {
-                                        modal.closeModals('ActionContainerModal');
-                                    }, 200);
                                 }}
                             />,
                             onClose: () => {
                                 modal.closeModals('ConfirmationModal');
-
                             }
                         }
                     );
+                    setTimeout(() => {
+                        modal.closeAllModals();
+                    }, 5000);
                 })
                 .catch(error => {
                     setTimeout(() => {
@@ -441,9 +485,6 @@ const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem }) => 
                     }, 200);
                     console.log('Failed to add work item', error);
                 })
-                .finally(_ => {
-                    handleCloseDialog()
-                });
         }
         else {
 
