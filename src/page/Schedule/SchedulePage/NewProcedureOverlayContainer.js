@@ -269,19 +269,6 @@ function NewProcedureOverlayContainer({ appointment = {}, editMode = false }) {
                 caseFileData.patient._id = patientID;
             }
 
-
-            /*
-            const roleKeys = [];
-    
-            staffInfo.map(currentKey => {
-                roleKeys.push({
-                    _id: currentKey._id,
-                    tag: currentKey.tag || "Nurse"
-                });
-            })
-            */
-            //delete caseFileData.staff.leadPhysician.tag;
-
             caseFileData.roleKeys = staffInfo
             if (caseFileData.staff.leadPhysician._id === undefined) {
                 // moving away from using leadSurgeon
