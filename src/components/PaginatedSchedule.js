@@ -164,14 +164,12 @@ function PaginatedSchedule({ ID, isPhysician }) {
 
     const handleNewProcedurePress = procedure => {
         console.log("here")
-        modal.openModal('OverlayModal', {
+        modal.openModal('AddWorkItemModal', {
             content: (
-               
-                    <CreateWorkItemDialogContainer
-                        onCancel={() => setFloatingAction(false)}
-                        addWorkItem={{ "id": ID }}
-                    />
-                
+                <CreateWorkItemDialogContainer
+                    onCancel={() => setFloatingAction(false)}
+                    addWorkItem={{ "id": ID }}
+                />
             ),
             onClose: () => setFloatingAction(false)
         });
