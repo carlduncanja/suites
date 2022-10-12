@@ -32,7 +32,7 @@ const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem }) => 
     const selectedIndex = 0;
 
     const [fields, setFields] = useState({
-        location: 'Operating Room 1',
+        //location: 'Operating Room 1',
         // date : formatDate(new Date(),"DD/MM/YYYY").toString()
     });
 
@@ -161,10 +161,14 @@ const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem }) => 
             ...fields,
             [fieldName]: value
         })
-        setErrors({
+        /* setErrors({
             ...fieldErrors,
             [fieldName]: undefined
         })
+        */
+        const updatedErrors = {...fieldErrors}
+        delete updatedErrors[fieldName]
+        setErrors(updatedErrors)
     
     };
 
@@ -638,21 +642,21 @@ const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem }) => 
                             <View style={styles.textContainer}>
                                 <Text style={styles.labels}>Date</Text>
                             </View>
-
-                            <DateInputField
-                                value={selectedDate}
-                                onClear={() => { 
-                                    onFieldChange("selectedDate")('');
-                                    setDate(undefined) }}
-                                keyboardType="number-pad"
-                                mode={'date'}
-                                format={"DD/MM/YYYY"}
-                                placeholder="DD/MM/YYYY"
-                                onDateChange={onDateUpdate}
-                                hasError={!!fieldErrors['selectedDate']}
-                                errorMessage={fieldErrors['selectedDate']}
-                            />
-
+                            <InputWrapper style={styles.inputWrapper}>
+                                <DateInputField
+                                    value={selectedDate}
+                                    onClear={() => { 
+                                        onFieldChange("selectedDate")('');
+                                        setDate(undefined) }}
+                                    keyboardType="number-pad"
+                                    mode={'date'}
+                                    format={"DD/MM/YYYY"}
+                                    placeholder="DD/MM/YYYY"
+                                    onDateChange={onDateUpdate}
+                                    hasError={!!fieldErrors['selectedDate']}
+                                    errorMessage={fieldErrors['selectedDate']}
+                                />
+                            </InputWrapper>
                         </View>
 
                     </View>
@@ -663,39 +667,40 @@ const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem }) => 
                             <View style={styles.textContainer}>
                                 <Text style={styles.labels}>Start</Text>
                             </View>
-
-                            <DateInputField
-                                onDateChange={onTimeUpdate("startTime")}
-                                value={startTime}
-                                mode={"time"}
-                                format={"hh:mm A"}
-                                onClear={() => {
-                                    onFieldChange("startTime")('');
-                                    setStartTime(undefined)}}
-                                placeholder="HH:MM"
-                                hasError={!!fieldErrors['startTime']}
-                                errorMessage={fieldErrors['startTime']}
-                            />
+                            <InputWrapper style={styles.inputWrapper}>
+                                <DateInputField
+                                    onDateChange={onTimeUpdate("startTime")}
+                                    value={startTime}
+                                    mode={"time"}
+                                    format={"hh:mm A"}
+                                    onClear={() => {
+                                        onFieldChange("startTime")('');
+                                        setStartTime(undefined)}}
+                                    placeholder="HH:MM"
+                                    hasError={!!fieldErrors['startTime']}
+                                    errorMessage={fieldErrors['startTime']}
+                                />
+                            </InputWrapper>
 
                         </View>
                         <View style={styles.inputWrapper}>
                             <View style={styles.textContainer}>
                                 <Text style={styles.labels}>End</Text>
                             </View>
-
-                            <DateInputField
-                                onDateChange={EndTimeUpdate("endTime")}
-                                value={endTime}
-                                mode={"time"}
-                                format={"hh:mm A"}
-                                onClear={() => {
-                                    onFieldChange("endTime")('');
-                                    setEndTime(undefined)}}
-                                placeholder="HH:MM"
-                                hasError={!!fieldErrors['endTime']}
-                                errorMessage={fieldErrors['endTime']}
-                            />
-
+                            <InputWrapper style={styles.inputWrapper}>
+                                <DateInputField
+                                    onDateChange={EndTimeUpdate("endTime")}
+                                    value={endTime}
+                                    mode={"time"}
+                                    format={"hh:mm A"}
+                                    onClear={() => {
+                                        onFieldChange("endTime")('');
+                                        setEndTime(undefined)}}
+                                    placeholder="HH:MM"
+                                    hasError={!!fieldErrors['endTime']}
+                                    errorMessage={fieldErrors['endTime']}
+                                />
+                            </InputWrapper>
                         </View>
 
                     </View>
