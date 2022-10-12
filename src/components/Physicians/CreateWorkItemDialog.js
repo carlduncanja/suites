@@ -161,14 +161,14 @@ const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem }) => 
             ...fields,
             [fieldName]: value
         })
-        /* setErrors({
+         setErrors({
             ...fieldErrors,
-            [fieldName]: undefined
+            [fieldName]: false
         })
-        */
-        const updatedErrors = {...fieldErrors}
-        delete updatedErrors[fieldName]
-        setErrors(updatedErrors)
+        
+        //const updatedErrors = {...fieldErrors}
+        //delete updatedErrors[fieldName]
+        //setErrors(updatedErrors)
     
     };
 
@@ -638,7 +638,7 @@ const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem }) => 
                                 isPopoverOpen={searchCaseQuery}
                                 handlePatient={handleCaseChange}
                                 searchFeild='caseNumber'
-                                hasError={fieldErrors['caseItem']}
+                                hasError={!!fieldErrors['caseItem']}
                                 errorMessage={fieldErrors['caseItem']}
                             />
 
@@ -702,7 +702,7 @@ const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem }) => 
                                     onFieldChange("endTime")('');
                                     setEndTime(undefined)}}
                                 placeholder="HH:MM"
-                                hasError={fieldErrors['endTime']}
+                                hasError={!!fieldErrors['endTime']}
                                 errorMessage={fieldErrors['endTime']}
                             />
 
