@@ -653,7 +653,7 @@ const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem }) => 
                                 format={"DD/MM/YYYY"}
                                 placeholder="DD/MM/YYYY"
                                 onDateChange={onDateUpdate}
-                                hasError={fieldErrors['selectedDate']}
+                                hasError={!!fieldErrors['selectedDate']}
                                 errorMessage={fieldErrors['selectedDate']}
                             />
 
@@ -696,7 +696,7 @@ const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem }) => 
                                     onFieldChange("endTime")('');
                                     setEndTime(undefined)}}
                                 placeholder="HH:MM"
-                                hasError={!!fieldErrors['endTime']}
+                                hasError={true}
                                 errorMessage={fieldErrors['endTime']}
                             />
 
