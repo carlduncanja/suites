@@ -294,11 +294,16 @@ function Event({ startTime, endTime, type, title, subTitle }) {
                 }
             ]}
         >
-            <View>
+            <View style={eventStyleSheet.rowContianer}>
                 <Text style={[
                     eventStyleSheet.title,
                     { color: textColor }
-                ]}>{title}</Text>
+                ]}>{title}</Text> 
+
+
+                <TouchableOpacity style={eventStyleSheet.CircleShape}>
+
+                </TouchableOpacity>
             </View>
 
 
@@ -351,5 +356,17 @@ const eventStyleSheet = StyleSheet.create({
     }
     , paginator: {
 
-    }
+    },
+    rowContianer:{
+        flexDirection:'row',
+        justifyContent:'space-between'
+    },
+    CircleShape: {
+        width: 20,
+        height: 20,
+        borderRadius: 20 / 2,
+        backgroundColor: '#FFFFFF',
+        borderWidth:1,
+        borderColor:"#63B3ED"
+      }
 })

@@ -14,6 +14,8 @@ import WasteIcon from '../../assets/svg/wasteIcon';
 import AddIcon from '../../assets/svg/addIcon';
 import { LONG_PRESS_TIMER } from '../const';
 import CreateWorkItemDialogContainer from '../components/Physicians/CreateWorkItemDialog'
+import EditWorkItemDialogContainer from './Physicians/EditWorkItemDialogContainer'
+import EditIcon from '../../assets/svg/editIcon';
 
 function PaginatedSchedule({ ID, isPhysician }) {
     const weekday = new Array(7);
@@ -82,38 +84,38 @@ function PaginatedSchedule({ ID, isPhysician }) {
         let toDate = formatDate(tommorrow, 'YYYY/MM/DD')
 
         console.log("date passed", fromDate, toDate, id)
-,
-        getAppointments("", "", fromDate,fromDate, '', id)
-            .then(data => {
-                //console.log("Objected values:", Object.values(data));
-                console.log('The appointment data received is:', data);
-                relevantAppointment.length = 0;
-                //console.log("data visualization", relevantAppointment)
+            ,
+            getAppointments("", "", fromDate, fromDate, '', id)
+                .then(data => {
+                    //console.log("Objected values:", Object.values(data));
+                    console.log('The appointment data received is:', data);
+                    relevantAppointment.length = 0;
+                    //console.log("data visualization", relevantAppointment)
 
-                const appointmentData = data.map(item => {
-                    let modifiedAppointment = { ...item };
-                    let today = new Date();
-                    // const mm = moment(item.startTime);
-                    const start = moment(modifiedAppointment.startTime);
-                    const end = moment(modifiedAppointment.endTime);
+                    const appointmentData = data.map(item => {
+                        let modifiedAppointment = { ...item };
+                        let today = new Date();
+                        // const mm = moment(item.startTime);
+                        const start = moment(modifiedAppointment.startTime);
+                        const end = moment(modifiedAppointment.endTime);
 
-                    const isActive = moment().isBetween(start, end);
-                    if (end < today) {
-                        console.log("appointment has passed");
-                        modifiedAppointment.type = 3;
-                    } else (isActive) ? (modifiedAppointment.type = 0) : (modifiedAppointment.type = 1);
+                        const isActive = moment().isBetween(start, end);
+                        if (end < today) {
+                            console.log("appointment has passed");
+                            modifiedAppointment.type = 3;
+                        } else (isActive) ? (modifiedAppointment.type = 0) : (modifiedAppointment.type = 1);
 
-                    return { ...modifiedAppointment, }
+                        return { ...modifiedAppointment, }
+                    })
+
+                    setrelevantApppointments(relevantAppointment.concat(appointmentData));
                 })
-
-                setrelevantApppointments(relevantAppointment.concat(appointmentData));
-            })
-            .catch(error => {
-                console.log('Failed to get desired appointments', error);
-            })
-            .finally(_ => {
-                setFetchingAppointment(false);
-            });
+                .catch(error => {
+                    console.log('Failed to get desired appointments', error);
+                })
+                .finally(_ => {
+                    setFetchingAppointment(false);
+                });
     };
 
     const toggleActionButton = () => {
@@ -147,6 +149,17 @@ function PaginatedSchedule({ ID, isPhysician }) {
                 </LongPressWithFeedback>
             </View>
         );
+
+        const editWorkItem = (
+            <View>
+                <ActionItem
+                    title={"Edit Work Item"}
+                    icon={<EditIcon />}
+                    onPress={handleEditWorkItem}
+                />
+            </View>
+        );
+
         const addWorkItem = (
             <View>
                 <ActionItem title="Add Work Item" icon={<AddIcon />} onPress={handleNewProcedurePress} />
@@ -156,6 +169,7 @@ function PaginatedSchedule({ ID, isPhysician }) {
         return <ActionContainer
             floatingActions={[
                 deleteAction,
+                editWorkItem,
                 addWorkItem
             ]}
             title="SCHEDULE ACTIONS"
@@ -163,7 +177,7 @@ function PaginatedSchedule({ ID, isPhysician }) {
     };
 
     const handleNewProcedurePress = procedure => {
-        console.log("here")
+        
         modal.openModal('AddWorkItemModal', {
             content: (
                 <CreateWorkItemDialogContainer
@@ -175,6 +189,18 @@ function PaginatedSchedule({ ID, isPhysician }) {
         });
 
     };
+
+    const handleEditWorkItem = () => {
+        modal.openModal('EditWorkItemModal', {
+            content: (
+                <EditWorkItemDialogContainer
+                    onCancel={() => setFloatingAction(false)}
+                    appiontment={{ "id": "5eba088974a814d4c0570a30" }}
+                />
+            ),
+            onClose: () => setFloatingAction(false)
+        });
+    }
 
 
 

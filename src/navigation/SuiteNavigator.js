@@ -29,6 +29,7 @@ import SideBarComponent from '../components/SideBar/SideBarComponent';
 import OverlaySlidePanelModal from '../modals/OverlaySlidePanelModal';
 import OverlayModal from '../modals/OverlayModal';
 import AddWorkItemModal from '../modals/AddWorkItemModal';
+import EditWorkItemModal from '../modals/EditWorkItemModal';
 import ActionContainerModal from '../modals/ActionContainerModal';
 import ReportPreviewModal from '../modals/ReportPreviewModal';
 import OverlayInfoModal from '../modals/OverlayInfoModal';
@@ -95,7 +96,8 @@ const SuitesCustomNavigator = ({
         BottomSheetModal,
         QuickActionsModal,
         ConfirmationModal,
-        AddWorkItemModal
+        AddWorkItemModal,
+        EditWorkItemModal,
     };
 
     const defaultOptions = {
