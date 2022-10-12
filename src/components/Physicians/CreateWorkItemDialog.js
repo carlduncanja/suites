@@ -148,7 +148,7 @@ const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem }) => 
                 duration: value.duration,
             }
             : value);
-        onFieldChange("procedure")(procedure);
+        //onFieldChange("procedure")(procedure);
         setSearchProcedureValue('')
         setSearchProcedureResult([]);
         setSearchProcedureQuery(undefined);
@@ -310,7 +310,7 @@ const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem }) => 
             }
             : value);
 
-        onFieldChange("location")(location);
+        //onFieldChange("location")(location);
 
         setSearchLocationValue('')
         setSearchLocationResult([]);
@@ -325,7 +325,7 @@ const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem }) => 
                 name: value.caseNumber
             } :
             value);
-        onFieldChange("caseItem")(caseItem);
+        //onFieldChange("caseItem")(caseItem);
         setSearchCaseValue('')
         setSearchCaseResult([])
         setSearchCaseQuery(undefined)
@@ -575,7 +575,9 @@ const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem }) => 
                                 value={procedure}
                                 oneOptionsSelected={handleProcedure}
                                 onChangeText={(value) => setSearchProcedureValue(value)}
-                                onClear={handleProcedure}
+                                onClear={() => { 
+                                    onFieldChange("procedure")('');
+                                    setProcedure(undefined) }}
                                 options={searchProcedureResult}
                                 isPopoverOpen={searchProcedureQuery}
                                 placeholder="Select Procedure"
@@ -600,7 +602,9 @@ const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem }) => 
                                 text={searchLocationValue}
                                 oneOptionsSelected={handleLocationChange}
                                 onChangeText={(value) => setSearchLocationValue(value)}
-                                onClear={handleLocationChange}
+                                onClear={() => { 
+                                    onFieldChange("location")('');
+                                    setLocation(undefined) }}
                                 options={searchLocationResult}
                                 isPopoverOpen={searchLocationQuery}
                                 handlePatient={handleLocationChange}
@@ -627,7 +631,9 @@ const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem }) => 
                                 text={searchCaseValue}
                                 oneOptionsSelected={handleCaseChange}
                                 onChangeText={(value) => setSearchCaseValue(value)}
-                                onClear={handleCaseChange}
+                                onClear={() => { 
+                                    onFieldChange("caseItem")('');
+                                    setCaseItem(undefined) }}
                                 options={searchCaseResult}
                                 isPopoverOpen={searchCaseQuery}
                                 handlePatient={handleCaseChange}
