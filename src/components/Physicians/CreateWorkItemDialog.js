@@ -580,7 +580,7 @@ const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem }) => 
                                 isPopoverOpen={searchProcedureQuery}
                                 placeholder="Select Procedure"
                                 handlePatient={handleProcedure}
-                                hasError={!!fieldErrors['procedure']}
+                                hasError={fieldErrors['procedure']}
                                 errorMessage={fieldErrors['procedure']}
                             />
 
@@ -604,7 +604,7 @@ const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem }) => 
                                 options={searchLocationResult}
                                 isPopoverOpen={searchLocationQuery}
                                 handlePatient={handleLocationChange}
-                                hasError={!!fieldErrors['location']}
+                                hasError={fieldErrors['location']}
                                 errorMessage={fieldErrors['location']}
                             />
 
@@ -632,7 +632,7 @@ const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem }) => 
                                 isPopoverOpen={searchCaseQuery}
                                 handlePatient={handleCaseChange}
                                 searchFeild='caseNumber'
-                                hasError={!!fieldErrors['caseItem']}
+                                hasError={fieldErrors['caseItem']}
                                 errorMessage={fieldErrors['caseItem']}
                             />
 
@@ -653,7 +653,7 @@ const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem }) => 
                                 format={"DD/MM/YYYY"}
                                 placeholder="DD/MM/YYYY"
                                 onDateChange={onDateUpdate}
-                                hasError={!!fieldErrors['selectedDate']}
+                                hasError={fieldErrors['selectedDate']}
                                 errorMessage={fieldErrors['selectedDate']}
                             />
 
@@ -677,7 +677,7 @@ const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem }) => 
                                     onFieldChange("startTime")('');
                                     setStartTime(undefined)}}
                                 placeholder="HH:MM"
-                                hasError={!!fieldErrors['startTime']}
+                                hasError={fieldErrors['startTime']}
                                 errorMessage={fieldErrors['startTime']}
                             />
 
@@ -696,7 +696,7 @@ const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem }) => 
                                     onFieldChange("endTime")('');
                                     setEndTime(undefined)}}
                                 placeholder="HH:MM"
-                                hasError={true}
+                                hasError={fieldErrors['endTime']}
                                 errorMessage={fieldErrors['endTime']}
                             />
 
