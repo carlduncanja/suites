@@ -434,7 +434,7 @@ const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem }) => 
         let errors = {};
         let isValid = true;
 
-        const requiredFields = ['procedure','location','caseItem', 'selectedDate','startTime', 'endTime',  ]
+        const requiredFields = ['procedure','location','caseItem', 'selectedDate','startTime', 'endTime'  ]
         for (const requiredField of requiredFields) {
             if (!fields[requiredField]) {
                 errors = {
@@ -642,21 +642,21 @@ const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem }) => 
                             <View style={styles.textContainer}>
                                 <Text style={styles.labels}>Date</Text>
                             </View>
-                            <InputWrapper style={styles.inputWrapper}>
-                                <DateInputField
-                                    value={selectedDate}
-                                    onClear={() => { 
-                                        onFieldChange("selectedDate")('');
-                                        setDate(undefined) }}
-                                    keyboardType="number-pad"
-                                    mode={'date'}
-                                    format={"DD/MM/YYYY"}
-                                    placeholder="DD/MM/YYYY"
-                                    onDateChange={onDateUpdate}
-                                    hasError={!!fieldErrors['selectedDate']}
-                                    errorMessage={fieldErrors['selectedDate']}
-                                />
-                            </InputWrapper>
+
+                            <DateInputField
+                                value={selectedDate}
+                                onClear={() => { 
+                                    onFieldChange("selectedDate")('');
+                                    setDate(undefined) }}
+                                keyboardType="number-pad"
+                                mode={'date'}
+                                format={"DD/MM/YYYY"}
+                                placeholder="DD/MM/YYYY"
+                                onDateChange={onDateUpdate}
+                                hasError={fieldErrors['selectedDate']}
+                                errorMessage={fieldErrors['selectedDate']}
+                            />
+
                         </View>
 
                     </View>
@@ -667,40 +667,39 @@ const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem }) => 
                             <View style={styles.textContainer}>
                                 <Text style={styles.labels}>Start</Text>
                             </View>
-                            <InputWrapper style={styles.inputWrapper}>
-                                <DateInputField
-                                    onDateChange={onTimeUpdate("startTime")}
-                                    value={startTime}
-                                    mode={"time"}
-                                    format={"hh:mm A"}
-                                    onClear={() => {
-                                        onFieldChange("startTime")('');
-                                        setStartTime(undefined)}}
-                                    placeholder="HH:MM"
-                                    hasError={!!fieldErrors['startTime']}
-                                    errorMessage={fieldErrors['startTime']}
-                                />
-                            </InputWrapper>
+
+                            <DateInputField
+                                onDateChange={onTimeUpdate("startTime")}
+                                value={startTime}
+                                mode={"time"}
+                                format={"hh:mm A"}
+                                onClear={() => {
+                                    onFieldChange("startTime")('');
+                                    setStartTime(undefined)}}
+                                placeholder="HH:MM"
+                                hasError={!!fieldErrors['startTime']}
+                                errorMessage={fieldErrors['startTime']}
+                            />
 
                         </View>
                         <View style={styles.inputWrapper}>
                             <View style={styles.textContainer}>
                                 <Text style={styles.labels}>End</Text>
                             </View>
-                            <InputWrapper style={styles.inputWrapper}>
-                                <DateInputField
-                                    onDateChange={EndTimeUpdate("endTime")}
-                                    value={endTime}
-                                    mode={"time"}
-                                    format={"hh:mm A"}
-                                    onClear={() => {
-                                        onFieldChange("endTime")('');
-                                        setEndTime(undefined)}}
-                                    placeholder="HH:MM"
-                                    hasError={!!fieldErrors['endTime']}
-                                    errorMessage={fieldErrors['endTime']}
-                                />
-                            </InputWrapper>
+
+                            <DateInputField
+                                onDateChange={EndTimeUpdate("endTime")}
+                                value={endTime}
+                                mode={"time"}
+                                format={"hh:mm A"}
+                                onClear={() => {
+                                    onFieldChange("endTime")('');
+                                    setEndTime(undefined)}}
+                                placeholder="HH:MM"
+                                hasError={!!fieldErrors['endTime']}
+                                errorMessage={fieldErrors['endTime']}
+                            />
+
                         </View>
 
                     </View>
