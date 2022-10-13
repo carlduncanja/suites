@@ -148,10 +148,12 @@ const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem }) => 
                 duration: value.duration,
             }
             : value);
-            setErrors({
-                ...fieldErrors,
-                procedure: false
-            })
+
+            // setErrors({
+            //     ...fieldErrors,
+            //     procedure: false
+            // })
+        onFieldChange("procedure")(value);
         setSearchProcedureValue('')
         setSearchProcedureResult([]);
         setSearchProcedureQuery(undefined);
@@ -309,11 +311,11 @@ const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem }) => 
             }
             : value);
 
-        //onFieldChange("location")(location);
-        setErrors({
-            ...fieldErrors,
-            location: false
-        })
+        onFieldChange("location")(value);
+        // setErrors({
+        //     ...fieldErrors,
+        //     location: false
+        // })
         setSearchLocationValue('')
         setSearchLocationResult([]);
         setSearchLocationQuery(undefined);
@@ -327,11 +329,11 @@ const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem }) => 
                 name: value.caseNumber
             } :
             value);
-        //onFieldChange("caseItem")(caseItem);
-        setErrors({
-            ...fieldErrors,
-            caseItem: false
-        })
+        onFieldChange("caseItem")(value);
+        // setErrors({
+        //     ...fieldErrors,
+        //     caseItem: false
+        // })
         setSearchCaseValue('')
         setSearchCaseResult([])
         setSearchCaseQuery(undefined)
@@ -405,7 +407,6 @@ const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem }) => 
         }
 
         setStartTime(newTime)
-        //onFieldChange("startTime")(newTime);
         onFieldChange("startTime")(newTime);
         setProcedure({
             ...procedure,
@@ -463,6 +464,17 @@ const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem }) => 
                 isValid = false;
             }
         }
+
+        // for(const field of allFields){
+        //     if(field === undefined)
+        //     {
+        //         errors = {
+        //             ...errors,
+        //             [field]: "Value is Required"
+        //         }
+        //         isValid = false;  
+        //     }
+        // }
 
         console.log('mud')
         console.log(location)
