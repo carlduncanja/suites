@@ -31,10 +31,7 @@ const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem }) => 
     const dialogTabs = ['Details'];
     const selectedIndex = 0;
 
-    const [fields, setFields] = useState({
-        //location: 'Operating Room 1',
-        // date : formatDate(new Date(),"DD/MM/YYYY").toString()
-    });
+    const [fields, setFields] = useState({});
 
     const [searchProcedureValue, setSearchProcedureValue] = useState("");
     const [attemptedSubmit, setAttemptedSubmit] = useState(false);
@@ -57,7 +54,6 @@ const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem }) => 
     const [selectedDate, setDate] = useState(undefined);
     const [startTime, setStartTime] = useState(undefined);
     const [endTime, setEndTime] = useState(undefined);
-   // const [fields, setFields] = useState({});
     const [fieldErrors, setErrors] = useState({});
 
     useEffect(() => {
@@ -149,10 +145,6 @@ const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem }) => 
             }
             : value);
 
-            // setErrors({
-            //     ...fieldErrors,
-            //     procedure: false
-            // })
         onFieldChange("procedure")(value);
         setSearchProcedureValue('')
         setSearchProcedureResult([]);
@@ -161,7 +153,6 @@ const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem }) => 
 
 
     const onFieldChange = (fieldName) => (value) => {
-        // console.log("Value: ", typeof value )
         setFields({
             ...fields,
             [fieldName]: value
@@ -312,10 +303,6 @@ const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem }) => 
             : value);
 
         onFieldChange("location")(value);
-        // setErrors({
-        //     ...fieldErrors,
-        //     location: false
-        // })
         setSearchLocationValue('')
         setSearchLocationResult([]);
         setSearchLocationQuery(undefined);
@@ -330,10 +317,6 @@ const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem }) => 
             } :
             value);
         onFieldChange("caseItem")(value);
-        // setErrors({
-        //     ...fieldErrors,
-        //     caseItem: false
-        // })
         setSearchCaseValue('')
         setSearchCaseResult([])
         setSearchCaseQuery(undefined)
@@ -440,20 +423,8 @@ const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem }) => 
 
     
     const validateFields = () => {
-
         let errors = {};
         let isValid = true;
-        const allFields = {
-            procedure,
-            location,
-            caseItem,
-            selectedDate,
-            startTime,
-            endTime
-        }
-        // check if fields are empty/undefined
-        const checkEmpty = removeEmpty(allFields);
-        const hasEmptyField = Object.keys(checkEmpty).length === 0;
         const requiredFields = ['procedure','location','caseItem', 'selectedDate','startTime', 'endTime']
         for (const requiredField of requiredFields) {
             if (!fields[requiredField]) {
@@ -465,52 +436,9 @@ const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem }) => 
             }
         }
 
-        // for(const field of allFields){
-        //     if(field === undefined)
-        //     {
-        //         errors = {
-        //             ...errors,
-        //             [field]: "Value is Required"
-        //         }
-        //         isValid = false;  
-        //     }
-        // }
-
-        console.log('mud')
-        console.log(location)
-        console.log(errors);
-        console.log(isValid);
-        
         setErrors(errors)
         return isValid;
     }
-
-
-    const validateAllFeildsFilled = () => {
-
-        let foundInvalidField = true
-
-        const StartTime = startTime
-        const EndTime = endTime
-        const LocationId = location
-        const caseId = caseItem
-        const procedureId = procedure
-        const isRecovery = false
-        if (StartTime !== undefined &&
-            EndTime !== undefined &&
-            LocationId !== undefined &&
-            caseId !== undefined &&
-            procedureId !== undefined) {
-
-
-            foundInvalidField = true;
-        }
-        else {
-            foundInvalidField = false;
-        }
-        return foundInvalidField
-    }
-
 
     const createWorkItem = () => {
         const validateAllFields = validateFields();
