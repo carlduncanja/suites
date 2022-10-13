@@ -406,10 +406,7 @@ const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem }) => 
 
         setStartTime(newTime)
         //onFieldChange("startTime")(newTime);
-        setErrors({
-            ...fieldErrors,
-            startTime: false
-        })
+        onFieldChange("startTime")(newTime);
         setProcedure({
             ...procedure,
             [field]: newTime.toDate(),
@@ -695,8 +692,9 @@ const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem }) => 
                                     onFieldChange("startTime")('');
                                     setStartTime(undefined)}}
                                 placeholder="HH:MM"
-                                hasError={fieldErrors['startTime']}
+                                hasError={!!fieldErrors['startTime']}
                                 errorMessage={fieldErrors['startTime']}
+                                borderColor={fieldErrors['startTime'] ? '--color-red-700' : '--color-gray-300'}
                             />
 
                         </View>
@@ -716,6 +714,7 @@ const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem }) => 
                                 placeholder="HH:MM"
                                 hasError={!!fieldErrors['endTime']}
                                 errorMessage={fieldErrors['endTime']}
+                                borderColor={fieldErrors['endTime'] ? '--color-red-700' : '--color-gray-300'}
                             />
 
                         </View>
