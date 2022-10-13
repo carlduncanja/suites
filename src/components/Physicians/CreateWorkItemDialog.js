@@ -442,8 +442,18 @@ const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem }) => 
 
         let errors = {};
         let isValid = true;
-
-        const requiredFields = ['procedure','location','caseItem', 'selectedDate','startTime', 'endTime'  ]
+        const allFields = {
+            procedure,
+            location,
+            caseItem,
+            selectedDate,
+            startTime,
+            endTime
+        }
+        // check if fields are empty/undefined
+        const checkEmpty = removeEmpty(allFields);
+        const hasEmptyField = Object.keys(checkEmpty).length === 0;
+        const requiredFields = ['procedure','location','caseItem', 'selectedDate','startTime', 'endTime']
         for (const requiredField of requiredFields) {
             if (!fields[requiredField]) {
                 errors = {
@@ -454,6 +464,11 @@ const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem }) => 
             }
         }
 
+        console.log('mud')
+        console.log(location)
+        console.log(errors);
+        console.log(isValid);
+        
         setErrors(errors)
         return isValid;
     }
@@ -694,7 +709,6 @@ const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem }) => 
                                 placeholder="HH:MM"
                                 hasError={!!fieldErrors['startTime']}
                                 errorMessage={fieldErrors['startTime']}
-                                borderColor={fieldErrors['startTime'] ? '--color-red-700' : '--color-gray-300'}
                             />
 
                         </View>
@@ -714,7 +728,6 @@ const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem }) => 
                                 placeholder="HH:MM"
                                 hasError={!!fieldErrors['endTime']}
                                 errorMessage={fieldErrors['endTime']}
-                                borderColor={fieldErrors['endTime'] ? '--color-red-700' : '--color-gray-300'}
                             />
 
                         </View>
