@@ -697,6 +697,7 @@ const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem }) => 
                                 onDateChange={onDateUpdate}
                                 hasError={fieldErrors['selectedDate']}
                                 errorMessage={fieldErrors['selectedDate']}
+                                borderColor={fieldErrors['selectedDate'] ? '--color-red-700' : '--color-gray-300'}
                             />
 
                         </View>
@@ -721,6 +722,7 @@ const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem }) => 
                                 placeholder="HH:MM"
                                 hasError={!!fieldErrors['startTime']}
                                 errorMessage={fieldErrors['startTime']}
+                                borderColor={fieldErrors['startTime'] ? '--color-red-700' : '--color-gray-300'}
                             />
 
                         </View>
@@ -740,6 +742,7 @@ const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem }) => 
                                 placeholder="HH:MM"
                                 hasError={!!fieldErrors['endTime']}
                                 errorMessage={fieldErrors['endTime']}
+                                borderColor={fieldErrors['endTime'] ? '--color-red-700' : '--color-gray-300'}
                             />
 
                         </View>
