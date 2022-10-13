@@ -164,14 +164,10 @@ const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem }) => 
             ...fields,
             [fieldName]: value
         })
-         setErrors({
-            ...fieldErrors,
-            [fieldName]: true
-        })
         
-        //const updatedErrors = {...fieldErrors}
-        //delete updatedErrors[fieldName]
-        //setErrors(updatedErrors)
+        const updatedErrors = {...fieldErrors}
+        delete updatedErrors[fieldName]
+        setErrors(updatedErrors)
     
     };
 
@@ -598,7 +594,7 @@ const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem }) => 
                                 isPopoverOpen={searchProcedureQuery}
                                 placeholder="Select Procedure"
                                 handlePatient={handleProcedure}
-                                hasError={fieldErrors['procedure']}
+                                hasError={!!fieldErrors['procedure']}
                                 errorMessage={fieldErrors['procedure']}
                             />
 
