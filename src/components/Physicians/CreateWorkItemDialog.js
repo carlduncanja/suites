@@ -148,7 +148,10 @@ const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem }) => 
                 duration: value.duration,
             }
             : value);
-        //onFieldChange("procedure")(procedure);
+            setErrors({
+                ...fieldErrors,
+                procedure: false
+            })
         setSearchProcedureValue('')
         setSearchProcedureResult([]);
         setSearchProcedureQuery(undefined);
@@ -163,7 +166,7 @@ const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem }) => 
         })
          setErrors({
             ...fieldErrors,
-            [fieldName]: false
+            [fieldName]: true
         })
         
         //const updatedErrors = {...fieldErrors}
@@ -311,7 +314,10 @@ const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem }) => 
             : value);
 
         //onFieldChange("location")(location);
-
+        setErrors({
+            ...fieldErrors,
+            location: false
+        })
         setSearchLocationValue('')
         setSearchLocationResult([]);
         setSearchLocationQuery(undefined);
@@ -326,6 +332,10 @@ const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem }) => 
             } :
             value);
         //onFieldChange("caseItem")(caseItem);
+        setErrors({
+            ...fieldErrors,
+            caseItem: false
+        })
         setSearchCaseValue('')
         setSearchCaseResult([])
         setSearchCaseQuery(undefined)
@@ -385,6 +395,7 @@ const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem }) => 
         });
 
     };
+    
 
     const onTimeUpdate = (field) => (dateTime) => {
 
@@ -398,7 +409,11 @@ const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem }) => 
         }
 
         setStartTime(newTime)
-        onFieldChange("startTime")(newTime);
+        //onFieldChange("startTime")(newTime);
+        setErrors({
+            ...fieldErrors,
+            startTime: false
+        })
         setProcedure({
             ...procedure,
             [field]: newTime.toDate(),
@@ -429,6 +444,7 @@ const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem }) => 
 
     }
 
+    
     const validateFields = () => {
 
         let errors = {};
