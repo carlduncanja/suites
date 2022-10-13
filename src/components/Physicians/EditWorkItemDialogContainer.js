@@ -534,10 +534,27 @@ const EditWorkItemDialogContainer = ({ onCancel, onCreated, appiontment }) => {
                         modal.closeAllModals();
                     }, 5000);
                 })
-                .catch(error => {
+                .catch(error => { 
+                    modal.openModal(
+                        'ConfirmationModal',
+                        {
+                            content: <ConfirmationComponent
+                                message={'There was an issue performing this action'}
+                                isError={true}
+                                isEditUpdate={false}
+                                onAction={() => {
+                                    modal.closeModals('ConfirmationModal');
+                                }}
+                            />,
+                            onClose: () => {
+                                modal.closeModals('ConfirmationModal');
+                            }
+                        }
+                    ); 
                     setTimeout(() => {
-                        modal.closeModals('ActionContainerModal');
-                    }, 200);
+                        modal.closeAllModals();
+                    }, 5000);
+                    
                     console.log('Failed to update work item', error);
                 })
         }

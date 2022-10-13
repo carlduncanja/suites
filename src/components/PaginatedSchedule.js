@@ -46,7 +46,7 @@ function PaginatedSchedule({ ID, isPhysician }) {
     const [isFloatingActionDisabled, setFloatingAction] = useState(false);
     const [alteredDate, setalteredDate] = useState(dateFormatter(dateObj));
     const [currentAppointment, setCurrentAppointment] = useState({});
-
+    const [selectedIds, setSelectedIds] = useState([])
     // console.log("Altered date: ", typeof alteredDate);
     // console.log("Moment Altered date: ", typeof formatDate(dateObj, 'dddd MMM/D/YYYY'));
 
@@ -130,8 +130,12 @@ function PaginatedSchedule({ ID, isPhysician }) {
     }
 
     const getFabActions = () => {
-        const isDisabled = false;
+
+        const isDisabled = selectedIds.length === 0
+
         const deleteAction = (
+
+
             <View style={{ borderRadius: 6, flex: 1, overflow: 'hidden' }}>
                 <LongPressWithFeedback
                     pressTimer={LONG_PRESS_TIMER.LONG}
@@ -148,13 +152,18 @@ function PaginatedSchedule({ ID, isPhysician }) {
                     />
                 </LongPressWithFeedback>
             </View>
-        );
 
+        );
+        const isReceivedDisabled =selectedIds.length === 0 
         const editWorkItem = (
             <View>
                 <ActionItem
                     title={"Edit Work Item"}
-                    icon={<EditIcon />}
+                    icon={<EditIcon
+                        strokeColor={isReceivedDisabled ? theme.colors['--color-gray-600'] : undefined}
+                    />}
+                    disabled={isReceivedDisabled}
+                    touchable={!isReceivedDisabled}
                     onPress={handleEditWorkItem}
                 />
             </View>
@@ -177,7 +186,7 @@ function PaginatedSchedule({ ID, isPhysician }) {
     };
 
     const handleNewProcedurePress = procedure => {
-        
+
         modal.openModal('AddWorkItemModal', {
             content: (
                 <CreateWorkItemDialogContainer
@@ -191,11 +200,13 @@ function PaginatedSchedule({ ID, isPhysician }) {
     };
 
     const handleEditWorkItem = () => {
+
+
         modal.openModal('EditWorkItemModal', {
             content: (
                 <EditWorkItemDialogContainer
                     onCancel={() => setFloatingAction(false)}
-                    appiontment={{ "id": "5eba088974a814d4c0570a30" }}
+                    appiontment={{ "id": selectedIds[0] }}
                 />
             ),
             onClose: () => setFloatingAction(false)
@@ -203,10 +214,17 @@ function PaginatedSchedule({ ID, isPhysician }) {
     }
 
 
+    const updateIDs = ids => {
+        console.log("before",ids)
+        setSelectedIds(...selectedIds,ids)
+        console.log('after',selectedIds)
+
+
+    }
 
     return (
         <>
-            <ScheduleDisplayComponent appointments={Array.from(relevantAppointment)} date={alteredDate} />
+            <ScheduleDisplayComponent appointments={Array.from(relevantAppointment)} date={alteredDate} idData={updateIDs} />
 
             <SchedulePaginator date={formatDate(dateObj, 'dddd MMM / D / YYYY')}
                 goToPreviousDay={goToPreviousDayApp}

@@ -1,17 +1,23 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { View, StyleSheet, ScrollView, Text, TouchableOpacity } from "react-native";
+import { checkboxItemPress } from '../../helpers/caseFilesHelpers';
 import moment from 'moment';
 
 function ScheduleDisplayComponent({
     appointments = [],
-    date = new Date()
+    date = new Date(),
+    idData
+
 }) {
     const timerRef = useRef(0); // using ref to keep track of timer.
 
     const startOfDate = moment(date).startOf('day') // set to 12:00 am
     const isToday = moment().isSame(date, 'day');
+
     const timelineDate = [];
     const [currentTime, setCurrentTime] = useState(moment);
+    const [selectedIds, setSelectedIds] = useState([])
+
     useEffect(() => {
         updateTime()
 
@@ -57,6 +63,15 @@ function ScheduleDisplayComponent({
         return position
     }
 
+    const onCheckBoxPress = item => {
+        const { _id } = item;
+
+        const updateInvioces = checkboxItemPress(_id, selectedIds);
+
+        setSelectedIds(updateInvioces);
+
+    }
+
     return (
 
         <View style={styles.container}>
@@ -97,7 +112,12 @@ function ScheduleDisplayComponent({
                                         position: "absolute"
                                     }}
                                 >
-                                    <Event{...item}/>
+                                    <Event {...item}
+                                        onPress={ event => {
+                                            onCheckBoxPress(item)
+                                            idData(selectedIds)
+                                        }}
+                                        isSelected={selectedIds.includes(item._id)} />
                                 </View>
                             )
                         })
@@ -254,7 +274,8 @@ export const EVENT_TYPES = {
     GONE: 3
 }
 
-function Event({ startTime, endTime, type, title, subTitle }) {
+function Event({ startTime, endTime, type, title, subTitle, isSelected = true, onPress }) {
+
 
     const start = moment(startTime);
     const end = moment(endTime)
@@ -298,11 +319,15 @@ function Event({ startTime, endTime, type, title, subTitle }) {
                 <Text style={[
                     eventStyleSheet.title,
                     { color: textColor }
-                ]}>{title}</Text> 
+                ]}>{title}</Text>
 
 
-                <TouchableOpacity style={eventStyleSheet.CircleShape}>
-
+                <TouchableOpacity style={eventStyleSheet.CircleShape} onPress={onPress}>
+                    {isSelected ?
+                        <View style={eventStyleSheet.circleSelected}></View>
+                        :
+                        <View style={eventStyleSheet.CircleShapeUnSelcted}></View>
+                    }
                 </TouchableOpacity>
             </View>
 
@@ -357,16 +382,37 @@ const eventStyleSheet = StyleSheet.create({
     , paginator: {
 
     },
-    rowContianer:{
-        flexDirection:'row',
-        justifyContent:'space-between'
+    rowContianer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between'
     },
     CircleShape: {
         width: 20,
         height: 20,
         borderRadius: 20 / 2,
         backgroundColor: '#FFFFFF',
-        borderWidth:1,
-        borderColor:"#63B3ED"
-      }
+        borderWidth: 1,
+        borderColor: "#63B3ED",
+        justifyContent: 'center'
+    },
+
+    CircleShapeUnSelcted: {
+        width: 12,
+        height: 12,
+        borderRadius: 12 / 2,
+        backgroundColor: '#FFFFFF',
+        borderWidth: 1,
+        borderColor: "#FFFFFF",
+        alignSelf: 'center'
+    },
+    circleSelected: {
+        width: 12,
+        height: 12,
+        borderRadius: 12 / 2,
+        backgroundColor: '#63B3ED',
+        borderWidth: 1,
+        borderColor: "#63B3ED",
+        alignSelf: 'center'
+    }
+
 })
