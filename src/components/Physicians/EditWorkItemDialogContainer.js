@@ -179,7 +179,6 @@ const EditWorkItemDialogContainer = ({ onCancel, onCreated, appiontment }) => {
                     _id: location._id,
                     name: location.name,
                 })
-                setPhysicianId(item.case.physicians[0]._id); 
                 setFields({
                     "caseItem": item,
                     "procedure": title,
@@ -188,9 +187,7 @@ const EditWorkItemDialogContainer = ({ onCancel, onCreated, appiontment }) => {
                     "startTime": startTime,
                     "endTime": endTime
                 })
-                
-
-                
+                setPhysicianId(item.case.physicians[0]._id);   
             })
             .catch((error) => {
                 // TODO handle error
@@ -216,8 +213,6 @@ const EditWorkItemDialogContainer = ({ onCancel, onCreated, appiontment }) => {
 
 
     const onFieldChange = (fieldName) => (value) => {
-        console.log("fields")
-        console.log(fields)
         setFields({
             ...fields,
             [fieldName]: value
@@ -480,10 +475,7 @@ const EditWorkItemDialogContainer = ({ onCancel, onCreated, appiontment }) => {
 
     const validateFields = () => {
         let errors = {};
-        let isValid = true;
-        console.log("validateFields fields")
-        console.log(fields)
-        
+        let isValid = true;        
         const requiredFields = ['procedure','location','caseItem', 'selectedDate','startTime', 'endTime']
         for (const requiredField of requiredFields) {
             if (!fields[requiredField]) {
@@ -494,10 +486,6 @@ const EditWorkItemDialogContainer = ({ onCancel, onCreated, appiontment }) => {
                 isValid = false;
             }
         }
-        console.log("errors")
-        console.log(errors)
-
-        
         setErrors(errors)
         return isValid;
     }
