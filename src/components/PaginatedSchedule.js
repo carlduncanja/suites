@@ -215,9 +215,12 @@ function PaginatedSchedule({ ID, isPhysician }) {
 
 
     const updateIDs = ids => {
-        console.log("before",ids)
-        setSelectedIds(...selectedIds,ids)
-        console.log('after',selectedIds)
+        /*console.log("before",selectedIds)
+        ids.map((id)=>{
+            const updatedList=[...ids]
+        })
+        console.log('after',selectedIds)*/ 
+        setSelectedIds(selectedIds.concat(ids))
 
 
     }
