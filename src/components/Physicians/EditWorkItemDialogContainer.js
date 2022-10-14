@@ -32,7 +32,7 @@ const EditWorkItemDialogContainer = ({ onCancel, onCreated, appiontment }) => {
     const selectedIndex = 0;
 
     const [fields, setFields] = useState({
-        location: 'Operating Room 1',
+        // location: 'Operating Room 1',
         // date : formatDate(new Date(),"DD/MM/YYYY").toString()
     });
     
@@ -203,6 +203,7 @@ const EditWorkItemDialogContainer = ({ onCancel, onCreated, appiontment }) => {
             }
             : value);
 
+        onFieldChange("procedure")(value);
         setSearchProcedureValue('')
         setSearchProcedureResult([]);
         setSearchProcedureQuery(undefined);
@@ -210,7 +211,6 @@ const EditWorkItemDialogContainer = ({ onCancel, onCreated, appiontment }) => {
 
 
     const onFieldChange = (fieldName) => (value) => {
-        // console.log("Value: ", typeof value )
         setFields({
             ...fields,
             [fieldName]: value
@@ -355,8 +355,7 @@ const EditWorkItemDialogContainer = ({ onCancel, onCreated, appiontment }) => {
             }
             : value);
 
-        onFieldChange("location")(location);
-
+        onFieldChange("location")(value);
         setSearchLocationValue('')
         setSearchLocationResult([]);
         setSearchLocationQuery(undefined);
@@ -370,7 +369,8 @@ const EditWorkItemDialogContainer = ({ onCancel, onCreated, appiontment }) => {
                 name: value.caseNumber
             } :
             value);
-        onFieldChange("caseItem")(caseItem);
+
+        onFieldChange("caseItem")(value);
         setSearchCaseValue('')
         setSearchCaseResult([])
         setSearchCaseQuery(undefined)
@@ -420,7 +420,7 @@ const EditWorkItemDialogContainer = ({ onCancel, onCreated, appiontment }) => {
             : undefined;
 
         setDate(newDate)
-
+        onFieldChange("selectedDate")(newDate);
         // update procedure
         setProcedure({
             ...procedure,
@@ -442,6 +442,7 @@ const EditWorkItemDialogContainer = ({ onCancel, onCreated, appiontment }) => {
         }
 
         setStartTime(newTime)
+        onFieldChange("startTime")(newTime);
         setProcedure({
             ...procedure,
             [field]: newTime.toDate(),
@@ -463,7 +464,7 @@ const EditWorkItemDialogContainer = ({ onCancel, onCreated, appiontment }) => {
         }
 
         setEndTime(newTime)
-
+        onFieldChange("endTime")(newTime);
         setProcedure({
             ...procedure,
             [field]: newTime.toDate(),
@@ -472,34 +473,27 @@ const EditWorkItemDialogContainer = ({ onCancel, onCreated, appiontment }) => {
 
     }
 
-    const validateAllFeildsFilled = () => {
-
-        let foundInvalidField = true
-
-        const StartTime = startTime
-        const EndTime = endTime
-        const LocationId = location
-        const caseId = caseItem
-        const procedureId = procedure
-        const isRecovery = false
-        if (StartTime !== undefined &&
-            EndTime !== undefined &&
-            LocationId !== undefined &&
-            caseId !== undefined &&
-            procedureId !== undefined) {
-
-
-            foundInvalidField = true;
+    const validateFields = () => {
+        let errors = {};
+        let isValid = true;
+        const requiredFields = ['procedure','location','caseItem', 'selectedDate','startTime', 'endTime']
+        for (const requiredField of requiredFields) {
+            if (!fields[requiredField]) {
+                errors = {
+                    ...errors,
+                    [requiredField]: "Value is Required"
+                }
+                isValid = false;
+            }
         }
-        else {
-            foundInvalidField = false;
-        }
-        return foundInvalidField
+
+        setErrors(errors)
+        return isValid;
     }
 
 
     const UpdateWorkItem = () => {
-        const validateAllFields = validateAllFeildsFilled();
+        const validateAllFields = validateFields();
         if (validateAllFields) {
             let workItem = {
                 "startTime": startTime,
@@ -613,11 +607,15 @@ const EditWorkItemDialogContainer = ({ onCancel, onCreated, appiontment }) => {
                                 value={procedure}
                                 oneOptionsSelected={handleProcedure}
                                 onChangeText={(value) => setSearchProcedureValue(value)}
-                                onClear={handleProcedure}
+                                onClear={() => { 
+                                    onFieldChange("procedure")('');
+                                    setProcedure(undefined) }}
                                 options={searchProcedureResult}
                                 isPopoverOpen={searchProcedureQuery}
                                 placeholder="Select Procedure"
                                 handlePatient={handleProcedure}
+                                hasError={!!fieldErrors['procedure']}
+                                errorMessage={fieldErrors['procedure']}
                             />
 
 
@@ -636,10 +634,14 @@ const EditWorkItemDialogContainer = ({ onCancel, onCreated, appiontment }) => {
                                 text={searchLocationValue}
                                 oneOptionsSelected={handleLocationChange}
                                 onChangeText={(value) => setSearchLocationValue(value)}
-                                onClear={handleLocationChange}
+                                onClear={() => { 
+                                    onFieldChange("location")('');
+                                    setLocation(undefined) }}
                                 options={searchLocationResult}
                                 isPopoverOpen={searchLocationQuery}
                                 handlePatient={handleLocationChange}
+                                hasError={fieldErrors['location']}
+                                errorMessage={fieldErrors['location']}
                             />
 
                         </View>
@@ -661,11 +663,15 @@ const EditWorkItemDialogContainer = ({ onCancel, onCreated, appiontment }) => {
                                 text={searchCaseValue}
                                 oneOptionsSelected={handleCaseChange}
                                 onChangeText={(value) => setSearchCaseValue(value)}
-                                onClear={handleCaseChange}
+                                onClear={() => { 
+                                    onFieldChange("caseItem")('');
+                                    setCaseItem(undefined) }}
                                 options={searchCaseResult}
                                 isPopoverOpen={searchCaseQuery}
                                 handlePatient={handleCaseChange}
                                 searchFeild='caseNumber'
+                                hasError={!!fieldErrors['caseItem']}
+                                errorMessage={fieldErrors['caseItem']}
                             />
 
                         </View>
@@ -677,12 +683,17 @@ const EditWorkItemDialogContainer = ({ onCancel, onCreated, appiontment }) => {
 
                             <DateInputField
                                 value={selectedDate}
-                                onClear={() => { setDate(undefined) }}
+                                onClear={() => { 
+                                    onFieldChange("selectedDate")('');
+                                    setDate(undefined) }}
                                 keyboardType="number-pad"
                                 mode={'date'}
                                 format={"DD/MM/YYYY"}
                                 placeholder="DD/MM/YYYY"
                                 onDateChange={onDateUpdate}
+                                hasError={fieldErrors['selectedDate']}
+                                errorMessage={fieldErrors['selectedDate']}
+                                borderColor={fieldErrors['selectedDate'] ? '--color-red-700' : '--color-gray-300'}
                             />
 
                         </View>
@@ -701,8 +712,13 @@ const EditWorkItemDialogContainer = ({ onCancel, onCreated, appiontment }) => {
                                 value={startTime}
                                 mode={"time"}
                                 format={"hh:mm A"}
-                                onClear={() => setStartTime(undefined)}
+                                onClear={() => {
+                                    onFieldChange("startTime")('');
+                                    setStartTime(undefined)}}
                                 placeholder="HH:MM"
+                                hasError={!!fieldErrors['startTime']}
+                                errorMessage={fieldErrors['startTime']}
+                                borderColor={fieldErrors['startTime'] ? '--color-red-700' : '--color-gray-300'}
                             />
 
                         </View>
@@ -716,8 +732,13 @@ const EditWorkItemDialogContainer = ({ onCancel, onCreated, appiontment }) => {
                                 value={endTime}
                                 mode={"time"}
                                 format={"hh:mm A"}
-                                onClear={() => setEndTime(undefined)}
+                                onClear={() => {
+                                    onFieldChange("endTime")('');
+                                    setEndTime(undefined)}}
                                 placeholder="HH:MM"
+                                hasError={!!fieldErrors['endTime']}
+                                errorMessage={fieldErrors['endTime']}
+                                borderColor={fieldErrors['endTime'] ? '--color-red-700' : '--color-gray-300'}
                             />
 
                         </View>
