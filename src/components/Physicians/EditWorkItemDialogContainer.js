@@ -180,7 +180,14 @@ const EditWorkItemDialogContainer = ({ onCancel, onCreated, appiontment }) => {
                     name: location.name,
                 })
                 setPhysicianId(item.case.physicians[0]._id); 
-                
+                setFields({
+                    caseItem: item,
+                    procedure: title,
+                    location: location,
+                    selectedDate: formatDate(startTime,'DD/MM/YYYY'),
+                    startTime: startTime,
+                    endTime: endTime
+                })
                 
 
                 
