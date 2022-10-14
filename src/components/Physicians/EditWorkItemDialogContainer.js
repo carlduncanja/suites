@@ -61,7 +61,8 @@ const EditWorkItemDialogContainer = ({ onCancel, onCreated, appiontment }) => {
     const [startTime, setStartTime] = useState(undefined);
     const [endTime, setEndTime] = useState(undefined);
 
-
+    const [fieldErrors, setErrors] = useState({});
+    
     useEffect(() => {
         if (!searchProcedureValue) {
             // empty search values and cancel any out going request.
