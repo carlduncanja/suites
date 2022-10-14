@@ -31,10 +31,7 @@ const EditWorkItemDialogContainer = ({ onCancel, onCreated, appiontment }) => {
     const dialogTabs = ['Details'];
     const selectedIndex = 0;
 
-    const [fields, setFields] = useState({
-        // location: 'Operating Room 1',
-        // date : formatDate(new Date(),"DD/MM/YYYY").toString()
-    });
+    const [fields, setFields] = useState({ });
     
     const [appiontmentId,setAppiomentId] =useState("")
     const [physicianId,setPhysicianId]=useState("")
@@ -62,7 +59,7 @@ const EditWorkItemDialogContainer = ({ onCancel, onCreated, appiontment }) => {
     const [endTime, setEndTime] = useState(undefined);
 
     const [fieldErrors, setErrors] = useState({});
-    
+
     useEffect(() => {
         if (!searchProcedureValue) {
             // empty search values and cancel any out going request.
@@ -216,6 +213,10 @@ const EditWorkItemDialogContainer = ({ onCancel, onCreated, appiontment }) => {
             ...fields,
             [fieldName]: value
         })
+
+        const updatedErrors = {...fieldErrors}
+        delete updatedErrors[fieldName]
+        setErrors(updatedErrors)
     };
 
     const removeEmpty = (obj) => {
@@ -428,7 +429,6 @@ const EditWorkItemDialogContainer = ({ onCancel, onCreated, appiontment }) => {
             date: date,
             startTime: newStartTime && newStartTime.toDate(),
         });
-
     };
 
     const onTimeUpdate = (field) => (dateTime) => {
@@ -448,9 +448,6 @@ const EditWorkItemDialogContainer = ({ onCancel, onCreated, appiontment }) => {
             ...procedure,
             [field]: newTime.toDate(),
         });
-
-
-
     };
 
     const EndTimeUpdate = (field) => (dateTime) => {
@@ -470,8 +467,6 @@ const EditWorkItemDialogContainer = ({ onCancel, onCreated, appiontment }) => {
             ...procedure,
             [field]: newTime.toDate(),
         });
-
-
     }
 
     const validateFields = () => {
@@ -495,6 +490,7 @@ const EditWorkItemDialogContainer = ({ onCancel, onCreated, appiontment }) => {
 
     const UpdateWorkItem = () => {
         const validateAllFields = validateFields();
+        if(!validateAllFields){ return }
         if (validateAllFields) {
             let workItem = {
                 "startTime": startTime,
