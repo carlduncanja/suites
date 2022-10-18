@@ -9,6 +9,7 @@ import { useModal } from 'react-native-modalfy';
 import { useTheme } from 'emotion-theming';
 import ActionContainer from '../components/common/FloatingAction/ActionContainer';
 import LongPressWithFeedback from '../components/common/LongPressWithFeedback';
+import { deleteAppointmentById } from '../api/network'
 import ActionItem from '../components/common/ActionItem';
 import WasteIcon from '../../assets/svg/wasteIcon';
 import AddIcon from '../../assets/svg/addIcon';
@@ -16,6 +17,7 @@ import { LONG_PRESS_TIMER } from '../const';
 import CreateWorkItemDialogContainer from '../components/Physicians/CreateWorkItemDialog'
 import EditWorkItemDialogContainer from './Physicians/EditWorkItemDialogContainer'
 import EditIcon from '../../assets/svg/editIcon';
+import ConfirmationComponent from './ConfirmationComponent';
 
 function PaginatedSchedule({ ID, isPhysician }) {
     const weekday = new Array(7);
@@ -53,6 +55,10 @@ function PaginatedSchedule({ ID, isPhysician }) {
     useEffect(() => {
         fetchAppointments(ID, alteredDate);
     }, [alteredDate]);
+
+    const onRefesh = () => {
+        fetchAppointments(ID, alteredDate);
+    }
 
     const goToPreviousDayApp = () => {
         settestDate(dateObj.setDate(dateObj.getDate() - 1));
@@ -118,6 +124,7 @@ function PaginatedSchedule({ ID, isPhysician }) {
                 });
     };
 
+
     const toggleActionButton = () => {
         setFloatingAction(true);
         modal.openModal("ActionContainerModal", {
@@ -139,7 +146,7 @@ function PaginatedSchedule({ ID, isPhysician }) {
             <View style={{ borderRadius: 6, flex: 1, overflow: 'hidden' }}>
                 <LongPressWithFeedback
                     pressTimer={LONG_PRESS_TIMER.LONG}
-                    onLongPress={console.log()}
+                    onLongPress={removeAppiontmentLongPress}
                     isDisabled={isDisabled}
                 >
                     <ActionItem
@@ -154,7 +161,7 @@ function PaginatedSchedule({ ID, isPhysician }) {
             </View>
 
         );
-        const isReceivedDisabled =selectedIds.length === 0 
+        const isReceivedDisabled = selectedIds.length === 0
         const editWorkItem = (
             <View>
                 <ActionItem
@@ -213,14 +220,93 @@ function PaginatedSchedule({ ID, isPhysician }) {
         });
     }
 
+    const removeAppiontmentLongPress = () => {
+        if (selectedIds.length > 0) openDeletionConfirm({ "id": selectedIds[0] });
+        else openErrorConfirmation()
+    }
+
+    const openDeletionConfirm = data => {
+        modal.openModal(
+            'ConfirmationModal',
+            {
+                content: <ConfirmationComponent
+                    isError={false}
+                    isEditUpdate={true}
+                    onCancel={() => modal.closeModal('ConfirmationModal')}
+                    onAction={() => {
+                        modal.closeModals('ConfirmationModal');
+                        removeAppiontmentCall(data)
+                    }}
+                    message="Do you want to delete this appiontment?"
+                />,
+                onClose: () => {
+                    modal.closeModals('ConfirmationModal');
+                }
+            }
+        );
+    };
+
+    const removeAppiontmentCall = (data) => {
+        deleteAppointmentById(data.id)
+            .then(_ => {
+                modal.openModal(
+                    'ConfirmationModal', {
+                    content: <ConfirmationComponent
+                        isError={false}
+                        isEditUpdate={false}
+                        onAction={() => {
+                            modal.closeModals('ConfirmationModal');
+                            setTimeout(() => {
+                                modal.closeModal('ActionContainerModal')
+                                onRefesh()
+                            }, 200)
+                        }}
+                    />,
+                    onClose: () => {
+                        modal.closeModal('ConfirmationModal')
+                    }
+                }
+                );
+                setSelectedIds([])
+            })
+            .catch(error => {
+                openErrorConfirmation();
+                setTimeout(() => {
+                    modal.closeModals('ActionContainerModal');
+                }, 200)
+                console.log('failed to remove the appiontment',error)
+            })
+            .finally(_ => {
+                setFloatingAction(false)
+            });
+    }
+
+    const openErrorConfirmation = () => {
+        modal.openModal(
+            'ConfirmationModal',
+            {
+                content: <ConfirmationComponent
+                    isError={true}
+                    isEditUpdate={false}
+                    onCancel={() => modal.closeModals('ConfirmationModal')}
+                />,
+                onClose: () => {
+                    modal.closeModals('ConfirmationModal');
+                }
+            }
+        );
+    };
+
 
     const updateIDs = ids => {
         /*console.log("before",selectedIds)
         ids.map((id)=>{
             const updatedList=[...ids]
         })
-        console.log('after',selectedIds)*/ 
+        console.log('after',selectedIds)*/
+        console.log('before', selectedIds)
         setSelectedIds(selectedIds.concat(ids))
+        console.log('after', selectedIds)
 
 
     }
