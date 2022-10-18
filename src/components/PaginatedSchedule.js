@@ -232,7 +232,7 @@ function PaginatedSchedule({ ID, isPhysician }) {
                 content: <ConfirmationComponent
                     isError={false}
                     isEditUpdate={true}
-                    onCancel={() => modal.closeModal('ConfirmationModal')}
+                    onCancel={() => modal.closeModals('ConfirmationModal')}
                     onAction={() => {
                         modal.closeModals('ConfirmationModal');
                         removeAppiontmentCall(data)
