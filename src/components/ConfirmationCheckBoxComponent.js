@@ -330,6 +330,6 @@ const styles = StyleSheet.create({
         backgroundColor:"#D69E2E",
         width:5
     }
-});
+});   
 
 export default ConfirmationCheckBoxComponent;
