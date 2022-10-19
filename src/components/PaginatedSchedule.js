@@ -18,6 +18,7 @@ import CreateWorkItemDialogContainer from '../components/Physicians/CreateWorkIt
 import EditWorkItemDialogContainer from './Physicians/EditWorkItemDialogContainer'
 import EditIcon from '../../assets/svg/editIcon';
 import ConfirmationComponent from './ConfirmationComponent';
+import ConfirmationCheckBoxComponent from './ConfirmationCheckBoxComponent';
 
 function PaginatedSchedule({ ID, isPhysician }) {
     const weekday = new Array(7);
@@ -229,7 +230,7 @@ function PaginatedSchedule({ ID, isPhysician }) {
         modal.openModal(
             'ConfirmationModal',
             {
-                content: <ConfirmationComponent
+                content: <ConfirmationCheckBoxComponent
                     isError={false}
                     isEditUpdate={true}
                     onCancel={() => modal.closeModals('ConfirmationModal')}
