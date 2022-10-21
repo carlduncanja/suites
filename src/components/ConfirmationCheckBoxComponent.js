@@ -135,12 +135,12 @@ const CancelButtonContainer = styled.TouchableOpacity`
     padding-top : 12px;
     border-radius: 10px;
     border-width: 1px;
-    background-color: ${({ theme }) => theme.colors['--color-gray-300']};
+    background-color: #FFFFFFF;
     width: 99px;
     height: 40px;
-    border-color: ${({ theme }) => theme.colors['--default-shade-white']};
+    border-color:#3182CE;
     /* margin-left:5px; */
-`;
+`; 
 
 const ActionButton = styled.TouchableOpacity`
     background-color: ${({ theme }) => theme.colors['--color-blue-600']};
@@ -256,17 +256,17 @@ function ConfirmationCheckBoxComponent({
             </MessageWrapper>
 
             <ButtonView theme={theme}>
-                <ButtonContainer onPress={onCancel} theme={theme} background='--color-gray-300'>
-                    <ModalText theme={theme} textColor="--color-gray-500" font="--text-base-bold">Cancel</ModalText>
+                <CancelButtonContainer onPress={onCancel} theme={theme} background='--color-gray-300'>
+                    <ModalText theme={theme} textColor="--color-blue-600" font="--text-base-bold">CANCEL</ModalText>
 
-                </ButtonContainer>
+                </CancelButtonContainer>
                 {isChecked ?
                     <ButtonContainer
                         onPress={onAction}
                         theme={theme}
                         background="--color-blue-600"
                     >
-                        <ModalText theme={theme} textColor="--default-shade-white" font="--text-base-bold">Confirm</ModalText>
+                        <ModalText theme={theme} textColor="--default-shade-white" font="--text-base-bold">CONFIRM</ModalText>
                     </ButtonContainer>
                     :
                     <ButtonContainer
@@ -274,7 +274,7 @@ function ConfirmationCheckBoxComponent({
                         theme={theme}
                         background='--color-gray-300'
                     >
-                        <ModalText theme={theme} textColor="--default-shade-white" font="--text-base-bold">Confirm</ModalText>
+                        <ModalText theme={theme} textColor="--default-shade-white" font="--text-base-bold">CONFIRM</ModalText>
                     </ButtonContainer>
                 }
 
