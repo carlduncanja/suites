@@ -311,13 +311,13 @@ function PaginatedSchedule({ ID, isPhysician }) {
 
     const removeIdFromArray = (id) =>{
      let updatedList=[...selectedIds]
-      console.log("can say anthing")
+      //console.log("can say anthing")
       return []
     }
     
     const updateIDs = ids => {
 
-        console.log("before", selectedIds)
+        //console.log("before", selectedIds)
         let updatedList = [...selectedIds]
 
         ids.map((id) => {
@@ -330,7 +330,7 @@ function PaginatedSchedule({ ID, isPhysician }) {
             console.log("During",updatedList)
         })
         setSelectedIds(updatedList)
-        console.log('after', selectedIds)
+        //console.log('after', selectedIds)
 
         /*console.log('before', selectedIds)
         setSelectedIds(selectedIds.concat(ids))
