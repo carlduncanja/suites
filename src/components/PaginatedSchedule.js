@@ -18,6 +18,7 @@ import CreateWorkItemDialogContainer from '../components/Physicians/CreateWorkIt
 import EditWorkItemDialogContainer from './Physicians/EditWorkItemDialogContainer'
 import EditIcon from '../../assets/svg/editIcon';
 import ConfirmationComponent from './ConfirmationComponent';
+import ConfirmationCheckBoxComponent from './ConfirmationCheckBoxComponent';
 
 function PaginatedSchedule({ ID, isPhysician }) {
     const weekday = new Array(7);
@@ -175,10 +176,17 @@ function PaginatedSchedule({ ID, isPhysician }) {
                 />
             </View>
         );
-
+        const isAddWorkDisable = selectedIds.length === 0
         const addWorkItem = (
             <View>
-                <ActionItem title="Add Work Item" icon={<AddIcon />} onPress={handleNewProcedurePress} />
+                <ActionItem title="Add Work Item"
+                    icon={<AddIcon
+                        strokeColor={!isAddWorkDisable ? theme.colors['--color-gray-600'] : undefined}
+                    />}
+                    onPress={handleNewProcedurePress}
+                    disabled={!isAddWorkDisable}
+                    touchable={isAddWorkDisable}
+                />
             </View>
         );
 
@@ -229,15 +237,18 @@ function PaginatedSchedule({ ID, isPhysician }) {
         modal.openModal(
             'ConfirmationModal',
             {
-                content: <ConfirmationComponent
+                content: <ConfirmationCheckBoxComponent
                     isError={false}
                     isEditUpdate={true}
-                    onCancel={() => modal.closeModals('ConfirmationModal')}
+                    onCancel={() => {
+                        modal.closeModals('ConfirmationModal');
+                        setFloatingAction(false)
+                    }}
                     onAction={() => {
                         modal.closeModals('ConfirmationModal');
                         removeAppiontmentCall(data)
                     }}
-                    message="Do you want to delete this appiontment?"
+                    message="Do you want to delete this appointment?"
                 />,
                 onClose: () => {
                     modal.closeModals('ConfirmationModal');
@@ -274,7 +285,7 @@ function PaginatedSchedule({ ID, isPhysician }) {
                 setTimeout(() => {
                     modal.closeModals('ActionContainerModal');
                 }, 200)
-                console.log('failed to remove the appiontment',error)
+                console.log('failed to remove the appointment', error)
             })
             .finally(_ => {
                 setFloatingAction(false)
@@ -299,11 +310,21 @@ function PaginatedSchedule({ ID, isPhysician }) {
 
 
     const updateIDs = ids => {
-        /*console.log("before",selectedIds)
-        ids.map((id)=>{
-            const updatedList=[...ids]
+
+        /*console.log("before", selectedIds)
+        let updatedList = [...selectedIds]
+
+        ids.map((id) => {
+            let test = updatedList.includes(id)
+            test ?
+                updatedList.filter(_id => _id !== id)
+                :
+                setSelectedIds(selectedIds.concat(id))
+            
         })
-        console.log('after',selectedIds)*/
+        setSelectedIds(updatedList)
+        console.log('after', selectedIds)*/
+
         console.log('before', selectedIds)
         setSelectedIds(selectedIds.concat(ids))
         console.log('after', selectedIds)
