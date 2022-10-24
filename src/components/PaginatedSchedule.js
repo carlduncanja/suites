@@ -19,6 +19,7 @@ import EditWorkItemDialogContainer from './Physicians/EditWorkItemDialogContaine
 import EditIcon from '../../assets/svg/editIcon';
 import ConfirmationComponent from './ConfirmationComponent';
 import ConfirmationCheckBoxComponent from './ConfirmationCheckBoxComponent';
+import _ from 'lodash'
 
 function PaginatedSchedule({ ID, isPhysician }) {
     const weekday = new Array(7);
@@ -308,26 +309,35 @@ function PaginatedSchedule({ ID, isPhysician }) {
         );
     };
 
-
+    const removeIdFromArray = (id) =>{
+     let updatedList=[...selectedIds]
+      //console.log("can say anthing")
+      return []
+    }
+    
     const updateIDs = ids => {
 
-        /*console.log("before", selectedIds)
+        //console.log("before", selectedIds)
         let updatedList = [...selectedIds]
 
         ids.map((id) => {
             let test = updatedList.includes(id)
             test ?
-                updatedList.filter(_id => _id !== id)
+                updatedList=removeIdFromArray(id)
                 :
-                setSelectedIds(selectedIds.concat(id))
+                updatedList.push(id) 
             
+            console.log("During",updatedList)
         })
         setSelectedIds(updatedList)
-        console.log('after', selectedIds)*/
+        //console.log('after', selectedIds)
 
-        console.log('before', selectedIds)
+        /*console.log('before', selectedIds)
         setSelectedIds(selectedIds.concat(ids))
-        console.log('after', selectedIds)
+        console.log('after', selectedIds)*/ 
+       // setSelectedIds(updatedList)
+        //console.log('after',selectedIds)
+
 
 
     }
