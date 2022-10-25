@@ -77,15 +77,16 @@ const CaseFilesTab = ({ cases }) => {
 
     const data = cases.map(item => {
         return {
-            id: item.patient,
+            id: item._id,
             name: item.name,
             balance: 2560.90,
             status: 'Closed',
-            nextVisit: new Date(2019, 10, 21)
+            nextVisit: new Date(2020, 10, 21)
         }
     })
 
     useEffect(() => {
+        console.log('gun man spaniard',cases)
         setTotalPages(Math.ceil(data.length / recordsPerPage))
     }, [])
 
