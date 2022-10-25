@@ -113,6 +113,10 @@ function NewProcedureOverlayContainer({ appointment = {}, editMode = false }) {
         time: ''
     });
 
+    useEffect(() => {
+        if(appointment) fetchCasebyId();
+    }, [])
+
     const onFieldChange = (fieldName) => (value) => {
         setFields({
             ...fields,
@@ -737,87 +741,86 @@ function NewProcedureOverlayContainer({ appointment = {}, editMode = false }) {
         })
     }
 
-    useEffect(() => {
-        if (appointment._id !== undefined) {
-            getCaseFileById(appointment.item.case._id).then(res => {
-                const resultLocation = res.caseProcedures[0].appointment.location;
-                const resultPatient = appointment.item.case.patient;
-                const procedureId = res.caseProcedures[0].procedure._id;
-                const procedureName = res.caseProcedures[0].appointment.title;
-                const resultTime = appointment.startTime;
-                const endTime = moment(appointment.startTime);
+    const fetchCasebyId = () => {
+        getCaseFileById(appointment.item.case._id).then(res => {
+            const resultLocation = res.caseProcedures[0].appointment.location;
+            const resultPatient = appointment.item.case.patient;
+            const procedureId = res.caseProcedures[0].procedure._id;
+            const procedureName = res.caseProcedures[0].appointment.title;
+            const resultTime = appointment.startTime;
+            const endTime = moment(appointment.startTime);
 
-                if (resultLocation !== null) {
-                    handleLocationChange({
-                        _id: resultLocation._id,
-                        name: resultLocation.name
-                    });
-                }
-
-
-                handlePatient({
-                    _id: resultPatient._id,
-                    name: `${resultPatient.firstName} ${resultPatient.surname}`
+            if (resultLocation !== null) {
+                handleLocationChange({
+                    _id: resultLocation._id,
+                    name: resultLocation.name
                 });
-
-                onFieldChange('firstName')(`${resultPatient.firstName} ${resultPatient.surname}`);
-                onPatientFieldChange('firstName')(`${resultPatient.firstName} ${resultPatient.surname}`);
-
-                if (procedureName.length > 0) {
-                    handleProcedure({
-                        _id: procedureId,
-                        name: procedureName
-                    });
-                }
+            }
 
 
-                setDate(moment(resultTime));
-                setStartTime(endTime);
-                const container = [];
+            handlePatient({
+                _id: resultPatient._id,
+                name: `${resultPatient.firstName} ${resultPatient.surname}`
+            });
 
-                function findStaffByTag(tag) {
-                    const resultItem = res.roleKeys.filter(itemTag => tag === itemTag.tag);
+            onFieldChange('firstName')(`${resultPatient.firstName} ${resultPatient.surname}`);
+            onPatientFieldChange('firstName')(`${resultPatient.firstName} ${resultPatient.surname}`);
+
+            if (procedureName.length > 0) {
+                handleProcedure({
+                    _id: procedureId,
+                    name: procedureName
+                });
+            }
 
 
-                    return resultItem.length > 0 ? resultItem[0] : null
-                }
+            setDate(moment(resultTime));
+            setStartTime(endTime);
+            const container = [];
 
-                const finalLeadSurgeon = findStaffByTag("Lead Surgeon");
-                const finalAnaesthesiologist = findStaffByTag("Anaesthesiologist");
-                const finalAssitantSurgeon = findStaffByTag("Assistant Surgeon");
-                const finalNurse = findStaffByTag("Nurse");
+            function findStaffByTag(tag) {
+                const resultItem = res.roleKeys.filter(itemTag => tag === itemTag.tag);
 
-                if (finalLeadSurgeon !== null) {
-                    container.push(finalLeadSurgeon);
-                    setGeneratedLeadSurgeon(finalLeadSurgeon);
-                }
 
-                if (finalAnaesthesiologist !== null) {
-                    container.push(finalAnaesthesiologist);
-                    setGeneratedAnaesthesiologist(finalAnaesthesiologist);
-                }
+                return resultItem.length > 0 ? resultItem[0] : null
+            }
 
-                if (finalAssitantSurgeon !== null) {
-                    container.push(finalAssitantSurgeon);
-                    setGeneratedAssistantSurgeon(finalAssitantSurgeon)
-                }
+            const finalLeadSurgeon = findStaffByTag("Lead Surgeon");
+            const finalAnaesthesiologist = findStaffByTag("Anaesthesiologist");
+            const finalAssitantSurgeon = findStaffByTag("Assistant Surgeon");
+            const finalNurse = findStaffByTag("Nurse");
 
-                if (finalNurse !== null) {
-                    container.push(finalNurse);
-                    setGeneratedNurse(
-                        {
-                            _id: finalNurse._id,
-                            name: `${finalNurse.name}`,
-                            type: "Nurse",
-                            tag: "Nurse"
-                        }
-                    )
-                }
+            if (finalLeadSurgeon !== null) {
+                container.push(finalLeadSurgeon);
+                setGeneratedLeadSurgeon(finalLeadSurgeon);
+            }
 
-                setStaffInfo(container)
-            })
-        }
-    }, []);
+            if (finalAnaesthesiologist !== null) {
+                container.push(finalAnaesthesiologist);
+                setGeneratedAnaesthesiologist(finalAnaesthesiologist);
+            }
+
+            if (finalAssitantSurgeon !== null) {
+                container.push(finalAssitantSurgeon);
+                setGeneratedAssistantSurgeon(finalAssitantSurgeon)
+            }
+
+            if (finalNurse !== null) {
+                container.push(finalNurse);
+                setGeneratedNurse(
+                    {
+                        _id: finalNurse._id,
+                        name: `${finalNurse.name}`,
+                        type: "Nurse",
+                        tag: "Nurse"
+                    }
+                )
+            }
+
+            setStaffInfo(container)
+        })
+    }
+    
 
     function deleteSurgeonTag(tag) {
         let staffClone = staffInfo;
