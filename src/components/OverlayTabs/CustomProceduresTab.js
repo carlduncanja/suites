@@ -3,6 +3,8 @@ import { View, Text, StyleSheet} from "react-native";
 
 import Table from '../common/Table/Table';
 import Footer from '../common/Page/Footer';
+import List from '../common/List/List';
+import ListItem from '../common/List/ListItem';
 import LongPressWithFeedback from "../common/LongPressWithFeedback";
 import FloatingActionButton from "../common/FloatingAction/FloatingActionButton";
 import ActionContainer from "../common/FloatingAction/ActionContainer";
@@ -129,9 +131,9 @@ const CustomProceduresTab = ({modal,procedures}) => {
 
     const renderItem = item => {
         return (
-            <Item
+            <ListItem
                 itemView={listItemFormat(item)}
-                hasCheckBox={false}
+                hasCheckBox={true}
             />
         );
     };
@@ -141,14 +143,14 @@ const CustomProceduresTab = ({modal,procedures}) => {
 
     return (
         <>
-            <Table
+            <List
                 data={dataToDisplay}
                 listItemFormat={renderItem}
                 headers={headers}
                 isCheckbox={false}
             />
             <Footer
-                hasActions={false}
+                hasActions={true}
                 totalPages={totalPages}
                 currentPage={currentPagePosition}
                 goToNextPage={goToNextPage}
