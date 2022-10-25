@@ -757,8 +757,8 @@ function NewProcedureOverlayContainer({ appointment = {}, editMode = false }) {
                 });
             }
 
-            setPatientID(resultPatient.patientNumber);
-            
+            setPatientID("#" + resultPatient.patientNumber);
+
             handlePatient({
                 _id: resultPatient._id,
                 name: `${resultPatient.firstName} ${resultPatient.surname}`
