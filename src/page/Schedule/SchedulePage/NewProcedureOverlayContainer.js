@@ -23,7 +23,7 @@ function NewProcedureOverlayContainer({ appointment = {}, editMode = false }) {
 
     const theme = useTheme();
     const modal = useModal();
-    const [patientID, setPatientID] = useState(appointment.item !== undefined ? appointment.item.case.patient._id : "Patient ID:--")
+    const [patientID, setPatientID] = useState("Patient ID:--")
     const [patientValue, setPatient] = useState(undefined);
     const [searchPatientValue, setSearchPatientValue] = useState("");
     const [searchPatientResult, setSearchPatientResult] = useState([]);
@@ -757,7 +757,8 @@ function NewProcedureOverlayContainer({ appointment = {}, editMode = false }) {
                 });
             }
 
-
+            setPatientID(resultPatient.patientNumber);
+            
             handlePatient({
                 _id: resultPatient._id,
                 name: `${resultPatient.firstName} ${resultPatient.surname}`
