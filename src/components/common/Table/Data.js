@@ -7,7 +7,7 @@ import {emptyFn} from "../../../const";
 
 const Data = ({
                   data = [],
-                  listItemFormat = emptyFn()
+                  listItemFormat = () =>{}
               }) => (
     <KeyboardAwareScrollView
         bounces={false}

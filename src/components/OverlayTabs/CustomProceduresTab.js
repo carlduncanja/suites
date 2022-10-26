@@ -143,7 +143,7 @@ const CustomProceduresTab = ({ modal, procedures }) => {
         return <Item
             hasCheckBox={true}
             isChecked={selectedIds.includes(item.id)}
-            onCheckBoxPress={handleOnCheckBoxPress(item)}
+            onCheckBoxPress={()=>handleOnCheckBoxPress(item)}
             onItemPress={() => { }}
             itemView={listItemFormat(item)}
         />
@@ -186,6 +186,8 @@ const CustomProceduresTab = ({ modal, procedures }) => {
                 listItemFormat={renderItem}
                 headers={headers}
                 isCheckbox={true}
+                toggleHeaderCheckbox ={onSelectAll}
+                itemSelected={selectedIds}
 
             />
             <Footer

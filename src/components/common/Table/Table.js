@@ -1,34 +1,42 @@
-import React, {useContext, useEffect} from 'react';
-import {View, StyleSheet} from 'react-native';
-import styled, {css} from '@emotion/native';
-import {useTheme} from 'emotion-theming';
+import React, { useContext, useEffect } from 'react';
+import { View, StyleSheet, FlatList } from 'react-native';
+import styled, { css } from '@emotion/native';
+import { useTheme } from 'emotion-theming';
 import Header from './Header';
 import Data from './Data';
 
 import LineDivider from '../LineDivider';
 
-import {CaseFileContext} from '../../../contexts/CaseFileContext';
+import { CaseFileContext } from '../../../contexts/CaseFileContext';
 
 const DividerContainer = styled.View`
-    margin-bottom : ${({theme}) => theme.space['--space-20']};
+    margin-bottom : ${({ theme }) => theme.space['--space-20']};
 `;
 
 const TableContainerContainer = styled.View`
     width : 100%;
     height : 38px;
-    background-color : ${({theme}) => theme.colors['--accent-button']};
+    background-color : ${({ theme }) => theme.colors['--accent-button']};
     justify-content : center;
     align-items : center;
-    margin-bottom : ${({theme}) => theme.space['--space-8']};
+    margin-bottom : ${({ theme }) => theme.space['--space-8']};
     border-radius : 8px;
 `;
 
-const BannerText = styled.Text(({theme}) => ({
+const BannerText = styled.Text(({ theme }) => ({
     ...theme.font['--text-sm-medium'],
     color: theme.colors['--default-shade-white'],
 }));
+const ListWrapper = styled.View`
+    display : flex;
+    flex:1;
+`;
 
-function Table  ({
+const ListContainer = styled.View`
+    display: flex;
+`;
+
+function Table({
     data = [],
     listItemFormat = () => {
     },
@@ -38,7 +46,8 @@ function Table  ({
     },
     itemSelected = [],
     hasBanner = false,
-    bannerText = ''
+    bannerText = '',
+    keyExtractor = (item) => ((item?.id || "") || (item?._id || "")) + new Date().getTime()
 }) {
     // const {
     //     data = [],
@@ -59,31 +68,32 @@ function Table  ({
 
     const isIndeterminate = itemSelected?.length > 0 && itemSelected?.length !== data?.length;
     return (
-        <>
-            <Header
-                headers={headers}
-                toggleHeaderCheckbox={toggleHeaderCheckbox}
-                isIndeterminate={isIndeterminate}
-                checked={itemSelected?.length > 0}
-                isCheckbox={isCheckbox}
-            />
+        <ListWrapper>
+            <ListContainer>
+                <Header
+                    headers={headers}
+                    toggleHeaderCheckbox={toggleHeaderCheckbox}
+                    isIndeterminate={isIndeterminate}
+                    checked={itemSelected?.length > 0}
+                    isCheckbox={isCheckbox}
+                />
 
-            <DividerContainer theme={theme}>
-                <LineDivider/>
-            </DividerContainer>
+                <DividerContainer theme={theme}>
+                    <LineDivider />
+                </DividerContainer>
 
-            {
-                hasBanner &&
-                <TableContainerContainer theme={theme}>
-                    <BannerText theme={theme}>{bannerText}</BannerText>
-                </TableContainerContainer>
-            }
-
-            <Data
-                listItemFormat={listItemFormat}
-                data={data}
-            />
-        </>
+                <FlatList
+                    listItemFormat={listItemFormat}
+                    data={data}
+                    style={{ height: '100%' }}
+                    nestedScrollEnabled={true}
+                    renderItem={({ item }) => listItemFormat(item)}
+                    keyExtractor={keyExtractor}
+                    contentContainerStyle={{ paddingBottom: 100 }}
+                    keyboardShouldPersistTaps={'always'}
+                />
+            </ListContainer>
+        </ListWrapper>
     );
 };
 
