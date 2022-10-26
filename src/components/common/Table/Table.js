@@ -1,5 +1,5 @@
 import React, {useContext, useEffect} from 'react';
-import {View, StyleSheet} from 'react-native';
+import {View, StyleSheet,FlatList} from 'react-native';
 import styled, {css} from '@emotion/native';
 import {useTheme} from 'emotion-theming';
 import Header from './Header';
@@ -8,6 +8,7 @@ import Data from './Data';
 import LineDivider from '../LineDivider';
 
 import {CaseFileContext} from '../../../contexts/CaseFileContext';
+//import { FlatList } from 'react-native-gesture-handler';
 
 const DividerContainer = styled.View`
     margin-bottom : ${({theme}) => theme.space['--space-20']};
@@ -39,6 +40,7 @@ const Table = ({
     itemSelected = [],
     hasBanner = false,
     bannerText = '',
+    keyExtractor = (item) => ((item?.id || "") || (item?._id || "")) + new Date().getTime(),
     ...props
 }) => {
     // const {
@@ -80,9 +82,14 @@ const Table = ({
                 </TableContainerContainer>
             }
 
-            <Data
-                listItemFormat={listItemFormat}
-                data={data}
+            <FlatList
+                 style={{height: '100%'}}
+                 nestedScrollEnabled={true}
+                 data={data}
+                 renderItem={({item}) => listItemFormat(item)}
+                 keyExtractor={keyExtractor}
+                 contentContainerStyle={{paddingBottom: 100}}
+                 keyboardShouldPersistTaps={'always'}
             />
         </>
     );

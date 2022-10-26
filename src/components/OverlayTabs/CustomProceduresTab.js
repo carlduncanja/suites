@@ -117,21 +117,37 @@ const CustomProceduresTab = ({ modal, procedures }) => {
     }
 
     const handleOnCheckBoxPress = (item) => {
+        console.log("i am pressed")
         const { id } = item;
         let updatedCases = [...selectedIds];
 
         if (updatedCases.includes(id)) {
             updatedCases = updatedCases.filter(id => id !== item.id)
-        } else {
+        } 
+        else {
             updatedCases.push(item.id);
         }
         
-        setSelectedIds(updatedCases);
+        setSelectedIds(updatedCases)
     }
-
-    const RECOVERY_COLORS = {
+  
+     
+    
+     const RECOVERY_COLORS = {
         'Yes': '--color-green-600',
         'No': '--color-orange-500'
+    };
+    
+    
+    const renderItem = item => {
+        return <Item
+            hasCheckBox={true}
+            isChecked={selectedIds.includes(item.id)}
+            onCheckBoxPress={handleOnCheckBoxPress(item)}
+            onItemPress={() => { }}
+            itemView={listItemFormat(item)}
+        />
+            ;
     };
 
     const listItemFormat = item => (
@@ -158,16 +174,7 @@ const CustomProceduresTab = ({ modal, procedures }) => {
         </>
     );
 
-    const renderItem = item => {
-        return <Item
-            hasCheckBox={true}
-            isChecked={selectedIds.includes(item.id)}
-            onCheckBoxPress={handleOnCheckBoxPress(item)}
-            onItemPress={() => { }}
-            itemView={listItemFormat(item)}
-        />
-            ;
-    };
+    
 
     let dataToDisplay = [...data];
     dataToDisplay = dataToDisplay.slice(currentPageListMin, currentPageListMax);
