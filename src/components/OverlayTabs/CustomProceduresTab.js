@@ -133,7 +133,7 @@ const CustomProceduresTab = ({ modal, procedures }) => {
   
      
     
-     const RECOVERY_COLORS = {
+    const RECOVERY_COLORS = {
         'Yes': '--color-green-600',
         'No': '--color-orange-500'
     };
