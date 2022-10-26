@@ -152,6 +152,7 @@ function AssignEquipmentDetailsTab({
 
     const onDateChange = date => {
         onFieldChange('date')(date);
+        console.log("this is the date", date)
     };
 
     return (
@@ -252,8 +253,8 @@ function AssignEquipmentDetailsTab({
                                 errorMessage={'Date and Time Required'}
                                 hasError={errors.data}
                                 onClear={() => onFieldChange('date')('')}
-                                mode="date"
-                                format="YYYY-MM-DD"
+                                mode="datetime"
+                                //format="YYYY-MM-DD"
                                 keyboardType="number-pad"
                                 placeholder="YYYY/MM/DD"
                                 minDate={moment().add(1, 'days').toDate()}
