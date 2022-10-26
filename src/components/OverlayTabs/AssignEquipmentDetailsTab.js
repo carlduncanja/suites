@@ -156,20 +156,14 @@ function AssignEquipmentDetailsTab({
     };
 
     const validateFields = () => {
-        let errors = {};
         let isValid = true;
         const requiredFields = ['assignment', 'assigned', 'date','duration']
         for (const requiredField of requiredFields) {
-            if (!fields[requiredField]) {
-                errors = {
-                    ...errors,
-                    [requiredField]: "Value is Required"
-                }
+            if (!data[requiredField]) {
                 isValid = false;
             }
         }
 
-        setErrors(errors)
         if(isValid) onDonePress();
     }
 
@@ -225,8 +219,8 @@ function AssignEquipmentDetailsTab({
                                     <MenuOption value="Person" text="Person"/>
                                 </MenuOptions>
                             )}
-                            hasError={errors['assignment']}
-                            errorMessage={errors['assignment']}
+                            hasError={data.assignment === undefined ? true : false}
+                            errorMessage={"Value is required"}
 
                         />
                     </InputWrapper>
@@ -237,8 +231,8 @@ function AssignEquipmentDetailsTab({
                             labelWidth={80}
                             value={data.assignment === 'Location' ? locations : data.assignment === 'Theatre' ? theatres : physicians}
                             text={searchValue}
-                            hasError={errors['assigned']}
-                            errorMessage={errors['assigned']}
+                            hasError={data.assigned === undefined ? true : false}
+                            errorMessage={"Value is required"}
                             oneOptionsSelected={value => {
                                 const location = {
                                     _id: value._id,
@@ -273,8 +267,8 @@ function AssignEquipmentDetailsTab({
                                 label="From"
                                 labelWidth={80}
                                 value={data.date}
-                                errorMessage={errors['date']}
-                                hasError={errors['date']}
+                                hasError={data.date === undefined ? true : false}
+                                errorMessage={"Value is required"}
                                 onClear={() => onFieldChange('date')('')}
                                 mode="datetime"
                                 keyboardType="number-pad"
@@ -282,7 +276,7 @@ function AssignEquipmentDetailsTab({
                                 minDate={moment().add(1, 'days').toDate()}
                                 maxDate={null}
                                 onDateChange={onDateChange}
-                                borderColor={errors['date'] ? '--color-red-700' : '--color-gray-300'}
+                                borderColor={data.date ? '--color-red-700' : '--color-gray-300'}
                             />
                         </InputWrapper>
                     }
@@ -292,8 +286,8 @@ function AssignEquipmentDetailsTab({
                             <InputUnitField
                                 label="Duration"
                                 labelWidth={70}
-                                errorMessage={errors['duration']}
-                                hasError={errors['duration']}
+                                hasError={data.duraiton === undefined ? true : false}
+                                errorMessage={"Value is required"}
                                 onChangeText={value => {
                                     if (/^\d+$/g.test(value) || !value) {
                                         onFieldChange('duration')(value);
