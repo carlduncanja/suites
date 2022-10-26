@@ -221,6 +221,9 @@ const CaseFilesTab = ({ cases }) => {
                     onCancel={() => {
                         modal.closeModals('ConfirmationModal');
                         setIsFloatingActionDisabled(false)
+                        setTimeout(() => {
+                            modal.closeModals('ActionContainerModal')
+                        }, 200)
                     }}
                     onAction={() => {
                         removeCaseFile(data)
@@ -230,6 +233,7 @@ const CaseFilesTab = ({ cases }) => {
                 />,
                 onClose: () => {
                     modal.closeModals('ConfirmationModal');
+                    modal.closeModals('ActionContainerModal')
 
                 }
             }
