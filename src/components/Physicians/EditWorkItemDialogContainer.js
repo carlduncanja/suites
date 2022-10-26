@@ -179,18 +179,15 @@ const EditWorkItemDialogContainer = ({ onCancel, onCreated, appiontment }) => {
                     _id: location._id,
                     name: location.name,
                 })
-                setPhysicianId(item.case.physicians[0]._id); 
                 setFields({
-                    caseItem: item,
-                    procedure: title,
-                    location: location,
-                    selectedDate: formatDate(startTime,'DD/MM/YYYY'),
-                    startTime: startTime,
-                    endTime: endTime
+                    "caseItem": item,
+                    "procedure": title,
+                    "location": location,
+                    "selectedDate": formatDate(startTime,'DD/MM/YYYY'),
+                    "startTime": startTime,
+                    "endTime": endTime
                 })
-                
-
-                
+                setPhysicianId(item.case.physicians[0]._id);   
             })
             .catch((error) => {
                 // TODO handle error
@@ -478,7 +475,7 @@ const EditWorkItemDialogContainer = ({ onCancel, onCreated, appiontment }) => {
 
     const validateFields = () => {
         let errors = {};
-        let isValid = true;
+        let isValid = true;        
         const requiredFields = ['procedure','location','caseItem', 'selectedDate','startTime', 'endTime']
         for (const requiredField of requiredFields) {
             if (!fields[requiredField]) {
@@ -489,7 +486,6 @@ const EditWorkItemDialogContainer = ({ onCancel, onCreated, appiontment }) => {
                 isValid = false;
             }
         }
-
         setErrors(errors)
         return isValid;
     }
@@ -618,7 +614,7 @@ const EditWorkItemDialogContainer = ({ onCancel, onCreated, appiontment }) => {
                                 isPopoverOpen={searchProcedureQuery}
                                 placeholder="Select Procedure"
                                 handlePatient={handleProcedure}
-                                hasError={!!fieldErrors['procedure']}
+                                hasError={fieldErrors['procedure']}
                                 errorMessage={fieldErrors['procedure']}
                             />
 
@@ -674,7 +670,7 @@ const EditWorkItemDialogContainer = ({ onCancel, onCreated, appiontment }) => {
                                 isPopoverOpen={searchCaseQuery}
                                 handlePatient={handleCaseChange}
                                 searchFeild='caseNumber'
-                                hasError={!!fieldErrors['caseItem']}
+                                hasError={fieldErrors['caseItem']}
                                 errorMessage={fieldErrors['caseItem']}
                             />
 
@@ -720,7 +716,7 @@ const EditWorkItemDialogContainer = ({ onCancel, onCreated, appiontment }) => {
                                     onFieldChange("startTime")('');
                                     setStartTime(undefined)}}
                                 placeholder="HH:MM"
-                                hasError={!!fieldErrors['startTime']}
+                                hasError={fieldErrors['startTime']}
                                 errorMessage={fieldErrors['startTime']}
                                 borderColor={fieldErrors['startTime'] ? '--color-red-700' : '--color-gray-300'}
                             />
@@ -740,7 +736,7 @@ const EditWorkItemDialogContainer = ({ onCancel, onCreated, appiontment }) => {
                                     onFieldChange("endTime")('');
                                     setEndTime(undefined)}}
                                 placeholder="HH:MM"
-                                hasError={!!fieldErrors['endTime']}
+                                hasError={fieldErrors['endTime']}
                                 errorMessage={fieldErrors['endTime']}
                                 borderColor={fieldErrors['endTime'] ? '--color-red-700' : '--color-gray-300'}
                             />
