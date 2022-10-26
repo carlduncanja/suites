@@ -1,5 +1,5 @@
-import React,{ useState, useEffect } from "react";
-import { View, Text, StyleSheet} from "react-native";
+import React, { useState, useEffect } from "react";
+import { View, Text, StyleSheet } from "react-native";
 
 import Table from '../common/Table/Table';
 import Footer from '../common/Page/Footer';
@@ -13,7 +13,7 @@ import WasteIcon from "../../../assets/svg/wasteIcon";
 import AddIcon from "../../../assets/svg/addIcon";
 import AssignIcon from "../../../assets/svg/assignIcon";
 
-import {useNextPaginator, usePreviousPaginator} from "../../helpers/caseFilesHelpers";
+import { useNextPaginator, usePreviousPaginator } from "../../helpers/caseFilesHelpers";
 
 import { withModal } from "react-native-modalfy";
 import DataItem from "../common/List/DataItem";
@@ -57,18 +57,24 @@ const testData = [
     }
 ];
 
-const CustomProceduresTab = ({modal,procedures}) => {
-   
+const CustomProceduresTab = ({ modal, procedures }) => {
+
+    console.log('gun man deh on the back foot', procedures)
     const recordsPerPage = 10;
-    
+
     const [totalPages, setTotalPages] = useState(0);
     const [currentPageListMin, setCurrentPageListMin] = useState(0);
     const [currentPageListMax, setCurrentPageListMax] = useState(recordsPerPage);
     const [currentPagePosition, setCurrentPagePosition] = useState(1);
 
-    const data = procedures.map( item =>{
+    const [selectedIds, setSelectedIds] = useState([])
+    const [isFloatingActionDisabled, setIsFloatingActionDisabled] = useState(false);
+    const [isIndeterminate, setIsIndeterminate] = useState(false)
+
+    const data = procedures.map(item => {
         const recovery = item.hasRecovery ? "Yes" : "No";
         return {
+            id: item._id,
             procedure: item.name,
             theatre: "Operating Room 1",
             recovery: recovery,
@@ -76,13 +82,13 @@ const CustomProceduresTab = ({modal,procedures}) => {
         };
     });
 
-    useEffect(()=>{
+    useEffect(() => {
         setTotalPages(Math.ceil(data.length / recordsPerPage));
-    },[]);
+    }, []);
 
     const goToNextPage = () => {
         if (currentPagePosition < totalPages) {
-            let {currentPage, currentListMin, currentListMax} = useNextPaginator(currentPagePosition, recordsPerPage, currentPageListMin, currentPageListMax);
+            let { currentPage, currentListMin, currentListMax } = useNextPaginator(currentPagePosition, recordsPerPage, currentPageListMin, currentPageListMax);
             setCurrentPagePosition(currentPage);
             setCurrentPageListMin(currentListMin);
             setCurrentPageListMax(currentListMax);
@@ -92,23 +98,48 @@ const CustomProceduresTab = ({modal,procedures}) => {
     const goToPreviousPage = () => {
         if (currentPagePosition === 1) return;
 
-        let {currentPage, currentListMin, currentListMax} = usePreviousPaginator(currentPagePosition, recordsPerPage, currentPageListMin, currentPageListMax);
+        let { currentPage, currentListMin, currentListMax } = usePreviousPaginator(currentPagePosition, recordsPerPage, currentPageListMin, currentPageListMax);
         setCurrentPagePosition(currentPage);
         setCurrentPageListMin(currentListMin);
         setCurrentPageListMax(currentListMax);
     };
 
+    const onSelectAll = () => {
+        const indeterminate = selectedIds.length >= 0 && selectedIds.length != data.length;
+        setIsIndeterminate(indeterminate)
+        if (indeterminate) {
+            const selectedAllIds = [...data.map(item => item.id)]
+            setSelectedIds(selectedAllIds)
+        } else {
+            setSelectedIds([])
+        }
+
+    }
+
+    const handleOnCheckBoxPress = (item) => {
+        const { id } = item;
+        let updatedCases = [...selectedIds];
+
+        if (updatedCases.includes(id)) {
+            updatedCases = updatedCases.filter(id => id !== item.id)
+        } else {
+            updatedCases.push(item.id);
+        }
+        
+        setSelectedIds(updatedCases);
+    }
+
     const RECOVERY_COLORS = {
-        'Yes' : '--color-green-600',
-        'No' : '--color-orange-500'
+        'Yes': '--color-green-600',
+        'No': '--color-orange-500'
     };
 
     const listItemFormat = item => (
         <>
-            <DataItem flex={2} align="flex-start" text={item?.procedure} color="--color-blue-600" fontStyle="--text-base-medium"/>
-            <DataItem flex={1.5} align="flex-start" text={item?.theatre} color="--color-blue-600" fontStyle="--text-base-medium"/>
-            <DataItem flex={1} align="center" text={item.recovery} color={RECOVERY_COLORS[item.recovery]} fontStyle="--text-base-medium"/>
-            <DataItem flex={1} align="flex-end" text={`${item.duration} hrs`} color="--color-gray-800" fontStyle="--text-base-regular"/>
+            <DataItem flex={2} align="flex-start" text={item?.procedure} color="--color-blue-600" fontStyle="--text-base-medium" />
+            <DataItem flex={1.5} align="flex-start" text={item?.theatre} color="--color-blue-600" fontStyle="--text-base-medium" />
+            <DataItem flex={1} align="center" text={item.recovery} color={RECOVERY_COLORS[item.recovery]} fontStyle="--text-base-medium" />
+            <DataItem flex={1} align="flex-end" text={`${item.duration} hrs`} color="--color-gray-800" fontStyle="--text-base-regular" />
 
             {/* <View style={{flexDirection: 'row', borderBottomColor: '#E3E8EF', borderBottomWidth: 1, marginBottom: 15, paddingBottom: 15}}>
                 <View style={{flex: 1}}>
@@ -128,12 +159,14 @@ const CustomProceduresTab = ({modal,procedures}) => {
     );
 
     const renderItem = item => {
-        return (
-            <Item
-                itemView={listItemFormat(item)}
-                hasCheckBox={true}
-            />
-        );
+        return <Item
+            hasCheckBox={true}
+            isChecked={selectedIds.includes(item.id)}
+            onCheckBoxPress={handleOnCheckBoxPress(item)}
+            onItemPress={() => { }}
+            itemView={listItemFormat(item)}
+        />
+            ;
     };
 
     let dataToDisplay = [...data];
@@ -146,7 +179,7 @@ const CustomProceduresTab = ({modal,procedures}) => {
                 listItemFormat={renderItem}
                 headers={headers}
                 isCheckbox={true}
-                
+
             />
             <Footer
                 hasActions={true}
