@@ -92,12 +92,18 @@ const AssignEquipmentPage = ({navigation, route}) => {
     const [currentTab, setCurrentTab] = useState(currentTabs[0]);
     const [isEditMode, setEditMode] = useState(false);
 
+    const [errors, setErrors] = useState({});
+
     const onFieldChange = fieldName => value => {
         const updateFields = {...equipmentData};
         setEquipmentData({
             ...updateFields,
             [fieldName]: value
         });
+
+        const updatedErrors = {...errors}
+        delete updatedErrors[fieldName]
+        setErrors(updatedErrors)
     };
 
     const onLocationUpdate = value => {
@@ -107,6 +113,7 @@ const AssignEquipmentPage = ({navigation, route}) => {
         updatedLocations[selectedIndex] = value;
         console.log('Updated Locations:', updatedLocations);
         setLocations(updatedLocations);
+        onFieldChange('assigned')(value);
     };
 
     const onTheatreUpdate = value => {
@@ -116,6 +123,7 @@ const AssignEquipmentPage = ({navigation, route}) => {
         updatedTheatres[selectedIndex] = value;
         console.log('Updated Theatres:', updatedTheatres);
         setTheatres(updatedTheatres);
+        onFieldChange('assigned')(value);
     };
 
     const onPhysicianUpdate = value => {
@@ -125,7 +133,9 @@ const AssignEquipmentPage = ({navigation, route}) => {
         console.log('Updated Physicians:', updatePhysicians);
         updatePhysicians[selectedIndex] = value;
         setPhysicians(updatePhysicians);
+        onFieldChange('assigned')(value);
     };
+    
 
     const onTabPress = selectedTab => {
         if (!isEditMode) setCurrentTab(selectedTab);
@@ -149,7 +159,7 @@ const AssignEquipmentPage = ({navigation, route}) => {
         };
 
         const {type, referenceId} = evalAssignmentValues(equipmentData.assignment);
-
+        
         const fieldsToPass = {
             type,
             referenceId,
@@ -182,7 +192,8 @@ const AssignEquipmentPage = ({navigation, route}) => {
                             isEditUpdate={false}//use this specification to either get the confirm an edit or update
                             onCancel={onCancel}
                             onAction={createdSuccessfully}
-                            message="There was an issue performing this action"
+                            message="Completed Successfully"//general message you can send to be displayed
+                            action="Archive"
                         />
                     ),
                     onClose: () => {
@@ -201,8 +212,7 @@ const AssignEquipmentPage = ({navigation, route}) => {
                             isEditUpdate={false}//use this specification to either get the confirm an edit or update
                             onCancel={onCancel}
                             onAction={createdSuccessfully}
-                            message="Successfully Assigned Equipment."//general message you can send to be displayed
-                            action="Archive"
+                            message="There was an issue performing this action"//general message you can send to be displayed
                         />
                     ),
                     onClose: () => {
@@ -228,6 +238,7 @@ const AssignEquipmentPage = ({navigation, route}) => {
                     onLocationUpdate={onLocationUpdate}
                     onTheatreUpdate={onTheatreUpdate}
                     onPhysicianUpdate={onPhysicianUpdate}
+                    setErrors={setErrors}
                 />;
             default:
                 return <View/>;

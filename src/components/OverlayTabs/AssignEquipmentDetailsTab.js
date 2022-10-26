@@ -68,7 +68,8 @@ function AssignEquipmentDetailsTab({
                                        onTheatreUpdate,
                                        onPhysicianUpdate,
                                        equipmentDetails,
-                                       onDonePress
+                                       onDonePress,
+                                       setErrors
                                    }) {
     const [searchValue, setSearchValue] = useState('');
     const [searchResults, setSearchResults] = useState([]);
@@ -152,8 +153,25 @@ function AssignEquipmentDetailsTab({
 
     const onDateChange = date => {
         onFieldChange('date')(date);
-        console.log("this is the date", date)
     };
+
+    const validateFields = () => {
+        let errors = {};
+        let isValid = true;
+        const requiredFields = ['assignment', 'assigned', 'date','duration']
+        for (const requiredField of requiredFields) {
+            if (!fields[requiredField]) {
+                errors = {
+                    ...errors,
+                    [requiredField]: "Value is Required"
+                }
+                isValid = false;
+            }
+        }
+
+        setErrors(errors)
+        if(isValid) onDonePress();
+    }
 
     return (
         <>
@@ -196,7 +214,7 @@ function AssignEquipmentDetailsTab({
                             labelWidth={80}
                             label="Assignment"
                             text={data.assignment}
-                            oneOptionsSelected={onFieldChange('assignment')}
+                            oneOptionsSelected={onFieldChange('assignment')(value)}
                             menuOption={(
                                 <MenuOptions>
                                     <MenuOption value="Location" text="Location"/>
@@ -204,6 +222,8 @@ function AssignEquipmentDetailsTab({
                                     <MenuOption value="Person" text="Person"/>
                                 </MenuOptions>
                             )}
+                            hasError={errors.assignment}
+                            errorMessage={errors['assignment']}
 
                         />
                     </InputWrapper>
@@ -215,7 +235,7 @@ function AssignEquipmentDetailsTab({
                             value={data.assignment === 'Location' ? locations : data.assignment === 'Theatre' ? theatres : physicians}
                             text={searchValue}
                             hasError={errors.assignment}
-                            errorMessage={'Assignment Required'}
+                            errorMessage={errors['assigned']}
                             oneOptionsSelected={value => {
                                 const location = {
                                     _id: value._id,
@@ -250,7 +270,7 @@ function AssignEquipmentDetailsTab({
                                 label="From"
                                 labelWidth={80}
                                 value={data.date}
-                                errorMessage={'Date and Time Required'}
+                                errorMessage={errors['date']}
                                 hasError={errors.data}
                                 onClear={() => onFieldChange('date')('')}
                                 mode="datetime"
@@ -259,6 +279,7 @@ function AssignEquipmentDetailsTab({
                                 minDate={moment().add(1, 'days').toDate()}
                                 maxDate={null}
                                 onDateChange={onDateChange}
+                                borderColor={errors['date'] ? '--color-red-700' : '--color-gray-300'}
                             />
                         </InputWrapper>
                     }
@@ -268,7 +289,7 @@ function AssignEquipmentDetailsTab({
                             <InputUnitField
                                 label="Duration"
                                 labelWidth={70}
-                                errorMessage={'Duration Required'}
+                                errorMessage={errors['duration']}
                                 hasError={errors.duration}
                                 onChangeText={value => {
                                     if (/^\d+$/g.test(value) || !value) {
@@ -286,7 +307,7 @@ function AssignEquipmentDetailsTab({
 
             </View>
             <Divider/>
-            <DoneButtonWrapper onPress={onDonePress}>
+            <DoneButtonWrapper onPress={validateFields}>
                 <DoneButtonText>DONE</DoneButtonText>
             </DoneButtonWrapper>
         </>
