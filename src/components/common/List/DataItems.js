@@ -21,14 +21,14 @@ const DataText = styled.Text( ({theme, fontStyle, color}) => ({
     paddingTop: 2,
 }));
 
-function DataItems({text = "", nameText="",flex = 1, align = 'flex-start', fontStyle = '--text-sm-regular', color = '--color-gray-700', nameColor = '--color-blue-600' }) {
+function DataItems({text = "", nameText="",flex = 1, align = 'flex-start', nameFontStyle="--text-lg-regular",fontStyle = '--text-sm-regular', color = '--color-gray-700', nameColor = '--color-blue-600' }) {
     const theme = useTheme();
     
     return (
         <DataItemWrapper flex={flex} theme={theme}>
             <DataItemContainer align={align}>
                 <DataText numberOfLines={1} fontStyle={fontStyle} color={color} theme={theme}>{text}</DataText>
-                <DataText numberOfLines={1} fontStyle={fontStyle} color={nameColor} theme={theme}>{nameText}</DataText>
+                <DataText numberOfLines={1} fontStyle={nameFontStyle} color={nameColor} theme={theme}>{nameText}</DataText>
             </DataItemContainer>
         </DataItemWrapper>
     );
