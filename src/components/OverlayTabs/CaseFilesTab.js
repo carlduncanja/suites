@@ -147,7 +147,7 @@ const CaseFilesTab = ({ cases }) => {
 
     const listItemFormat = item => (
         <>
-            <DataItems flex={2} fontStyle="--text-sm-regular" color="--color-gray-700" text={`#${item?.patientNumber}`} nameText={`${item?.patient.firstName} ${item?.patient.lastName}`} />
+            <DataItems flex={2} fontStyle="--text-sm-regular" color="--color-gray-700" text={`#${item?.patientNumber}`} nameText={`${item?.fname} ${item?.lname}`} />
             
             <DataItem flex={1} fontStyle="--text-sm-medium" color="--color-gray-700" text={`$${currencyFormatter(item?.balance)}`} />
             <DataItem flex={1} fontStyle="--text-sm-regular" color={item.status === 'Closed' ? '--color-orange-600' : '--color-blue-600'} text={item?.status} />
