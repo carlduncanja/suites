@@ -57,7 +57,7 @@ function NewProcedureOverlayContainer({ appointment = {}, editMode = false }) {
 
     const [attemptedSubmit, setAttemptedSubmit] = useState(false);
     const [allowedToSubmit, setAllowedToSubmit] = useState(false)
-
+    
     const RowWrapper = styled.View`
     flex-direction: row;
     justify-content: space-between;
@@ -738,7 +738,8 @@ function NewProcedureOverlayContainer({ appointment = {}, editMode = false }) {
     }
 
     useEffect(() => {
-        if (appointment._id !== undefined) {
+        
+        
             getCaseFileById(appointment.item.case._id).then(res => {
                 const resultLocation = res.caseProcedures[0].appointment.location;
                 const resultPatient = appointment.item.case.patient;
@@ -746,7 +747,8 @@ function NewProcedureOverlayContainer({ appointment = {}, editMode = false }) {
                 const procedureName = res.caseProcedures[0].appointment.title;
                 const resultTime = appointment.startTime;
                 const endTime = moment(appointment.startTime);
-
+                console.log("message of the result",res)
+                
                 if (resultLocation !== null) {
                     handleLocationChange({
                         _id: resultLocation._id,
@@ -816,7 +818,7 @@ function NewProcedureOverlayContainer({ appointment = {}, editMode = false }) {
 
                 setStaffInfo(container)
             })
-        }
+        
     }, []);
 
     function deleteSurgeonTag(tag) {
