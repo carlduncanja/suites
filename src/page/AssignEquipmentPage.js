@@ -101,9 +101,9 @@ const AssignEquipmentPage = ({navigation, route}) => {
             [fieldName]: value
         });
 
-        // const updatedErrors = {...errors}
-        // delete updatedErrors[fieldName]
-        // setErrors(updatedErrors)
+        const updatedErrors = {...errors}
+        delete updatedErrors[fieldName]
+        setErrors(updatedErrors)
     };
 
     const onLocationUpdate = value => {
@@ -133,7 +133,7 @@ const AssignEquipmentPage = ({navigation, route}) => {
         console.log('Updated Physicians:', updatePhysicians);
         updatePhysicians[selectedIndex] = value;
         setPhysicians(updatePhysicians);
-        onFieldChange('assigned')(value);
+        onFieldChange('assigned')(value)
     };
     
 
@@ -238,6 +238,7 @@ const AssignEquipmentPage = ({navigation, route}) => {
                     onLocationUpdate={onLocationUpdate}
                     onTheatreUpdate={onTheatreUpdate}
                     onPhysicianUpdate={onPhysicianUpdate}
+                    setErrors={setErrors}
                 />;
             default:
                 return <View/>;
