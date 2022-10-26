@@ -77,6 +77,9 @@ const CaseFilesTab = ({ cases }) => {
     const data = cases.map(item => {
         return {
             id: item._id,
+            fname: item.patient.firstName,
+            lname: item.patient.lastName,
+            patientNumber: item.patient.patientNumber,
             name: item.name,
             balance: 2560.90,
             status: 'Closed',
@@ -143,7 +146,7 @@ const CaseFilesTab = ({ cases }) => {
 
     const listItemFormat = item => (
         <>
-            <DataItem flex={2} fontStyle="--text-sm-regular" color="--color-gray-700" text={`#${item?.id}`} />
+            <DataItem flex={2} fontStyle="--text-sm-regular" color="--color-gray-700" text={`#${item?.patientNumber}`} />
             <DataItem flex={1} fontStyle="--text-sm-medium" color="--color-gray-700" text={`$${currencyFormatter(item?.balance)}`} />
             <DataItem flex={1} fontStyle="--text-sm-regular" color={item.status === 'Closed' ? '--color-orange-600' : '--color-blue-600'} text={item?.status} />
             <DataItem flex={1} fontStyle="--text-sm-regular" color="--color-gray-700" text={formatDate(item?.nextVisit, 'MMM DD, YYYY')} />
