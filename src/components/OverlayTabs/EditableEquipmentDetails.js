@@ -56,6 +56,7 @@ const EditableEquipmentDetails = ({ fields, onFieldChange, handlePopovers, popov
                     onChangeText={onFieldChange('description')}
                     multiline={true}
                     numberOfLines={4}
+                    onClear={()=>onFieldChange('description')('')}
                 />
             </View>
             <>
