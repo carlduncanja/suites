@@ -5,17 +5,20 @@ import Table from '../common/Table/Table';
 import Footer from '../common/Page/Footer';
 import LongPressWithFeedback from "../common/LongPressWithFeedback";
 import FloatingActionButton from "../common/FloatingAction/FloatingActionButton";
-import ActionContainer from "../common/FloatingAction/ActionContainer";
 import ActionItem from "../common/ActionItem";
 import RoundedPaginator from "../common/Paginators/RoundedPaginator";
+import ActionContainer from '../common/FloatingAction/ActionContainer';
+import RoundedPaginator from '../common/Paginators/RoundedPaginator';
+import ConfirmationComponent from '../ConfirmationComponent';
 
 import WasteIcon from "../../../assets/svg/wasteIcon";
 import AddIcon from "../../../assets/svg/addIcon";
 import AssignIcon from "../../../assets/svg/assignIcon";
 
 import { useNextPaginator, usePreviousPaginator } from "../../helpers/caseFilesHelpers";
-
-import { withModal } from "react-native-modalfy";
+import { useTheme } from 'emotion-theming';
+import { withModal, useModal } from "react-native-modalfy";
+import { LONG_PRESS_TIMER } from '../../const';
 import DataItem from "../common/List/DataItem";
 import Item from "../common/Table/Item";
 
@@ -57,10 +60,13 @@ const testData = [
     }
 ];
 
-const CustomProceduresTab = ({ modal, procedures }) => {
+const CustomProceduresTab = ({ procedures }) => {
 
-    console.log('gun man deh on the back foot', procedures)
+
     const recordsPerPage = 10;
+    const modal = useModal();
+    const theme = useTheme();
+
 
     const [totalPages, setTotalPages] = useState(0);
     const [currentPageListMin, setCurrentPageListMin] = useState(0);
@@ -123,27 +129,27 @@ const CustomProceduresTab = ({ modal, procedures }) => {
 
         if (updatedCases.includes(id)) {
             updatedCases = updatedCases.filter(id => id !== item.id)
-        } 
+        }
         else {
             updatedCases.push(item.id);
         }
-        
+
         setSelectedIds(updatedCases)
     }
-  
-     
-    
+
+
+
     const RECOVERY_COLORS = {
         'Yes': '--color-green-600',
         'No': '--color-orange-500'
     };
-    
-    
+
+
     const renderItem = item => {
         return <Item
             hasCheckBox={true}
             isChecked={selectedIds.includes(item.id)}
-            onCheckBoxPress={()=>handleOnCheckBoxPress(item)}
+            onCheckBoxPress={() => handleOnCheckBoxPress(item)}
             onItemPress={() => { }}
             itemView={listItemFormat(item)}
         />
@@ -174,7 +180,106 @@ const CustomProceduresTab = ({ modal, procedures }) => {
         </>
     );
 
-    
+    const toggleActionButton = () => {
+        setIsFloatingActionDisabled(true)
+        modal.openModal("ActionContainerModal", {
+            actions: getFabActions(),
+            title: "CUSTOM PROCEDURE ACTIONS",
+            onClose: () => {
+                setIsFloatingActionDisabled(false);
+            },
+
+        });
+
+    }
+
+    const getFabActions = () => {
+        const isDisabled = selectedIds.length === 0;
+        const deleteAction = (
+            <View style={{ borderRadius: 6, flex: 1, overflow: 'hidden' }}>
+                <LongPressWithFeedback
+                    pressTimer={LONG_PRESS_TIMER.LONG}
+                    onLongPress={removeCustomProcedureLongPress}
+                    isDisabled={isDisabled}
+                >
+                    <ActionItem
+                        title="Hold to Delete"
+                        icon={<WasteIcon strokeColor={isDisabled ? theme.colors['--color-gray-600'] : theme.colors['--color-red-700']} />}
+                        onPress={() => {
+                        }}
+                        touchable={false}
+                        disabled={isDisabled}
+                    />
+                </LongPressWithFeedback>
+            </View >
+        );
+        return <ActionContainer
+            floatingActions={[
+                deleteAction
+            ]}
+            title="CUSTOM PROCEDURE ACTIONS"
+        />;
+
+    }
+
+    const removeCustomProcedureLongPress = () => {
+        if (selectedIds.length > 0) openDeletionConfirm({ ids: [...selectedIds] });
+        else openErrorConfirmation();
+
+    }
+
+    const openDeletionConfirm = data => {
+        modal.openModal(
+            'ConfirmationModal',
+            {
+                content: <ConfirmationCheckBoxComponent
+                    isError={false}
+                    isEditUpdate={true}
+                    onCancel={() => {
+                        modal.closeModals('ConfirmationModal');
+                        setIsFloatingActionDisabled(false)
+                        setTimeout(() => {
+                            modal.closeModals('ActionContainerModal')
+                        }, 200)
+                    }}
+                    onAction={() => {
+                        removeCustomProcedure(data)
+                        modal.closeModals('ConfirmationModal');
+                    }}
+                    message="Do you want to delete these item(s)"
+                />,
+                onClose: () => {
+                    modal.closeModals('ConfirmationModal');
+                    modal.closeModals('ActionContainerModal')
+
+                }
+            }
+        );
+    } 
+   
+    const removeCustomProcedure =(data)=>{
+
+    }
+
+
+
+    const openErrorConfirmation = () => {
+        modal.openModal(
+            'ConfirmationModal',
+            {
+                content: <ConfirmationComponent
+                    isError={true}
+                    isEditUpdate={false}
+                    onCancel={() => modal.closeModals('ConfirmationModal')}
+                />,
+                onClose: () => {
+                    modal.closeModals('ConfirmationModal');
+                }
+            }
+        );
+    };
+
+
 
     let dataToDisplay = [...data];
     dataToDisplay = dataToDisplay.slice(currentPageListMin, currentPageListMax);
@@ -186,7 +291,7 @@ const CustomProceduresTab = ({ modal, procedures }) => {
                 listItemFormat={renderItem}
                 headers={headers}
                 isCheckbox={true}
-                toggleHeaderCheckbox ={onSelectAll}
+                toggleHeaderCheckbox={onSelectAll}
                 itemSelected={selectedIds}
 
             />
@@ -196,6 +301,7 @@ const CustomProceduresTab = ({ modal, procedures }) => {
                 currentPage={currentPagePosition}
                 goToNextPage={goToNextPage}
                 goToPreviousPage={goToPreviousPage}
+                toggleActionButton={toggleActionButton}
             />
             {/* <View style={styles.footer}>
                 <View style={{alignSelf: "center", marginRight: 10}}>
