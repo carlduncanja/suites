@@ -214,7 +214,10 @@ function AssignEquipmentDetailsTab({
                             labelWidth={80}
                             label="Assignment"
                             text={data.assignment}
-                            oneOptionsSelected={onFieldChange('assignment')(value)}
+                            oneOptionsSelected={
+                                (item) => {
+                                    onFieldChange('assignment')(item.value)
+                                }}
                             menuOption={(
                                 <MenuOptions>
                                     <MenuOption value="Location" text="Location"/>
