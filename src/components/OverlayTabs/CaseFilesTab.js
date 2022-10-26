@@ -148,19 +148,6 @@ const CaseFilesTab = ({ cases }) => {
             <DataItem flex={1} fontStyle="--text-sm-regular" color={item.status === 'Closed' ? '--color-orange-600' : '--color-blue-600'} text={item?.status} />
             <DataItem flex={1} fontStyle="--text-sm-regular" color="--color-gray-700" text={formatDate(item?.nextVisit, 'MMM DD, YYYY')} />
 
-            {/* <View style={{flex: 1}}>
-            <Text style={{color: '#718096', fontSize: 12}}>{item.id}</Text>
-            {/* <Text style={{color: '#3182CE', fontSize: 16}}>{item.name}</Text> 
-        </View>
-        <View style={{flex: 1}}>
-            <Text style={{fontSize: 14, color: '#4E5664'}}>{item.balance}</Text>
-        </View>
-        <View style={{flex: 1}}>
-            <Text style={{fontSize: 14, color: item.status === 'Closed'? '#DD6B20' : '#3182CE'}}>{item.status}</Text>
-        </View>
-        <View style={{flex: 1}}>
-            <Text style={{fontSize: 14, color: '#4E5664'}}>{formatDate(item.nextVisit,'MMM DD, YYYY')}</Text>
-        </View> */}
         </>
     );
 
@@ -310,16 +297,7 @@ const CaseFilesTab = ({ cases }) => {
                 hasPaginator={false}
                 toggleActionButton={toggleActionButton}
             />
-            {/* <View style={styles.footer}>
-                <View style={{alignSelf: 'center', marginRight: 10}}>
-                    <RoundedPaginator
-                        totalPages={totalPages}
-                        currentPage={currentPagePosition}
-                        goToNextPage={goToNextPage}
-                        goToPreviousPage={goToPreviousPage}
-                    />
-                </View>
-            </View> */}
+            
 
         </>
     )
@@ -334,7 +312,6 @@ const styles = StyleSheet.create({
         position: 'absolute',
         bottom: 0,
         right: 0,
-        // marginBottom: 20,
-        // marginRight: 30,
+        
     }
 })
