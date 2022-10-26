@@ -269,7 +269,7 @@ function PaginatedSchedule({ ID, isPhysician }) {
                         onAction={() => {
                             modal.closeModals('ConfirmationModal');
                             setTimeout(() => {
-                                modal.closeModal('ActionContainerModal')
+                                modal.closeModals('ActionContainerModal')
                                 onRefesh()
                             }, 200)
                         }}

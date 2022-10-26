@@ -57,7 +57,7 @@ function NewProcedureOverlayContainer({ appointment = {}, editMode = false }) {
 
     const [attemptedSubmit, setAttemptedSubmit] = useState(false);
     const [allowedToSubmit, setAllowedToSubmit] = useState(false)
-
+    
     const RowWrapper = styled.View`
     flex-direction: row;
     justify-content: space-between;

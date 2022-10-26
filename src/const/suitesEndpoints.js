@@ -57,6 +57,7 @@ export const assignEquipmentToLocation = (typeId, equipmentId) => `/equipment-ty
 
 // ##### CASE FILES
 export const deleteCaseFileEndpoint = id => `/cases/${id}/remove`;
+export const deleteCaseFilesEndpiont='/cases/'
 export const caseFilesEndpoint = '/cases';
 export const archivedCaseFilesEndpoint = '/cases/archived';
 export const removeCaseFilesEndpoint = '/cases/archive';
