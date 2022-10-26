@@ -6,10 +6,11 @@ import Footer from '../common/Page/Footer';
 import LongPressWithFeedback from "../common/LongPressWithFeedback";
 import FloatingActionButton from "../common/FloatingAction/FloatingActionButton";
 import ActionItem from "../common/ActionItem";
-import RoundedPaginator from "../common/Paginators/RoundedPaginator";
 import ActionContainer from '../common/FloatingAction/ActionContainer';
 import RoundedPaginator from '../common/Paginators/RoundedPaginator';
 import ConfirmationComponent from '../ConfirmationComponent';
+import ConfirmationCheckBoxComponent from '../../components/ConfirmationCheckBoxComponent';
+import { removeProcedures } from '../../api/network'
 
 import WasteIcon from "../../../assets/svg/wasteIcon";
 import AddIcon from "../../../assets/svg/addIcon";
@@ -258,6 +259,38 @@ const CustomProceduresTab = ({ procedures }) => {
     } 
    
     const removeCustomProcedure =(data)=>{
+        removeProcedures(data)
+        .then(_=>{
+            modal.openModal(
+                'ConfirmationModal', {
+                content: <ConfirmationComponent
+                    isError={false}
+                    isEditUpdate={false}
+                    onAction={() => {
+                        modal.closeModals('ConfirmationModal');
+                        setTimeout(() => {
+                            modal.closeModals('ActionContainerModal')
+                        }, 200)
+                    }}
+                />,
+                onClose: () => {
+                    modal.closeModal('ConfirmationModal')
+                }
+            }
+            );
+            setSelectedIds([])
+        })
+        .catch(error => {
+            openErrorConfirmation();
+            setTimeout(() => {
+                modal.closeModals('ActionContainerModal');
+            }, 200)
+            console.log('failed to delete these item(s)', error)
+        })
+        .finally(_ => {
+            setIsFloatingActionDisabled(false)
+        });
+
 
     }
 
