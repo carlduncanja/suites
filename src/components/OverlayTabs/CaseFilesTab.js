@@ -79,7 +79,7 @@ const CaseFilesTab = ({ cases }) => {
         return {
             id: item._id,
             fname: item.patient.firstName,
-            lname: item.patient.lastName,
+            lname: item.patient.surname,
             patientNumber: item.patient.patientNumber,
             name: item.name,
             balance: 2560.90,
