@@ -215,7 +215,7 @@ function AssignEquipmentDetailsTab({
                             value={data.assignment === 'Location' ? locations : data.assignment === 'Theatre' ? theatres : physicians}
                             text={searchValue}
                             hasError={errors.assignment}
-                            errorMessage={'Assignment Needed'}
+                            errorMessage={'Assignment Required'}
                             oneOptionsSelected={value => {
                                 const location = {
                                     _id: value._id,
@@ -254,7 +254,6 @@ function AssignEquipmentDetailsTab({
                                 hasError={errors.data}
                                 onClear={() => onFieldChange('date')('')}
                                 mode="datetime"
-                                //format="YYYY-MM-DD"
                                 keyboardType="number-pad"
                                 placeholder="YYYY/MM/DD"
                                 minDate={moment().add(1, 'days').toDate()}

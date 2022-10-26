@@ -136,10 +136,6 @@ const AssignEquipmentPage = ({navigation, route}) => {
     };
 
     const onDonePress = () => {
-        // console.log('the equipment type', equipment.type);
-        // console.log('the equipment child', equipment._id);
-        // console.log('the equipment data', equipmentData);
-
         const evalAssignmentValues = assignment => {
             if (assignment === 'Location' && locations) {
                 return {type: 'location', referenceId: locations[0]._id};
@@ -153,9 +149,6 @@ const AssignEquipmentPage = ({navigation, route}) => {
         };
 
         const {type, referenceId} = evalAssignmentValues(equipmentData.assignment);
-
-        // console.log('the type', type);
-        // console.log('the referenceId', referenceId);
 
         const fieldsToPass = {
             type,
@@ -189,8 +182,7 @@ const AssignEquipmentPage = ({navigation, route}) => {
                             isEditUpdate={false}//use this specification to either get the confirm an edit or update
                             onCancel={onCancel}
                             onAction={createdSuccessfully}
-                            message="Completed Successfully"//general message you can send to be displayed
-                            action="Archive"
+                            message="There was an issue performing this action"
                         />
                     ),
                     onClose: () => {
