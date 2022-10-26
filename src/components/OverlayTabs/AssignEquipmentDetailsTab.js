@@ -225,7 +225,7 @@ function AssignEquipmentDetailsTab({
                                     <MenuOption value="Person" text="Person"/>
                                 </MenuOptions>
                             )}
-                            hasError={errors.assignment}
+                            hasError={errors['assignment']}
                             errorMessage={errors['assignment']}
 
                         />
@@ -237,7 +237,7 @@ function AssignEquipmentDetailsTab({
                             labelWidth={80}
                             value={data.assignment === 'Location' ? locations : data.assignment === 'Theatre' ? theatres : physicians}
                             text={searchValue}
-                            hasError={errors.assignment}
+                            hasError={errors['assigned']}
                             errorMessage={errors['assigned']}
                             oneOptionsSelected={value => {
                                 const location = {
@@ -274,7 +274,7 @@ function AssignEquipmentDetailsTab({
                                 labelWidth={80}
                                 value={data.date}
                                 errorMessage={errors['date']}
-                                hasError={errors.data}
+                                hasError={errors['date']}
                                 onClear={() => onFieldChange('date')('')}
                                 mode="datetime"
                                 keyboardType="number-pad"
@@ -293,7 +293,7 @@ function AssignEquipmentDetailsTab({
                                 label="Duration"
                                 labelWidth={70}
                                 errorMessage={errors['duration']}
-                                hasError={errors.duration}
+                                hasError={errors['duration']}
                                 onChangeText={value => {
                                     if (/^\d+$/g.test(value) || !value) {
                                         onFieldChange('duration')(value);
