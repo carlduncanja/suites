@@ -144,9 +144,9 @@ const CustomProceduresTab = ({modal,procedures}) => {
     return (
         <>
             <List
-                data={dataToDisplay}
+                ListData={dataToDisplay}
                 listItemFormat={renderItem}
-                headers={headers}
+                ListHeaders={headers}
                 isCheckbox={false}
             />
             <Footer
