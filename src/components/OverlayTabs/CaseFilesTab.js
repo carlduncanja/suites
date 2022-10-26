@@ -62,7 +62,6 @@ const testData = [
 const CaseFilesTab = ({ cases }) => {
 
     const recordsPerPage = 10;
-    console.log('Cases: ', cases);
     const modal = useModal();
     const theme = useTheme();
 
@@ -86,7 +85,7 @@ const CaseFilesTab = ({ cases }) => {
     })
 
     useEffect(() => {
-        console.log('gun man spaniard',cases)
+        
         setTotalPages(Math.ceil(data.length / recordsPerPage))
     }, [])
 
@@ -242,7 +241,7 @@ const CaseFilesTab = ({ cases }) => {
 
     const removeCaseFile = (data) => {
         
-        console.log("the is that are selected",selectedIds)
+        
         
         deleteCaseFiles(data)
         .then(_=>{
