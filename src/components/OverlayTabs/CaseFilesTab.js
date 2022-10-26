@@ -7,6 +7,7 @@ import { useTheme } from 'emotion-theming';
 import List from '../common/List/List';
 import ListItem from '../common/List/ListItem';
 import DataItem from '../common/List/DataItem';
+import DataItems from '../common/List/DataItems';
 import LongPressWithFeedback from '../common/LongPressWithFeedback';
 import FloatingActionButton from '../common/FloatingAction/FloatingActionButton';
 import ActionContainer from '../common/FloatingAction/ActionContainer';
@@ -146,7 +147,8 @@ const CaseFilesTab = ({ cases }) => {
 
     const listItemFormat = item => (
         <>
-            <DataItem flex={2} fontStyle="--text-sm-regular" color="--color-gray-700" text={`#${item?.patientNumber}`} />
+            <DataItems flex={2} fontStyle="--text-sm-regular" color="--color-gray-700" text={`#${item?.patientNumber}`} nameText={`${item?.firstName} ${item?.lastName}`} />
+            
             <DataItem flex={1} fontStyle="--text-sm-medium" color="--color-gray-700" text={`$${currencyFormatter(item?.balance)}`} />
             <DataItem flex={1} fontStyle="--text-sm-regular" color={item.status === 'Closed' ? '--color-orange-600' : '--color-blue-600'} text={item?.status} />
             <DataItem flex={1} fontStyle="--text-sm-regular" color="--color-gray-700" text={formatDate(item?.nextVisit, 'MMM DD, YYYY')} />
