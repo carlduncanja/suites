@@ -846,8 +846,10 @@ function NewProcedureOverlayContainer({ appointment = {}, editMode = false }) {
 
                 <View style={[styles.row, { zIndex: 10 }]}>
                     <SearchableOptionsField
+                        emptyAfterSubmit={attemptedSubmit && patientValue === undefined ? true : false}
                         updateDB={updatePatientDB}
                         highlightOn={true}
+                        highlightColor="#F6F8F8"
                         title={"Patient"}
                         showActionButton={true}
                         text={searchPatientValue}
