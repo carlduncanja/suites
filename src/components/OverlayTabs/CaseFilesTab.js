@@ -147,7 +147,7 @@ const CaseFilesTab = ({ cases }) => {
 
     const listItemFormat = item => (
         <>
-           {/* <DataItems flex={2} fontStyle="--text-sm-regular" color="--color-gray-700" text={`#${item?.patientNumber}`} nameText={`${item?.fname} ${item?.lname}`} />*/}
+
             <MultipleTextDataItem flex={2}
                     primaryText={`# ${item?.patientNumber}`}
                     secondaryText={`${item?.fname} ${item?.lname}`}
