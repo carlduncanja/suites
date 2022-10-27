@@ -7,6 +7,7 @@ import { useTheme } from 'emotion-theming';
 import List from '../common/List/List';
 import ListItem from '../common/List/ListItem';
 import DataItem from '../common/List/DataItem';
+import MultipleTextDataItem from '../common/List/MultipleTextDataItem';
 import LongPressWithFeedback from '../common/LongPressWithFeedback';
 import FloatingActionButton from '../common/FloatingAction/FloatingActionButton';
 import ActionContainer from '../common/FloatingAction/ActionContainer';
@@ -77,6 +78,9 @@ const CaseFilesTab = ({ cases }) => {
     const data = cases.map(item => {
         return {
             id: item._id,
+            fname: item.patient.firstName,
+            lname: item.patient.surname,
+            patientNumber: item.patient.patientNumber,
             name: item.name,
             balance: 2560.90,
             status: 'Closed',
@@ -143,7 +147,11 @@ const CaseFilesTab = ({ cases }) => {
 
     const listItemFormat = item => (
         <>
-            <DataItem flex={2} fontStyle="--text-sm-regular" color="--color-gray-700" text={`#${item?.id}`} />
+
+            <MultipleTextDataItem flex={2}
+                    primaryText={`# ${item?.patientNumber}`}
+                    secondaryText={`${item?.fname} ${item?.lname}`}
+                />
             <DataItem flex={1} fontStyle="--text-sm-medium" color="--color-gray-700" text={`$${currencyFormatter(item?.balance)}`} />
             <DataItem flex={1} fontStyle="--text-sm-regular" color={item.status === 'Closed' ? '--color-orange-600' : '--color-blue-600'} text={item?.status} />
             <DataItem flex={1} fontStyle="--text-sm-regular" color="--color-gray-700" text={formatDate(item?.nextVisit, 'MMM DD, YYYY')} />
