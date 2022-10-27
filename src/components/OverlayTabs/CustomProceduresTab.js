@@ -124,7 +124,7 @@ const CustomProceduresTab = ({ procedures }) => {
     }
 
     const handleOnCheckBoxPress = (item) => {
-        console.log("i am pressed")
+        
         const { id } = item;
         let updatedCases = [...selectedIds];
 
@@ -164,20 +164,7 @@ const CustomProceduresTab = ({ procedures }) => {
             <DataItem flex={1} align="center" text={item.recovery} color={RECOVERY_COLORS[item.recovery]} fontStyle="--text-base-medium" />
             <DataItem flex={1} align="flex-end" text={`${item.duration} hrs`} color="--color-gray-800" fontStyle="--text-base-regular" />
 
-            {/* <View style={{flexDirection: 'row', borderBottomColor: '#E3E8EF', borderBottomWidth: 1, marginBottom: 15, paddingBottom: 15}}>
-                <View style={{flex: 1}}>
-                    <Text style={{fontSize: 16, color: '#3182CE'}}>{item.procedure}</Text>
-                </View>
-                <View style={{flex: 1, alignItems: "flex-start"}}>
-                    <Text style={{fontSize: 16, color: '#3182CE'}}>{item.theatre}</Text>
-                </View>
-                <View style={{flex: 1, alignItems: 'center'}}>
-                    <Text style={{fontSize: 14, color: item.recovery === 'Yes'?'#38A169':'#ED8936'}}>{item.recovery}</Text>
-                </View>
-                <View style={{flex: 1, alignItems: 'flex-end'}}>
-                    <Text style={{fontSize: 16, color: '#323843'}}>{`${item.duration} hrs`}</Text>
-                </View>
-            </View> */}
+           
         </>
     );
 
@@ -336,16 +323,7 @@ const CustomProceduresTab = ({ procedures }) => {
                 goToPreviousPage={goToPreviousPage}
                 toggleActionButton={toggleActionButton}
             />
-            {/* <View style={styles.footer}>
-                <View style={{alignSelf: "center", marginRight: 10}}>
-                    <RoundedPaginator
-                        totalPages={totalPages}
-                        currentPage={currentPagePosition}
-                        goToNextPage={goToNextPage}
-                        goToPreviousPage={goToPreviousPage}
-                    />
-                </View>
-            </View> */}
+            
         </>
     );
 };
