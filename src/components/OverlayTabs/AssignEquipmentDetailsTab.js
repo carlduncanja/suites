@@ -158,7 +158,7 @@ function AssignEquipmentDetailsTab({
     const validateFields = () => {
         let errors = {};
         let isValid = true;
-        const requiredFields = data.assignment === "location" ?  ['assignment', 'assigned'] :  ['assignment', 'assigned', 'date', 'duration']
+        const requiredFields = data.assignment === "Location" ?  ['assignment', 'assigned'] :  ['assignment', 'assigned', 'date', 'duration']
         for (const requiredField of requiredFields) {
             if (!data[requiredField]) {
                 errors = {
