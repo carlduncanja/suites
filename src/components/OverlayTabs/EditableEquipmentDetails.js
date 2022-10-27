@@ -1,3 +1,5 @@
+
+
 import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet, KeyboardAvoidingView } from "react-native";
 import InputField2 from '../common/Input Fields/InputField2';
@@ -51,9 +53,10 @@ const EditableEquipmentDetails = ({ fields, onFieldChange, handlePopovers, popov
                 <TextArea
                     enabled={false}
                     value={fields['description']}
-                    onChangeText={() => { }}
+                    onChangeText={onFieldChange('description')}
                     multiline={true}
                     numberOfLines={4}
+                    onClear={()=>onFieldChange('description')('')}
                 />
             </View>
             <>
@@ -91,11 +94,6 @@ const EditableEquipmentDetails = ({ fields, onFieldChange, handlePopovers, popov
                         />
                     </InputWrapper>
                 </Row>
-
-
-
-
-
 
 
             </>
