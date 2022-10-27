@@ -929,12 +929,14 @@ function NewProcedureOverlayContainer({ appointment = {}, editMode = false }) {
                             <View style={styles.inputWrapper}>
                                 <DateInputField
                                     value={selectedDate}
+                                    hasError={attemptedSubmit && selectedDate === undefined ? true : false}
                                     onClear={() => { setDate(undefined) }}
                                     keyboardType="number-pad"
                                     mode={'date'}
                                     format={"DD/MM/YYYY"}
                                     placeholder="DD/MM/YYYY"
                                     onDateChange={onDateUpdate}
+                                    borderColor={attemptedSubmit && selectedDate === undefined? '--color-red-700' : '--color-gray-300'}
                                 />
                             </View>
                         </View>
@@ -947,12 +949,14 @@ function NewProcedureOverlayContainer({ appointment = {}, editMode = false }) {
                             </View>
                             <View style={styles.inputWrapper}>
                                 <DateInputField
+                                    hasError={attemptedSubmit && startTime === undefined ? true : false}
                                     onDateChange={onTimeUpdate("startTime")}
                                     value={startTime}
                                     mode={"time"}
                                     format={"hh:mm A"}
                                     onClear={() => setStartTime(undefined)}
                                     placeholder="HH:MM"
+                                    borderColor={attemptedSubmit && startTime === undefined? '--color-red-700' : '--color-gray-300'}
                                 />
                             </View>
                         </View>
@@ -1251,7 +1255,7 @@ const styles = StyleSheet.create({
         // flex: 1,
         width: '100%',
         flexDirection: 'row',
-        marginRight:10
+        marginRight: 10
         // backgroundColor: 'blue'
     },
 
