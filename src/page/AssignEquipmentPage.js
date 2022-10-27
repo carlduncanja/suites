@@ -238,6 +238,7 @@ const AssignEquipmentPage = ({navigation, route}) => {
                     onLocationUpdate={onLocationUpdate}
                     onTheatreUpdate={onTheatreUpdate}
                     onPhysicianUpdate={onPhysicianUpdate}
+                    errors={errors}
                     setErrors={setErrors}
                 />;
             default:

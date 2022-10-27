@@ -1,10 +1,10 @@
-import React, {useState, useEffect} from 'react';
-import {View, Text, DatePickerIOS} from 'react-native';
-import styled, {css} from '@emotion/native';
-import {withModal} from 'react-native-modalfy';
-import {MenuOptions, MenuOption} from 'react-native-popup-menu';
-import _, {isEmpty} from 'lodash';
-import {Divider} from 'react-native-paper';
+import React, { useState, useEffect } from 'react';
+import { View, Text, DatePickerIOS } from 'react-native';
+import styled, { css } from '@emotion/native';
+import { withModal } from 'react-native-modalfy';
+import { MenuOptions, MenuOption } from 'react-native-popup-menu';
+import _, { isEmpty } from 'lodash';
+import { Divider } from 'react-native-paper';
 import moment from 'moment';
 import Record from '../common/Information Record/Record';
 import ListTextRecord from '../common/Information Record/ListTextRecord';
@@ -13,7 +13,7 @@ import InputField2 from '../common/Input Fields/InputField2';
 import DropdownField from '../common/Input Fields/DropdownField';
 import DropdownInputField from '../common/Input Fields/DropdownInputField';
 import OptionsField from '../common/Input Fields/OptionsField';
-import {getTheatres, getPhysicians, getStorage} from '../../api/network';
+import { getTheatres, getPhysicians, getStorage } from '../../api/network';
 
 import SearchableOptionsField from '../common/Input Fields/SearchableOptionsField';
 
@@ -49,28 +49,28 @@ align-self:center;
 align-items:center;
 justify-self:flex-end;
 justify-content:center;
-background-color:${({theme}) => theme.colors['--color-blue-500']};
+background-color:${({ theme }) => theme.colors['--color-blue-500']};
 `;
 
 const DoneButtonText = styled.Text`
-font:${({theme}) => theme.font['--text-base-bold']};
-color:${({theme}) => theme.colors['--default-shade-white']};
+font:${({ theme }) => theme.font['--text-base-bold']};
+color:${({ theme }) => theme.colors['--default-shade-white']};
 `;
 
 function AssignEquipmentDetailsTab({
-                                       data,
-                                       errors = {},
-                                       onFieldChange,
-                                       locations,
-                                       physicians,
-                                       theatres,
-                                       onLocationUpdate,
-                                       onTheatreUpdate,
-                                       onPhysicianUpdate,
-                                       equipmentDetails,
-                                       onDonePress,
-                                       setErrors
-                                   }) {
+    data,
+    errors = {},
+    onFieldChange,
+    locations,
+    physicians,
+    theatres,
+    onLocationUpdate,
+    onTheatreUpdate,
+    onPhysicianUpdate,
+    equipmentDetails,
+    onDonePress,
+    setErrors
+}) {
     const [searchValue, setSearchValue] = useState('');
     const [searchResults, setSearchResults] = useState([]);
     const [searchQuery, setSearchQuery] = useState();
@@ -103,7 +103,7 @@ function AssignEquipmentDetailsTab({
     const fetchStorageLocations = () => {
         getStorage(searchValue, 5)
             .then((storageLocationResult = []) => {
-                const {data = [], pages = 0} = storageLocationResult;
+                const { data = [], pages = 0 } = storageLocationResult;
                 const results = data.map(item => ({
                     name: item.name,
                     ...item
@@ -120,7 +120,7 @@ function AssignEquipmentDetailsTab({
     const fetchTheatres = () => {
         getTheatres(searchValue, 5)
             .then((theatreResult = []) => {
-                const {data = [], pages = 0} = theatreResult;
+                const { data = [], pages = 0 } = theatreResult;
                 const results = data.map(item => ({
                     name: item.name,
                     ...item
@@ -137,7 +137,7 @@ function AssignEquipmentDetailsTab({
     const fetchPhysicians = () => {
         getPhysicians(searchValue, 5)
             .then((physicianResult = []) => {
-                const {data = [], pages = 0} = physicianResult;
+                const { data = [], pages = 0 } = physicianResult;
                 const results = data.map(item => ({
                     name: `Dr. ${item.surname}`,
                     ...item
@@ -158,7 +158,7 @@ function AssignEquipmentDetailsTab({
     const validateFields = () => {
         let errors = {};
         let isValid = true;
-        const requiredFields = ['assignment', 'assigned', 'date','duration']
+        const requiredFields = ['assignment', 'assigned', 'date', 'duration']
         for (const requiredField of requiredFields) {
             if (!data[requiredField]) {
                 errors = {
@@ -170,7 +170,7 @@ function AssignEquipmentDetailsTab({
         }
 
         setErrors(errors)
-        if(isValid) onDonePress();
+        if (isValid) onDonePress();
     }
 
     return (
@@ -184,7 +184,7 @@ function AssignEquipmentDetailsTab({
                 justifyContent: 'flex-start'
             }}>
 
-                <Row style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
+                <Row style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
                     <InputWrapper>
                         <InputField2
                             value=""
@@ -215,18 +215,17 @@ function AssignEquipmentDetailsTab({
                             label="Assignment"
                             text={data.assignment}
                             oneOptionsSelected={
-                                (item) => {
-                                    onFieldChange('assignment')(item.value)
-                                }}
+                                    onFieldChange('assignment')
+                                }
                             menuOption={(
                                 <MenuOptions>
-                                    <MenuOption value="Location" text="Location"/>
-                                    <MenuOption value="Theatre" text="Theatre"/>
-                                    <MenuOption value="Person" text="Person"/>
+                                    <MenuOption value="Location" text="Location" />
+                                    <MenuOption value="Theatre" text="Theatre" />
+                                    <MenuOption value="Person" text="Person" />
                                 </MenuOptions>
                             )}
-                            hasError={errors['assignment']  === undefined ? true : false}
-                            errorMessage={errors['assignment'] === undefined ? true : false}
+                            hasError={errors['assignment']}
+                            errorMessage={errors['assignment']}
 
                         />
                     </InputWrapper>
@@ -273,8 +272,8 @@ function AssignEquipmentDetailsTab({
                                 label="From"
                                 labelWidth={80}
                                 value={data.date}
-                                errorMessage={errors['date']  === undefined ? true : false}
-                                hasError={errors['date']  === undefined ? true : false}
+                                errorMessage={errors['date']}
+                                hasError={errors['date']}
                                 onClear={() => onFieldChange('date')('')}
                                 mode="datetime"
                                 keyboardType="number-pad"
@@ -292,8 +291,8 @@ function AssignEquipmentDetailsTab({
                             <InputUnitField
                                 label="Duration"
                                 labelWidth={70}
-                                errorMessage={errors['duration']}
                                 hasError={errors['duration']}
+                                errorMessage={errors['duration']}
                                 onChangeText={value => {
                                     if (/^\d+$/g.test(value) || !value) {
                                         onFieldChange('duration')(value);
@@ -309,7 +308,7 @@ function AssignEquipmentDetailsTab({
                 </Row>
 
             </View>
-            <Divider/>
+            <Divider />
             <DoneButtonWrapper onPress={validateFields}>
                 <DoneButtonText>DONE</DoneButtonText>
             </DoneButtonWrapper>
