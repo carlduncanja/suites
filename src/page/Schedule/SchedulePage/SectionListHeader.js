@@ -6,7 +6,7 @@ function SectionListHeader({title = "", onNewProcedureClick}){
     const theme = useTheme();
 
     const SectionListHeaderWrapper = styled.View`
-        margin : 0px;
+        margin-bottom : 0px;
     `;
     
     const SectionListHeaderContainer = styled.View`
@@ -34,6 +34,7 @@ function SectionListHeader({title = "", onNewProcedureClick}){
         flex: 1;
         display: flex;
         flexDirection: row;
+        margin-right:30;
     `;
 
     const NewProcedureButton = styled.TouchableOpacity`
@@ -42,13 +43,14 @@ function SectionListHeader({title = "", onNewProcedureClick}){
         justify-content:center;
         border-color:${({ theme }) => theme.colors["--color-blue-700"]};
         width:110px;
-        height:20px;
-        border-radius:6px;
+        height:22px;
+        border-radius:3px;
         margin-left: 90px;
     `;
 
     const NewProcedureButtonText = styled.Text`
         align-items: center; 
+        alidn-self:center;
         color: ${({ theme }) => theme.colors["--color-blue-600"]};
         font:${({ theme }) => theme.font["--text-sm-regular"]};
     `;
