@@ -208,7 +208,7 @@ function PhysicianPage({route, navigation}) {
                     />
                 ) : <PhysiciansDetailsTab physician={selectedPhysician}/>;
             case 'Case Files':
-                return <CaseFilesTab cases={cases}/>;
+                return <CaseFilesTab setSelectedPhysician={setSelectedPhysician} selectedPhysician={selectedPhysician} cases={cases}/>;
             case 'Custom Procedures':
                 return <CustomProceduresTab procedures={procedures}/>;
             case 'Schedule':
