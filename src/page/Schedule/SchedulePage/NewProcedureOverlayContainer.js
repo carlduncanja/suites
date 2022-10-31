@@ -115,9 +115,7 @@ function NewProcedureOverlayContainer({ appointment = {}, editMode = false, pass
         time: ''
     });
 
-    useEffect(() => {
-        if(appointment) fetchCasebyId();
-    }, [])
+   
 
     const onFieldChange = (fieldName) => (value) => {
         setFields({
@@ -312,21 +310,27 @@ function NewProcedureOverlayContainer({ appointment = {}, editMode = false, pass
                 patientUpdater(appointment.item.case.patient._id, {
                     firstName: patientFields.firstName,
                     surname: patientFields.surname
-                }).catch(
+                })
+                .then(data=>{
+                    handleConfirm()
+                })
+                .catch(
                     err => {
                         console.log(err)
-                        errorStateSetter()
+                        hanadleErrorModal()
                     }
                 )
                 updateCaseFile(appointment.item.case._id, { staff: caseFileData.staff, roleKeys: caseFileData.roleKeys })
-                    .catch(
-                        err => {
-                            console.log(err)
-                            errorStateSetter()
-
-
-                        }
-                    )
+                .then(data=>{
+                    handleConfirm()
+                })
+                .catch(
+                    err => {
+                        console.log(err)
+                        hanadleErrorModal()
+                        
+                    }
+                )
 
                 const appointmentID = appointment._id;
                 updateAppointmentById(appointmentID,
@@ -338,10 +342,15 @@ function NewProcedureOverlayContainer({ appointment = {}, editMode = false, pass
                         title: procedure?.name || "",
                         location: updatedLocation
                     })
-                    .catch(err => {
-                        console.log(err)
-                        errorStateSetter()
+                    .then(data=>{
+                        handleConfirm()
                     })
+                    .catch(
+                        err => {
+                            console.log(err)
+                            hanadleErrorModal()
+                        }
+                    )
 
             }
 
@@ -362,7 +371,9 @@ function NewProcedureOverlayContainer({ appointment = {}, editMode = false, pass
                             onCancel={() => modal.closeModals('ConfirmationModal')}
                         />,
                         onClose: () => {
+                            setAllowedToSubmit(false);
                             modal.closeModals('ConfirmationModal');
+                            
                         }
                     }
                 );
