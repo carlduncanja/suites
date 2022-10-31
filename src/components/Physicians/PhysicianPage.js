@@ -20,7 +20,8 @@ import ConfirmationComponent from '../ConfirmationComponent';
 
 function PhysicianPage({route, navigation}) {
     const {physician, isOpenEditable, reloadPhysicians} = route.params;
-
+    console.log('ramus');
+    console.log(route.params);
     const currentTabs = ['Details', 'Case Files', 'Custom Procedures', 'Schedule'];
     const modal = useModal();
     const {
@@ -210,7 +211,7 @@ function PhysicianPage({route, navigation}) {
             case 'Case Files':
                 return <CaseFilesTab cases={cases}/>;
             case 'Custom Procedures':
-                return <CustomProceduresTab procedures={procedures}/>;
+                return <CustomProceduresTab selectedPhysician={selectedPhysician} procedures={procedures} setSelectedPhysician={setSelectedPhysician} />;
             case 'Schedule':
                 return <PaginatedSchedule ID={physician._id} isPhysician={true}/>;
             default:

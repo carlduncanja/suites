@@ -50,7 +50,7 @@ function SectionListHeader({title = "", onNewProcedureClick}){
 
     const NewProcedureButtonText = styled.Text`
         align-items: center; 
-        alidn-self:center;
+        align-self:center;
         color: ${({ theme }) => theme.colors["--color-blue-600"]};
         font:${({ theme }) => theme.font["--text-sm-regular"]};
     `;
