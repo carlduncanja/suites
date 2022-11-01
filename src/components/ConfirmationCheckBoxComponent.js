@@ -226,7 +226,6 @@ function ConfirmationCheckBoxComponent({
     const [isChecked, setIsChecked] = useState(false)
 
     const onCheckBoxPress = () => {
-        console.log("we here to live")
         setIsChecked(!isChecked)
     }
 

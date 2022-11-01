@@ -61,7 +61,7 @@ const testData = [
     }
 ];
 
-const CustomProceduresTab = ({ procedures }) => {
+const CustomProceduresTab = ({ selectedPhysician, procedures, setSelectedPhysician}) => {
 
 
     const recordsPerPage = 10;
@@ -78,16 +78,18 @@ const CustomProceduresTab = ({ procedures }) => {
     const [isFloatingActionDisabled, setIsFloatingActionDisabled] = useState(false);
     const [isIndeterminate, setIsIndeterminate] = useState(false)
 
-    const data = procedures.map(item => {
-        const recovery = item.hasRecovery ? "Yes" : "No";
-        return {
-            id: item._id,
-            procedure: item.name,
-            theatre: "Operating Room 1",
-            recovery: recovery,
-            duration: item.duration,
-        };
-    });
+    const [data, setData] = useState(
+        selectedPhysician.procedures.map(item => {
+            const recovery = item.hasRecovery ? "Yes" : "No";
+            return {
+                id: item._id,
+                procedure: item.name,
+                theatre: "Operating Room 1",
+                recovery: recovery,
+                duration: item.duration,
+            };
+        })
+    );
 
     useEffect(() => {
         setTotalPages(Math.ceil(data.length / recordsPerPage));
@@ -244,8 +246,35 @@ const CustomProceduresTab = ({ procedures }) => {
             }
         );
     } 
-   
+
+    function updatePage() {
+        const container = [];
+        procedures.map((item, index) => {
+            if (selectedIds[index] !== item._id) {
+                container.push(item);
+            }
+        });
+
+        const clonePhysician = selectedPhysician;
+        clonePhysician.procedures = container;
+        setSelectedPhysician(clonePhysician, 
+            setData(
+                selectedPhysician.procedures.map(item => {
+                    const recovery = item.hasRecovery ? "Yes" : "No";
+                    return {
+                        id: item._id,
+                        procedure: item.name,
+                        theatre: "Operating Room 1",
+                        recovery: recovery,
+                        duration: item.duration,
+                    };
+                })
+            ));
+        
+    }
+
     const removeCustomProcedure =(data)=>{
+        // here
         removeProcedures(data)
         .then(_=>{
             modal.openModal(
@@ -255,6 +284,7 @@ const CustomProceduresTab = ({ procedures }) => {
                     isEditUpdate={false}
                     onAction={() => {
                         modal.closeModals('ConfirmationModal');
+                        updatePage();
                         setTimeout(() => {
                             modal.closeModals('ActionContainerModal')
                         }, 200)
@@ -265,7 +295,8 @@ const CustomProceduresTab = ({ procedures }) => {
                 }
             }
             );
-            setSelectedIds([])
+            
+            setSelectedIds([]);
         })
         .catch(error => {
             openErrorConfirmation();
