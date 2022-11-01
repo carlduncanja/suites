@@ -58,8 +58,8 @@ function NewProcedureOverlayContainer({ appointment = {}, editMode = false, pass
 
     const [attemptedSubmit, setAttemptedSubmit] = useState(false);
     const [allowedToSubmit, setAllowedToSubmit] = useState(false)
-    const [errors,setErrors]=useState(false)
-    
+    const [errors, setErrors] = useState(false)
+
     const RowWrapper = styled.View`
     flex-direction: row;
     justify-content: space-between;
@@ -115,9 +115,7 @@ function NewProcedureOverlayContainer({ appointment = {}, editMode = false, pass
         time: ''
     });
 
-    useEffect(() => {
-        if(appointment) fetchCasebyId();
-    }, [])
+
 
     const onFieldChange = (fieldName) => (value) => {
         setFields({
@@ -145,11 +143,15 @@ function NewProcedureOverlayContainer({ appointment = {}, editMode = false, pass
         let foundInvalidField = true;
         const locationCheck = location;
         const procedureCheck = procedure;
+        const dateCheck =selectedDate;
+        const timeCheck =startTime;
         const staffCheck = staffInfo.length
 
         if (locationCheck !== undefined &&
             procedureCheck !== undefined &&
-            staffCheck >= 4
+            staffCheck >= 4 &&
+            dateCheck !== undefined &&
+            timeCheck !== undefined
         ) {
             foundInvalidField = true;
 
@@ -169,31 +171,14 @@ function NewProcedureOverlayContainer({ appointment = {}, editMode = false, pass
             setAllowedToSubmit(true)
         }
 
-        else {
-            modal.openModal('ConfirmationModal', {
-                content: <ConfirmationComponent
-                    isError={false}
-                    isEditUpdate={true}
-                    onCancel={() => modal.closeModals('ConfirmationModal')}
-                    onAction={() => {
-                        setAllowedToSubmit(true);
-                        modal.closeModals("ConfirmationModal")
-                    }}
-                    message="Your appointment may be missing key information. Do you want to continue without updating?"
-                    action="Yes"
-                />
-            })
-        }
-
-
-    } 
-    const errorStateSetter=()=>{
+    }
+    const errorStateSetter = () => {
         setErrors(true)
     }
 
     useEffect(() => {
-        
-        
+
+
         if (allowedToSubmit) {
             const nameToken = fields.firstName.split(" ");
 
@@ -297,7 +282,7 @@ function NewProcedureOverlayContainer({ appointment = {}, editMode = false, pass
                 createCaseFile(caseFileData)
                     .then(data => {
                         addCaseFile(data);
-                         handleConfirm()
+                        handleConfirm()
                     })
                     .catch(error => {
                         hanadleErrorModal()
@@ -305,25 +290,31 @@ function NewProcedureOverlayContainer({ appointment = {}, editMode = false, pass
                         console.log('failed to create case file', error.response);
 
                     })
-                    
+
             }
 
             if (editMode) {
                 patientUpdater(appointment.item.case.patient._id, {
                     firstName: patientFields.firstName,
                     surname: patientFields.surname
-                }).catch(
-                    err => {
-                        console.log(err)
-                        errorStateSetter()
-                    }
-                )
-                updateCaseFile(appointment.item.case._id, { staff: caseFileData.staff, roleKeys: caseFileData.roleKeys })
+                })
+                    .then(data => {
+                        handleConfirm()
+                    })
                     .catch(
                         err => {
                             console.log(err)
-                            errorStateSetter()
-
+                            hanadleErrorModal()
+                        }
+                    )
+                updateCaseFile(appointment.item.case._id, { staff: caseFileData.staff, roleKeys: caseFileData.roleKeys })
+                    .then(data => {
+                        handleConfirm()
+                    })
+                    .catch(
+                        err => {
+                            console.log(err)
+                            hanadleErrorModal()
 
                         }
                     )
@@ -338,34 +329,19 @@ function NewProcedureOverlayContainer({ appointment = {}, editMode = false, pass
                         title: procedure?.name || "",
                         location: updatedLocation
                     })
-                    .catch(err => {
-                        console.log(err)
-                        errorStateSetter()
+                    .then(data => {
+                        handleConfirm()
                     })
+                    .catch(
+                        err => {
+                            console.log(err)
+                            hanadleErrorModal()
+                        }
+                    )
 
             }
 
-            
 
-        }
-    }, [allowedToSubmit]) 
-
-
-    const hanadleErrorModal=()=>{
-        console.log("spaniard",errors)
-                modal.openModal(
-                    'ConfirmationModal',
-                    {
-                        content: <ConfirmationComponent
-                            isError={true}
-                            isEditUpdate={false}
-                            onCancel={() => modal.closeModals('ConfirmationModal')}
-                        />,
-                        onClose: () => {
-                            modal.closeModals('ConfirmationModal');
-                        }
-                    }
-                );
 
     } 
 
@@ -390,6 +366,50 @@ function NewProcedureOverlayContainer({ appointment = {}, editMode = false, pass
                             modal.closeModals('ConfirmationModal');
                         }
                     });
+    }
+
+
+    const hanadleErrorModal = () => {
+
+        modal.openModal(
+            'ConfirmationModal',
+            {
+                content: <ConfirmationComponent
+                    isError={true}
+                    isEditUpdate={false}
+                    onCancel={() => modal.closeModals('ConfirmationModal')}
+                />,
+                onClose: () => {
+                    setAllowedToSubmit(false);
+                    modal.closeModals('ConfirmationModal');
+
+                }
+            }
+        );
+
+    }
+
+    const handleConfirm = () => {
+        console.log("just a test", errors)
+        modal.openModal('ConfirmationModal',
+            {
+                content: <ConfirmationComponent
+                    isError={false}
+                    isEditUpdate={false}
+                    onCancel={() => {
+                        modal.closeModals('ConfirmationModal');
+                    }}
+                    onAction={() => {
+                        modal.closeAllModals();
+
+                    }}
+                    message="Completed Successfully!"
+                // onAction = { () => confirmAction()}
+                />,
+                onClose: () => {
+                    modal.closeModals('ConfirmationModal');
+                }
+            });
     }
 
     const handlePatient = (value) => {
@@ -798,73 +818,73 @@ function NewProcedureOverlayContainer({ appointment = {}, editMode = false, pass
                 const resultTime = appointment.startTime;
                 const endTime = moment(appointment.startTime);
 
-            if (resultLocation !== null) {
-                handleLocationChange({
-                    _id: resultLocation._id,
-                    name: resultLocation.name
+                if (resultLocation !== null) {
+                    handleLocationChange({
+                        _id: resultLocation._id,
+                        name: resultLocation.name
+                    });
+                }
+
+                setPatientID("#" + resultPatient.patientNumber);
+
+                handlePatient({
+                    _id: resultPatient._id,
+                    name: `${resultPatient.firstName} ${resultPatient.surname}`
                 });
-            }
 
-            setPatientID("#" + resultPatient.patientNumber);
+                onFieldChange('firstName')(`${resultPatient.firstName} ${resultPatient.surname}`);
+                onPatientFieldChange('firstName')(`${resultPatient.firstName} ${resultPatient.surname}`);
 
-            handlePatient({
-                _id: resultPatient._id,
-                name: `${resultPatient.firstName} ${resultPatient.surname}`
-            });
-
-            onFieldChange('firstName')(`${resultPatient.firstName} ${resultPatient.surname}`);
-            onPatientFieldChange('firstName')(`${resultPatient.firstName} ${resultPatient.surname}`);
-
-            if (procedureName.length > 0) {
-                handleProcedure({
-                    _id: procedureId,
-                    name: procedureName
-                });
-            }
+                if (procedureName.length > 0) {
+                    handleProcedure({
+                        _id: procedureId,
+                        name: procedureName
+                    });
+                }
 
 
-            setDate(moment(resultTime));
-            setStartTime(endTime);
-            const container = [];
+                setDate(moment(resultTime));
+                setStartTime(endTime);
+                const container = [];
 
-            function findStaffByTag(tag) {
-                const resultItem = res.roleKeys.filter(itemTag => tag === itemTag.tag);
+                function findStaffByTag(tag) {
+                    const resultItem = res.roleKeys.filter(itemTag => tag === itemTag.tag);
 
 
-                return resultItem.length > 0 ? resultItem[0] : null
-            }
+                    return resultItem.length > 0 ? resultItem[0] : null
+                }
 
-            const finalLeadSurgeon = findStaffByTag("Lead Surgeon");
-            const finalAnaesthesiologist = findStaffByTag("Anaesthesiologist");
-            const finalAssitantSurgeon = findStaffByTag("Assistant Surgeon");
-            const finalNurse = findStaffByTag("Nurse");
+                const finalLeadSurgeon = findStaffByTag("Lead Surgeon");
+                const finalAnaesthesiologist = findStaffByTag("Anaesthesiologist");
+                const finalAssitantSurgeon = findStaffByTag("Assistant Surgeon");
+                const finalNurse = findStaffByTag("Nurse");
 
-            if (finalLeadSurgeon !== null) {
-                container.push(finalLeadSurgeon);
-                setGeneratedLeadSurgeon(finalLeadSurgeon);
-            }
+                if (finalLeadSurgeon !== null) {
+                    container.push(finalLeadSurgeon);
+                    setGeneratedLeadSurgeon(finalLeadSurgeon);
+                }
 
-            if (finalAnaesthesiologist !== null) {
-                container.push(finalAnaesthesiologist);
-                setGeneratedAnaesthesiologist(finalAnaesthesiologist);
-            }
+                if (finalAnaesthesiologist !== null) {
+                    container.push(finalAnaesthesiologist);
+                    setGeneratedAnaesthesiologist(finalAnaesthesiologist);
+                }
 
-            if (finalAssitantSurgeon !== null) {
-                container.push(finalAssitantSurgeon);
-                setGeneratedAssistantSurgeon(finalAssitantSurgeon)
-            }
+                if (finalAssitantSurgeon !== null) {
+                    container.push(finalAssitantSurgeon);
+                    setGeneratedAssistantSurgeon(finalAssitantSurgeon)
+                }
 
-            if (finalNurse !== null) {
-                container.push(finalNurse);
-                setGeneratedNurse(
-                    {
-                        _id: finalNurse._id,
-                        name: `${finalNurse.name}`,
-                        type: "Nurse",
-                        tag: "Nurse"
-                    }
-                )
-            }
+                if (finalNurse !== null) {
+                    container.push(finalNurse);
+                    setGeneratedNurse(
+                        {
+                            _id: finalNurse._id,
+                            name: `${finalNurse.name}`,
+                            type: "Nurse",
+                            tag: "Nurse"
+                        }
+                    )
+                }
 
                 setStaffInfo(container)
             })

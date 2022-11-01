@@ -1,20 +1,20 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
-import {SectionList, StyleSheet, Text, View} from "react-native";
+import { SectionList, StyleSheet, Text, View } from "react-native";
 
 import moment from "moment";
 import ScheduleItem from "./ScheduleItem";
 import sectionListGetItemLayout from 'react-native-section-list-get-item-layout'
-import {connect} from "react-redux";
-import {setAppointments} from "../../../redux/actions/appointmentActions"
-import {getAppointments, getCaseFileById, getAppointmentById, deleteAppointmentById} from "../../../api/network";
-import {getDaysForMonth, getDaysInRange} from "../../../utils";
-import {formatDate} from "../../../utils/formatter";
+import { connect } from "react-redux";
+import { setAppointments } from "../../../redux/actions/appointmentActions"
+import { getAppointments, getCaseFileById, getAppointmentById, deleteAppointmentById } from "../../../api/network";
+import { getDaysForMonth, getDaysInRange } from "../../../utils";
+import { formatDate } from "../../../utils/formatter";
 
-import styled, {css} from '@emotion/native';
-import {useTheme} from 'emotion-theming';
+import styled, { css } from '@emotion/native';
+import { useTheme } from 'emotion-theming';
 import SectionListHeader from './SectionListHeader';
-import {emptyFn} from "../../../const";
+import { emptyFn } from "../../../const";
 
 const ListWrapper = styled.View`
   margin: 0;
@@ -60,22 +60,22 @@ const Separator = styled.View`
  * @constructor
  */
 function SchedulesList({
-                           appointments,
-                           selectedDay,
-                           month,
-                           onAppointmentPress,
-                           onNewProcedurePress,
-                           onRefresh = emptyFn,
-                           isRefreshing = false,
-                           startDate,
-                           endDate,
-                           showBorder = true,
-                       }) {
+    appointments,
+    selectedDay,
+    month,
+    onAppointmentPress,
+    onNewProcedurePress,
+    onRefresh = emptyFn,
+    isRefreshing = false,
+    startDate,
+    endDate,
+    showBorder = true,
+}) {
 
     const daysList = (startDate && endDate) ? getDaysInRange(startDate, endDate) : getDaysForMonth(month);
     const sectionListRef = useRef();
     const theme = useTheme();
- 
+
     useEffect(() => {
         const dayIndex = getSectionIndexForSelectedDay();
         scrollToIndex(dayIndex, true);
@@ -136,17 +136,17 @@ function SchedulesList({
             setTimeout(() => scrollToIndex(dayIndex, true), 250);
         })
     };
-    
+
     useEffect(() => {
         //61e89776f06c830cfce362a1 ??
         //61e89776f06c830cfce36286 case
         // testing every endpoint to see wtf this id is attached to
 
     }, []);
-    
+
     return (
-        <View style={ showBorder ? styles.scheduleContent : {} } >
-            <View style={ showBorder ? styles.container : {} }>
+        <View style={showBorder ? styles.scheduleContent : {}} >
+            <View style={showBorder ? styles.container : {}}>
 
                 <SectionList
                     ref={sectionListRef}
@@ -164,20 +164,20 @@ function SchedulesList({
                     })}
                     sections={getSectionListData(daysList, appointments)}
                     stickySectionHeadersEnabled={true}
-                    ItemSeparatorComponent={() => <Separator/>}
-                    renderSectionHeader={({section: {title}}) => (
+                    ItemSeparatorComponent={() => <Separator />}
+                    renderSectionHeader={({ section: { title } }) => (
                         <View>
-                            <SectionListHeader 
-                                onNewProcedureClick={() => onNewProcedurePress()} 
+                            <SectionListHeader
+                                onNewProcedureClick={() => onNewProcedurePress()}
                                 title={title}
                             />
-                            
+
                         </View>
                     )}
-                    
+
                     // handles displaying the procedures for a date
-                    renderItem={({item}) => {
-                            return <ScheduleItem
+                    renderItem={({ item }) => {
+                        return <ScheduleItem
                             key={item.id}
                             startTime={item.startTime}
                             endTime={item.endTime}
