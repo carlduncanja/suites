@@ -37,7 +37,7 @@ function FrameCard(props){
         isEditMode = false,
         handleEdit = ()=>{},
         isAddNew = true,
-        handleAddNew = () =>{}
+        handleAddNew = () =>{},
     } = props
 
     const theme = useTheme();

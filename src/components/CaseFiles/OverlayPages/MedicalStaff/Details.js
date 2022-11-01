@@ -5,7 +5,9 @@ import FramStaffIcon from '../../../../../assets/svg/frameMedicalStaff';
 import FrameCard from '../../../common/Frames/FrameCards/FrameCard';
 
 
-const Details = ({tabDetails}) => { 
+const Details = ({tabDetails,isEditMode}) => { 
+    console.log("we a leader masika",tabDetails)
+    
     const { physicians, nurses } = tabDetails
 
     const physicianNames = physicians.map( physician =>{
@@ -17,7 +19,8 @@ const Details = ({tabDetails}) => {
         const { surname = "", firstName = "" } = nurse
         return `${firstName[0]}. ${surname}`
     })
-    return (  
+    return (   
+        
         <ScrollView>
 
             <View style={styles.frameContainer}>
