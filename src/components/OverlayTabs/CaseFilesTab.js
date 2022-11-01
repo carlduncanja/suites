@@ -60,7 +60,7 @@ const testData = [
     }
 ]
 
-const CaseFilesTab = ({ cases }) => {
+const CaseFilesTab = ({ setSelectedPhysician, selectedPhysician, cases }) => {
 
     const recordsPerPage = 10;
     const modal = useModal();
@@ -75,21 +75,22 @@ const CaseFilesTab = ({ cases }) => {
     const [isFloatingActionDisabled, setIsFloatingActionDisabled] = useState(false);
     const [isIndeterminate, setIsIndeterminate] = useState(false)
 
-    const data = cases.map(item => {
-        return {
-            id: item._id,
-            fname: item.patient.firstName,
-            lname: item.patient.surname,
-            patientNumber: item.patient.patientNumber,
-            name: item.name,
-            balance: 2560.90,
-            status: 'Closed',
-            nextVisit: new Date(2020, 10, 21)
-        }
-    })
+    const [data, setData] = useState(
+        selectedPhysician.cases.map(item => {
+            return {
+                id: item._id,
+                fname: item.patient.firstName,
+                lname: item.patient.surname,
+                patientNumber: item.patient.patientNumber,
+                name: item.name,
+                balance: 2560.90,
+                status: 'Closed',
+                nextVisit: new Date(2020, 10, 21)
+            }
+        })
+    )
 
     useEffect(() => {
-        
         setTotalPages(Math.ceil(data.length / recordsPerPage))
     }, [])
 
@@ -234,10 +235,33 @@ const CaseFilesTab = ({ cases }) => {
         );
     }
 
+    function updatePage() {
+        const container = [];
+        cases.map((item, index) => {
+            if (selectedIds[index] !== item._id) {
+                container.push(item);
+            }
+        });
+        const clonePhysician = selectedPhysician;
+        clonePhysician.cases = container;
+        
+        setSelectedPhysician(clonePhysician, setData(
+            selectedPhysician.cases.map(item => {
+                return {
+                    id: item._id,
+                    fname: item.patient.firstName,
+                    lname: item.patient.surname,
+                    patientNumber: item.patient.patientNumber,
+                    name: item.name,
+                    balance: 2560.90,
+                    status: 'Closed',
+                    nextVisit: new Date(2020, 10, 21)
+                }
+            })
+        ));
+    }
+
     const removeCaseFile = (data) => {
-        
-        
-        
         deleteCaseFiles(data)
         .then(_=>{
             modal.openModal(
@@ -247,6 +271,7 @@ const CaseFilesTab = ({ cases }) => {
                     isEditUpdate={false}
                     onAction={() => {
                         modal.closeModals('ConfirmationModal');
+                        updatePage();
                         setTimeout(() => {
                             modal.closeModals('ActionContainerModal')
                         }, 200)
