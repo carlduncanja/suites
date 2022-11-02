@@ -1,17 +1,20 @@
-import React,{useContext} from 'react';
+import React, { useContext } from 'react';
 import { SuitesContext } from '../../../../contexts/SuitesContext';
 import { Details } from '../../OverlayPages/MedicalStaff'
 import { View, Text } from 'react-native';
 
-const MedicalStaff = ({ staff, selectedTab }) => {
+const MedicalStaff = ({ staff, selectedTab, isEditMode, }) => {
     
+    const handleEdit =()=>{
+        console.log("handle edit")
+    }
     return (
         selectedTab === 'Details' ?
-            <Details tabDetails = {staff}/>
+            <Details tabDetails={staff} isEditMode={isEditMode} handleEdit={handleEdit} />
             :
-            <Details tabDetails = {staff}/>        
+            <Details tabDetails={staff} isEditMode={isEditMode} />
     );
 }
- 
+
 export default MedicalStaff;
 

@@ -56,7 +56,7 @@ function FrameCard(props){
 
                 <FrameContentList
                     cardInformation={cardInformation}
-                    // isEditMode = {isEditMode}
+                    isEditMode = {isEditMode}
                     handleEdit = {handleEdit}
                     handleAddNew = {handleAddNew}
                     isAddNew = {isAddNew}

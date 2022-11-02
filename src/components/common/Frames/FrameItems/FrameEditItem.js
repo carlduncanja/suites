@@ -3,6 +3,7 @@ import { View, Text, StyleSheet } from 'react-native';
 import IconButton from '../../Buttons/IconButton';
 import styled, { css } from '@emotion/native';
 import { useTheme } from 'emotion-theming';
+import FrameTitle from  '../FrameTitle'
 
 const FrameItemWrapper = styled.View`
     width: 100%;
@@ -12,6 +13,7 @@ const FrameItemWrapper = styled.View`
 const FrameItemContainer = styled.View`
 
     width : 100%;
+    height : 203px;
     flex-direction : row;
     justify-content: space-between;
     border : 1px solid ${({ theme }) => theme.colors['--color-gray-400']};
@@ -30,30 +32,29 @@ const FrameItemContent = styled.Text(({ theme }) => ({
 }));
 
 
-function FrameItem({ itemContent = "", icon, backgroundColor = "#FFFFFF", onPressButton = () => { }, isEditMode = false }) {
+function FrameEditItem({ itemContent = "", icon, backgroundColor = "#FFFFFF", onPressButton = () => { } }) {
 
     const theme = useTheme();
-    
+
     return (
         <FrameItemWrapper theme={theme}>
             <FrameItemContainer theme={theme}>
+                <FrameTitle
+                color='#3182CE'
+                borderColor = "#EBF8FF"
+                backgroundColor="#90CDF4"
+                frameTitle="Edit Items"
+                /> 
+                
+                
                 <FrameItemContent theme={theme}>{itemContent}</FrameItemContent>
-                {
-                    isEditMode ?
-                        <View>
-                            <IconButton Icon={icon} onPress={onPressButton} />
-                        </View>
-                        :
-                        <View>
 
-                        </View>
-                }
             </FrameItemContainer>
 
         </FrameItemWrapper>
     )
 }
-export default FrameItem
+export default FrameEditItem
 
 const styles = StyleSheet.create({
     container: {

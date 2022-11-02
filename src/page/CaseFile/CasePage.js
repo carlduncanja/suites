@@ -1840,7 +1840,7 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
             case 'Patient':
                 return selectedTab === 'Insurance' || selectedTab === 'Diagnosis' || selectedTab === 'Patient Risk';
             case 'Medical Staff':
-                return selectedTab === 'Details';
+                return selectedTab === 'Insurance' || selectedTab === 'Diagnosis' || selectedTab === 'Patient Risk';
             case 'Medical History':
                 return true;
             default:
@@ -1873,11 +1873,13 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
                 return <MedicalStaff
                     staff={staff}
                     selectedTab={selectedTab}
+                    isEditMode={pageState.isEditMode}
                 />;
             case 'Medical History':
                 return <MedicalHistory
                     medicalInfo={medicalInfo}
                     selectedTab={selectedTab}
+                    
                 />;
             case 'Procedures':
                 return <Procedures
