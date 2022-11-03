@@ -1874,6 +1874,8 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
                     staff={staff}
                     selectedTab={selectedTab}
                     isEditMode={pageState.isEditMode}
+                    modal={modal}
+                    
                 />;
             case 'Medical History':
                 return <MedicalHistory

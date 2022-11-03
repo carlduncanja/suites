@@ -32,12 +32,14 @@ function FrameCard(props){
         frameBorderColor,
         titleBackgroundColor,
         icon,
+        idArray,
         frameTitle,
         cardInformation,
         isEditMode = false,
         handleEdit = ()=>{},
         isAddNew = true,
-        handleAddNew = () =>{}
+        handleAddNew = () =>{},
+        onDelete =()=>{}
     } = props
 
     const theme = useTheme();
@@ -60,6 +62,8 @@ function FrameCard(props){
                     handleEdit = {handleEdit}
                     handleAddNew = {handleAddNew}
                     isAddNew = {isAddNew}
+                    onDelete={onDelete}
+                    idArray={idArray}
                 />
 
 

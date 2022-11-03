@@ -34,8 +34,10 @@ function FrameContentList(props) {
         cardInformation,
         handleEdit = () => { },
         handleAddNew = () => { },
+        onDelete,
         isAddNew = false,
-        isEditMode = false
+        isEditMode = false,
+        idArray,
     } = props
 
     const [value, setValue] = useState("");
@@ -79,8 +81,10 @@ function FrameContentList(props) {
                                     />
                                     :
 
-                                    editPress ?
-                                        <FrameEditItem/>
+                                    editPress && isEditMode === true ?
+                                        <FrameEditItem itemContent={{ 'name': itemContent }}
+                                            onDelete={() => { 
+                                                onDelete(idArray[index]) }} />
                                         :
                                         <FrameItem
                                             itemContent={itemContent}

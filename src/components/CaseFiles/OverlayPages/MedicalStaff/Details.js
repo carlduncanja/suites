@@ -7,11 +7,12 @@ import FrameCard from '../../../common/Frames/FrameCards/FrameCard';
 
 const Details = ({ tabDetails,
     isEditMode,
-    handleEdit = () => { }
-    
-    }) => {
-    
-        const { physicians, nurses } = tabDetails
+    handleEdit = () => { },
+    onDelete = () => { }
+
+}) => {
+
+    const { physicians, nurses } = tabDetails
 
     const physicianNames = physicians.map(physician => {
         const { surname = "" } = physician
@@ -19,8 +20,18 @@ const Details = ({ tabDetails,
     })
 
     const nursesNames = nurses.map(nurse => {
-        const { surname = "", firstName = "" } = nurse
+        const { surname = "", firstName = "", _id = '' } = nurse
         return `${firstName[0]}. ${surname}`
+    })
+
+    const physicianIds = physicians.map(physician => {
+        const { _id = "" } = physician
+        return _id
+    })
+
+    const nursesIds = nurses.map(nurses => {
+        const { _id = "" } = nurses
+        return _id
     })
     return (
         <ScrollView>
@@ -35,6 +46,8 @@ const Details = ({ tabDetails,
                     icon={FramStaffIcon}
                     isEditMode={isEditMode}
                     handleEdit={handleEdit}
+                    onDelete={onDelete}
+                    idArray={physicianIds}
                 />
             </View>
 
@@ -48,6 +61,7 @@ const Details = ({ tabDetails,
                     icon={FramStaffIcon}
                     isEditMode={isEditMode}
                     handleEdit={handleEdit}
+                    idArray={nursesIds}
                 />
             </View>
 
