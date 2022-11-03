@@ -140,7 +140,8 @@ const Patient = ({
                 return (
                     <Insurance tabDetails={{
                         ...insurance,
-                        patient: `${firstName} ${surname}`
+                        patient: `${firstName} ${surname}`,
+                        procedures
                     }}
                     />
                 );
