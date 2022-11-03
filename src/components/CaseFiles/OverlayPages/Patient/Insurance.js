@@ -11,9 +11,13 @@ import Table from '../../../common/Table/Table';
 import DataItem from '../../../common/List/DataItem';
 import ListItem from '../../../common/List/ListItem';
 import {PageContext} from '../../../../contexts/PageContext';
+import {useModal} from 'react-native-modalfy';
+import NewProcedureOverlayContainer from '../../../../page/Schedule/SchedulePage/NewProcedureOverlayContainer';
+import ConfirmationComponent from '../../../ConfirmationComponent';
 
 const Insurance = ({tabDetails}) => { 
     const theme = useTheme();
+    const modal = useModal();
     const {name, coverageLimit, policyNumber, procedures} = tabDetails
     const {pageState, setPageState} = useContext(PageContext);
     const {isEditMode} = pageState;
@@ -75,22 +79,38 @@ const PreAuthTitle = styled.Text(({theme}) => ({
     marginBottom: 24,
 }));
 
-const openModal = item => () => {
+const handleProcedurePress = item => () => {
     console.log('Report Item: ', item);
-    // modal.openModal('ReportPreviewModal', {
-    //     content: <ReportPreview
-    //         type="Invoice"
-    //         details={item}
-    //         reportDetails={reportDetails}
-    //     />
-    // });
+    modal.openModal('BottomSheetModal', {
+        content: <NewProcedureOverlayContainer />,
+        initialSnap: 2,
+        snapPoints: [650, 500, 0]
+    });
+
+    modal.openModal('ConfirmationModal', {
+        content: (
+            <ConfirmationComponent
+                isWarning={true}
+                onCancel={() => {
+                    modal.closeAllModals();
+                }}
+                onAction={() => {
+                    modal.closeAllModals();
+                    // updateAlerts();
+                }}
+            />
+        ),
+        onClose: () => {
+            modal.closeAllModals();
+        },
+    });
 };
 
 
 const renderListFn = item => (
     <ListItem
         hasCheckBox={false}
-        onItemPress={openModal(item)}
+        onItemPress={handleProcedurePress(item)}
         itemView={archivedItemFormat(item)}
     />
 );
@@ -102,7 +122,6 @@ const renderListFn = item => (
             </InsuranceContainer>
             <PreAuthorization>
                 <PreAuthTitle>Pre-Authorizations</PreAuthTitle>
-                <ScrollView>
                     <Table
                     isCheckbox={false}
                     data={procedures}
@@ -111,7 +130,6 @@ const renderListFn = item => (
                     // toggleHeaderCheckbox={toggleHeaderCheckbox}
                     // itemSelected={checkBoxList}
                     />
-                </ScrollView>
             </PreAuthorization>
         </InsuranceWrapper>
     )
