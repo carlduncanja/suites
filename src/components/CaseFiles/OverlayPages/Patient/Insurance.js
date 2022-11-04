@@ -12,7 +12,7 @@ import DataItem from '../../../common/List/DataItem';
 import ListItem from '../../../common/List/ListItem';
 import {PageContext} from '../../../../contexts/PageContext';
 import {useModal} from 'react-native-modalfy';
-import NewProcedureOverlayContainer from '../../../../page/Schedule/SchedulePage/NewProcedureOverlayContainer';
+import PreAuthorizationSheet from './PreAuthorizationSheet';
 import ConfirmationComponent from '../../../ConfirmationComponent';
 
 const Insurance = ({tabDetails}) => { 
@@ -80,9 +80,8 @@ const PreAuthTitle = styled.Text(({theme}) => ({
 }));
 
 const handleProcedurePress = item => () => {
-    console.log('Report Item: ', item);
     modal.openModal('BottomSheetModal', {
-        content: <NewProcedureOverlayContainer />,
+        content: <PreAuthorizationSheet  appointmentDetails={item}/>,
         initialSnap: 2,
         snapPoints: [650, 500, 0]
     });
@@ -95,7 +94,7 @@ const handleProcedurePress = item => () => {
                     modal.closeAllModals();
                 }}
                 onAction={() => {
-                    modal.closeAllModals();
+                    modal.closeModals('ConfirmationModal');
                     // updateAlerts();
                 }}
             />
@@ -127,8 +126,6 @@ const renderListFn = item => (
                     data={procedures}
                     listItemFormat={!isEditMode ? archivedItemFormat : renderListFn}
                     headers={Headers}
-                    // toggleHeaderCheckbox={toggleHeaderCheckbox}
-                    // itemSelected={checkBoxList}
                     />
             </PreAuthorization>
         </InsuranceWrapper>
