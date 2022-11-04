@@ -217,6 +217,7 @@ const CustomProceduresTab = ({ procedures }) => {
     }
 
     const openDeletionConfirm = data => {
+        console.log("gunman sfift data",data)
         modal.openModal(
             'ConfirmationModal',
             {

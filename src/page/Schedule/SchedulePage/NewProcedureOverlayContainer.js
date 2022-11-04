@@ -18,8 +18,9 @@ import ConfirmationComponent from '../../../components/ConfirmationComponent';
 import ActionItem from '../../../components/common/ActionItem';
 import AddIcon from '../../../../assets/svg/addIcon';
 import { appointments } from '../../../../data/Appointments';
+import { handleError } from '../../../api/apiUtils';
 
-function NewProcedureOverlayContainer({ appointment = {}, editMode = false }) {
+function NewProcedureOverlayContainer({ appointment = {}, editMode = false, passedDate = new Date() }) {
 
     const theme = useTheme();
     const modal = useModal();
@@ -57,7 +58,8 @@ function NewProcedureOverlayContainer({ appointment = {}, editMode = false }) {
 
     const [attemptedSubmit, setAttemptedSubmit] = useState(false);
     const [allowedToSubmit, setAllowedToSubmit] = useState(false)
-    
+    const [errors, setErrors] = useState(false)
+
     const RowWrapper = styled.View`
     flex-direction: row;
     justify-content: space-between;
@@ -113,9 +115,7 @@ function NewProcedureOverlayContainer({ appointment = {}, editMode = false }) {
         time: ''
     });
 
-    useEffect(() => {
-        if(appointment) fetchCasebyId();
-    }, [])
+
 
     const onFieldChange = (fieldName) => (value) => {
         setFields({
@@ -143,11 +143,15 @@ function NewProcedureOverlayContainer({ appointment = {}, editMode = false }) {
         let foundInvalidField = true;
         const locationCheck = location;
         const procedureCheck = procedure;
+        const dateCheck =selectedDate;
+        const timeCheck =startTime;
         const staffCheck = staffInfo.length
 
         if (locationCheck !== undefined &&
             procedureCheck !== undefined &&
-            staffCheck >= 4
+            staffCheck >= 4 &&
+            dateCheck !== undefined &&
+            timeCheck !== undefined
         ) {
             foundInvalidField = true;
 
@@ -167,26 +171,14 @@ function NewProcedureOverlayContainer({ appointment = {}, editMode = false }) {
             setAllowedToSubmit(true)
         }
 
-        else {
-            modal.openModal('ConfirmationModal', {
-                content: <ConfirmationComponent
-                    isError={false}
-                    isEditUpdate={true}
-                    onCancel={() => modal.closeModals('ConfirmationModal')}
-                    onAction={() => {
-                        setAllowedToSubmit(true);
-                        modal.closeModals("ConfirmationModal")
-                    }}
-                    message="Your appointment may be missing key information. Do you want to continue without updating?"
-                    action="Yes"
-                />
-            })
-        }
-
-
+    }
+    const errorStateSetter = () => {
+        setErrors(true)
     }
 
     useEffect(() => {
+
+
         if (allowedToSubmit) {
             const nameToken = fields.firstName.split(" ");
 
@@ -290,14 +282,15 @@ function NewProcedureOverlayContainer({ appointment = {}, editMode = false }) {
                 createCaseFile(caseFileData)
                     .then(data => {
                         addCaseFile(data);
+                        handleConfirm()
                     })
                     .catch(error => {
+                        hanadleErrorModal()
                         console.log('failed to create case file', error.message);
                         console.log('failed to create case file', error.response);
+
                     })
-                    .finally(_ => {
-                        console.log("finally done")
-                    });
+
             }
 
             if (editMode) {
@@ -305,7 +298,26 @@ function NewProcedureOverlayContainer({ appointment = {}, editMode = false }) {
                     firstName: patientFields.firstName,
                     surname: patientFields.surname
                 })
+                    .then(data => {
+                        handleConfirm()
+                    })
+                    .catch(
+                        err => {
+                            console.log(err)
+                            hanadleErrorModal()
+                        }
+                    )
                 updateCaseFile(appointment.item.case._id, { staff: caseFileData.staff, roleKeys: caseFileData.roleKeys })
+                    .then(data => {
+                        handleConfirm()
+                    })
+                    .catch(
+                        err => {
+                            console.log(err)
+                            hanadleErrorModal()
+
+                        }
+                    )
 
                 const appointmentID = appointment._id;
                 updateAppointmentById(appointmentID,
@@ -317,34 +329,66 @@ function NewProcedureOverlayContainer({ appointment = {}, editMode = false }) {
                         title: procedure?.name || "",
                         location: updatedLocation
                     })
-                    .catch(err => {
-                        console.log(err)
+                    .then(data => {
+                        handleConfirm()
                     })
+                    .catch(
+                        err => {
+                            console.log(err)
+                            hanadleErrorModal()
+                        }
+                    )
 
             }
 
-            modal.openModal('ConfirmationModal',
-                {
-                    content: <ConfirmationComponent
-                        isError={false}
-                        isEditUpdate={false}
-                        onCancel={() => {
-                            modal.closeModals('ConfirmationModal');
-                        }}
-                        onAction={() => {
-                            modal.closeAllModals();
 
-                        }}
-                        message="Completed Successfully!"
-                    // onAction = { () => confirmAction()}
-                    />,
-                    onClose: () => {
-                        modal.closeModals('ConfirmationModal');
-                    }
-                });
 
         }
     }, [allowedToSubmit])
+
+
+    const hanadleErrorModal = () => {
+
+        modal.openModal(
+            'ConfirmationModal',
+            {
+                content: <ConfirmationComponent
+                    isError={true}
+                    isEditUpdate={false}
+                    onCancel={() => modal.closeModals('ConfirmationModal')}
+                />,
+                onClose: () => {
+                    setAllowedToSubmit(false);
+                    modal.closeModals('ConfirmationModal');
+
+                }
+            }
+        );
+
+    }
+
+    const handleConfirm = () => {
+        console.log("just a test", errors)
+        modal.openModal('ConfirmationModal',
+            {
+                content: <ConfirmationComponent
+                    isError={false}
+                    isEditUpdate={false}
+                    onCancel={() => {
+                        modal.closeModals('ConfirmationModal');
+                    }}
+                    onAction={() => {
+                        modal.closeAllModals();
+
+                    }}
+                    message="Completed Successfully!"
+                // onAction = { () => confirmAction()}
+                />,
+                onClose: () => {
+                    modal.closeModals('ConfirmationModal');
+                }
+            });
+    }
 
     const handlePatient = (value) => {
 
@@ -741,87 +785,91 @@ function NewProcedureOverlayContainer({ appointment = {}, editMode = false }) {
         })
     }
 
-    const fetchCasebyId = () => {
-        getCaseFileById(appointment.item.case._id).then(res => {
-            const resultLocation = res.caseProcedures[0].appointment.location;
-            const resultPatient = appointment.item.case.patient;
-            const procedureId = res.caseProcedures[0].procedure._id;
-            const procedureName = res.caseProcedures[0].appointment.title;
-            const resultTime = appointment.startTime;
-            const endTime = moment(appointment.startTime);
+    useEffect(() => {
+        if (appointment._id !== undefined) {
 
-            if (resultLocation !== null) {
-                handleLocationChange({
-                    _id: resultLocation._id,
-                    name: resultLocation.name
+            getCaseFileById(appointment.item.case._id).then(res => {
+                const resultLocation = res.caseProcedures[0].appointment.location;
+                const resultPatient = appointment.item.case.patient;
+                const procedureId = res.caseProcedures[0].procedure._id;
+                const procedureName = res.caseProcedures[0].appointment.title;
+                const resultTime = appointment.startTime;
+                const endTime = moment(appointment.startTime);
+
+                if (resultLocation !== null) {
+                    handleLocationChange({
+                        _id: resultLocation._id,
+                        name: resultLocation.name
+                    });
+                }
+
+                setPatientID("#" + resultPatient.patientNumber);
+
+                handlePatient({
+                    _id: resultPatient._id,
+                    name: `${resultPatient.firstName} ${resultPatient.surname}`
                 });
-            }
 
-            setPatientID("#" + resultPatient.patientNumber);
+                onFieldChange('firstName')(`${resultPatient.firstName} ${resultPatient.surname}`);
+                onPatientFieldChange('firstName')(`${resultPatient.firstName} ${resultPatient.surname}`);
 
-            handlePatient({
-                _id: resultPatient._id,
-                name: `${resultPatient.firstName} ${resultPatient.surname}`
-            });
-
-            onFieldChange('firstName')(`${resultPatient.firstName} ${resultPatient.surname}`);
-            onPatientFieldChange('firstName')(`${resultPatient.firstName} ${resultPatient.surname}`);
-
-            if (procedureName.length > 0) {
-                handleProcedure({
-                    _id: procedureId,
-                    name: procedureName
-                });
-            }
+                if (procedureName.length > 0) {
+                    handleProcedure({
+                        _id: procedureId,
+                        name: procedureName
+                    });
+                }
 
 
-            setDate(moment(resultTime));
-            setStartTime(endTime);
-            const container = [];
+                setDate(moment(resultTime));
+                setStartTime(endTime);
+                const container = [];
 
-            function findStaffByTag(tag) {
-                const resultItem = res.roleKeys.filter(itemTag => tag === itemTag.tag);
+                function findStaffByTag(tag) {
+                    const resultItem = res.roleKeys.filter(itemTag => tag === itemTag.tag);
 
 
-                return resultItem.length > 0 ? resultItem[0] : null
-            }
+                    return resultItem.length > 0 ? resultItem[0] : null
+                }
 
-            const finalLeadSurgeon = findStaffByTag("Lead Surgeon");
-            const finalAnaesthesiologist = findStaffByTag("Anaesthesiologist");
-            const finalAssitantSurgeon = findStaffByTag("Assistant Surgeon");
-            const finalNurse = findStaffByTag("Nurse");
+                const finalLeadSurgeon = findStaffByTag("Lead Surgeon");
+                const finalAnaesthesiologist = findStaffByTag("Anaesthesiologist");
+                const finalAssitantSurgeon = findStaffByTag("Assistant Surgeon");
+                const finalNurse = findStaffByTag("Nurse");
 
-            if (finalLeadSurgeon !== null) {
-                container.push(finalLeadSurgeon);
-                setGeneratedLeadSurgeon(finalLeadSurgeon);
-            }
+                if (finalLeadSurgeon !== null) {
+                    container.push(finalLeadSurgeon);
+                    setGeneratedLeadSurgeon(finalLeadSurgeon);
+                }
 
-            if (finalAnaesthesiologist !== null) {
-                container.push(finalAnaesthesiologist);
-                setGeneratedAnaesthesiologist(finalAnaesthesiologist);
-            }
+                if (finalAnaesthesiologist !== null) {
+                    container.push(finalAnaesthesiologist);
+                    setGeneratedAnaesthesiologist(finalAnaesthesiologist);
+                }
 
-            if (finalAssitantSurgeon !== null) {
-                container.push(finalAssitantSurgeon);
-                setGeneratedAssistantSurgeon(finalAssitantSurgeon)
-            }
+                if (finalAssitantSurgeon !== null) {
+                    container.push(finalAssitantSurgeon);
+                    setGeneratedAssistantSurgeon(finalAssitantSurgeon)
+                }
 
-            if (finalNurse !== null) {
-                container.push(finalNurse);
-                setGeneratedNurse(
-                    {
-                        _id: finalNurse._id,
-                        name: `${finalNurse.name}`,
-                        type: "Nurse",
-                        tag: "Nurse"
-                    }
-                )
-            }
+                if (finalNurse !== null) {
+                    container.push(finalNurse);
+                    setGeneratedNurse(
+                        {
+                            _id: finalNurse._id,
+                            name: `${finalNurse.name}`,
+                            type: "Nurse",
+                            tag: "Nurse"
+                        }
+                    )
+                }
 
-            setStaffInfo(container)
-        })
-    }
-    
+                setStaffInfo(container)
+            })
+        } else {
+            onDateUpdate(passedDate)
+        }
+    }, []);
 
     function deleteSurgeonTag(tag) {
         let staffClone = staffInfo;
@@ -850,8 +898,10 @@ function NewProcedureOverlayContainer({ appointment = {}, editMode = false }) {
 
                 <View style={[styles.row, { zIndex: 10 }]}>
                     <SearchableOptionsField
+                        emptyAfterSubmit={attemptedSubmit && patientValue === undefined ? true : false}
                         updateDB={updatePatientDB}
                         highlightOn={true}
+                        highlightColor="#F6F8F8"
                         title={"Patient"}
                         showActionButton={true}
                         text={searchPatientValue}
@@ -931,12 +981,14 @@ function NewProcedureOverlayContainer({ appointment = {}, editMode = false }) {
                             <View style={styles.inputWrapper}>
                                 <DateInputField
                                     value={selectedDate}
+                                    hasError={attemptedSubmit && selectedDate === undefined ? true : false}
                                     onClear={() => { setDate(undefined) }}
                                     keyboardType="number-pad"
                                     mode={'date'}
                                     format={"DD/MM/YYYY"}
                                     placeholder="DD/MM/YYYY"
                                     onDateChange={onDateUpdate}
+                                    borderColor={attemptedSubmit && selectedDate === undefined ? '--color-red-700' : '--color-gray-300'}
                                 />
                             </View>
                         </View>
@@ -949,12 +1001,14 @@ function NewProcedureOverlayContainer({ appointment = {}, editMode = false }) {
                             </View>
                             <View style={styles.inputWrapper}>
                                 <DateInputField
+                                    hasError={attemptedSubmit && startTime === undefined ? true : false}
                                     onDateChange={onTimeUpdate("startTime")}
                                     value={startTime}
                                     mode={"time"}
                                     format={"hh:mm A"}
                                     onClear={() => setStartTime(undefined)}
                                     placeholder="HH:MM"
+                                    borderColor={attemptedSubmit && startTime === undefined ? '--color-red-700' : '--color-gray-300'}
                                 />
                             </View>
                         </View>
@@ -1253,7 +1307,7 @@ const styles = StyleSheet.create({
         // flex: 1,
         width: '100%',
         flexDirection: 'row',
-        marginRight:10
+        marginRight: 10
         // backgroundColor: 'blue'
     },
 

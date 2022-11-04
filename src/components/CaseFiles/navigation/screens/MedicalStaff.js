@@ -3,30 +3,34 @@ import { SuitesContext } from '../../../../contexts/SuitesContext';
 import { Details } from '../../OverlayPages/MedicalStaff'
 import { View, Text } from 'react-native';
 import ConfirmationCheckBoxComponent from '../../../../components/ConfirmationCheckBoxComponent';
+import ConfirmationComponent from '../../../../components/ConfirmationComponent';
+import {deleteCaseStaff} from '../../../../api/network'
 
-const MedicalStaff = ({ staff, selectedTab, isEditMode,modal }) => {
-    console.log("the staff",staff)
-    const handleEdit =()=>{
+const MedicalStaff = ({ staff, selectedTab, isEditMode, modal, caseId }) => {
+    console.log("the staff", staff)
+    const handleEdit = () => {
         console.log("handle edit")
-    } 
+    }
 
-    const handleDelete =( data )=>{
-        console.log("the real data",data)
-        openDeletionConfirm({ids: ""});
+    const handleDelete = (data) => {
+        console.log("the real data", data)
+        console.log("the Case id", caseId)
+        openDeletionConfirm(caseId, {staffId:data});
+
+    }
+
+    const openDeletionConfirm = (caseID,data) => {
         
-    }  
-    
-    const openDeletionConfirm = data => {
         modal.openModal(
             'ConfirmationModal',
-            { 
+            {
                 content: <ConfirmationCheckBoxComponent
                     isError={false}
                     isEditUpdate={true}
                     onCancel={() => modal.closeModals('ConfirmationModal')}
                     onAction={() => {
                         modal.closeModals('ConfirmationModal');
-                        removePhysicianCall(data);
+                        removeStaffcall(caseID, data);
                     }}
                     // onAction = { () => confirmAction()}
                     message="Do you want to delete these item(s)?"
@@ -38,7 +42,59 @@ const MedicalStaff = ({ staff, selectedTab, isEditMode,modal }) => {
         );
     };
 
+    const removeStaffcall = (caseId, data) => {
+        deleteCaseStaff(caseId, data)
+            .then(_ => {
+                modal.openModal(
+                    'ConfirmationModal', {
+                    content: <ConfirmationComponent
+                        isError={false}
+                        isEditUpdate={false}
+                        onAction={() => {
+                            modal.closeModals('ConfirmationModal');
+                            setTimeout(() => {
+                                modal.closeModals('ActionContainerModal')
+                            }, 200)
+                        }}
+                    />,
+                    onClose: () => {
+                        modal.closeModal('ConfirmationModal')
+                    }
+                }
+                );
+            })
+            .catch(error => {
+                openErrorConfirmation();
+                setTimeout(() => {
+                    modal.closeModals('ActionContainerModal');
+                }, 200)
+                console.log('failed to delete these item(s)', error)
+            })
+            .finally(_ => {
+                
+            });
     
+    }
+
+
+
+    const openErrorConfirmation = () => {
+        modal.openModal(
+            'ConfirmationModal',
+            {
+                content: <ConfirmationComponent
+                    isError={true}
+                    isEditUpdate={false}
+                    onCancel={() => modal.closeModals('ConfirmationModal')}
+                />,
+                onClose: () => {
+                    modal.closeModals('ConfirmationModal');
+                }
+            }
+        );
+    };
+
+
     return (
         selectedTab === 'Details' ?
             <Details tabDetails={staff} isEditMode={isEditMode} handleEdit={handleEdit} onDelete={handleDelete} />
