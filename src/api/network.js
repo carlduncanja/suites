@@ -361,8 +361,8 @@ export const createCaseFile = async caseFileForCreation => suitesAxiosInstance
     .then(handleResponse)
     .catch(handleError);
 
-export const deleteCaseStaff = (caseId, staffData) => suitesAxiosInstance
-    .delete(caseStaffDeleteEndpoint(caseId), {staffData})
+export const deleteCaseStaff = async (caseId, data) => suitesAxiosInstance
+    .delete(caseStaffDeleteEndpoint(caseId),{data})
     .then(handleResponse)
     .catch(handleError);
 

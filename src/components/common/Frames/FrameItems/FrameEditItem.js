@@ -98,7 +98,7 @@ const ButtonContainer = styled.TouchableOpacity`
 function FrameEditItem({ itemContent = {}, onPressButton = () => { }, onDelete = () => { } }) {
 
     const theme = useTheme();
-    console.log('item content for edit page ', itemContent)
+    //console.log('item content for edit page ', itemContent)
     return (
         <FrameItemWrapper theme={theme}>
             <FrameItemContainer theme={theme}>

@@ -47,7 +47,7 @@ function FrameContentList(props) {
     const { pageState } = useContext(PageContext);
     //const { isEditMode } = pageState;
 
-    console.log("test edit mode ", isEditMode)
+    //console.log("test edit mode ", isEditMode)
 
     const openEditSate = () => {
         setEditPress(true)

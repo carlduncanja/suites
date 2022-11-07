@@ -4,23 +4,21 @@ import { Details } from '../../OverlayPages/MedicalStaff'
 import { View, Text } from 'react-native';
 import ConfirmationCheckBoxComponent from '../../../../components/ConfirmationCheckBoxComponent';
 import ConfirmationComponent from '../../../../components/ConfirmationComponent';
-import {deleteCaseStaff} from '../../../../api/network'
+import { deleteCaseStaff } from '../../../../api/network'
 
 const MedicalStaff = ({ staff, selectedTab, isEditMode, modal, caseId }) => {
-    console.log("the staff", staff)
+    // console.log("the staff", staff)
     const handleEdit = () => {
         console.log("handle edit")
     }
 
     const handleDelete = (data) => {
-        console.log("the real data", data)
-        console.log("the Case id", caseId)
-        openDeletionConfirm(caseId, {staffId:data});
+        openDeletionConfirm(caseId, data);
 
     }
 
-    const openDeletionConfirm = (caseID,data) => {
-        
+    const openDeletionConfirm = (caseID, data) => {
+
         modal.openModal(
             'ConfirmationModal',
             {
@@ -43,8 +41,8 @@ const MedicalStaff = ({ staff, selectedTab, isEditMode, modal, caseId }) => {
     };
 
     const removeStaffcall = (caseId, data) => {
-        deleteCaseStaff(caseId, data)
-            .then(_ => {
+        deleteCaseStaff(caseId, {"staffId": data })
+            .then(data => { 
                 modal.openModal(
                     'ConfirmationModal', {
                     content: <ConfirmationComponent
@@ -71,9 +69,9 @@ const MedicalStaff = ({ staff, selectedTab, isEditMode, modal, caseId }) => {
                 console.log('failed to delete these item(s)', error)
             })
             .finally(_ => {
-                
+
             });
-    
+
     }
 
 
