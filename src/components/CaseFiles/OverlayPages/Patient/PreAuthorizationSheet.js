@@ -143,7 +143,7 @@ function PreAuthorizationSheet({
                                 onAction={() => {
                                     modal.closeModals('ConfirmationModal');
                                 }}
-                                message={`${caseItem.patient.firstName}'s ${appointmentDetails.appointment.title}has been authorized.`}
+                                message={`${caseItem.patient.firstName}'s ${appointmentDetails.appointment.title.trim()} has been authorized.`}
                             />
                         ),
                         onClose: () => {
