@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import moment from 'moment';
-import SvgIcon from '../../../../../assets/SvgIcon';
 import EditIconButton from "../../../../../assets/svg/editIconButton";
 import Checked from "../../../../../assets/svg/checked";
 import { useNavigation } from "@react-navigation/native";
@@ -9,7 +8,7 @@ import { emptyFn } from "../../../../const";
 import { useModal } from "react-native-modalfy";
 import styled, { css } from '@emotion/native';
 import { useTheme } from 'emotion-theming';
-import { getUserCall, getCaseFileById, deleteAppointmentById } from '../../../../api/network';
+import {  getCaseFileById } from '../../../../api/network';
 import { currencyFormatter } from '../../../../utils/formatter';
 import InputField2 from '../../../common/Input Fields/InputField2';
 import IconButton from '../../../common/Buttons/IconButton';
@@ -17,12 +16,8 @@ import ConfirmationComponent from '../../../ConfirmationComponent';
 import {
     applyPaymentsChargeSheetCall, simpleCaseProcedureUpdate
 } from '../../../../api/network';
-/**
- * Visual component for rendering procedure appointments.
- * @param scheduleItem
- * @returns {*}
- * @constructor
- */
+
+
 function PreAuthorizationSheet({
     appointmentDetails,
     closeOverlay = emptyFn,
@@ -31,22 +26,23 @@ function PreAuthorizationSheet({
     const theme = useTheme();
     const modal = useModal();
     const [caseItem, setCaseItem] = useState({});
-    const [isFetching, setFetching] = useState(false);
     const [coverage, setCoverage] = useState('');
     const [discount, setDiscount] = useState('');
     const [patientPays, setPatientPays] = useState();
     const [editMode, setEditMode] = useState(true);
     const [authStatus, setAuthStatus] = useState(false);
 
-    // console.log("passed Item", appointmentDetails)
-
     const fetchCase = (id) => {
         getCaseFileById(id)
             .then(data => {
                 setCaseItem(data)
-                
                const insurance = data.chargeSheet.lineItems.filter(x => x.caseProcedureRef === appointmentDetails._id)[0].unitPrice;
-               insurance ? setCoverage(currencyFormatter(insurance)) : null;
+               if(insurance) 
+               {
+                setCoverage(currencyFormatter(insurance));
+                setDiscount(insurance);
+                setPatientPays(currencyFormatter(data?.chargeSheet?.total - insurance))
+               }
             })
             .catch(error => {
                 console.log("Failed to get case", error)
@@ -57,11 +53,6 @@ function PreAuthorizationSheet({
         fetchCase(appointmentDetails.appointment.item.case);
         setAuthStatus(appointmentDetails.preAuthStatus);    
     }, [])
-
-    const {
-        title = '',
-        status = false,
-    } = appointmentDetails;
 
 
     /**
@@ -128,11 +119,9 @@ function PreAuthorizationSheet({
     }
 
     const handleAuthClicked = () => {
-        applyInvoicePayment();
+        if(discount) applyInvoicePayment();
     }
     const applyInvoicePayment = () => {
-        // setPageLoading(true);
-
         applyPaymentsChargeSheetCall(caseItem.chargeSheet.caseId, {
             name: "Insurance",
             amount: discount,
@@ -142,7 +131,6 @@ function PreAuthorizationSheet({
             .then(_ => {
                 appointmentDetails.preAuthStatus = true;
                 simpleCaseProcedureUpdate(appointmentDetails.appointment.item.case, appointmentDetails._id, appointmentDetails).then( _ => { 
-                    //fetchCase(appointmentDetails.appointment.item.case);
                     setAuthStatus(true);
                     modal.openModal('ConfirmationModal', {
                         content: (
@@ -160,7 +148,6 @@ function PreAuthorizationSheet({
                         ),
                         onClose: () => {
                             modal.closeModals('ConfirmationModal');
-                            console.log('Modal closed');
                         },
                     });
                 })
@@ -189,19 +176,6 @@ function PreAuthorizationSheet({
             })
     };
 
-    // when a case file is clicked this is displayed
-    // with all the details about a case
-    const NewProcedureButton = styled.TouchableOpacity`
-        align-items:center;
-        border-width:1px;
-        justify-content:center;
-        background-color: #0CB0E7;
-        width:53px;
-        height:26px;
-        border-radius:6px;
-        margin-left: 20px;
-
-    `;
 
     const ModalText = styled.Text(({ textColor = '--color-gray-600', theme, font = '--confirm-title' }) => ({
         ...theme.font[font],

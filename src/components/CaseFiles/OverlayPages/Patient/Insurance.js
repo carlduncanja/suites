@@ -96,7 +96,6 @@ const handleProcedurePress = item => () => {
                 }}
                 onAction={() => {
                     modal.closeModals('ConfirmationModal');
-                    // updateAlerts();
                 }}
             />
         ),
