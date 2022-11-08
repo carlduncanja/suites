@@ -33,6 +33,7 @@ function PreAuthorizationSheet({
     const [caseItem, setCaseItem] = useState({});
     const [isFetching, setFetching] = useState(false);
     const [coverage, setCoverage] = useState('');
+    const [discount, setDiscount] = useState('');
     const [patientPays, setPatientPays] = useState();
     const [editMode, setEditMode] = useState(true);
     const [authStatus, setAuthStatus] = useState(false);
@@ -40,39 +41,28 @@ function PreAuthorizationSheet({
     // console.log("passed Item", appointmentDetails)
 
     const fetchCase = (id) => {
-        setFetching(true);
         getCaseFileById(id)
             .then(data => {
                 setCaseItem(data)
-                console.log("case item", data)
+                
+               const insurance = data.chargeSheet.lineItems.filter(x => x.caseProcedureRef === appointmentDetails._id)[0].unitPrice;
+               insurance ? setCoverage(currencyFormatter(insurance)) : null;
             })
             .catch(error => {
                 console.log("Failed to get case", error)
-            })
-            .finally(_ => {
-                setFetching(false)
             })
     };
 
     useEffect(() => {
         fetchCase(appointmentDetails.appointment.item.case);
-        setAuthStatus(appointmentDetails.preAuthStatus);
-    }, [])
-
-    useEffect(() => {
-        console.log("appointment Details", appointmentDetails.appointment.item.case)
+        setAuthStatus(appointmentDetails.preAuthStatus);    
     }, [])
 
     const {
-        createdBy = '',
         title = '',
         status = false,
     } = appointmentDetails;
 
-    const [owner, setOwner] = useState({
-        firstName: "",
-        lastName: ""
-    });
 
     /**
      * @param scheduleDate - date object
@@ -115,6 +105,10 @@ function PreAuthorizationSheet({
     const handleCoverage = value => {
         const updatedCoverage = value.replace(/[^0-9.]/g, '');
 
+        if (/^\d+(\.\d{1,2})?$/g.test(updatedCoverage) || /^\d+$/g.test(updatedCoverage) || !updatedCoverage) {
+            setDiscount(parseFloat(updatedCoverage));
+        }
+        
         if (/^\d+(\.){0,1}(\d{1,2})?$/g.test(updatedCoverage) || !updatedCoverage) {
             setCoverage(updatedCoverage);
         }
@@ -138,10 +132,12 @@ function PreAuthorizationSheet({
     }
     const applyInvoicePayment = () => {
         // setPageLoading(true);
+
         applyPaymentsChargeSheetCall(caseItem.chargeSheet.caseId, {
             name: "Insurance",
-            amount: coverage,
-            type: 'discount'
+            amount: discount,
+            type: 'discount',
+            caseProcedureRef: appointmentDetails._id
         })
             .then(_ => {
                 appointmentDetails.preAuthStatus = true;
@@ -191,9 +187,6 @@ function PreAuthorizationSheet({
                     },
                 });
             })
-            .finally(_ => {
-                //setPageLoading(false);
-            });
     };
 
     // when a case file is clicked this is displayed
