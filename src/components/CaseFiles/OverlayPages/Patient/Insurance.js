@@ -28,7 +28,8 @@ const Insurance = ({tabDetails}) => {
     `;
     const InsuranceContainer = styled.View`
         width: 100%;
-        height: 30%;
+        height: 200px;
+        margin-bottom: 80px;
     `;
 
     const Divider = styled.View`
@@ -69,7 +70,7 @@ const archivedItemFormat = item => (
     <ListItemWrapper>
         <DataItem flex={2} align="flex-start" text={item?.procedure?.name}  fontStyle="--text-base-regular"/>
         <DataItem flex={1.5} align="flex-start" text={item?.appointment?.subject} color="--color-blue-600" fontStyle="--text-base-regular"/>
-        <DataItem flex={1} align="flex-start" text={"Pending"} color="--color-red-700" fontStyle="--text-base-regular"/>
+        <DataItem flex={1} align="flex-start" text={item?.preAuthStatus ? "Authorized" : "Pending"} color={item?.preAuthStatus ? "--color-green-600"  : "--color-red-700"} fontStyle="--text-base-regular"/>
     </ListItemWrapper>
 );
 
@@ -117,7 +118,7 @@ const renderListFn = item => (
     return(
         <InsuranceWrapper>
             <InsuranceContainer>
-                <FrameInsuranceCard insuranceDetails = {tabDetails}/>
+                <FrameInsuranceCard insuranceDetails = {tabDetails} isEditMode={isEditMode}/>
             </InsuranceContainer>
             <PreAuthorization>
                 <PreAuthTitle>Pre-Authorizations</PreAuthTitle>

@@ -13,7 +13,10 @@ import { getUserCall, getCaseFileById, deleteAppointmentById } from '../../../..
 import { currencyFormatter } from '../../../../utils/formatter';
 import InputField2 from '../../../common/Input Fields/InputField2';
 import IconButton from '../../../common/Buttons/IconButton';
-import {useSnackbar} from '../../../Snackbar/CustomSnackbarProvider';
+import ConfirmationComponent from '../../../ConfirmationComponent';
+import {
+    applyPaymentsChargeSheetCall, simpleCaseProcedureUpdate
+} from '../../../../api/network';
 /**
  * Visual component for rendering procedure appointments.
  * @param scheduleItem
@@ -22,19 +25,17 @@ import {useSnackbar} from '../../../Snackbar/CustomSnackbarProvider';
  */
 function PreAuthorizationSheet({
     appointmentDetails,
-    closeOverlay = emptyFn
-
+    closeOverlay = emptyFn,
 }) {
     const navigation = useNavigation();
     const theme = useTheme();
     const modal = useModal();
-    const snackBar = useSnackbar();
     const [caseItem, setCaseItem] = useState({});
     const [isFetching, setFetching] = useState(false);
     const [coverage, setCoverage] = useState('');
     const [patientPays, setPatientPays] = useState();
     const [editMode, setEditMode] = useState(true);
-    const [authStatus, setAuthStatus] = useState(status);
+    const [authStatus, setAuthStatus] = useState(false);
 
     // console.log("passed Item", appointmentDetails)
 
@@ -43,7 +44,7 @@ function PreAuthorizationSheet({
         getCaseFileById(id)
             .then(data => {
                 setCaseItem(data)
-                console.log(caseItem.patient)
+                console.log("case item", data)
             })
             .catch(error => {
                 console.log("Failed to get case", error)
@@ -55,11 +56,12 @@ function PreAuthorizationSheet({
 
     useEffect(() => {
         fetchCase(appointmentDetails.appointment.item.case);
+        setAuthStatus(appointmentDetails.preAuthStatus);
     }, [])
 
     useEffect(() => {
-        console.log("Edit value", editMode)
-    }, [editMode])
+        console.log("appointment Details", appointmentDetails.appointment.item.case)
+    }, [])
 
     const {
         createdBy = '',
@@ -71,16 +73,6 @@ function PreAuthorizationSheet({
         firstName: "",
         lastName: ""
     });
-
-    useEffect(() => {
-        getUserCall(createdBy).then(res => {
-            setOwner({
-                firstName: res.first_name,
-                lastName: res.last_name
-            });
-        });
-
-    }, [])
 
     /**
      * @param scheduleDate - date object
@@ -141,10 +133,68 @@ function PreAuthorizationSheet({
         setPatientPays('');
     }
 
-    const handleAuthorize = () => {
-        setAuthStatus(true);
-        snackBar.showSnackbar('hELLO', 4000, null, true);
+    const handleAuthClicked = () => {
+        applyInvoicePayment();
     }
+    const applyInvoicePayment = () => {
+        // setPageLoading(true);
+        applyPaymentsChargeSheetCall(caseItem.chargeSheet.caseId, {
+            name: "Insurance",
+            amount: coverage,
+            type: 'discount'
+        })
+            .then(_ => {
+                appointmentDetails.preAuthStatus = true;
+                simpleCaseProcedureUpdate(appointmentDetails.appointment.item.case, appointmentDetails._id, appointmentDetails).then( _ => { 
+                    //fetchCase(appointmentDetails.appointment.item.case);
+                    setAuthStatus(true);
+                    modal.openModal('ConfirmationModal', {
+                        content: (
+                            <ConfirmationComponent
+                                isError={false}
+                                isEditUpdate={false}
+                                onCancel={() => {
+                                    modal.closeModals('ConfirmationModal');
+                                }}
+                                onAction={() => {
+                                    modal.closeModals('ConfirmationModal');
+                                }}
+                                message={`${caseItem.patient.firstName}'s ${appointmentDetails.appointment.title}has been authorized.`}
+                            />
+                        ),
+                        onClose: () => {
+                            modal.closeModals('ConfirmationModal');
+                            console.log('Modal closed');
+                        },
+                    });
+                })
+            })
+            .catch(error => {
+                console.log('failed to apply payment', error);
+                modal.openModal('ConfirmationModal', {
+                    content: (
+                        <ConfirmationComponent
+                            isError={true}//boolean to show whether an error icon or success icon
+                            isEditUpdate={false}
+                            onCancel={() => {
+                                modal.closeAllModals();
+                            }}
+                            onAction={() => {
+                                modal.closeAllModals();
+                            }}
+                            message="An error has occured"
+                            action="Ok"
+                        />
+                    ),
+                    onClose: () => {
+                        modal.closeAllModals();
+                    },
+                });
+            })
+            .finally(_ => {
+                //setPageLoading(false);
+            });
+    };
 
     // when a case file is clicked this is displayed
     // with all the details about a case
@@ -194,9 +244,8 @@ function PreAuthorizationSheet({
 `;
 
     return (
-        <TouchableOpacity style={{ flex: 1 }} activeOpacity={1}>
-            <ScrollView style={styles.container}>
-
+        <TouchableOpacity style={{ flex: 1 }} activeOpacity={1}> 
+            <ScrollView style={styles.container}> 
                 <View>
                     <View style={styles.cardTitle}>
 
@@ -340,7 +389,7 @@ function PreAuthorizationSheet({
 
                         </CloseButtonContainer>
 
-                        <ButtonContainer theme={theme} editMode={editMode} onPress={() => handleAuthorize()} >
+                        <ButtonContainer theme={theme} editMode={editMode} onPress={() => handleAuthClicked()} >
                             <ModalText theme={theme} textColor={editMode ? "--color-gray-500" : '--default-shade-white'} font="--text-base-bold">Authorize</ModalText>
                         </ButtonContainer>
                     </View>
