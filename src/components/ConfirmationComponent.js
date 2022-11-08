@@ -8,11 +8,12 @@ import ClearIcon from '../../assets/svg/clearIcon';
 import IconButton from './common/Buttons/IconButton';
 import ErrorIcon from '../../assets/svg/ErrorIcon';
 import TickIcon from '../../assets/svg/tickIcon';
+import WarningIcon from '../../assets/svg/warningIcon';
 import MultipleShadowsContainer from './common/MultipleShadowContainer';
 
 const ModalWrapper = styled.View`
-    width: 440px;
-    height: 267px;
+    width: ${({isWarning}) => isWarning ? '460px': '440px'};
+    height: ${({isWarning}) => isWarning ? '300px': '276px'};
     position: relative;
     background-color: white;
     border-radius: 8px;
@@ -167,6 +168,7 @@ const GeneralText = styled.Text`
 
 const IconContainer = styled.View`
     align-self:center;
+    margin-bottom:${({isWarning, theme}) => !isWarning ? theme.space['--space-10'] : 'none'};
 `;
 
 const DeciderButtonContainer = styled.TouchableOpacity`
@@ -192,6 +194,14 @@ const AlertText = styled.Text`
     color:${({theme}) => theme.colors['--color-gray-800']};
 `;
 
+const WarningText = styled.Text`
+    align-self:center;
+    justify-content:center;
+    font-size:18px;
+    font-weight:bold;
+    color:${({theme}) => theme.colors['--color-black-800']};
+`;
+
 const shadows = [
     {
         shadowColor: 'black',
@@ -210,17 +220,18 @@ const shadows = [
 function ConfirmationComponent({
     isEditUpdate,
     isError,
+    isWarning,
     onCancel = () => {
     },
     onAction = () => {
     },
     titleText = 'Confirm Action',
     message = '',
+    secondaryMessage = '',
     action = 'Save',
     type = ''
 }) {
     const theme = useTheme();
-
     const typeDecipher = () => {
         if (isEditUpdate) {
             return (<>
@@ -241,6 +252,30 @@ function ConfirmationComponent({
                         background="--color-blue-600"
                     >
                         <ModalText theme={theme} textColor="--default-shade-white" font="--text-base-bold">{type === 'binary' ? 'YES' : 'SAVE'}</ModalText>
+                    </ButtonContainer>
+                </ButtonView>
+            </>);
+        }
+        if (isWarning) {
+            return (<>
+                    <IconMessageContainer>
+                        <IconContainer theme={theme}><WarningIcon/></IconContainer>
+                        <ModalText theme={theme} textColor="--color-gray-800" font="--text-base-regular">{message || `The insurance coverage amount provided to authorize this procedure will impact the patient's bill.`}</ModalText>
+                        <ModalText theme={theme} textColor="--color-gray-800" font="--text-base-bold">{secondaryMessage || 'Do you wish to continue?'}</ModalText>
+                    </IconMessageContainer>
+               
+
+                <ButtonView theme={theme}>
+                    <ButtonContainer onPress={onCancel} theme={theme} background='--color-gray-300'>
+                        <ModalText theme={theme} textColor="--color-gray-500" font="--text-base-bold">{type === 'binary' ? 'NO' : 'CANCEL'}</ModalText>
+
+                    </ButtonContainer>
+                    <ButtonContainer
+                        onPress={onAction}
+                        theme={theme}
+                        background="--color-blue-600"
+                    >
+                        <ModalText theme={theme} textColor="--default-shade-white" font="--text-base-bold">{type === 'binary' ? 'YES' : 'CONFIRM'}</ModalText>
                     </ButtonContainer>
                 </ButtonView>
             </>);
@@ -279,10 +314,9 @@ function ConfirmationComponent({
     };
 
     //add a wrapper for header
-
     return (
         <MultipleShadowsContainer shadows={shadows}>
-            <ModalWrapper theme={theme}>
+            <ModalWrapper theme={theme} isWarning={isWarning}>
                 <ModalContainer>
                     <HeaderWrapper theme={theme}>
                         <HeadingContainer theme={theme}>

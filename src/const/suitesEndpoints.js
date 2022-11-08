@@ -63,6 +63,7 @@ export const archivedCaseFilesEndpoint = '/cases/archived';
 export const removeCaseFilesEndpoint = '/cases/archive';
 export const restoreArchivedCasesEndpoint = '/cases/restore';
 export const caseFileEndpoint = id => `/cases/${id}`;
+export const simpleCaseProcedureUpdateEndpoint = (caseId, procedureId) => `/cases/${caseId}/procedures/${procedureId}/simple`;
 export const updateChargeSheetEndpoint = id => `/cases/${id}/chargesheets`;
 export const chargeSheetApprovalEndpoint = caseId => `/cases/${caseId}/chargesheets/approval`;
 export const chargeSheetWithdrawChangesEndpoint = caseId => `/cases/${caseId}/chargesheets/withdraw`;

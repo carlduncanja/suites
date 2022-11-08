@@ -343,30 +343,8 @@ function NewProcedureOverlayContainer({ appointment = {}, editMode = false, pass
 
 
 
-    } 
-
-    const handleConfirm =()=>{
-        console.log("just a test",errors)
-                modal.openModal('ConfirmationModal',
-                    {
-                        content: <ConfirmationComponent
-                            isError={false}
-                            isEditUpdate={false}
-                            onCancel={() => {
-                                modal.closeModals('ConfirmationModal');
-                            }}
-                            onAction={() => {
-                                modal.closeAllModals();
-
-                            }}
-                            message="Completed Successfully!"
-                        // onAction = { () => confirmAction()}
-                        />,
-                        onClose: () => {
-                            modal.closeModals('ConfirmationModal');
-                        }
-                    });
-    }
+        }
+    }, [allowedToSubmit])
 
 
     const hanadleErrorModal = () => {
@@ -1400,3 +1378,4 @@ const styles = StyleSheet.create({
     }
 
 })
+

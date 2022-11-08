@@ -58,7 +58,7 @@ const FrameInsurerContent = ({
                 
                 <RowWrapper theme = {theme}>
                     <InputField2
-                        enabled = {false}
+                        enabled = {isEditMode}
                         value = {fields.name}
                         label = "Insurer"
                         onChangeText = {() => {}}
@@ -71,7 +71,7 @@ const FrameInsurerContent = ({
 
                     <FieldContainer theme = {theme}>
                         <InputField2
-                            enabled = {false}
+                            enabled = {isEditMode}
                             value = {fields.patient}
                             label = "Insured"
                             onChangeText = {() => {}}
@@ -81,7 +81,7 @@ const FrameInsurerContent = ({
                     </FieldContainer>
                     
                     <InputField2
-                        enabled = {false}
+                        enabled = {isEditMode}
                         value = {fields.policyNumber}
                         label = "Policy #"
                         onChangeText = {() => {}}
@@ -94,7 +94,7 @@ const FrameInsurerContent = ({
                 <RowWrapper theme = {theme}>
 
                     <InputField2
-                        enabled = {false}
+                        enabled = {isEditMode}
                         value = {`$ ${currencyFormatter(fields.coverageLimit)}`}
                         label = "Coverage"
                         onChangeText = {() => {}}
