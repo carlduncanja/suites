@@ -17,7 +17,6 @@ import {
     applyPaymentsChargeSheetCall, sendEmail, simpleCaseProcedureUpdate
 } from '../../../../api/network';
 import _ from "lodash";
-import LoadingComponent from '../../../LoadingComponent';
 
 function PreAuthorizationSheet({
     appointmentDetails,
@@ -31,8 +30,10 @@ function PreAuthorizationSheet({
     const [discount, setDiscount] = useState('');
     const [patientPays, setPatientPays] = useState();
     const [editMode, setEditMode] = useState(true);
+    const [edited, setEdited] = useState(false);
     const [authStatus, setAuthStatus] = useState(false);
     const [isLoading, setLoading] = useState(false);
+
 
     const fetchCase = (id) => {
         getCaseFileById(id)
@@ -106,6 +107,7 @@ function PreAuthorizationSheet({
         if (/^\d+(\.){0,1}(\d{1,2})?$/g.test(updatedCoverage) || !updatedCoverage) {
             setCoverage(updatedCoverage);
         }
+        setEdited(true);
     };
 
     const formatCoverage = () => {
@@ -353,7 +355,17 @@ function PreAuthorizationSheet({
                             </TouchableOpacity>
 
 
-                            {authStatus ? <View style={styles.statusWrapper} backgroundColor='#C6F6D5'>
+                            {editMode || edited ?
+                            <View style={styles.statusWrapper} backgroundColor='#EBF8FF'>
+                            <Text style={{
+                                color: '#2B6CB0',
+                                fontSize: 12
+                            }}
+                            >
+                                Updating
+                            </Text>
+                        </View> 
+                            :authStatus ? <View style={styles.statusWrapper} backgroundColor='#C6F6D5'>
                                 <Text style={{
                                     color: '#2F855A',
                                     fontSize: 12
@@ -484,7 +496,12 @@ function PreAuthorizationSheet({
 
                         </CloseButtonContainer>
 
-                        {appointmentDetails.isEmailSent
+                        {edited || editMode ?
+                        <ButtonContainer theme={theme} editMode={!edited} onPress={() => handleAuthClicked()} >
+                            <ModalText theme={theme} textColor={!edited ? "--color-gray-500" : '--default-shade-white'} font="--text-base-bold">Update</ModalText>
+                        </ButtonContainer>
+                        :
+                        appointmentDetails.isEmailSent 
                          ? 
                          <ButtonContainer theme={theme} editMode={false} onPress={() => handleResendEmail()} >
                             {isLoading ? (
