@@ -21,6 +21,7 @@ import {
     procedureEndpoint,
     caseFilesEndpoint,
     caseFileEndpoint,
+    simpleCaseProcedureUpdateEndpoint,
     updateChargeSheetEndpoint,
     createInvoice,
     equipmentsEndpoint,
@@ -348,6 +349,11 @@ export const getCaseFileById = async id => suitesAxiosInstance
 
 export const updateCaseFile = async (id, caseId) => suitesAxiosInstance
     .put(caseFileEndpoint(id), caseId)
+    .then(handleResponse)
+    .catch(handleError);
+
+export const simpleCaseProcedureUpdate = async (id, procedureId, data) => suitesAxiosInstance
+    .put(simpleCaseProcedureUpdateEndpoint(id, procedureId), data)
     .then(handleResponse)
     .catch(handleError);
 

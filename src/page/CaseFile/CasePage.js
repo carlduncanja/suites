@@ -1842,7 +1842,10 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
             case 'Medical Staff':
                 return selectedTab === 'Insurance' || selectedTab === 'Diagnosis' || selectedTab === 'Patient Risk';
             case 'Medical History':
-                return true;
+                true
+            
+            case 'Medical Staff':
+                return selectedTab === 'Insurance' || selectedTab === 'Diagnosis' || selectedTab === 'Patient Risk';
             default:
                 return false;
         }

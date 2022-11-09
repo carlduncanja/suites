@@ -31,7 +31,7 @@ const InsuranceCardContent = styled.View`
 
 function FrameInsuranceCard ({
     insuranceDetails = {},
-    isEdit = false
+    isEditMode
         }) {
     const modal = useModal();
     const theme = useTheme();
@@ -50,9 +50,9 @@ function FrameInsuranceCard ({
                     frameTitle={"Insurer"}
                     ActionComponent={
                         <IconButton
-                            Icon={<WasteIcon strokeColor={!isEdit ? theme.colors['--color-gray-500'] : "#C53030"}/>}
+                            Icon={<WasteIcon strokeColor={!isEditMode ? theme.colors['--color-gray-500'] : "#C53030"}/>}
                             onPress={()=>{}}
-                            disabled={isEdit}
+                            disabled={!isEditMode}
                         />
                     }
                 />

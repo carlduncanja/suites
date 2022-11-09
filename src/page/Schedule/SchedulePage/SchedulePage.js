@@ -154,9 +154,11 @@ const SchedulePage = props => {
      * @param date string "YYYY-MM-DD" for the selected day.
      */
     const handleOnDaySelected = date => {
+        
         setSelectedDay(date);
         const indexOfSelected = getSelectedIndex(date, daysList);
         setSectionListIndex(indexOfSelected);
+       
     };
 
     const handleOnGoToToday = () => {
@@ -220,7 +222,7 @@ const SchedulePage = props => {
 
     const handleNewProcedurePress= procedure => {
         modal.openModal('BottomSheetModal', {
-            content: <NewProcedureOverlayContainer />,
+            content: <NewProcedureOverlayContainer passedDate={selectedDay}/>,
             initialSnap: 2,
             snapPoints: [600, 500, 0]
         });
