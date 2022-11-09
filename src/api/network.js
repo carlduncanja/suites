@@ -77,6 +77,7 @@ import {
     userPassword,
     chargeSheetApplyPaymentEndpoint,
     chargeSheetInvoiceApplyPaymentEndpoint,
+    chargeSheetDiscountItemUpdateEndpoint,
     archivedCaseFilesEndpoint,
     removeCaseFilesEndpoint,
     restoreArchivedCasesEndpoint,
@@ -424,6 +425,11 @@ export const applyPaymentsChargeSheetCall = async (id, data) => suitesAxiosInsta
 
 export const applyPaymentsChargeSheetInvoiceCall = async (caseId, invoiceId, data) => suitesAxiosInstance
     .put(chargeSheetInvoiceApplyPaymentEndpoint(caseId, invoiceId), data)
+    .then(handleResponse)
+    .catch(handleError);
+
+export const updateDiscountItem = async (chargeSheetId, caseProcedureId, data) => suitesAxiosInstance
+    .put(chargeSheetDiscountItemUpdateEndpoint(chargeSheetId, caseProcedureId), data)
     .then(handleResponse)
     .catch(handleError);
 

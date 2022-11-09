@@ -67,6 +67,7 @@ export const simpleCaseProcedureUpdateEndpoint = (caseId, procedureId) => `/case
 export const updateChargeSheetEndpoint = id => `/cases/${id}/chargesheets`;
 export const chargeSheetApprovalEndpoint = caseId => `/cases/${caseId}/chargesheets/approval`;
 export const chargeSheetWithdrawChangesEndpoint = caseId => `/cases/${caseId}/chargesheets/withdraw`;
+export const chargeSheetDiscountItemUpdateEndpoint = (chargeSheetId, caseProcedureId) => `/cases/${chargeSheetId}/discount/${caseProcedureId}`;
 export const chargeSheetApplyPaymentEndpoint = caseId => `/cases/${caseId}/chargesheets/payment`;
 export const chargeSheetInvoiceApplyPaymentEndpoint = (caseId, invoiceId) => `/cases/${caseId}/invoices/${invoiceId}/payment`;
 export const createInvoice = id => quotationId => `/cases/${id}/quotations/${quotationId}/invoices`;

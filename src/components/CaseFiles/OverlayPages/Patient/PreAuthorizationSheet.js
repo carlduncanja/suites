@@ -14,7 +14,7 @@ import InputField2 from '../../../common/Input Fields/InputField2';
 import IconButton from '../../../common/Buttons/IconButton';
 import ConfirmationComponent from '../../../ConfirmationComponent';
 import {
-    applyPaymentsChargeSheetCall, sendEmail, simpleCaseProcedureUpdate
+    applyPaymentsChargeSheetCall, sendEmail, simpleCaseProcedureUpdate, updateDiscountItem
 } from '../../../../api/network';
 import _ from "lodash";
 
@@ -124,7 +124,11 @@ function PreAuthorizationSheet({
     }
 
     const handleAuthClicked = () => {
-        if(discount) applyInvoicePayment();
+        if(discount) appleDiscount();
+    }
+
+    const handleUpdate = () => {
+        if(edited && discount) appleDiscount();
     }
 
     const updateCaseProcedure = (message, type) => {
@@ -173,7 +177,58 @@ function PreAuthorizationSheet({
             });
         })
     }
-    const applyInvoicePayment = () => {
+
+    const appleDiscount = () => {
+        updateDiscountItem(caseItem.chargeSheet._id, appointmentDetails._id,  {
+            discount: discount,
+        })
+            .then(_ => {
+                setEditMode(false);
+                setEdited(false);
+                modal.openModal('ConfirmationModal', {
+                    content: (
+                        <ConfirmationComponent
+                            isError={false}
+                            isEditUpdate={false}
+                            onCancel={() => {
+                                modal.closeModals('ConfirmationModal');
+                            }}
+                            onAction={() => {
+                                modal.closeModals('ConfirmationModal');
+                            }}
+                            message={`${caseItem.patient.firstName}'s ${appointmentDetails.appointment.title.trim()} pre-authorization details has been updated.`}
+                        />
+                    ),
+                    onClose: () => {
+                        modal.closeModals('ConfirmationModal');
+                    },
+                }); 
+            })
+            .catch(error => {
+                console.log('failed to apply payment', error);
+                modal.openModal('ConfirmationModal', {
+                    content: (
+                        <ConfirmationComponent
+                            isError={true}//boolean to show whether an error icon or success icon
+                            isEditUpdate={false}
+                            onCancel={() => {
+                                modal.closeAllModals();
+                            }}
+                            onAction={() => {
+                                modal.closeAllModals();
+                            }}
+                            message="Oops! An error has occured."
+                            action="Ok"
+                        />
+                    ),
+                    onClose: () => {
+                        modal.closeAllModals();
+                    },
+                });
+            })
+    };
+
+    const updateDiscount = () => {
         applyPaymentsChargeSheetCall(caseItem.chargeSheet.caseId, {
             name: "Insurance",
             amount: discount,
@@ -497,7 +552,7 @@ function PreAuthorizationSheet({
                         </CloseButtonContainer>
 
                         {edited || editMode ?
-                        <ButtonContainer theme={theme} editMode={!edited} onPress={() => handleAuthClicked()} >
+                        <ButtonContainer theme={theme} editMode={!edited} onPress={() => handleUpdate()} >
                             <ModalText theme={theme} textColor={!edited ? "--color-gray-500" : '--default-shade-white'} font="--text-base-bold">Update</ModalText>
                         </ButtonContainer>
                         :
