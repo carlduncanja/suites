@@ -122,6 +122,9 @@ export const configEndpoint = '/configurations';
 export const updateBufferEndpoint = '/configurations/buffer';
 
 // #### INVOICES
-export const invoicesEndpoint = '/invoices';
-export const invoiceEndpoint = id => `/invoices/${id}`;
-export const updateInvoiceDetailsEndpoint = id => `/invoices/${id}`
+export const invoicesEndpoint =  '/invoices';   
+export const invoiceEndpoint = id =>`/invoices/${id}`; 
+export const updateInvoiceDetailsEndpoint= id => `/invoices/${id}`
+
+// #### EMAIL
+export const emailEndpoint =  '/email/send';   
