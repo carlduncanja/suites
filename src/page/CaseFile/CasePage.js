@@ -1876,6 +1876,8 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
                     isEditMode={pageState.isEditMode}
                     modal={modal}
                     caseId={caseId}
+                    refreshData={()=>{navigation.navigate('CaseFiles')}}
+                   
                     
                 />;
             case 'Medical History':

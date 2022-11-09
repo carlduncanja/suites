@@ -5,7 +5,7 @@ import styled, { css } from '@emotion/native';
 import { useTheme } from 'emotion-theming';
 import FrameTitle from '../FrameTitle'
 import WasteIcon from '../../../../../assets/svg/wasteIcon'
-import Record from '../../../common/Information Record/Record';
+import InputField2 from '../../../common/Input Fields/InputField2'
 import Row from '../../../common/Row';
 
 const FrameItemWrapper = styled.View`
@@ -95,7 +95,7 @@ const ButtonContainer = styled.TouchableOpacity`
 
 `;
 
-function FrameEditItem({ itemContent = {}, onPressButton = () => { }, onDelete = () => { } }) {
+function FrameEditItem({ itemContent = {}, onPressButton = () => { }, onDelete = () => { }, onCancel = () => { } }) {
 
     const theme = useTheme();
     //console.log('item content for edit page ', itemContent)
@@ -111,28 +111,39 @@ function FrameEditItem({ itemContent = {}, onPressButton = () => { }, onDelete =
 
                 <FrameBody>
                     <FrameContent>
+                        <View style={{ paddingRight: 35, flex: 1, marginBottom: 30, zIndex: -1 }}>
+                            <View style={{ marginBottom: 5, }}>
+                                <Text style={styles.title}>Name</Text>
+                            </View>
+                            <View style={styles.inputWrapper}>
+                                <InputField2
+                                    //onChangeText={}
+                                    value={itemContent.name}
+                                    onClear={() => { }}
+                                />
+                            </View>
+                        </View>
 
-                        <Record
-                            recordTitle="Name"
-                            flex={.75}
-                            recordValue={itemContent.name}
-                            editMode={true}
-                            useTextArea={true}
-                        />
+                        <View style={{ flex: 1, marginBottom: 30, zIndex: -2 }}>
+                            <View style={{ marginBottom: 5, }}>
+                                <Text style={styles.title}>Type</Text>
+                            </View>
+                            <View style={styles.inputWrapper}>
+                                <InputField2
+                                    //onChangeText={}
+                                    value={"nuero surgeon"}
+                                    onClear={() => { }}
+                                />
+                            </View>
+                        </View>
 
-
-                        <Record
-                            recordTitle="Type"
-                            flex={.75}
-                            recordValue={"Nuero Sergeon"}
-                            editMode={true}
-                            useTextArea={true}
-                        />
                     </FrameContent>
 
                     <FrameContent>
 
-                        <CancelButtonContainer theme={theme} background='--color-gray-300'>
+                        <CancelButtonContainer theme={theme} background='--color-gray-300'
+                            onPress={onCancel}
+                        >
                             <ModalText theme={theme} textColor="--color-blue-600" font="--text-base-bold">Cancel</ModalText>
                         </CancelButtonContainer>
 
@@ -171,5 +182,16 @@ const styles = StyleSheet.create({
         fontSize: 16,
         color: '#1D2129',
         //fontFamily:'Metropolis'
-    }
+    },
+    title: {
+        color: '#718096',
+        fontSize: 16,
+        // marginBottom:5
+    },
+    inputWrapper: {
+        // flex:1,
+        height: 30,
+        // width:'100%',
+        justifyContent: 'center',
+    },
 })

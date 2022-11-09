@@ -6,8 +6,17 @@ import ConfirmationCheckBoxComponent from '../../../../components/ConfirmationCh
 import ConfirmationComponent from '../../../../components/ConfirmationComponent';
 import { deleteCaseStaff } from '../../../../api/network'
 
-const MedicalStaff = ({ staff, selectedTab, isEditMode, modal, caseId }) => {
-    // console.log("the staff", staff)
+const MedicalStaff = ({ 
+    staff,
+    selectedTab,
+    isEditMode,
+    modal,
+    caseId,
+    refreshData = () => { } ,
+    })=> {
+    
+    
+        // console.log("the staff", staff)
     const handleEdit = () => {
         console.log("handle edit")
     }
@@ -41,8 +50,8 @@ const MedicalStaff = ({ staff, selectedTab, isEditMode, modal, caseId }) => {
     };
 
     const removeStaffcall = (caseId, data) => {
-        deleteCaseStaff(caseId, {"staffId": data })
-            .then(data => { 
+        deleteCaseStaff(caseId, { "staffId": data })
+            .then(data => {
                 modal.openModal(
                     'ConfirmationModal', {
                     content: <ConfirmationComponent
@@ -51,12 +60,14 @@ const MedicalStaff = ({ staff, selectedTab, isEditMode, modal, caseId }) => {
                         onAction={() => {
                             modal.closeModals('ConfirmationModal');
                             setTimeout(() => {
-                                modal.closeModals('ActionContainerModal')
+                                //refreshData(caseId)
                             }, 200)
+                            refreshData()
                         }}
                     />,
                     onClose: () => {
                         modal.closeModal('ConfirmationModal')
+                        refreshData()
                     }
                 }
                 );
@@ -68,9 +79,7 @@ const MedicalStaff = ({ staff, selectedTab, isEditMode, modal, caseId }) => {
                 }, 200)
                 console.log('failed to delete these item(s)', error)
             })
-            .finally(_ => {
-
-            });
+            
 
     }
 
@@ -92,12 +101,14 @@ const MedicalStaff = ({ staff, selectedTab, isEditMode, modal, caseId }) => {
         );
     };
 
+    
+    
 
     return (
         selectedTab === 'Details' ?
             <Details tabDetails={staff} isEditMode={isEditMode} handleEdit={handleEdit} onDelete={handleDelete} />
             :
-            <Details tabDetails={staff} isEditMode={isEditMode} />
+            <Details tabDetails={staff} isEditMode={isEditMode} onDelete={handleDelete}/>
     );
 }
 

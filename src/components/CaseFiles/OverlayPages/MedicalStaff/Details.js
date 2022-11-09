@@ -13,15 +13,16 @@ const Details = ({ tabDetails,
 }) => {
 
     const { physicians, nurses } = tabDetails
-
+    
+    console.log("allll the nurses",nurses)
     const physicianNames = physicians.map(physician => {
         const { surname = "" } = physician
         return `Dr. ${surname}`
     })
 
     const nursesNames = nurses.map(nurse => {
-        const { surname = "", firstName = "", _id = '' } = nurse
-        return `${firstName[0]}. ${surname}`
+        const { last_name= "", first_name = "", _id = '' } = nurse
+        return `${first_name} ${last_name}`
     })
 
     const physicianIds = physicians.map(physician => {
@@ -61,6 +62,7 @@ const Details = ({ tabDetails,
                     icon={FramStaffIcon}
                     isEditMode={isEditMode}
                     handleEdit={handleEdit}
+                    onDelete={onDelete}
                     idArray={nursesIds}
                 />
             </View>

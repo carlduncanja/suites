@@ -41,17 +41,12 @@ function FrameContentList(props) {
     } = props
 
     const [value, setValue] = useState("");
-    const [editPress, setEditPress] = useState(false)
     const theme = useTheme();
 
     const { pageState } = useContext(PageContext);
-    //const { isEditMode } = pageState;
 
-    //console.log("test edit mode ", isEditMode)
 
-    const openEditSate = () => {
-        setEditPress(true)
-    }
+
 
     return (
         <FrameContentListWrapper>
@@ -71,6 +66,13 @@ function FrameContentList(props) {
 
                         :
                         cardInformation.map((itemContent, index) => {
+
+                            const [editPress, setEditPress] = useState(false)
+
+                            const editSateToggle = (value) => {
+                                setEditPress(value)
+                            }
+
                             return (
                                 itemContent === '' ?
                                     <InputFrameItem
@@ -83,15 +85,24 @@ function FrameContentList(props) {
 
                                     editPress && isEditMode === true ?
                                         <FrameEditItem itemContent={{ 'name': itemContent }}
-                                            onDelete={() => { 
-                                                onDelete(idArray[index]) }} />
+                                            onDelete={() => {
+                                                onDelete(idArray[index])
+                                            }}
+
+                                            onCancel={() => {
+                                                editSateToggle(false)
+                                            }}
+                                        />
+
                                         :
                                         <FrameItem
                                             itemContent={itemContent}
                                             icon={isEditMode ? <RemoveIcon /> : null}
                                             onPressButton={() => {
                                                 handleEdit()
-                                                openEditSate()
+                                                editSateToggle(true)
+                                                //isInEditMode=true
+
                                             }}
                                             isEditMode={isEditMode}
                                         />
