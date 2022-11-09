@@ -15,8 +15,6 @@ const MedicalStaff = ({
     refreshData = () => { } ,
     })=> {
     
-    
-        // console.log("the staff", staff)
     const handleEdit = () => {
         console.log("handle edit")
     }
