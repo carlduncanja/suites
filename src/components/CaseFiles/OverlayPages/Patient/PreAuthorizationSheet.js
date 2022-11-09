@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { ScrollView, StyleSheet, Text, TouchableOpacity, View, ActivityIndicator } from 'react-native';
 import moment from 'moment';
 import EditIconButton from "../../../../../assets/svg/editIconButton";
 import Checked from "../../../../../assets/svg/checked";
@@ -14,9 +14,10 @@ import InputField2 from '../../../common/Input Fields/InputField2';
 import IconButton from '../../../common/Buttons/IconButton';
 import ConfirmationComponent from '../../../ConfirmationComponent';
 import {
-    applyPaymentsChargeSheetCall, simpleCaseProcedureUpdate
+    applyPaymentsChargeSheetCall, sendEmail, simpleCaseProcedureUpdate
 } from '../../../../api/network';
-
+import _ from "lodash";
+import LoadingComponent from '../../../LoadingComponent';
 
 function PreAuthorizationSheet({
     appointmentDetails,
@@ -31,6 +32,7 @@ function PreAuthorizationSheet({
     const [patientPays, setPatientPays] = useState();
     const [editMode, setEditMode] = useState(true);
     const [authStatus, setAuthStatus] = useState(false);
+    const [isLoading, setLoading] = useState(false);
 
     const fetchCase = (id) => {
         getCaseFileById(id)
@@ -51,7 +53,8 @@ function PreAuthorizationSheet({
 
     useEffect(() => {
         fetchCase(appointmentDetails.appointment.item.case);
-        setAuthStatus(appointmentDetails.preAuthStatus);    
+        setAuthStatus(appointmentDetails.preAuthStatus);   
+        if(appointmentDetails.preAuthStatus) setEditMode(false);  
     }, [])
 
 
@@ -121,6 +124,53 @@ function PreAuthorizationSheet({
     const handleAuthClicked = () => {
         if(discount) applyInvoicePayment();
     }
+
+    const updateCaseProcedure = (message, type) => {
+        simpleCaseProcedureUpdate(appointmentDetails.appointment.item.case, appointmentDetails._id, appointmentDetails).then( _ => { 
+            setAuthStatus(true);
+            if(type){
+                modal.openModal('ConfirmationModal', {
+                    content: (
+                        <ConfirmationComponent
+                            isError={false}
+                            isEditUpdate={false}
+                            onCancel={() => {
+                                modal.closeModals('ConfirmationModal');
+                            }}
+                            onAction={() => {
+                                modal.closeModals('ConfirmationModal');
+                            }}
+                            message={message}
+                        />
+                    ),
+                    onClose: () => {
+                        modal.closeModals('ConfirmationModal');
+                    },
+                }); 
+            }  
+        }).catch(error => {
+            console.log('failed to apply payment', error);
+            modal.openModal('ConfirmationModal', {
+                content: (
+                    <ConfirmationComponent
+                        isError={true}//boolean to show whether an error icon or success icon
+                        isEditUpdate={false}
+                        onCancel={() => {
+                            modal.closeAllModals();
+                        }}
+                        onAction={() => {
+                            modal.closeAllModals();
+                        }}
+                        message="Oops! An error has occured"
+                        action="Ok"
+                    />
+                ),
+                onClose: () => {
+                    modal.closeAllModals();
+                },
+            });
+        })
+    }
     const applyInvoicePayment = () => {
         applyPaymentsChargeSheetCall(caseItem.chargeSheet.caseId, {
             name: "Insurance",
@@ -130,27 +180,7 @@ function PreAuthorizationSheet({
         })
             .then(_ => {
                 appointmentDetails.preAuthStatus = true;
-                simpleCaseProcedureUpdate(appointmentDetails.appointment.item.case, appointmentDetails._id, appointmentDetails).then( _ => { 
-                    setAuthStatus(true);
-                    modal.openModal('ConfirmationModal', {
-                        content: (
-                            <ConfirmationComponent
-                                isError={false}
-                                isEditUpdate={false}
-                                onCancel={() => {
-                                    modal.closeModals('ConfirmationModal');
-                                }}
-                                onAction={() => {
-                                    modal.closeModals('ConfirmationModal');
-                                }}
-                                message={`${caseItem.patient.firstName}'s ${appointmentDetails.appointment.title.trim()} has been authorized.`}
-                            />
-                        ),
-                        onClose: () => {
-                            modal.closeModals('ConfirmationModal');
-                        },
-                    });
-                })
+                updateCaseProcedure(`${caseItem.patient.firstName}'s ${appointmentDetails.appointment.title.trim()} has been authorized.`, true);
             })
             .catch(error => {
                 console.log('failed to apply payment', error);
@@ -165,7 +195,7 @@ function PreAuthorizationSheet({
                             onAction={() => {
                                 modal.closeAllModals();
                             }}
-                            message="An error has occured"
+                            message="Oops! An error has occured."
                             action="Ok"
                         />
                     ),
@@ -175,6 +205,104 @@ function PreAuthorizationSheet({
                 });
             })
     };
+
+    const handleResendEmail = () =>{
+        modal.openModal('ConfirmationModal', {
+            content: (
+                <ConfirmationComponent
+                    isWarning={true}
+                    onCancel={() => {
+                        modal.closeModals('ConfirmationModal');
+                    }}
+                    onAction={() => {
+                        modal.closeModals('ConfirmationModal');
+                        handleSendEmail();
+                    }}
+                    message={`An email has been sent to this patient already.`}
+                    secondaryMessage={'Do you wish to send another?'}
+                    type={'binary'}
+                />
+            ),
+            onClose: () => {
+                modal.closeModals('ConfirmationModal');
+            },
+        });
+    }
+
+    const handleSendEmail = () => {
+        let email = '';
+        if(!caseItem.patient.contactInfo.emails.length){
+            modal.openModal('ConfirmationModal', {
+                content: (
+                    <ConfirmationComponent
+                        isError={true}
+                        isEditUpdate={false}
+                        onCancel={() => {
+                            modal.closeAllModals();
+                        }}
+                        onAction={() => {
+                            modal.closeAllModals();
+                        }}
+                        message="An email is not present for this user"
+                        action="Ok"
+                    />
+                ),
+                onClose: () => {
+                    modal.closeAllModals();
+                },
+            });
+            return;
+        } 
+        setLoading(true)
+        email = caseItem.patient.contactInfo.emails.find(item => item.type === 'primary').email;
+        if(!email) email = caseItem.patient.contactInfo.emails[0].email;
+            sendEmail({
+                to: caseItem.patient.contactInfo.emails[0].email,
+                subject: `${appointmentDetails.appointment.title} Pre-Authorization`,
+                message: `Your ${appointmentDetails.appointment.title} procedure has been authorized, your new balance is $${patientPays}`
+            }).then(data => {
+                appointmentDetails.isEmailSent = true;
+                updateCaseProcedure();
+                modal.openModal('ConfirmationModal', {
+                    content: (
+                        <ConfirmationComponent
+                            isError={false}
+                            isEditUpdate={false}
+                            onCancel={() => {
+                                modal.closeModals('ConfirmationModal');
+                            }}
+                            onAction={() => {
+                                modal.closeModals('ConfirmationModal');
+                            }}
+                            message={`An email has been sent to ${caseItem.patient.firstName} with the authorized details.`}
+                        />
+                    ),
+                    onClose: () => {
+                        modal.closeModals('ConfirmationModal');
+                    },
+                });
+            }).catch(error => {
+                modal.openModal('ConfirmationModal', {
+                    content: (
+                        <ConfirmationComponent
+                            isError={true}
+                            isEditUpdate={false}
+                            onCancel={() => {
+                                modal.closeAllModals();
+                            }}
+                            onAction={() => {
+                                modal.closeAllModals();
+                            }}
+                            message="Oops! Failed to send confirmation email."
+                            action="Ok"
+                        />
+                    ),
+                    onClose: () => {
+                        modal.closeAllModals();
+                    },
+                });
+        }).finally(_ => setLoading(false));
+    }
 
 
     const ModalText = styled.Text(({ textColor = '--color-gray-600', theme, font = '--confirm-title' }) => ({
@@ -302,12 +430,12 @@ function PreAuthorizationSheet({
 
                     <View style={[styles.doctors]}>
                         <View style={styles.cardDescription}>
-                            <View style={{ flexDirection: 'column' }}>
+                            <View style={{ flexDirection: 'column', width: 250 }}>
                                 <Text style={{ fontSize: 14, paddingBottom: 10, color: '#718096' }}>Cost</Text>
                                 <Text style={[styles.detailText]}>${currencyFormatter(caseItem?.chargeSheet?.total)}</Text>
                             </View>
 
-                            <View style={{ flexDirection: 'column', width: 200, marginRight: 25 }}>
+                            <View style={{ flexDirection: 'column', width: 250, marginRight: 30,  paddingLeft: 45 }}>
                                 <Text style={{ fontSize: 14, paddingBottom: 10, color: '#718096' }}>
                                     Patient Pays
                                 </Text>
@@ -356,12 +484,30 @@ function PreAuthorizationSheet({
 
                         </CloseButtonContainer>
 
-                        <ButtonContainer theme={theme} editMode={editMode} onPress={() => handleAuthClicked()} >
+                        {appointmentDetails.isEmailSent
+                         ? 
+                         <ButtonContainer theme={theme} editMode={false} onPress={() => handleResendEmail()} >
+                            {isLoading ? (
+                                    <ActivityIndicator size="small" color="#FFFFFF"/>
+                                ) : (
+                                    <ModalText theme={theme} textColor={'--default-shade-white'} font="--text-base-bold">Resend Email</ModalText>
+                                )}
+                        </ButtonContainer> 
+                        : appointmentDetails.preAuthStatus ?   
+                        <ButtonContainer theme={theme} editMode={false} onPress={() => handleSendEmail()} >
+                             {isLoading ? (
+                                    <ActivityIndicator size="small" color="#FFFFFF"/>
+                                ) : (
+                                    <ModalText theme={theme} textColor={'--default-shade-white'} font="--text-base-bold">Email to Patient</ModalText>
+                                )}
+                         </ButtonContainer>
+                        : <ButtonContainer theme={theme} editMode={editMode} onPress={() => handleAuthClicked()} >
                             <ModalText theme={theme} textColor={editMode ? "--color-gray-500" : '--default-shade-white'} font="--text-base-bold">Authorize</ModalText>
                         </ButtonContainer>
+                        }
+                        
                     </View>
                 </View>
-
             </ScrollView>
         </TouchableOpacity>
     );

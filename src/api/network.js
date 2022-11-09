@@ -84,7 +84,8 @@ import {
     restoreArchivedSuppliersEndpoint,
     updatePurchaseOrderDocument,
     purchaseOrderInvoice, inventoryGroupsBulkUpload, proceduresUploadEndpoint, deleteCaseFileEndpoint, deleteCaseFilesEndpiont,
-    invoicesEndpoint, invoiceEndpoint, updateInvoiceDetailsEndpoint
+    invoicesEndpoint, invoiceEndpoint, updateInvoiceDetailsEndpoint,
+    emailEndpoint
 } from '../const/suitesEndpoints';
 import { createDocumentLink, documentById, documentData, documentUpload } from '../const/documentGenerationEndpoints';
 
@@ -844,6 +845,13 @@ export const updateInvoiceDetails = async (invoiceId, data) => suitesAxiosInstan
     .put(updateInvoiceDetailsEndpoint(invoiceId), data)
     .then(handleResponse)
     .catch(handleError)
+
+
+// ################# Email Endpoint
+export const sendEmail = async (body) => suitesAxiosInstance
+    .post(emailEndpoint, body)
+    .then(handleResponse)
+    .catch(handleError);
 
 
 
