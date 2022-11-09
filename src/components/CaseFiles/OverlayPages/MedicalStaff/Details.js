@@ -14,7 +14,7 @@ const Details = ({ tabDetails,
 
     const { physicians, nurses } = tabDetails
     
-    console.log("allll the nurses",nurses)
+    
     const physicianNames = physicians.map(physician => {
         const { surname = "" } = physician
         return `Dr. ${surname}`
