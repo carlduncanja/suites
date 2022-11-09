@@ -57,7 +57,7 @@ export const assignEquipmentToLocation = (typeId, equipmentId) => `/equipment-ty
 
 // ##### CASE FILES
 export const deleteCaseFileEndpoint = id => `/cases/${id}/remove`;
-export const deleteCaseFilesEndpiont='/cases/'
+export const deleteCaseFilesEndpiont = '/cases/'
 export const caseFilesEndpoint = '/cases';
 export const archivedCaseFilesEndpoint = '/cases/archived';
 export const removeCaseFilesEndpoint = '/cases/archive';
@@ -78,6 +78,7 @@ export const quotationEndpoint = (caseId, quotationId) => `/cases/${caseId}/quot
 export const updateQuotationStatusEndpoint = (caseId, quotationId) => `/cases/${caseId}/quotations/${quotationId}/status`;
 export const caseProcedureAppointmentEndpoint = (caseId, procedureAppointmentId) => `/cases/${caseId}/procedures/${procedureAppointmentId}`;
 export const caseProcedureAppointmentsEndpoint = caseId => `/cases/${caseId}/procedures/`;
+export const caseStaffDeleteEndpoint = caseId => `/cases/staff/${caseId}`;
 
 // ##### STORAGE
 export const storageLocationsEndpoint = '/storage-locations';
@@ -121,6 +122,6 @@ export const configEndpoint = '/configurations';
 export const updateBufferEndpoint = '/configurations/buffer';
 
 // #### INVOICES
-export const invoicesEndpoint =  '/invoices';   
-export const invoiceEndpoint = id =>`/invoices/${id}`; 
-export const updateInvoiceDetailsEndpoint= id => `/invoices/${id}`
+export const invoicesEndpoint = '/invoices';
+export const invoiceEndpoint = id => `/invoices/${id}`;
+export const updateInvoiceDetailsEndpoint = id => `/invoices/${id}`

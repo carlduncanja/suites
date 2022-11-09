@@ -1838,8 +1838,9 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
     const getIsEditable = () => {
         switch (selectedMenuItem) {
             case 'Patient':
-                return selectedTab === 'Diagnosis' || selectedTab === 'Patient Risk';
-            
+                return selectedTab === 'Insurance' || selectedTab === 'Diagnosis' || selectedTab === 'Patient Risk';
+            case 'Medical Staff':
+                return selectedTab === 'Insurance' || selectedTab === 'Diagnosis' || selectedTab === 'Patient Risk';
             case 'Medical History':
                 true
             
@@ -1876,11 +1877,17 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
                     staff={staff}
                     selectedTab={selectedTab}
                     isEditMode={pageState.isEditMode}
+                    modal={modal}
+                    caseId={caseId}
+                    refreshData={()=>{navigation.navigate('CaseFiles')}}
+                   
+                    
                 />;
             case 'Medical History':
                 return <MedicalHistory
                     medicalInfo={medicalInfo}
                     selectedTab={selectedTab}
+                    
                 />;
             case 'Procedures':
                 return <Procedures

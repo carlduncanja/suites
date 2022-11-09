@@ -219,6 +219,7 @@ const CustomProceduresTab = ({ selectedPhysician, procedures, setSelectedPhysici
     }
 
     const openDeletionConfirm = data => {
+        
         modal.openModal(
             'ConfirmationModal',
             {
