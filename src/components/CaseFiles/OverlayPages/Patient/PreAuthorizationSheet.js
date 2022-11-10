@@ -55,7 +55,7 @@ function PreAuthorizationSheet({
     useEffect(() => {
         fetchCase(appointmentDetails.appointment.item.case);
         setAuthStatus(appointmentDetails.preAuthStatus);   
-        if(appointmentDetails.preAuthStatus) setEditMode(false);  
+        if(appointmentDetails.preAuthStatus) setEditMode(false); 
     }, [])
 
 
@@ -124,14 +124,15 @@ function PreAuthorizationSheet({
     }
 
     const handleAuthClicked = () => {
-        if(discount) appleDiscount();
+        if(discount) applyDiscount();
     }
 
     const handleUpdate = () => {
-        if(edited && discount) appleDiscount();
+        if(edited && discount) updateDiscount();
     }
 
     const updateCaseProcedure = (message, type) => {
+        appointmentDetails.preAuthStatus = true;
         simpleCaseProcedureUpdate(appointmentDetails.appointment.item.case, appointmentDetails._id, appointmentDetails).then( _ => { 
             setAuthStatus(true);
             if(type){
@@ -178,7 +179,7 @@ function PreAuthorizationSheet({
         })
     }
 
-    const appleDiscount = () => {
+    const updateDiscount = () => {
         updateDiscountItem(caseItem.chargeSheet._id, appointmentDetails._id,  {
             discount: discount,
         })
@@ -217,7 +218,7 @@ function PreAuthorizationSheet({
                             onAction={() => {
                                 modal.closeAllModals();
                             }}
-                            message="Oops! An error has occured."
+                            message="Oops! An error occurred while trying to authorize this procedure"
                             action="Ok"
                         />
                     ),
@@ -228,7 +229,7 @@ function PreAuthorizationSheet({
             })
     };
 
-    const updateDiscount = () => {
+    const applyDiscount = () => {
         applyPaymentsChargeSheetCall(caseItem.chargeSheet.caseId, {
             name: "Insurance",
             amount: discount,
@@ -236,7 +237,8 @@ function PreAuthorizationSheet({
             caseProcedureRef: appointmentDetails._id
         })
             .then(_ => {
-                appointmentDetails.preAuthStatus = true;
+                setEditMode(false);
+                setEdited(false);
                 updateCaseProcedure(`${caseItem.patient.firstName}'s ${appointmentDetails.appointment.title.trim()} has been authorized.`, true);
             })
             .catch(error => {
@@ -252,7 +254,7 @@ function PreAuthorizationSheet({
                             onAction={() => {
                                 modal.closeAllModals();
                             }}
-                            message="Oops! An error has occured."
+                            message="Oops! An error occurred while trying to authorize this procedure."
                             action="Ok"
                         />
                     ),
@@ -350,7 +352,7 @@ function PreAuthorizationSheet({
                             onAction={() => {
                                 modal.closeAllModals();
                             }}
-                            message="Oops! Failed to send confirmation email."
+                            message={`Oops! An error occurred while trying to email ${caseItem.patient.firstName}'s procedure details`}
                             action="Ok"
                         />
                     ),
@@ -359,6 +361,31 @@ function PreAuthorizationSheet({
                     },
                 });
         }).finally(_ => setLoading(false));
+    }
+
+    const handleClose = () => {
+        if(edited){
+            modal.openModal('ConfirmationModal', {
+                content: (
+                    <ConfirmationComponent
+                        isWarning={true}
+                        onCancel={() => {
+                            modal.closeModals('ConfirmationModal');
+                        }}
+                        onAction={() => {
+                            modal.closeAllModals();
+                        }}
+                        message={"It appears that you have some unsaved changes."}
+                        secondaryMessage={"Are you sure you want to continue?"}
+                    />
+                ),
+                onClose: () => {
+                    modal.closeModals('ConfirmationModal');
+                },
+            });
+        }else{
+            modal.closeAllModals();
+        }
     }
 
 
@@ -410,17 +437,30 @@ function PreAuthorizationSheet({
                             </TouchableOpacity>
 
 
-                            {editMode || edited ?
+                            {!authStatus ?
+                            <View style={styles.statusWrapper} backgroundColor='#FED7D7'>
+                                <Text style={{
+                                color: '#C53030',
+                                fontSize: 12
+                                }}
+                                >
+                                Pending
+                                 </Text>
+                            </View>
+                            :
+                            
+                            (edited || editMode) && appointmentDetails.preAuthStatus ?
                             <View style={styles.statusWrapper} backgroundColor='#EBF8FF'>
-                            <Text style={{
+                                <Text style={{
                                 color: '#2B6CB0',
                                 fontSize: 12
-                            }}
-                            >
+                                 }}
+                                >
                                 Updating
-                            </Text>
-                        </View> 
-                            :authStatus ? <View style={styles.statusWrapper} backgroundColor='#C6F6D5'>
+                                 </Text>
+                            </View> 
+                            :authStatus ? 
+                            <View style={styles.statusWrapper} backgroundColor='#C6F6D5'>
                                 <Text style={{
                                     color: '#2F855A',
                                     fontSize: 12
@@ -428,15 +468,9 @@ function PreAuthorizationSheet({
                                 >
                                     Authorized
                                 </Text>
-                            </View> : <View style={styles.statusWrapper} backgroundColor='#FED7D7'>
-                                <Text style={{
-                                    color: '#C53030',
-                                    fontSize: 12
-                                }}
-                                >
-                                    Pending
-                                </Text>
-                            </View>}
+                            </View> :
+                             <></>
+                             }
 
                         </View>
 
@@ -483,7 +517,7 @@ function PreAuthorizationSheet({
                                     </Text>
                                 </View>
 
-                                <View style={{ flexDirection: 'column' }}>
+                                <View style={{ flexDirection: 'column', backgroundColor: 'red' }}>
                                     <Text style={{ fontSize: 14, paddingBottom: 10, color: '#718096' }}>
                                         Time
                                     </Text>
@@ -497,13 +531,13 @@ function PreAuthorizationSheet({
 
                     <View style={[styles.doctors]}>
                         <View style={styles.cardDescription}>
-                            <View style={{ flexDirection: 'column', width: 250 }}>
+                            <View style={{ flexDirection: 'column', width: 223 }}>
                                 <Text style={{ fontSize: 14, paddingBottom: 10, color: '#718096' }}>Cost</Text>
                                 <Text style={[styles.detailText]}>${currencyFormatter(caseItem?.chargeSheet?.total)}</Text>
                             </View>
 
-                            <View style={{ flexDirection: 'column', width: 250, marginRight: 30,  paddingLeft: 45 }}>
-                                <Text style={{ fontSize: 14, paddingBottom: 10, color: '#718096' }}>
+                            <View style={{ flexDirection: 'column', width: 223 }}>
+                                <Text style={{ fontSize: 14, paddingBottom: 10, color: '#718096'}}>
                                     Patient Pays
                                 </Text>
                                 <Text style={[styles.detailText]}>
@@ -546,12 +580,18 @@ function PreAuthorizationSheet({
                     </View>
                     <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 40 }}>
 
-                        <CloseButtonContainer theme={theme} background='--color-gray-300' onPress={() => modal.closeAllModals()}>
+                        <CloseButtonContainer theme={theme} background='--color-gray-300' onPress={() => handleClose()}>
                             <ModalText theme={theme} textColor="--accent-button" font="--text-base-bold">Close</ModalText>
 
                         </CloseButtonContainer>
 
-                        {edited || editMode ?
+                        {!appointmentDetails.preAuthStatus ?
+                            <ButtonContainer theme={theme} editMode={editMode} onPress={() => handleAuthClicked()} >
+                            <ModalText theme={theme} textColor={editMode ? "--color-gray-500" : '--default-shade-white'} font="--text-base-bold">Authorize</ModalText>
+                        </ButtonContainer>
+                        :
+                        
+                        (edited || editMode) && appointmentDetails.preAuthStatus ?
                         <ButtonContainer theme={theme} editMode={!edited} onPress={() => handleUpdate()} >
                             <ModalText theme={theme} textColor={!edited ? "--color-gray-500" : '--default-shade-white'} font="--text-base-bold">Update</ModalText>
                         </ButtonContainer>
@@ -573,9 +613,8 @@ function PreAuthorizationSheet({
                                     <ModalText theme={theme} textColor={'--default-shade-white'} font="--text-base-bold">Email to Patient</ModalText>
                                 )}
                          </ButtonContainer>
-                        : <ButtonContainer theme={theme} editMode={editMode} onPress={() => handleAuthClicked()} >
-                            <ModalText theme={theme} textColor={editMode ? "--color-gray-500" : '--default-shade-white'} font="--text-base-bold">Authorize</ModalText>
-                        </ButtonContainer>
+                        :
+                        <></>
                         }
                         
                     </View>
