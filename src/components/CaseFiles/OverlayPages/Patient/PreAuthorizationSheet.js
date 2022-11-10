@@ -517,7 +517,7 @@ function PreAuthorizationSheet({
                                     </Text>
                                 </View>
 
-                                <View style={{ flexDirection: 'column', backgroundColor: 'red' }}>
+                                <View style={{ flexDirection: 'column'}}>
                                     <Text style={{ fontSize: 14, paddingBottom: 10, color: '#718096' }}>
                                         Time
                                     </Text>
