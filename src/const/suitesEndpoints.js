@@ -79,7 +79,7 @@ export const quotationEndpoint = (caseId, quotationId) => `/cases/${caseId}/quot
 export const updateQuotationStatusEndpoint = (caseId, quotationId) => `/cases/${caseId}/quotations/${quotationId}/status`;
 export const caseProcedureAppointmentEndpoint = (caseId, procedureAppointmentId) => `/cases/${caseId}/procedures/${procedureAppointmentId}`;
 export const caseProcedureAppointmentsEndpoint = caseId => `/cases/${caseId}/procedures/`;
-export const caseStaffDeleteEndpoint = caseId => `/cases/staff/${caseId}`;
+export const caseStaffEndpoint = caseId => `/cases/staff/${caseId}`;
 
 // ##### STORAGE
 export const storageLocationsEndpoint = '/storage-locations';
