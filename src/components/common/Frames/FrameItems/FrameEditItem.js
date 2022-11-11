@@ -15,6 +15,8 @@ const FrameItemWrapper = styled.View`
     width: 100%;
     display:flex;
     margin-bottom : ${({ theme }) => theme.space['--space-12']};
+
+    
 `;
 const FrameItemContainer = styled.View`
 
