@@ -4,6 +4,7 @@ import FrameItem from '../FrameItems/FrameItem';
 import FrameEditItem from '../FrameItems/FrameEditItem';
 import InputFrameItem from '../FrameItems/InputFrameItem';
 import RemoveIcon from '../../../../../assets/svg/editIcon';
+//import addIcon from '../../../../../assets/svg/addIcon.js';
 import AddIcon from '../../../../../assets/svg/addNewIcon';
 import SearchableOptionsField from '../../Input Fields/SearchableOptionsField';
 import IconButton from '../../Buttons/IconButton';
@@ -38,15 +39,20 @@ function FrameContentList(props) {
         isAddNew = false,
         isEditMode = false,
         idArray,
+        physicianSelection = true,
+        onAction = () => { }
     } = props
 
     const [value, setValue] = useState("");
     const theme = useTheme();
 
     const { pageState } = useContext(PageContext);
+    const [addMode, setAddMode] = useState(false)
 
 
-
+    const toogleAddOption = (value) => {
+        setAddMode(value)
+    }
 
     return (
         <FrameContentListWrapper>
@@ -62,7 +68,10 @@ function FrameContentList(props) {
                         //         placeholder = "Add new item"
                         //     /> 
                         //     :
-                        <FrameItem itemContent="None" />
+                        addMode ?
+                            null
+                            :
+                            <FrameItem itemContent="None" />
 
                         :
                         cardInformation.map((itemContent, index) => {
@@ -85,13 +94,16 @@ function FrameContentList(props) {
 
                                     editPress && isEditMode === true ?
                                         <FrameEditItem itemContent={{ 'name': itemContent }}
+                                            title="Edit Item"
+                                            deleteMode={true}
                                             onDelete={() => {
                                                 onDelete(idArray[index])
                                             }}
-
                                             onCancel={() => {
                                                 editSateToggle(false)
                                             }}
+                                            buttonTitle="Save"
+                                            physicianSelection={physicianSelection}
                                         />
 
                                         :
@@ -101,6 +113,7 @@ function FrameContentList(props) {
                                             onPressButton={() => {
                                                 handleEdit()
                                                 editSateToggle(true)
+                                                toogleAddOption(false)
                                                 //isInEditMode=true
 
                                             }}
@@ -110,59 +123,38 @@ function FrameContentList(props) {
                             )
                         })
 
+
+
                 }
-                {/* {
-                    isEditMode && <TouchableOpacity onPress = {handleEdit} style={styles.itemContainer}>
-                        <FrameItem 
-                            isEditMode = {isEditMode}
-                            itemContent = "Add New"
-                            icon = {<AddIcon/>}
-                            backgroundColor = "#F8FAFB"
-                            onPressButton = {()=>handleEdit('add')(-1)}
+                {isEditMode ?
+
+                    addMode ?
+                        <FrameEditItem
+                            title="New"
+                            onCancel={() => {
+                                toogleAddOption(false)
+                            }}
+                            onAction={onAction}
+
+                            buttonTitle="Add"
+                            physicianSelection={physicianSelection}
                         />
-                    </TouchableOpacity>
-                }  */}
-            </FrameContentListContainer>
-            {/* {
-                cardInformation.length === 0 ?
-                    <View style={styles.itemContainer}>
-                        <FrameItem itemContent = "None"/>
-                    </View>
+                        :
+
+                        <TouchableOpacity
+                            onPress={() => {
+                                toogleAddOption(true)
+                            }}>
+                            <FrameItem itemContent="Add New" icon={<AddIcon />} isEditMode={isEditMode} onPressButton={()=>{toogleAddOption(true)}}/>
+                        </TouchableOpacity>
                     :
-                    cardInformation.map((itemContent,index)=>{
-                        return(
-                            <View key={index} style={styles.itemContainer}>
-                                {itemContent === '' ?
-                                    <InputFrameItem
-                                        onChangeText = {(value)=>{handleAddNew(value)(index); setValue(value)}}
-                                        value = {value}
-                                        onClear = {()=>handleEdit('remove')(index)}
-                                        placeholder = "Add new item"
-                                    />
-                                    :
-                                    <FrameItem 
-                                        itemContent = {itemContent}
-                                        icon = {isEditMode ? <RemoveIcon/> : null}
-                                        onPressButton = {()=>handleEdit('remove')(index)}
-                                        isEditMode = {isEditMode}
-                                    />
-                                }
-                            </View>
-                        )
-                    })
-                
-            }
-            {
-                isEditMode && <TouchableOpacity onPress = {handleEdit} style={styles.itemContainer}>
-                    <FrameItem 
-                        isEditMode = {isEditMode}
-                        itemContent = "Add New"
-                        icon = {<AddIcon/>}
-                        backgroundColor = "#F8FAFB"
-                        onPressButton = {()=>handleEdit('add')(-1)}
-                    />
-                </TouchableOpacity>
-            } */}
+                    <View>
+
+                    </View>
+                }
+
+
+            </FrameContentListContainer>
         </FrameContentListWrapper>
     )
 }

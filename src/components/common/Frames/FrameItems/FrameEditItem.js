@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import IconButton from '../../Buttons/IconButton';
 import styled, { css } from '@emotion/native';
@@ -6,7 +6,10 @@ import { useTheme } from 'emotion-theming';
 import FrameTitle from '../FrameTitle'
 import WasteIcon from '../../../../../assets/svg/wasteIcon'
 import InputField2 from '../../../common/Input Fields/InputField2'
+import _, { reduce, set } from "lodash";
 import Row from '../../../common/Row';
+import SearchableOptionsField from '../../../common/Input Fields/SearchableOptionsField'
+import { getPhysicians, getUsersCall } from '../../../../api/network'
 
 const FrameItemWrapper = styled.View`
     width: 100%;
@@ -52,6 +55,7 @@ padding-right:25px;
 padding-bottom:25px;
 height:171px;
 justify-content:center;
+
 `
 const FrameContent = styled.View`
 flex-direction : row;
@@ -95,50 +99,252 @@ const ButtonContainer = styled.TouchableOpacity`
 
 `;
 
-function FrameEditItem({ itemContent = {}, onPressButton = () => { }, onDelete = () => { }, onCancel = () => { } }) {
+function FrameEditItem({
+    itemContent = {},
+    onPressButton = () => { },
+    onDelete = () => { },
+    onCancel = () => { },
+    title = "",
+    deleteMode = false,
+    physicianSelection = true,
+    buttonTitle = "",
+    onAction = () => { }
+}) {
+
+    const [physicianName, setPhysicianName] = useState(itemContent.name);
+    const [physicianType, setPhysicianType] = useState(itemContent.type);
+    const [searchResult, setSearchResults] = useState([]);
+    const [searchValue, setSearchValue] = useState('')
+    const [currentIndex, setCurrentIndex] = useState(0);
+    const [generatedLeadSurgeon, setGeneratedLeadSurgeon] = useState();
+    const [searchQuery, setSearchQuery] = useState({})
+    const [selectedType, setSelectedType] = useState("Physician");
+    const [staffInfo, setStaffInfo] = useState([]);
+    const [actionButton, setActionButton] = useState(false)
+    const [generatedNurse, setGeneratedNurse] = useState();
+
 
     const theme = useTheme();
     //console.log('item content for edit page ', itemContent)
+
+    useEffect(() => {
+        if (!searchValue) {
+            // empty search values and cancel any out going request.
+            setSearchResults([]);
+            if (searchQuery.cancel) searchQuery.cancel();
+            return;
+        }
+
+        // wait 300ms before search. cancel any prev request before executing current.
+
+        const searchFunction = (selectedType === "Physician") ? fetchPhysicians : fetchNurses
+
+        const search = _.debounce(searchFunction, 300);
+
+        setSearchQuery(prevSearch => {
+            if (prevSearch && prevSearch.cancel) {
+                prevSearch.cancel();
+            }
+            return search;
+        });
+        search()
+    }, [searchValue])
+
+
+    const fetchPhysicians = () => {
+        getPhysicians(searchValue, 5)
+            .then((physicianResult = []) => {
+                const { data = [], pages = 0 } = physicianResult
+                const results = data.map(item => ({
+                    name: `Dr. ${item.surname}`,
+                    ...item
+                }));
+                setSearchResults(results || []);
+
+            })
+            .catch(error => {
+                // TODO handle error
+                console.log("failed to get physicians");
+                setSearchResults([]);
+            })
+    };
+
+
+    async function updatePhysicianDB(item, handlePatientFunc, setSelectedValueFunc) {
+        let result = {};
+        const token = item.split(" ");
+        item = {
+            "firstName": token[0],
+            "surname": token[1]
+        },
+            await createPhysician(item).then(res => {
+                result = {
+                    _id: res._id,
+                    name: `${res.firstName} ${res.surname}`
+                }
+            }).then(res => {
+                handlePatientFunc(result);
+                setSelectedValueFunc(result);
+            })
+    }
+
+    const fetchNurses = () => {
+        getUsersCall(searchValue, 1, 5)
+            .then((userResult = []) => {
+                const { data = [], pages = 0 } = userResult
+                const filterUser = data.filter(user => user?.role?.name === 'Nurse');
+                const results = filterUser.map(item => ({
+                    name: `Nurse ${item.last_name}`,
+                    ...item
+                }));
+                console.group("Nurse results: ", results);
+                setSearchResults(results || []);
+
+            })
+            .catch(error => {
+                // TODO handle error
+                console.log("failed to get nurses");
+                setSearchResults([]);
+            })
+    }
+
+    const handleSurgeon = (value) => {
+        const staff = {
+            _id: value?._id,
+            name: value?.name,
+            tag: value?.tag,
+            type: "Physician"
+        }
+
+        setStaffInfo([
+            ...staffInfo,
+            staff
+        ])
+    }
+
+    const onStaffChange = (value) => {
+        console.log(value)
+        setStaffInfo([
+            ...staffInfo,
+            value
+        ])
+    }
+
+    const activateButton = (value) => {
+        setActionButton(value)
+    }
+
     return (
         <FrameItemWrapper theme={theme}>
             <FrameItemContainer theme={theme}>
                 <FrameHeader>
-                    <Text>Edit Items</Text>
-                    <TouchableOpacity onPress={onDelete}>
-                        <WasteIcon strokeColor={theme.colors['--color-red-700']} />
-                    </TouchableOpacity>
+                    <Text>{title}</Text>
+                    {deleteMode ?
+                        <TouchableOpacity onPress={onDelete}>
+                            <WasteIcon strokeColor={theme.colors['--color-red-700']} />
+                        </TouchableOpacity>
+                        :
+                        <View></View>
+                    }
+
                 </FrameHeader>
 
                 <FrameBody>
-                    <FrameContent>
-                        <View style={{ paddingRight: 35, flex: 1, marginBottom: 30, zIndex: -1 }}>
-                            <View style={{ marginBottom: 5, }}>
-                                <Text style={styles.title}>Name</Text>
-                            </View>
-                            <View style={styles.inputWrapper}>
-                                <InputField2
-                                    //onChangeText={}
-                                    value={itemContent.name}
-                                    onClear={() => { }}
-                                />
-                            </View>
-                        </View>
+                    <View style={{ zIndex: 7 }}>
+                        <FrameContent>
+                            <View style={{ flex: 1, marginBottom: 30 }}>
+                                <View style={{ marginBottom: 5, }}>
+                                    <Text style={styles.title}>Name</Text>
+                                </View >
+                                <View style={{ ...styles.inputWrapper, zIndex: 7 }}>
+                                    {physicianSelection ?
+                                        <SearchableOptionsField
+                                            emptyAfterSubmit={false}
+                                            updateDB={updatePhysicianDB}
+                                            showActionButton={true}
+                                            placeholder={physicianName}
+                                            text={currentIndex === 1 ? searchValue : ''}
+                                            value={generatedLeadSurgeon}
+                                            onChangeText={(value) => {
+                                                setSearchValue(value);
+                                                setCurrentIndex(1);
+                                                setSelectedType("Physician")
+                                            }}
+                                            oneOptionsSelected={(value) => {
+                                                const staff = {
+                                                    _id: value?._id,
+                                                    name: value?.name,
+                                                    type: "Physician",
+                                                    tag: "Lead Surgeon"
+                                                }
+                                                setSearchValue('')
+                                                onStaffChange(staff);
+                                                activateButton(true);
 
-                        <View style={{ flex: 1, marginBottom: 30, zIndex: -2 }}>
-                            <View style={{ marginBottom: 5, }}>
-                                <Text style={styles.title}>Type</Text>
-                            </View>
-                            <View style={styles.inputWrapper}>
-                                <InputField2
-                                    //onChangeText={}
-                                    value={"nuero surgeon"}
-                                    onClear={() => { }}
-                                />
-                            </View>
-                        </View>
 
-                    </FrameContent>
+                                            }}
+                                            handlePatient={handleSurgeon}
+                                            options={searchResult}
+                                            onClear={() => {
+                                                setSearchValue('')
+                                                activateButton(false)
+                                            }}
+                                            isPopoverOpen={currentIndex === 1 ? true : false}
+                                        />
+                                        :
+                                        <SearchableOptionsField
+                                            emptyAfterSubmit={false}
+                                            value={generatedNurse}
+                                            handlePatient={handleSurgeon}
+                                            updateDB={updatePhysicianDB}
+                                            showActionButton={true}
+                                            placeholder={physicianName}
+                                            text={currentIndex === 4 ? searchValue : ''}
+                                            onChangeText={(value) => {
+                                                setSearchValue(value);
+                                                setCurrentIndex(4);
+                                                setSelectedType("Nurse")
+                                            }}
+                                            oneOptionsSelected={(value) => {
 
+                                                const staff = {
+                                                    _id: value?._id,
+                                                    name: value?.name,
+                                                    type: "Nurse",
+                                                    tag: "Nurse"
+                                                }
+                                                setSearchValue('')
+                                                onStaffChange(staff)
+                                                activateButton(true)
+                                            }}
+                                            options={searchResult}
+                                            onClear={() => {
+                                                setSearchValue('')
+                                                deleteSurgeonTag("Nurse")
+                                                activateButton(false)
+                                            }}
+
+                                        />
+
+                                    }
+                                </View>
+                            </View>
+                            {/*
+                                <View style={{ flex: 1, marginBottom: 30, zIndex: -2 }}>
+                                    <View style={{ marginBottom: 5, }}>
+                                        <Text style={styles.title}>Type</Text>
+                                    </View>
+                                    <View style={styles.inputWrapper}>
+                                        <InputField2
+                                            onChangeText={(value) => { setPhysicianType(value) }}
+                                            value={physicianType}
+                                            onClear={() => { setPhysicianType('') }}
+                                        />
+                                    </View>
+                                </View>
+                                */}
+                        </FrameContent>
+                    </View>
                     <FrameContent>
 
                         <CancelButtonContainer theme={theme} background='--color-gray-300'
@@ -148,11 +354,16 @@ function FrameEditItem({ itemContent = {}, onPressButton = () => { }, onDelete =
                         </CancelButtonContainer>
 
                         <ButtonContainer
-                            onPress={() => { }}
+                            onPress={() => {
+                                actionButton ?
+                                    onAction(staffInfo[0]._id)
+                                    :
+                                    null
+                            }}
                             theme={theme}
-                            background='--color-gray-300'
+                            background={actionButton ? "--color-blue-600" : '--color-gray-300'}
                         >
-                            <ModalText theme={theme} textColor="--default-shade-white" font="--text-base-bold">Save</ModalText>
+                            <ModalText theme={theme} textColor="--default-shade-white" font="--text-base-bold">{buttonTitle}</ModalText>
                         </ButtonContainer>
 
                     </FrameContent>

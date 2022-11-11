@@ -55,7 +55,7 @@ import {
     caseQuotationEndpoint,
     quotationEndpoint,
     caseInvoicesEndpoint,
-    caseStaffDeleteEndpoint,
+    caseStaffEndpoint,
     chargeSheetApprovalEndpoint,
     chargeSheetWithdrawChangesEndpoint,
     caseProcedureAppointmentsEndpoint,
@@ -368,7 +368,12 @@ export const createCaseFile = async caseFileForCreation => suitesAxiosInstance
     .catch(handleError);
 
 export const deleteCaseStaff = async (caseId, data) => suitesAxiosInstance
-    .delete(caseStaffDeleteEndpoint(caseId),{data})
+    .delete(caseStaffEndpoint(caseId), { data })
+    .then(handleResponse)
+    .catch(handleError);
+
+export const addCaseStaff = async (caseId, data) => suitesAxiosInstance
+    .post(caseStaffEndpoint(caseId),  data )
     .then(handleResponse)
     .catch(handleError);
 

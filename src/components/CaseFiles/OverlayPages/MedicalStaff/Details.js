@@ -8,21 +8,22 @@ import FrameCard from '../../../common/Frames/FrameCards/FrameCard';
 const Details = ({ tabDetails,
     isEditMode,
     handleEdit = () => { },
-    onDelete = () => { }
+    onDelete = () => { },
+    onAction = () => {}
 
 }) => {
 
     const { physicians, nurses } = tabDetails
-    
-    
+
+
     const physicianNames = physicians.map(physician => {
         const { surname = "" } = physician
         return `Dr. ${surname}`
     })
 
     const nursesNames = nurses.map(nurse => {
-        const { last_name= "", first_name = "", _id = '' } = nurse
-        return `${first_name} ${last_name}`
+        const { last_name = "", first_name = "", _id = '' } = nurse
+        return `Nurse ${last_name}`
     })
 
     const physicianIds = physicians.map(physician => {
@@ -49,6 +50,7 @@ const Details = ({ tabDetails,
                     handleEdit={handleEdit}
                     onDelete={onDelete}
                     idArray={physicianIds}
+                    onAction={onAction}
                 />
             </View>
 
@@ -64,6 +66,8 @@ const Details = ({ tabDetails,
                     handleEdit={handleEdit}
                     onDelete={onDelete}
                     idArray={nursesIds}
+                    onAction={onAction}
+                    physicianSelection={false}
                 />
             </View>
 
