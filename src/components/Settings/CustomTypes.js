@@ -9,6 +9,10 @@ const CUSTOM_TYPES = [
         title: 'Appointment Buffer-time',
         page: 'AppointmentsPage'
     },
+    {
+        title: 'Storage',
+        page: 'StoragePage'
+    }
 ];
 
 const CustomTypes = ({navigation}) => {
