@@ -10,7 +10,7 @@ import SearchableOptionsField from '../../Input Fields/SearchableOptionsField';
 import IconButton from '../../Buttons/IconButton';
 import styled, { css } from '@emotion/native';
 import { useTheme } from 'emotion-theming';
-
+import InputField2 from '../../../common/Input Fields/InputField2'
 import { PageContext } from '../../../../contexts/PageContext';
 
 const FrameContentListWrapper = styled.View`
@@ -39,6 +39,7 @@ function FrameContentList(props) {
         isAddNew = false,
         isEditMode = false,
         idArray,
+        normalInput,
         physicianSelection = true,
         onAction = () => { }
     } = props
@@ -137,6 +138,7 @@ function FrameContentList(props) {
                             onAction={onAction}
 
                             buttonTitle="Add"
+                            normalInput={normalInput}
                             physicianSelection={physicianSelection}
                         />
                         :

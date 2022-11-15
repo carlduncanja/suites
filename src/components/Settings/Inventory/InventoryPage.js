@@ -3,7 +3,7 @@ import {View, ScrollView} from 'react-native';
 import styled, {css} from '@emotion/native';
 import { useTheme } from 'emotion-theming';
 
-import { getCategories, updateBuffer } from '../../../api/network';
+import { getCategories, updateBuffer, addCategory } from '../../../api/network';
 
 import DetailsPage from '../../common/DetailsPage/DetailsPage';
 import TabsContainer from '../../common/Tabs/TabsContainerComponent';
@@ -34,9 +34,10 @@ const HeaderContainer = styled.View`
     margin-bottom: 24px;
 `;
 
-function InventoryPage({navigation}) {
+function InventoryPage({navigation, route}) {
     const theme = useTheme();
     const modal = useModal();
+    const {edited, onRefresh} = route?.params || {};
     const currentTabs = ['Details'];
     const headers = [
         {
@@ -51,136 +52,89 @@ function InventoryPage({navigation}) {
         },
     ];
     // ##### States
-
     const [currentTab, setCurrentTab] = useState(currentTabs[0]);
     const [pageState, setPageState] = useState({});
-    const [isUpdated, setIsUpdated] = useState(false);
     
     const [inventoryItems, setInventoryItems] = useState ([]);
+    const [inventoryIds, setInventoryIds] = useState ([]);
   
-    const [error, setError] = useState(false);
 
-    const { isEditMode = false } = pageState;
+    const { isEditMode = edited ? true : false} = pageState;
 
     useEffect(() => {
         getCategories('inventory')
             .then(data => {
                 setInventoryItems(data.data.map( item => {return item.name}));
+                setInventoryIds(data.data.map( item => {return item._id}))
             })
             .catch(error => {
                 console.log('Unable to retrieve iventory category items: ', error);
             });
+
+            edited ? setPageState({
+                ...pageState,
+                isEditMode: true
+            }) : null
     }, []);
 
-    useEffect(() => {
-        console.log("hello", inventoryItems)
-        if (isUpdated && isEditMode === false) {
-            onFinishEdit();
-        }
-    }, [isEditMode]);
-
-    const onFinishEdit = () => {
-        if (bufferTime < 1) {
-            setError(true);
-            setPageState({...pageState, isEditMode: true});
-            return;
-        }
-        
-        goToConfirmationScreen();
-        console.log('Buffer time: ', bufferTime);
-    };
-
-    const onBufferTimeChange = time => {
-        setBufferTime(time);
-        setIsUpdated(true);
-        if (time > 1) { setError(false); }
-    };
    
-    const setPageLoading = value => {
-        setPageState({
-            ...pageState,
-            isLoading: value,
-            isEdit: false
-        });
-    };
 
-    const goToConfirmationScreen = () => {
-        modal.openModal('ConfirmationModal',
+    const handleEdit = () => {
+        console.log("handle edit")
+    }
+
+    const handleDelete = (data) => {
+        openDeletionConfirm(caseId, data);
+
+    }
+
+    const handleAdd = (name) => {
+        addCategory({name: name, type: 'inventory'})
+            .then(data => {
+                successModal();
+            })
+            .catch(error => {
+                errorModal();
+                console.log(error);
+            })
+    }
+
+    const successModal = () => {
+        modal.openModal(
+            'ConfirmationModal', {
+            content: <ConfirmationComponent
+                isError={false}
+                isEditUpdate={false}
+                onAction={() => {
+                    modal.closeModals('ConfirmationModal');
+                    setTimeout(() => {
+                    }, 200)
+                    onRefresh();
+                }}
+            />,
+            onClose: () => {
+                modal.closeModal('ConfirmationModal')
+                onRefresh();
+            }
+        }
+        );
+    }
+
+    const errorModal = () => {
+        modal.openModal(
+            'ConfirmationModal',
             {
                 content: <ConfirmationComponent
-                    isEditUpdate={true}
-                    onCancel= {() => {
-                        modal.closeModals('ConfirmationModal');
-                        setPageState({
-                            ...pageState,
-                            isEditMode: true
-                        });
-                    }}
-                    onAction={() => updateBufferTime()}
-                    message="Do you want to save your changes?"
+                    isError={true}
+                    isEditUpdate={false}
+                    onCancel={() => modal.closeModals('ConfirmationModal')}
                 />,
-                onClose: () => { modal.closeModals('ConfirmationModal'); }
-            });
-    };
-
-    const updateBufferTime = () => {
-        modal.closeAllModals();
-        const buffer = { bufferTime };
-        
-        updateBuffer(buffer)
-            .then(_ => {
-                modal.openModal('ConfirmationModal',
-                    {
-                        content: <ConfirmationComponent
-                            isEditUpdate={false}
-                            isError={false}
-                            onCancel={() => modal.closeAllModals()}
-                            onAction={() => modal.closeAllModals()}
-                        />,
-                        onClose: () => { modal.closeModals('ConfirmationModal'); }
-                    });
-            })
-            .catch(_ => {
-                modal.openModal('ConfirmationModal',
-                    {
-                        content: <ConfirmationComponent
-                            isEditUpdate={false}
-                            isError={true}
-                            onCancel={() => modal.closeAllModals()}
-                            onAction={() => modal.closeAllModals()}
-                        />,
-                        onClose: () => { modal.closeModals('ConfirmationModal'); }
-                    });
-            });
-    };
-
-    const itemFormat = () => (
-        
-        <ContentContainer>
-            {/* <DataItem color="--color-gray-800" fontStyle="--text-base-medium" flex={2.5} text={`Buffer time (appr. ${Math.ceil(bufferTime / 60)} hrs)`}/> */}
-            <DataItem color="--color-gray-800" fontStyle="--text-base-medium" flex={2.5} text="Buffer time"/>
-           
-            <ContentDataItem
-                flex={1}
-                content={(
-                    <InputUnitFields
-                        value={bufferTime}
-                        units={['mins']}
-                        enabled={isEditMode}
-                        onChangeText={value => {
-                            if (/^\d+$/g.test(value) || !value) {
-                                onBufferTimeChange(value);
-                            }
-                        }}
-                        keyboardType="number-pad"
-                        hasError={error}
-                        errorMessage="! Input a value excluding 0"
-                    />
-                )}
-            />
-        </ContentContainer>
-        
-    );
+                onClose: () => {
+                    modal.closeModals('ConfirmationModal');
+                }
+            }
+        );
+    }
 
     const details = (
         inventoryItems.length > 0 ?
@@ -195,10 +149,11 @@ function InventoryPage({navigation}) {
                     cardInformation={inventoryItems}
                     icon={ShoppingTag}
                     isEditMode={isEditMode}
-                    // handleEdit={handleEdit}
-                    // onDelete={onDelete}
-                    // idArray={physicianIds}
-                    // onAction={onAction}
+                    normalInput={true}
+                    handleEdit={handleEdit}
+                    onDelete={handleDelete}
+                    idArray={inventoryIds}
+                    onAction={handleAdd}
                 />
             </View>
             </ScrollView>  

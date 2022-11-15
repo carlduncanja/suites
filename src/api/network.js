@@ -655,8 +655,8 @@ export const getCategories = async (type, max) => suitesAxiosInstance
     .then(handleResponse)
     .catch(handleError);
 
-export const addCategory = async (category = []) => suitesAxiosInstance
-    .post(createCategoryEndpoint, category)
+export const addCategory = async (data) => suitesAxiosInstance
+    .post(categoriesEndpoint, data)
     .then(handleResponse)
     .catch(handleError);
 

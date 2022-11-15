@@ -41,6 +41,7 @@ function FrameCard(props){
         handleAddNew = () =>{},
         onDelete =()=>{},
         onAction,
+        normalInput,
         physicianSelection=true
     } = props
 
@@ -68,6 +69,7 @@ function FrameCard(props){
                     idArray={idArray}
                     onAction={onAction}
                     physicianSelection={physicianSelection}
+                    normalInput={normalInput}
                 />
 
 

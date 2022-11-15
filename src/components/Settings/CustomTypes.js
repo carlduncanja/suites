@@ -6,7 +6,6 @@ const CUSTOM_TYPES = [
     {
         title: 'Appointment Buffer-time',
         page: 'AppointmentsPage',
-        items: 'inventoryItems'
     },
     {
         title: 'Inventory',
@@ -20,8 +19,13 @@ const CustomTypes = ({navigation}) => {
     );
 
     const onItemPress = (page) => {
-        navigation.navigate(page);
+        navigation.navigate(page, {edited: false, onRefresh: handleRefresh });
     };
+
+    const handleRefresh = () => {
+        navigation.navigate("Settings");
+        navigation.navigate("InventoryPage", {edited: true});
+    }
 
     const renderCustomType = (item) => (
         <ListItem
