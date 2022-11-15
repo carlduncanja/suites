@@ -109,7 +109,7 @@ export const purchaseOrderInvoice = id => `/purchase_orders/${id}/generate-invoi
 
 // ##### CATEGORIES
 export const categoriesEndpoint = '/categories/';
-export const createCategoryEndpoint = '/categories/items';
+export const updateCategoryEndpoint = id => `/categories/${id}`;
 
 // ##### PATIENTS
 export const patientEndpoint = id => `/patients/${id}`;

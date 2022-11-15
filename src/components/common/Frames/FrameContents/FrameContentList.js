@@ -41,7 +41,8 @@ function FrameContentList(props) {
         idArray,
         normalInput,
         physicianSelection = true,
-        onAction = () => { }
+        onAction = () => { },
+        onEdit = () => { }
     } = props
 
     const [value, setValue] = useState("");
@@ -103,7 +104,10 @@ function FrameContentList(props) {
                                             onCancel={() => {
                                                 editSateToggle(false)
                                             }}
+                                            onEdit={onEdit}
                                             buttonTitle="Save"
+                                            normalInput={normalInput}
+                                            id={idArray[index]}
                                             physicianSelection={physicianSelection}
                                         />
 
@@ -136,7 +140,6 @@ function FrameContentList(props) {
                                 toogleAddOption(false)
                             }}
                             onAction={onAction}
-
                             buttonTitle="Add"
                             normalInput={normalInput}
                             physicianSelection={physicianSelection}

@@ -24,7 +24,7 @@ const CustomTypes = ({navigation}) => {
 
     const handleRefresh = () => {
         navigation.navigate("Settings");
-        navigation.navigate("InventoryPage", {edited: true});
+        navigation.navigate("InventoryPage", {edited: true, onRefresh: handleRefresh});
     }
 
     const renderCustomType = (item) => (

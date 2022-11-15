@@ -3,7 +3,7 @@ import {View, ScrollView} from 'react-native';
 import styled, {css} from '@emotion/native';
 import { useTheme } from 'emotion-theming';
 
-import { getCategories, updateBuffer, addCategory } from '../../../api/network';
+import { getCategories, updateBuffer, addCategory, deleteCategory, updateCategory } from '../../../api/network';
 
 import DetailsPage from '../../common/DetailsPage/DetailsPage';
 import TabsContainer from '../../common/Tabs/TabsContainerComponent';
@@ -12,7 +12,7 @@ import DataItem from '../../common/List/DataItem';
 import InputUnitFields from '../../common/Input Fields/InputUnitFields';
 import ContentDataItem from '../../common/List/ContentDataItem';
 import ConfirmationComponent from '../../ConfirmationComponent';
-
+import ConfirmationCheckBoxComponent from '../../ConfirmationCheckBoxComponent';
 import {PageContext} from '../../../contexts/PageContext';
 import Header from '../../common/Table/Header';
 import { useModal } from 'react-native-modalfy';
@@ -62,7 +62,7 @@ function InventoryPage({navigation, route}) {
     const { isEditMode = edited ? true : false} = pageState;
 
     useEffect(() => {
-        getCategories('inventory')
+        getCategories('inventory', 1000)
             .then(data => {
                 setInventoryItems(data.data.map( item => {return item.name}));
                 setInventoryIds(data.data.map( item => {return item._id}))
@@ -79,12 +79,19 @@ function InventoryPage({navigation, route}) {
 
    
 
-    const handleEdit = () => {
-        console.log("handle edit")
+    const handleEdit = (id, name) => {
+        updateCategory(id, {name: name})
+        .then(data => {
+            successModal();
+        })
+        .catch(error => {
+            errorModal();
+            console.log(error);
+        })
     }
 
     const handleDelete = (data) => {
-        openDeletionConfirm(caseId, data);
+        openDeletionConfirm(data);
 
     }
 
@@ -136,6 +143,46 @@ function InventoryPage({navigation, route}) {
         );
     }
 
+    const removeItem = (item) => {
+        deleteCategory([item])
+        .then(() => {
+            successModal();
+        } 
+        ).catch(error => {
+            errorModal();
+            console.log(error);
+        })
+    }
+
+    const openDeletionConfirm = data => {
+        modal.openModal(
+            'ConfirmationModal',
+            {
+                content: <ConfirmationCheckBoxComponent
+                    isError={false}
+                    isEditUpdate={true}
+                    onCancel={() => {
+                        modal.closeModals('ConfirmationModal');
+                        setIsFloatingActionDisabled(false)
+                        setTimeout(() => {
+                            modal.closeModals('ActionContainerModal')
+                        }, 200)
+                    }}
+                    onAction={() => {
+                        removeItem(data)
+                        modal.closeModals('ConfirmationModal');
+                    }}
+                    message="Do you want to delete these item(s)"
+                />,
+                onClose: () => {
+                    modal.closeModals('ConfirmationModal');
+                    modal.closeModals('ActionContainerModal')
+
+                }
+            }
+        );
+    }
+
     const details = (
         inventoryItems.length > 0 ?
         <>
@@ -150,7 +197,7 @@ function InventoryPage({navigation, route}) {
                     icon={ShoppingTag}
                     isEditMode={isEditMode}
                     normalInput={true}
-                    handleEdit={handleEdit}
+                    onEdit={handleEdit}
                     onDelete={handleDelete}
                     idArray={inventoryIds}
                     onAction={handleAdd}
