@@ -246,7 +246,7 @@ function CategoryPage({navigation, route}) {
     );
 }
 
-categoryType.propTypes = {};
+CategoryPage.propTypes = {};
 CategoryPage.defaultProps = {};
 
 export default CategoryPage;
