@@ -135,7 +135,7 @@ function FrameContentList(props) {
 
                     addMode ?
                         <FrameEditItem
-                            title="New"
+                            title="New Item"
                             onCancel={() => {
                                 toogleAddOption(false)
                             }}

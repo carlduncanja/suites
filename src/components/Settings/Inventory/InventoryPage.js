@@ -118,6 +118,12 @@ function InventoryPage({navigation, route}) {
                     }, 200)
                     onRefresh();
                 }}
+                onCancel={() => {
+                    modal.closeModals('ConfirmationModal');
+                    setTimeout(() => {
+                    }, 200)
+                    onRefresh();
+                }}
             />,
             onClose: () => {
                 modal.closeModal('ConfirmationModal')
@@ -163,7 +169,6 @@ function InventoryPage({navigation, route}) {
                     isEditUpdate={true}
                     onCancel={() => {
                         modal.closeModals('ConfirmationModal');
-                        setIsFloatingActionDisabled(false)
                         setTimeout(() => {
                             modal.closeModals('ActionContainerModal')
                         }, 200)
@@ -191,7 +196,7 @@ function InventoryPage({navigation, route}) {
                 <FrameCard
                     frameColor="#718096"
                     titleBackgroundColor="#EEF2F6"
-                    frameBorderColor="#D6BCFA"
+                    frameBorderColor="#CCD6E0"
                     frameTitle="Categories"
                     cardInformation={inventoryItems}
                     icon={ShoppingTag}
