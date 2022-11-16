@@ -9,11 +9,24 @@ const CUSTOM_TYPES = [
     },
     {
         title: 'Storage',
-        page: 'StoragePage'
+        page: 'InventoryPage',
+        categoryType: 'storage',
+        categoryTitle: 'Storage',
+        frameTitle: "Categories"
     },
     {
         title: 'Inventory',
-        page: 'InventoryPage'
+        page: 'InventoryPage',
+        categoryType: 'inventory',
+        categoryTitle: 'Inventory',
+        frameTitle: "Categories"
+    },
+    {
+        title: 'Medical Staff',
+        page: 'InventoryPage',
+        categoryType: 'staff',
+        categoryTitle: 'Staff',
+        frameTitle: "Physicians"
     }
 ];
 
@@ -23,12 +36,12 @@ const CustomTypes = ({navigation}) => {
     );
 
     const onItemPress = (page) => {
-        navigation.navigate(page, {edited: false, onRefresh: handleRefresh });
+        navigation.navigate(page, {edited: false, onRefresh: handleRefresh, categoryTitle, categoryType, page, frameTitle });
     };
 
-    const handleRefresh = () => {
+    const handleRefresh = (page) => {
         navigation.navigate("Settings");
-        navigation.navigate("InventoryPage", {edited: true, onRefresh: handleRefresh});
+        navigation.navigate(page, {edited: true, onRefresh: handleRefresh});
     }
 
     const renderCustomType = (item) => (

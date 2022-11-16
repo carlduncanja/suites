@@ -37,7 +37,7 @@ const HeaderContainer = styled.View`
 function InventoryPage({navigation, route}) {
     const theme = useTheme();
     const modal = useModal();
-    const {edited, onRefresh} = route?.params || {};
+    const {edited, onRefresh, categoryType, categoryTitle, page, frameTitle} = route?.params || {};
     const currentTabs = ['Details'];
     const headers = [
         {
@@ -62,7 +62,7 @@ function InventoryPage({navigation, route}) {
     const { isEditMode = edited ? true : false} = pageState;
 
     useEffect(() => {
-        getCategories('inventory', 1000)
+        getCategories(categoryType, 1000)
             .then(data => {
                 setInventoryItems(data.data.map( item => {return item.name}));
                 setInventoryIds(data.data.map( item => {return item._id}))
@@ -96,7 +96,7 @@ function InventoryPage({navigation, route}) {
     }
 
     const handleAdd = (name) => {
-        addCategory({name: name, type: 'inventory'})
+        addCategory({name: name, type: categoryType})
             .then(data => {
                 successModal();
             })
@@ -116,18 +116,18 @@ function InventoryPage({navigation, route}) {
                     modal.closeModals('ConfirmationModal');
                     setTimeout(() => {
                     }, 200)
-                    onRefresh();
+                    onRefresh(page);
                 }}
                 onCancel={() => {
                     modal.closeModals('ConfirmationModal');
                     setTimeout(() => {
                     }, 200)
-                    onRefresh();
+                    onRefresh(page);
                 }}
             />,
             onClose: () => {
                 modal.closeModal('ConfirmationModal')
-                onRefresh();
+                onRefresh(page);
             }
         }
         );
@@ -194,10 +194,10 @@ function InventoryPage({navigation, route}) {
            <ScrollView>
             <View>
                 <FrameCard
-                    frameColor="#718096"
+                    frameColor={(frameTitle=="Categories")? "#718096": "#FAF5FF"}
                     titleBackgroundColor="#EEF2F6"
                     frameBorderColor="#CCD6E0"
-                    frameTitle="Categories"
+                    frameTitle={frameTitle}
                     cardInformation={inventoryItems}
                     icon={ShoppingTag}
                     isEditMode={isEditMode}
@@ -240,7 +240,7 @@ function InventoryPage({navigation, route}) {
         }}
         >
              <DetailsPage
-                headerChildren={['Custom types', 'Inventory']}
+                headerChildren={['Custom types', categoryTitle]}
                 onBackPress={() => {
                     navigation.navigate('Settings');
                 }}
