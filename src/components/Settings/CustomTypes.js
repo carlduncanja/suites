@@ -10,7 +10,7 @@ const CUSTOM_TYPES = [
     },
     {
         title: 'Storage',
-        page: 'InventoryPage',
+        page: 'CategoryPage',
         categoryType: 'storage',
         categoryTitle: 'Storage',
         frameTitle: "Categories",
@@ -21,7 +21,7 @@ const CUSTOM_TYPES = [
     },
     {
         title: 'Inventory',
-        page: 'InventoryPage',
+        page: 'CategoryPage',
         categoryType: 'inventory',
         categoryTitle: 'Inventory',
         frameTitle: "Categories",
@@ -32,7 +32,7 @@ const CUSTOM_TYPES = [
     },
     {
         title: 'Medical Staff',
-        page: 'InventoryPage',
+        page: 'CategoryPage',
         categoryType: 'staff',
         categoryTitle: 'Staff',
         frameTitle: "Physicians",
@@ -40,6 +40,17 @@ const CUSTOM_TYPES = [
         titleBackgroundColor: '#FAF5FF',
         frameBorderColor: '#D6BCFA',
         frameIcon: LabBottle
+    },
+    {
+        title: 'Equipment',
+        page: 'CategoryPage',
+        categoryType: 'equipment',
+        categoryTitle: 'Equipment',
+        frameTitle: "Categories",
+        frameColor: '#718096',
+        titleBackgroundColor: '#EEF2F6',
+        frameBorderColor: '#CCD6E0',
+        frameIcon: ShoppingTag
     }
 ];
 

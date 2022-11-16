@@ -19,14 +19,11 @@ import { useModal } from 'react-native-modalfy';
 
 import FrameCard from '../../common/Frames/FrameCards/FrameCard';
 
-
-
 const ContentContainer = styled.View`
     height: 32px;
     flex-direction: row;
     /* margin-top: 24px; */
 `;
-
 
 const HeaderContainer = styled.View`
     border-bottom-color: ${({theme}) => theme.colors['--color-gray-400']};
@@ -35,7 +32,7 @@ const HeaderContainer = styled.View`
     margin-bottom: 24px;
 `;
 
-function InventoryPage({navigation, route}) {
+function CategoryPage({navigation, route}) {
     const theme = useTheme();
     const modal = useModal();
     const {item} = route?.params || {};
@@ -56,8 +53,8 @@ function InventoryPage({navigation, route}) {
     const [currentTab, setCurrentTab] = useState(currentTabs[0]);
     const [pageState, setPageState] = useState({});
     
-    const [inventoryItems, setInventoryItems] = useState ([]);
-    const [inventoryIds, setInventoryIds] = useState ([]);
+    const [categoryItems, setCategoryItems] = useState ([]);
+    const [categoryIds, setCategoryIds] = useState ([]);
   
 
     const { isEditMode = false} = pageState;
@@ -69,8 +66,8 @@ function InventoryPage({navigation, route}) {
     const fetchCategories =  () => {
         getCategories(item.categoryType, 1000)
         .then(data => {
-            setInventoryItems(data.data.map( item => {return item.name}));
-            setInventoryIds(data.data.map( item => {return item._id}))
+            setCategoryItems(data.data.map( item => {return item.name}));
+            setCategoryIds(data.data.map( item => {return item._id}))
         })
         .catch(error => {
             console.log('Unable to retrieve iventory category items: ', error);
@@ -191,21 +188,19 @@ function InventoryPage({navigation, route}) {
                     titleBackgroundColor={item.titleBackgroundColor}
                     frameBorderColor={item.frameBorderColor}
                     frameTitle={item.frameTitle}
-                    cardInformation={inventoryItems}
-                    icon={item.frameIcon
-                    }
+                    cardInformation={categoryItems}
+                    icon={item.frameIcon}
                     isEditMode={isEditMode}
                     normalInput={true}
                     onEdit={handleEdit}
                     onDelete={handleDelete}
-                    idArray={inventoryIds}
+                    idArray={categoryIds}
                     onAction={handleAdd}
                 />
             </View>
             </ScrollView>  
          </>
     );
-
 
     const getTabContent = selectedTab => {
         switch (selectedTab) {
@@ -247,12 +242,11 @@ function InventoryPage({navigation, route}) {
                 {getTabContent(currentTab)}
             </DetailsPage>
             
-
         </PageContext.Provider>
     );
 }
 
-InventoryPage.propTypes = {};
-InventoryPage.defaultProps = {};
+categoryType.propTypes = {};
+CategoryPage.defaultProps = {};
 
-export default InventoryPage;
+export default CategoryPage;
