@@ -108,9 +108,12 @@ function FrameEditItem({
     onCancel = () => { },
     title = "",
     deleteMode = false,
+    normalInput = false,
     physicianSelection = true,
     buttonTitle = "",
-    onAction = () => { }
+    onAction = () => { },
+    onEdit = () => { },
+    id,
 }) {
 
     const [physicianName, setPhysicianName] = useState(itemContent.name);
@@ -124,7 +127,7 @@ function FrameEditItem({
     const [staffInfo, setStaffInfo] = useState([]);
     const [actionButton, setActionButton] = useState(false)
     const [generatedNurse, setGeneratedNurse] = useState();
-
+    const [name, setName] = useState(itemContent.name);
 
     const theme = useTheme();
     //console.log('item content for edit page ', itemContent)
@@ -259,7 +262,21 @@ function FrameEditItem({
                                     <Text style={styles.title}>Name</Text>
                                 </View >
                                 <View style={{ ...styles.inputWrapper, zIndex: 7 }}>
-                                    {physicianSelection ?
+                                    {normalInput ? 
+                                    <InputField2
+                                        onChangeText = {(e) => {
+                                            setName(e)
+                                            activateButton(true)
+                                        }}
+                                        value = {name}
+                                        onClear = {()=> { 
+                                            setName('') 
+                                            activateButton(false)
+                                        }} 
+                                    />  :
+                                    
+                                    
+                                    physicianSelection ?
                                         <SearchableOptionsField
                                             emptyAfterSubmit={false}
                                             updateDB={updatePhysicianDB}
@@ -357,8 +374,8 @@ function FrameEditItem({
 
                         <ButtonContainer
                             onPress={() => {
-                                actionButton ?
-                                    onAction(staffInfo[0]._id)
+                                actionButton ? 
+                                    normalInput ? buttonTitle === 'Add' ? onAction(name) : onEdit(id, name)  :  onAction(staffInfo[0]._id)
                                     :
                                     null
                             }}

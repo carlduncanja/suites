@@ -86,7 +86,8 @@ import {
     updatePurchaseOrderDocument,
     purchaseOrderInvoice, inventoryGroupsBulkUpload, proceduresUploadEndpoint, deleteCaseFileEndpoint, deleteCaseFilesEndpiont,
     invoicesEndpoint, invoiceEndpoint, updateInvoiceDetailsEndpoint,
-    emailEndpoint
+    emailEndpoint,
+    updateCategoryEndpoint
 } from '../const/suitesEndpoints';
 import { createDocumentLink, documentById, documentData, documentUpload } from '../const/documentGenerationEndpoints';
 
@@ -650,13 +651,23 @@ export const createEquipmentType = async equipmentTypeToCreate => suitesAxiosIns
 
 // ################# Categories Endpoint
 
-export const getCategories = async (query, max) => suitesAxiosInstance
-    .get(categoriesEndpoint, { params: { query } })
+export const getCategories = async (type, max) => suitesAxiosInstance
+    .get(categoriesEndpoint, { params: { type, max } })
     .then(handleResponse)
     .catch(handleError);
 
-export const addCategory = async (category = []) => suitesAxiosInstance
-    .post(createCategoryEndpoint, category)
+export const addCategory = async (data) => suitesAxiosInstance
+    .post(categoriesEndpoint, data)
+    .then(handleResponse)
+    .catch(handleError);
+
+export const deleteCategory = async (data) => suitesAxiosInstance
+    .delete(categoriesEndpoint,{ data: { ids: data } })
+    .then(handleResponse)
+    .catch(handleError);
+
+export const updateCategory = async (id, data) => suitesAxiosInstance
+    .put(updateCategoryEndpoint(id), data )
     .then(handleResponse)
     .catch(handleError);
 

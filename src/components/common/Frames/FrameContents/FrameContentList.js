@@ -10,7 +10,7 @@ import SearchableOptionsField from '../../Input Fields/SearchableOptionsField';
 import IconButton from '../../Buttons/IconButton';
 import styled, { css } from '@emotion/native';
 import { useTheme } from 'emotion-theming';
-
+import InputField2 from '../../../common/Input Fields/InputField2'
 import { PageContext } from '../../../../contexts/PageContext';
 
 const FrameContentListWrapper = styled.View`
@@ -39,8 +39,10 @@ function FrameContentList(props) {
         isAddNew = false,
         isEditMode = false,
         idArray,
+        normalInput,
         physicianSelection = true,
-        onAction = () => { }
+        onAction = () => { },
+        onEdit = () => { }
     } = props
 
     const [value, setValue] = useState("");
@@ -102,7 +104,10 @@ function FrameContentList(props) {
                                             onCancel={() => {
                                                 editSateToggle(false)
                                             }}
+                                            onEdit={onEdit}
                                             buttonTitle="Save"
+                                            normalInput={normalInput}
+                                            id={idArray[index]}
                                             physicianSelection={physicianSelection}
                                         />
 
@@ -130,13 +135,13 @@ function FrameContentList(props) {
 
                     addMode ?
                         <FrameEditItem
-                            title="New"
+                            title="New Item"
                             onCancel={() => {
                                 toogleAddOption(false)
                             }}
                             onAction={onAction}
-
                             buttonTitle="Add"
+                            normalInput={normalInput}
                             physicianSelection={physicianSelection}
                         />
                         :
