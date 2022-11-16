@@ -21,8 +21,7 @@ const TextInputContainer = styled.View`
     border-width: 1px;
     padding-left : ${({theme}) => theme.space['--space-10']};
     padding-right : ${({theme}) => theme.space['--space-10']};
-    
-    border-color: ${({theme, hasError}) => theme.colors['--color-gray-300']};
+    border-color: ${({theme, hasError}) => hasError ? theme.colors['--color-red-700'] : theme.colors['--color-gray-300']};
     background-color : ${({theme, enabled}) => !enabled ? theme.colors['--color-gray-100'] : theme.colors['--default-shade-white']};
     border-radius: 4px;
     box-shadow : ${({isFocussed, theme}) => isFocussed ? theme.shadow['--shadow-lg'] : null};

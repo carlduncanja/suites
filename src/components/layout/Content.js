@@ -46,6 +46,7 @@ export default class Content extends Component {
                 this.props.name === 'PROCEDURES' ?
                     <Text>PROCEDURES</Text>
                 :
+                
                 this.props.name === 'ALERTS' ?
                     <Text>ALERTS</Text>
                 :

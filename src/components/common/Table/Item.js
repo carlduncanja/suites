@@ -39,15 +39,12 @@ const ItemView = styled.View`
 `;
 
 function Item({
-    itemView = () => {
-    },
+    itemView = () => {},
     isDisabled = false,
     hasCheckBox = true,
     isChecked = false,
-    onCheckBoxPress = () => {
-    },
-    onItemPress = () => {
-    },
+    onCheckBoxPress = () => {},
+    onItemPress = () => {},
     backgroundColor = ''
 }) {
     const theme = useTheme();

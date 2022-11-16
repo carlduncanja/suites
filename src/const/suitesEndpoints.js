@@ -56,14 +56,18 @@ export const updateEquipmentEndpoint = id => `/equipments/${id}`;
 export const assignEquipmentToLocation = (typeId, equipmentId) => `/equipment-types/${typeId}/equipments/${equipmentId}/assign`;
 
 // ##### CASE FILES
+export const deleteCaseFileEndpoint = id => `/cases/${id}/remove`;
+export const deleteCaseFilesEndpiont = '/cases/'
 export const caseFilesEndpoint = '/cases';
 export const archivedCaseFilesEndpoint = '/cases/archived';
 export const removeCaseFilesEndpoint = '/cases/archive';
 export const restoreArchivedCasesEndpoint = '/cases/restore';
 export const caseFileEndpoint = id => `/cases/${id}`;
+export const simpleCaseProcedureUpdateEndpoint = (caseId, procedureId) => `/cases/${caseId}/procedures/${procedureId}/simple`;
 export const updateChargeSheetEndpoint = id => `/cases/${id}/chargesheets`;
 export const chargeSheetApprovalEndpoint = caseId => `/cases/${caseId}/chargesheets/approval`;
 export const chargeSheetWithdrawChangesEndpoint = caseId => `/cases/${caseId}/chargesheets/withdraw`;
+export const chargeSheetDiscountItemUpdateEndpoint = (chargeSheetId, caseProcedureId) => `/cases/${chargeSheetId}/discount/${caseProcedureId}`;
 export const chargeSheetApplyPaymentEndpoint = caseId => `/cases/${caseId}/chargesheets/payment`;
 export const chargeSheetInvoiceApplyPaymentEndpoint = (caseId, invoiceId) => `/cases/${caseId}/invoices/${invoiceId}/payment`;
 export const createInvoice = id => quotationId => `/cases/${id}/quotations/${quotationId}/invoices`;
@@ -75,6 +79,7 @@ export const quotationEndpoint = (caseId, quotationId) => `/cases/${caseId}/quot
 export const updateQuotationStatusEndpoint = (caseId, quotationId) => `/cases/${caseId}/quotations/${quotationId}/status`;
 export const caseProcedureAppointmentEndpoint = (caseId, procedureAppointmentId) => `/cases/${caseId}/procedures/${procedureAppointmentId}`;
 export const caseProcedureAppointmentsEndpoint = caseId => `/cases/${caseId}/procedures/`;
+export const caseStaffEndpoint = caseId => `/cases/staff/${caseId}`;
 
 // ##### STORAGE
 export const storageLocationsEndpoint = '/storage-locations';
@@ -103,8 +108,8 @@ export const updatePurchaseOrderDocument = id => `/purchase_orders/${id}/documen
 export const purchaseOrderInvoice = id => `/purchase_orders/${id}/generate-invoice`;
 
 // ##### CATEGORIES
-export const categoriesEndpoint = '/categories/items';
-export const createCategoryEndpoint = '/categories/items';
+export const categoriesEndpoint = '/categories/';
+export const updateCategoryEndpoint = id => `/categories/${id}`;
 
 // ##### PATIENTS
 export const patientEndpoint = id => `/patients/${id}`;
@@ -116,3 +121,11 @@ export const closeAlertEndpoint = id => `/alerts/${id}/close`;
 // ##### CONFIGURATIONS
 export const configEndpoint = '/configurations';
 export const updateBufferEndpoint = '/configurations/buffer';
+
+// #### INVOICES
+export const invoicesEndpoint =  '/invoices';   
+export const invoiceEndpoint = id =>`/invoices/${id}`; 
+export const updateInvoiceDetailsEndpoint= id => `/invoices/${id}`
+
+// #### EMAIL
+export const emailEndpoint =  '/email/send';   

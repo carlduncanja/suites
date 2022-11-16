@@ -1,56 +1,86 @@
-import React,{ useContext } from 'react';
-import { View, Text, StyleSheet, ScrollView} from 'react-native';
+import React, { useContext } from 'react';
+import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { Physicians, Nurses } from '../../OverlayCardFrames';
 import FramStaffIcon from '../../../../../assets/svg/frameMedicalStaff';
 import FrameCard from '../../../common/Frames/FrameCards/FrameCard';
 
 
-const Details = ({tabDetails}) => { 
+const Details = ({ tabDetails,
+    isEditMode,
+    handleEdit = () => { },
+    onDelete = () => { },
+    onAction = () => {}
+
+}) => {
+
     const { physicians, nurses } = tabDetails
 
-    const physicianNames = physicians.map( physician =>{
+
+    const physicianNames = physicians.map(physician => {
         const { surname = "" } = physician
         return `Dr. ${surname}`
     })
 
-    const nursesNames = nurses.map( nurse =>{
-        const { surname = "", firstName = "" } = nurse
-        return `${firstName[0]}. ${surname}`
+    const nursesNames = nurses.map(nurse => {
+        const { last_name = "", first_name = "", _id = '' } = nurse
+        return `Nurse ${last_name}`
     })
-    return (  
+
+    const physicianIds = physicians.map(physician => {
+        const { _id = "" } = physician
+        return _id
+    })
+
+    const nursesIds = nurses.map(nurses => {
+        const { _id = "" } = nurses
+        return _id
+    })
+    return (
         <ScrollView>
 
             <View style={styles.frameContainer}>
                 <FrameCard
-                    frameColor = "#3182CE"
-                    titleBackgroundColor = "#EBF8FF"
-                    frameBorderColor = "#90CDF4"
-                    frameTitle = "Physicians"
-                    cardInformation = {physicianNames}
-                    icon = {FramStaffIcon}
+                    frameColor="#3182CE"
+                    titleBackgroundColor="#EBF8FF"
+                    frameBorderColor="#90CDF4"
+                    frameTitle="Physicians"
+                    cardInformation={physicianNames}
+                    icon={FramStaffIcon}
+                    isEditMode={isEditMode}
+                    handleEdit={handleEdit}
+                    onDelete={onDelete}
+                    idArray={physicianIds}
+                    onAction={onAction}
                 />
             </View>
 
             <View style={styles.frameContainer}>
                 <FrameCard
-                    frameColor = "#E53E3E"
-                    titleBackgroundColor = "#FFF5F5"
-                    frameBorderColor = "#FEB2B2"
-                    frameTitle = "Nurses"
-                    cardInformation = {nursesNames}
-                    icon = {FramStaffIcon}
+                    frameColor="#E53E3E"
+                    titleBackgroundColor="#FFF5F5"
+                    frameBorderColor="#FEB2B2"
+                    frameTitle="Nurses"
+                    cardInformation={nursesNames}
+                    icon={FramStaffIcon}
+                    isEditMode={isEditMode}
+                    handleEdit={handleEdit}
+                    onDelete={onDelete}
+                    idArray={nursesIds}
+                    onAction={onAction}
+                    physicianSelection={false}
                 />
             </View>
 
+
         </ScrollView>
-       
+
     );
 }
- 
+
 export default Details;
 
 const styles = StyleSheet.create({
-    frameContainer:{
-        marginBottom:20
+    frameContainer: {
+        marginBottom: 20
     }
 })

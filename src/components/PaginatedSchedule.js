@@ -1,11 +1,27 @@
-import React, {Component, useState, useEffect} from 'react';
-import {getAppointments} from '../api/network';
+import React, { Component, useState, useEffect } from 'react';
+import { View, StyleSheet, Text, FlatList, ScrollView } from 'react-native';
+import { getAppointments, getAppointmentRequest } from '../api/network';
 import SchedulePaginator from './common/Paginators/SchedulePaginator';
 import ScheduleDisplayComponent from './ScheduleDisplay/ScheduleDisplayComponent';
-import {formatDate} from '../utils/formatter';
+import { formatDate } from '../utils/formatter';
 import moment from "moment";
+import { useModal } from 'react-native-modalfy';
+import { useTheme } from 'emotion-theming';
+import ActionContainer from '../components/common/FloatingAction/ActionContainer';
+import LongPressWithFeedback from '../components/common/LongPressWithFeedback';
+import { deleteAppointmentById } from '../api/network'
+import ActionItem from '../components/common/ActionItem';
+import WasteIcon from '../../assets/svg/wasteIcon';
+import AddIcon from '../../assets/svg/addIcon';
+import { LONG_PRESS_TIMER } from '../const';
+import CreateWorkItemDialogContainer from '../components/Physicians/CreateWorkItemDialog'
+import EditWorkItemDialogContainer from './Physicians/EditWorkItemDialogContainer'
+import EditIcon from '../../assets/svg/editIcon';
+import ConfirmationComponent from './ConfirmationComponent';
+import ConfirmationCheckBoxComponent from './ConfirmationCheckBoxComponent';
+import _ from 'lodash'
 
-function PaginatedSchedule({ID, isPhysician}) {
+function PaginatedSchedule({ ID, isPhysician }) {
     const weekday = new Array(7);
     weekday[0] = 'Sunday';
     weekday[1] = 'Monday';
@@ -18,29 +34,33 @@ function PaginatedSchedule({ID, isPhysician}) {
     const dateFormatter = item => {
         const datetobePassed =
             `${weekday[item.getDay()]
-            } ${
-                item.getFullYear()
-            }/${
-                item.getMonth() + 1
-            }/${
-                item.getDate()}`;
+            } ${item.getFullYear()
+            }/${item.getMonth() + 1
+            }/${item.getDate()}`;
         // console.log("The new formatted date is:", datetobePassed);
         return datetobePassed;
     };
+    const modal = useModal();
+    const theme = useTheme();
 
     const [relevantAppointment, setrelevantApppointments] = useState([]);
     const [isFetchingAppointment, setFetchingAppointment] = useState(false);
     const [dateObj, setdateObj] = useState(new Date());
     const [testDate, settestDate] = useState(new Date());
-
+    const [isFloatingActionDisabled, setFloatingAction] = useState(false);
     const [alteredDate, setalteredDate] = useState(dateFormatter(dateObj));
-
+    const [currentAppointment, setCurrentAppointment] = useState({});
+    const [selectedIds, setSelectedIds] = useState([])
     // console.log("Altered date: ", typeof alteredDate);
     // console.log("Moment Altered date: ", typeof formatDate(dateObj, 'dddd MMM/D/YYYY'));
 
     useEffect(() => {
         fetchAppointments(ID, alteredDate);
     }, [alteredDate]);
+
+    const onRefesh = () => {
+        fetchAppointments(ID, alteredDate);
+    }
 
     const goToPreviousDayApp = () => {
         settestDate(dateObj.setDate(dateObj.getDate() - 1));
@@ -65,44 +85,275 @@ function PaginatedSchedule({ID, isPhysician}) {
     const fetchAppointments = (id, datePassed = new Date()) => {
         setFetchingAppointment(true);
 
-        getAppointments('', !isPhysician ? id : '', datePassed, datePassed, '', !isPhysician ? '' : id)
-            .then(data => {
-                //console.log("Objected values:", Object.values(data));
-                console.log('The appointment data received is:', data);
-                relevantAppointment.length = 0;
+        let tommorrow = new Date(datePassed);
+        tommorrow = tommorrow.setDate(tommorrow.getDate() + 1)
 
-                const appointmentData = data.map(item => {
-                    let modifiedAppointment = {...item};
-                    let today = new Date();
-                    // const mm = moment(item.startTime);
-                    const start = moment(modifiedAppointment.startTime);
-                    const end = moment(modifiedAppointment.endTime);
+        let fromDate = formatDate(datePassed, 'YYYY/MM/DD');
+        let toDate = formatDate(tommorrow, 'YYYY/MM/DD')
 
-                    const isActive = moment().isBetween(start, end);
-                    if (end < today) {
-                        console.log("appointment has passed");
-                        modifiedAppointment.type = 3;
-                    } else (isActive) ? (modifiedAppointment.type = 0) : (modifiedAppointment.type = 1);
+        console.log("date passed", fromDate, toDate, id)
+            ,
+            getAppointments("", "", fromDate, fromDate, '', id)
+                .then(data => {
+                    //console.log("Objected values:", Object.values(data));
+                    console.log('The appointment data received is:', data);
+                    relevantAppointment.length = 0;
+                    //console.log("data visualization", relevantAppointment)
 
-                    return {...modifiedAppointment,}
+                    const appointmentData = data.map(item => {
+                        let modifiedAppointment = { ...item };
+                        let today = new Date();
+                        // const mm = moment(item.startTime);
+                        const start = moment(modifiedAppointment.startTime);
+                        const end = moment(modifiedAppointment.endTime);
+
+                        const isActive = moment().isBetween(start, end);
+                        if (end < today) {
+                            console.log("appointment has passed");
+                            modifiedAppointment.type = 3;
+                        } else (isActive) ? (modifiedAppointment.type = 0) : (modifiedAppointment.type = 1);
+
+                        return { ...modifiedAppointment, }
+                    })
+
+                    setrelevantApppointments(relevantAppointment.concat(appointmentData));
                 })
+                .catch(error => {
+                    console.log('Failed to get desired appointments', error);
+                })
+                .finally(_ => {
+                    setFetchingAppointment(false);
+                });
+    };
 
-                setrelevantApppointments(relevantAppointment.concat(appointmentData));
+
+    const toggleActionButton = () => {
+        setFloatingAction(true);
+        modal.openModal("ActionContainerModal", {
+            title: "INVOICE ACTIONS",
+            actions: getFabActions(),
+            onClose: () => {
+                setFloatingAction(false);
+            },
+        })
+    }
+
+    const getFabActions = () => {
+
+        const isDisabled = selectedIds.length === 0
+
+        const deleteAction = (
+
+
+            <View style={{ borderRadius: 6, flex: 1, overflow: 'hidden' }}>
+                <LongPressWithFeedback
+                    pressTimer={LONG_PRESS_TIMER.LONG}
+                    onLongPress={removeAppiontmentLongPress}
+                    isDisabled={isDisabled}
+                >
+                    <ActionItem
+                        title="Hold to Delete"
+                        icon={<WasteIcon strokeColor={isDisabled ? theme.colors['--color-gray-600'] : theme.colors['--color-red-700']} />}
+                        onPress={() => {
+                        }}
+                        touchable={false}
+                        disabled={isDisabled}
+                    />
+                </LongPressWithFeedback>
+            </View>
+
+        );
+        const isReceivedDisabled = selectedIds.length === 0
+        const editWorkItem = (
+            <View>
+                <ActionItem
+                    title={"Edit Work Item"}
+                    icon={<EditIcon
+                        strokeColor={isReceivedDisabled ? theme.colors['--color-gray-600'] : undefined}
+                    />}
+                    disabled={isReceivedDisabled}
+                    touchable={!isReceivedDisabled}
+                    onPress={handleEditWorkItem}
+                />
+            </View>
+        );
+        const isAddWorkDisable = selectedIds.length === 0
+        const addWorkItem = (
+            <View>
+                <ActionItem title="Add Work Item"
+                    icon={<AddIcon
+                        strokeColor={!isAddWorkDisable ? theme.colors['--color-gray-600'] : undefined}
+                    />}
+                    onPress={handleNewProcedurePress}
+                    disabled={!isAddWorkDisable}
+                    touchable={isAddWorkDisable}
+                />
+            </View>
+        );
+
+        return <ActionContainer
+            floatingActions={[
+                deleteAction,
+                editWorkItem,
+                addWorkItem
+            ]}
+            title="SCHEDULE ACTIONS"
+        />;
+    };
+
+    const handleNewProcedurePress = procedure => {
+
+        modal.openModal('AddWorkItemModal', {
+            content: (
+                <CreateWorkItemDialogContainer
+                    onCancel={() => setFloatingAction(false)}
+                    addWorkItem={{ "id": ID }}
+                />
+            ),
+            onClose: () => setFloatingAction(false)
+        });
+
+    };
+
+    const handleEditWorkItem = () => {
+
+
+        modal.openModal('EditWorkItemModal', {
+            content: (
+                <EditWorkItemDialogContainer
+                    onCancel={() => setFloatingAction(false)}
+                    appiontment={{ "id": selectedIds[0] }}
+                />
+            ),
+            onClose: () => setFloatingAction(false)
+        });
+    }
+
+    const removeAppiontmentLongPress = () => {
+        if (selectedIds.length > 0) openDeletionConfirm({ "id": selectedIds[0] });
+        else openErrorConfirmation()
+    }
+
+    const openDeletionConfirm = data => {
+        modal.openModal(
+            'ConfirmationModal',
+            {
+                content: <ConfirmationCheckBoxComponent
+                    isError={false}
+                    isEditUpdate={true}
+                    onCancel={() => {
+                        modal.closeModals('ConfirmationModal');
+                        setFloatingAction(false)
+                    }}
+                    onAction={() => {
+                        modal.closeModals('ConfirmationModal');
+                        removeAppiontmentCall(data)
+                    }}
+                    message="Do you want to delete this appointment?"
+                />,
+                onClose: () => {
+                    modal.closeModals('ConfirmationModal');
+                }
+            }
+        );
+    };
+
+    const removeAppiontmentCall = (data) => {
+        deleteAppointmentById(data.id)
+            .then(_ => {
+                modal.openModal(
+                    'ConfirmationModal', {
+                    content: <ConfirmationComponent
+                        isError={false}
+                        isEditUpdate={false}
+                        onAction={() => {
+                            modal.closeModals('ConfirmationModal');
+                            setTimeout(() => {
+                                modal.closeModals('ActionContainerModal')
+                                onRefesh()
+                            }, 200)
+                        }}
+                    />,
+                    onClose: () => {
+                        modal.closeModal('ConfirmationModal')
+                    }
+                }
+                );
+                setSelectedIds([])
             })
             .catch(error => {
-                console.log('Failed to get desired appointments', error);
+                openErrorConfirmation();
+                setTimeout(() => {
+                    modal.closeModals('ActionContainerModal');
+                }, 200)
+                console.log('failed to remove the appointment', error)
             })
             .finally(_ => {
-                setFetchingAppointment(false);
+                setFloatingAction(false)
             });
+    }
+
+    const openErrorConfirmation = () => {
+        modal.openModal(
+            'ConfirmationModal',
+            {
+                content: <ConfirmationComponent
+                    isError={true}
+                    isEditUpdate={false}
+                    onCancel={() => modal.closeModals('ConfirmationModal')}
+                />,
+                onClose: () => {
+                    modal.closeModals('ConfirmationModal');
+                }
+            }
+        );
     };
+
+    const removeIdFromArray = (id) =>{
+     let updatedList=[...selectedIds]
+      //console.log("can say anthing")
+      return []
+    }
+    
+    const updateIDs = ids => {
+
+        //console.log("before", selectedIds)
+        let updatedList = [...selectedIds]
+
+        ids.map((id) => {
+            let test = updatedList.includes(id)
+            test ?
+                updatedList=removeIdFromArray(id)
+                :
+                updatedList.push(id) 
+            
+            console.log("During",updatedList)
+        })
+        setSelectedIds(updatedList)
+        //console.log('after', selectedIds)
+
+        /*console.log('before', selectedIds)
+        setSelectedIds(selectedIds.concat(ids))
+        console.log('after', selectedIds)*/ 
+       // setSelectedIds(updatedList)
+        //console.log('after',selectedIds)
+
+
+
+    }
 
     return (
         <>
-            <ScheduleDisplayComponent appointments={Array.from(relevantAppointment)} date={alteredDate}/>
+            <ScheduleDisplayComponent appointments={Array.from(relevantAppointment)} date={alteredDate} idData={updateIDs} />
 
-            <SchedulePaginator date={formatDate(dateObj, 'dddd MMM / D / YYYY')} goToPreviousDay={goToPreviousDayApp}
-                               goToNextDay={goToNextDayApp}/>
+            <SchedulePaginator date={formatDate(dateObj, 'dddd MMM / D / YYYY')}
+                goToPreviousDay={goToPreviousDayApp}
+                goToNextDay={goToNextDayApp}
+                toggleActionButton={toggleActionButton}
+            />
+
+
+
 
         </>
     );

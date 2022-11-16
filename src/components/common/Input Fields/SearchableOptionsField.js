@@ -9,7 +9,8 @@ import ClearIcon from '../../../../assets/svg/clearIcon';
 import InputLabelComponent from '../InputLablel';
 import InputContainerComponent from '../InputContainerComponent';
 import InputErrorComponent from '../InputErrorComponent';
-
+import ActionItem from '../ActionItem';
+import AddIcon from '../../../../assets/svg/addIcon';
 import MultipleShadowsContainer from '../MultipleShadowContainer';
 
 import {shadow} from '../../../styles';
@@ -86,7 +87,8 @@ const NoSuggestionsContainer = styled.View`
 
 const InputText = styled.Text(({theme, fontStyle, textColor}) => ({
     ...theme.font[fontStyle],
-    color: theme.colors[textColor]
+    color: theme.colors[textColor],
+    fontSize: 12
 }));
 
 const OptionContainer = styled.TouchableOpacity`
@@ -109,8 +111,10 @@ const ValueContainer = styled.View`
   margin-left: 10px;
   /* alignSelf: 'center', */
   align-items: center;
-  padding-right: ${({theme}) => theme.space['space-4']};
-  width: 80%;
+  justify-content: center;
+  padding: 4px;
+  width: auto;
+  box-sizing: border-box;
 `;
 /* border : 1px solid ${ ({theme}) => theme.colors['--color-red-300']};
    background-color : ${ ({theme}) => theme.colors['--color-red-100']};
@@ -131,11 +135,8 @@ const TextInputContainer = styled.View`
   position: relative;
   height: 100%;
   width: 100%;
+  justify-content: center;
   border-width: 1px;
-  border-color: ${({
-                     theme,
-                     hasError
-                   }) => (hasError ? theme.colors['--color-red-600'] : theme.colors['--color-gray-300'])};
   background-color: ${({
                          theme,
                          enabled
@@ -183,6 +184,14 @@ function SearchableOptionsField({
                                     hasError = false,
                                     errorMessage = '',
                                     shouldShowValue = true,
+                                    showActionButton = false,
+                                    title = "",
+                                    highlightOn = false,
+                                    highlightColor = "#EBF8FF",
+                                    handlePatient = () => {},
+                                    updateDB = () => {},
+                                    inputIndex = '',
+                                    emptyAfterSubmit=false
                                 }) {
     const textInputRef = useRef();
 
@@ -221,6 +230,24 @@ function SearchableOptionsField({
         </OptionContainer>
     );
 
+    const Accent = styled.View`
+        background-color: ${theme.colors['--color-gray-300']};
+        width: 100%;
+        height: 1px;
+        margin-top: 10px;
+        margin-bottom: 10px;
+    `;
+
+    let currentErrorHandling = "";
+
+    if(hasError) {
+        currentErrorHandling = hasError ? theme.colors['--color-red-600'] : theme.colors['--color-gray-300']
+    }
+
+    else {
+        currentErrorHandling = emptyAfterSubmit ? theme.colors['--color-red-600'] : theme.colors['--color-gray-300']
+    }
+
     return (
         <InputContainerComponent>
             {
@@ -228,16 +255,30 @@ function SearchableOptionsField({
             }
 
             <TextInputWrapper theme={theme} enabled={enabled}>
-                <TextInputContainer enabled={enabled}>
+                <TextInputContainer style={{
+                    borderColor: currentErrorHandling
+                }} enabled={enabled}>
                     {
                         (enabled && !!selectedValue) ?
                             (
                                 <>
-                                    <ValueContainer>
+                                    <ValueContainer style={highlightOn ? {
+        
+                                        } : {}}>
                                         <InputText
-                                            numberOfLines={1}
-                                            fontStyle="--text-sm-regular"
-                                            textColor="--color-gray-700"
+                                                numberOfLines={1}
+                                                fontStyle="--text-sm-regular"
+                                                textColor="--color-gray-700"
+                                                style={{
+                                                display: 'flex', 
+                                                width: "auto", 
+                                                paddingRight: 5,
+                                                paddingLeft: 5,
+                                                backgroundColor: highlightOn ? highlightColor : "white", 
+                                                borderWidth: highlightOn ? 1 : 0, 
+                                                borderStyle:  "solid", 
+                                                borderColor: "#90CDF4"
+                                            }}
                                         >{selectedValue?.name || ''}</InputText>
                                     </ValueContainer>
 
@@ -286,6 +327,31 @@ function SearchableOptionsField({
                                                     textColor="--color-gray-300"
                                                     fontStyle="--text-xs-medium"
                                                 >No Suggestions Found</InputText>
+
+                                                {showActionButton ? (
+                                                    <>
+                                                        <Accent />
+
+                                                        <ActionItem
+                                                            onPress={() => {
+                                                                const item = updateDB(
+                                                                text,
+                                                                handlePatient,
+                                                                setSelectedValue
+                                                                )
+                                                                    
+                                                                //handlePatient(item);
+                                                                //setSelectedValue(item)
+                                                            }}
+                                                            title={`Create ${title}`}
+                                                            text={text}
+                                                            icon={<AddIcon/>}
+                                                            disabled={false}
+                                                            touchable={true}
+                                                        />
+                                                    </>
+                                                ) : <></>}
+                                                
                                             </NoSuggestionsContainer>
                                         ) : (
                                             <FlatList

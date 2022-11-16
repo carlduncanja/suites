@@ -23,7 +23,11 @@ const ActionTitle = styled.Text(({theme, color = '--color-gray-700', font = '--t
     ...theme.font[font],
     color: theme.colors[color]
 }));
-
+// seems to directly affect permissions
+// so the name and what a role can do
+// eg:
+ // case files: being able to create a new case file
+// * guess you could add more permissions here. not confirmed
 const ROLE_GROUPS = [
     {
         group: 'cases',

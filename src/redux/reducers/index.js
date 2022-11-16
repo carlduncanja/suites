@@ -1,5 +1,5 @@
 import { combineReducers } from "redux";
-
+import invoices from './invoicesReducer';
 import appointments from "./appointmentReducer";
 import caseFiles from "./caseReducer";
 import procedures from "./proceduresReducer";
@@ -46,7 +46,8 @@ const appReducer = combineReducers({
   drafts,
   archivedSuppliers,
   procedurePage,
-  archivedCases
+  archivedCases,
+  invoices
 });
 
 /**

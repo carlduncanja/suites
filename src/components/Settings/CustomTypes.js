@@ -1,29 +1,35 @@
 import React, { useState } from 'react';
 import ListItem from '../common/List/ListItem';
 import DataItem from '../common/List/DataItem';
-import Data from '../common/Table/Data';
-import { View } from 'react-native';
 
 const CUSTOM_TYPES = [
     {
         title: 'Appointment Buffer-time',
-        page: 'AppointmentsPage'
+        page: 'AppointmentsPage',
     },
     {
         title: 'Storage',
         page: 'StoragePage'
+    },
+    {
+        title: 'Inventory',
+        page: 'InventoryPage'
     }
 ];
 
 const CustomTypes = ({navigation}) => {
-
     const customType = title => (
         <DataItem color="--color-gray-700" fontStyle="--text-sm-medium" flex={1} text={title}/>
     );
 
     const onItemPress = (page) => {
-        navigation.navigate(page);
+        navigation.navigate(page, {edited: false, onRefresh: handleRefresh });
     };
+
+    const handleRefresh = () => {
+        navigation.navigate("Settings");
+        navigation.navigate("InventoryPage", {edited: true, onRefresh: handleRefresh});
+    }
 
     const renderCustomType = (item) => (
         <ListItem

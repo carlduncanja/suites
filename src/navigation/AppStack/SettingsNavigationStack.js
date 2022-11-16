@@ -3,7 +3,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 
 import Settings from '../../page/Settings';
 import AppointmentBufferPage from '../../components/Settings/AppointmentBuffer/AppointmentBufferPage';
-import StoragePage from '../../components/Settings/StoragePage';
+import InventoryPage from '../../components/Settings/Inventory/InventoryPage';
 
 const Stack = createStackNavigator();
 
@@ -24,8 +24,8 @@ export default () => (
         />
 
         <Stack.Screen
-            name="StoragePage"
-            component={StoragePage}
+            name="InventoryPage"
+            component={InventoryPage}
             options={{headerShown: false,}}
         />
 

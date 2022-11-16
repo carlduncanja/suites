@@ -1,3 +1,4 @@
+// settings.js
 import React, {useState, useEffect} from 'react';
 import styled, {css} from '@emotion/native';
 import {useTheme} from 'emotion-theming';
@@ -219,13 +220,14 @@ function Settings({navigation}) {
         modal.openModal(
             'ConfirmationModal',
             {
+                // confirmation popup for deleting roles
                 content: <ConfirmationComponent
                     isError={false}
                     isEditUpdate={true}
                     onCancel={modal.closeAllModals}
                     onAction={() => deleteRoles(selectedRoles)}
                     action="Yes"
-                    message="Are you sure you want to remove the selected role(s)?"
+                    message="warning deletion of roles. continue?"
                 />,
                 onClose: () => {
                     modal.closeModals('ConfirmationModal');
@@ -251,11 +253,14 @@ function Settings({navigation}) {
             <Space/>
 
             <SectionHeader theme={theme}>
+                {/*top left settings page*/}
                 <SectionTitle>Roles & Permissions</SectionTitle>
                 <ActionsBar theme={theme}>
+                    {/*add new button top right settings page*/}
                     <ActionButton onPress={onCreateRole}><ActionButtonText>Add New</ActionButtonText></ActionButton>
                     <ActionButton theme={theme} disabled={!selectedRoles.length} onPress={onDeleteRoles}>
                         <ActionButtonText theme={theme} disabled={!selectedRoles.length} color="--color-red-600">
+                            {/*top right delete button on settings page*/}
                             Delete ({selectedRoles.length})
                         </ActionButtonText>
                     </ActionButton>

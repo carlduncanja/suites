@@ -1,3 +1,4 @@
+// SchedulePageHeader.js
 import React, { useState, useContext, useEffect } from 'react';
 import { View, StyleSheet, Dimensions, ActivityIndicator, Text } from 'react-native';
 import styled, { css } from '@emotion/native';
@@ -303,7 +304,9 @@ function SchedulePageHeader({
             </MultipleShadowsContainer>
         </>
     );
-
+    
+    // contains the header for schedule
+    // stops at the filter button on the schedule page
     return (
         <SchedulePageHeaderWrapper theme={theme}>
             <ScheduleHeaderContainer>
@@ -341,13 +344,13 @@ function SchedulePageHeader({
 
                     <GroupButtonContainer>
                         <ScheduleButton
-                            title="Go to Today"
+                            title="Go to today"
                             onButtonPress={gotoTodayButtonPress}
                         />
                         <ExpandButtonWrapper>
                             <ExpandButton theme={theme} Expanded={Expanded}>
                                 <Button
-                                    title={Expanded ? 'Collapse Calendar' : 'Expand Calendar'}
+                                    title={Expanded ? 'Collapse' : 'Expand Calendar'}
                                     buttonPress={onExpand}
                                     color={Expanded ? theme.colors['--default-shade-white'] : theme.colors['--color-gray-700']}
                                 />

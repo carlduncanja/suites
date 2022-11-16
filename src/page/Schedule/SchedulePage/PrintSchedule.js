@@ -11,6 +11,9 @@ import DateInputField from '../../../components/common/Input Fields/DateInputFie
 import CalendarIcon from '../../../../assets/svg/calendar';
 import InputField2 from '../../../components/common/Input Fields/InputField2';
 
+// print button at the top left
+// schedule page
+// downloads a pdf of schedule
 function PrintSchedule({printOption}) {
     const modal = useModal();
     const theme = useTheme();
@@ -18,7 +21,7 @@ function PrintSchedule({printOption}) {
     const [startDate, setStartDate] = useState();
     const [endDate, setEndDate] = useState();
     const [documentName, setDocumentName] = useState();
-
+    
     useEffect(() => {
         let start;
         let end;

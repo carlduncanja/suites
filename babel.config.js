@@ -1,7 +1,7 @@
 module.exports = function (api) {
     api.cache(true);
 
-    const presets = ['babel-preset-expo'];
+    const presets = ["module:metro-react-native-babel-preset"];
     const plugins = [
         [
             'inline-dotenv'
@@ -10,7 +10,8 @@ module.exports = function (api) {
             "include": [
                 "NODE_ENV"
             ]}
-        ]
+        ],
+        "react-native-reanimated/plugin"
     ];
 
     return {

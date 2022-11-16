@@ -12,7 +12,7 @@ const NavPageContainer = styled.View`
     display: flex;
     height: 100%;
 `;
-
+// wow whole component dedicated to search?
 function NavPage({
     isFetchingData = () => { },
     TopButton = null,

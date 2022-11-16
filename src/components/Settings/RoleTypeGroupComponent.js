@@ -12,22 +12,24 @@ const RoleContainer = styled.View`
     background-color: ${({theme, backgroundColor}) => (backgroundColor ? theme.colors[backgroundColor] : theme.colors['--default-shade-white'])};
 `;
 
+// style permission header
 const HeaderContainer = styled.TouchableOpacity`
     width: 100%;
     height: 52px;
     flex-direction: row;
-    background-color: white;  
 `;
 
 const RoleContent = styled.View`
     display: flex;
 `;
 
+// manipulate the style for content under permission header
 const ContentContainer = styled.View`
     display: flex;
     // margin-bottom: ${({theme}) => theme.space['--space-18']};
 `;
 
+// space between each permission
 const Divider = styled.View`
   height: 1px;
   background: ${({theme}) => theme.colors['--color-gray-300']};
@@ -51,17 +53,30 @@ function RoleTypeGroupComponent({
                 theme={theme}
                 backgroundColor={backgroundColor}
             >
-
+                {/*this is the header for each permission
+                    eg: 
+                        case file, theatres, inventory
+                    you get the picture
+                */}
                 <HeaderContainer
                     theme={theme}
+                    // toggles the permissions header
+                    // collapsed or expanded
                     onPress={onItemPress}
                     activeOpacity={1}
                     isCollapsed={isCollapsed}
                 >
                     {header()}
                 </HeaderContainer>
-
+                
                 {
+                    // this is the permissions
+                    // this is the toggle things that we get 
+                    // remove this and they don't show up anymore
+                    // eg: 
+                        // new case file
+                        // view case files
+                        // edit case files
                     isCollapsed && <RoleContent theme={theme}>
                         <ContentContainer theme={theme}>
                             {content}

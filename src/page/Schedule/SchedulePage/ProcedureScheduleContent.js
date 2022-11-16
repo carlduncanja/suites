@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import moment from 'moment';
 import SvgIcon from '../../../../assets/SvgIcon';
@@ -6,7 +6,10 @@ import GenerateIcon from "../../../../assets/svg/generateIcon";
 import {useNavigation} from "@react-navigation/native";
 import {emptyFn} from "../../../const";
 import {useModal} from "react-native-modalfy";
-
+import styled, { css } from '@emotion/native';
+import { useTheme } from 'emotion-theming';
+import {getUserCall, deleteCaseFile, deleteAppointmentById} from '../../../api/network';
+import NewProcedureOverlayContainer from './NewProcedureOverlayContainer';
 /**
  * Visual component for rendering procedure appointments.
  * @param scheduleItem
@@ -21,11 +24,13 @@ function ProcedureScheduleContent({
                                       leadPhysicianId,
                                       closeOverlay = emptyFn
                                   }) {
-    const navigation = useNavigation()
+    const navigation = useNavigation();
+    const theme = useTheme();
     const modal = useModal();
-
+                           
     const {
         _id = '',
+        createdBy = '',
         item = {},
         responseEntity = '',
         title = '',
@@ -35,11 +40,26 @@ function ProcedureScheduleContent({
         doctors = {},
         progressStatus = '',
         startTime = new Date(),
-        endTime = new Date()
+        endTime = new Date(),
     } = appointmentDetails;
 
     const {case: caseItem} = item;
     const {caseNumber} = caseItem;
+
+    const [owner, setOwner] = useState({
+        firstName: "",
+        lastName: ""
+    });
+
+    useEffect(() => {
+        getUserCall(createdBy).then(res => {
+            setOwner({
+                firstName: res.first_name,
+                lastName: res.last_name
+            });
+        });
+
+    }, [])
 
     /**
      * @param scheduleDate - date object
@@ -73,64 +93,88 @@ function ProcedureScheduleContent({
 
         return ( firstName && surname ) ? `${firstName} ${surname}` : 'N/A'
     }
+    const labels = ["Lead Surgeon", "Anaesthesiologist", "Assistant Surgeon"]; 
 
     const staffItem = (key, name, position, isBold, isSupporting) => (
+        
         <View
             style={[styles.doctorContainer]}
             key={key}
         >
             {
-                isSupporting ?
-                    <View style={{marginRight: 10}}><SvgIcon iconName="doctorArrow" strokeColor="#718096"/></View> :
-                    null
+                name !== null ? (
+                    <View style={{marginRight: 10}}>
+                        <SvgIcon iconName="doctorArrow" strokeColor="#718096"/>
+                    </View> 
+                ): null
             }
             <View style={{flex: 1, justifyContent: 'space-between', flexDirection: 'row'}}>
-                <Text
+
+                {
+                    name !== null ? (
+                        <Text
+                            style={
+                                [
+                                    styles.detailText,
+                                    {
+                                        color: '#3182CE',
+                                        marginRight: 16,
+                                        fontWeight: isBold ? 'bold' : 'normal'
+                                    }
+                                ]
+                            }
+                        > 
+                            {name}
+                        </Text>
+                    ) : (
+                        <Text
                     style={
                         [
                             styles.detailText,
                             {
-                                color: '#3182CE',
+                                color: '#E53E3E',
                                 marginRight: 16,
                                 fontWeight: isBold ? 'bold' : 'normal'
                             }
                         ]
                     }
-                > {name} </Text>
-
+                > 
+                    No Data
+                </Text>
+                    )
+                }
+                
+   
                 <Text style={[styles.detailText, {color: '#718096'}]}>{position}</Text>
             </View>
         </View>
     );
 
     const renderPhysicians = (physicians, leadPhysicianId) => {
-        const leadPhysician = physicians.find(item => item._id === leadPhysicianId);
+        /*const leadPhysician = physicians.find(item => item._id === leadPhysicianId);
         const supportingPhysicians = physicians.filter(item => item._id !== leadPhysicianId);
+        */
+       function findPhysicianByTag(tag) {
+           const match = physicians.filter(target => target.tag === tag)
 
+           return match.length > 0 ? match[0].name : null;
+       }
         return (
             <View style={styles.box}>
-                {
-                    leadPhysician &&
-                    staffItem('lead', `Dr ${leadPhysician.firstName} ${leadPhysician.surname}`, leadPhysician.position, true, false)
-                }
-                {
-                    supportingPhysicians.map((item, index) => {
-                        const name = `Dr ${item.firstName} ${item.surname}`;
-                        const {position} = item;
-
-                        return staffItem(index, name, position, false, leadPhysician !== null);
-                    })
-                }
+                {staffItem("1", findPhysicianByTag("Lead Surgeon"), "Lead Surgeon", false, null)}
+                {staffItem("2", findPhysicianByTag("Anaesthesiologist"), "Anaesthesiologist", false, null)}
+                {staffItem("3", findPhysicianByTag("Assistant Surgeon"), "Assistant Surgeon", false, null)}
             </View>
         );
     };
 
     const renderNurses = nurses => (
+        
         <View style={styles.box}>
             {
                 nurses.map((item, index) => {
-                    const name = `${item.firstName} ${item.lastName}`;
-                    const position = `Nurse ${index + 1}`;
+                    const name = `${item.name}` || "No Data";
+                    const position = `Nurse`;
                     return staffItem(index, name, position, false, false);
                 })
             }
@@ -149,6 +193,43 @@ function ProcedureScheduleContent({
             });
         closeOverlay()
     };
+
+    // when a case file is clicked this is displayed
+    // with all the details about a case
+    const NewProcedureButton = styled.TouchableOpacity`
+        align-items:center;
+        border-width:1px;
+        justify-content:center;
+        background-color: #0CB0E7;
+        width:53px;
+        height:26px;
+        border-radius:6px;
+        margin-left: 20px;
+
+    `;
+
+    const NewProcedureButtonText = styled.Text`
+        align-items: center; 
+        color: white;
+        font:${({ theme }) => theme.font["--text-sm-regular"]};
+    `;
+
+   async function handleDeletePress() {
+       const appointmentID = appointmentDetails.item.case.caseProcedures[0].appointment;
+
+       await deleteAppointmentById(appointmentID).then(res => {
+            modal.closeAllModals()
+       })
+       /*await deleteCaseFile(item.case._id).then((res) => {
+            modal.closeAllModals()
+       });
+       */
+       
+    }
+
+    function handleEditClick() {
+        closeOverlay();
+    }
 
     return (
         <TouchableOpacity style={{flex: 1}} activeOpacity={1}>
@@ -181,7 +262,7 @@ function ProcedureScheduleContent({
 
                         <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
                             <Text style={styles.subjectText}>
-                                {subject}
+                                {displayPatient(patient)}
                             </Text>
                             <Text style={{
                                 fontSize: 20,
@@ -221,25 +302,28 @@ function ProcedureScheduleContent({
                             </View>
                         </View>
 
-                        <View style={styles.cardDescription}>
-                            <View style={{flexDirection: 'column'}}>
-                                <Text style={{fontSize: 14, paddingBottom: 10, color: '#718096'}}>Patient</Text>
-                                <Text style={[styles.detailText]}>{displayPatient(patient)}</Text>
-                            </View>
-
-                            <View style={{flexDirection: 'row'}}/>
-                        </View>
-
-
                         {/* Additional Information */}
                         <View style={styles.cardDoctors}>
                             {renderPhysicians(physicians, leadPhysicianId)}
                             {nurses.length > 0 && renderNurses(nurses)}
                         </View>
-
                     </View>
+
+                    
                 </View>
+                
             </ScrollView>
+            <View style={styles.editContainer}>
+                    <Text style={styles.editText} >Created by {owner.firstName} {owner.lastName}</Text>
+                    <View style={styles.buttonHolder}>
+                        <NewProcedureButton style={{borderColor: '#0CB0E7'}}  theme={theme} onPress={() => handleEditClick()}>
+                            <NewProcedureButtonText>Edit</NewProcedureButtonText>
+                        </NewProcedureButton>
+                        <NewProcedureButton style={{backgroundColor: 'white', borderColor: '#6E7B87'}} theme={theme} onPress={() => handleDeletePress()}>
+                            <NewProcedureButtonText style={{color: '#6E7B87'}}>Delete</NewProcedureButtonText>
+                        </NewProcedureButton>
+                    </View>     
+            </View>
         </TouchableOpacity>
     );
 }
@@ -253,6 +337,35 @@ const styles = StyleSheet.create({
         paddingLeft: '4%',
         flexDirection: 'column',
     },
+
+    buttonHolder: {
+        flex: 1,
+        //backgroundColor: 'black',
+        display: 'flex',
+        justifyContent: 'flex-end',
+        flexDirection: 'row'
+
+    },
+
+    editContainer: {
+        height: 50,
+        zIndex:100,
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
+        paddingVertical: 17,
+        paddingHorizontal: 32,
+        //backgroundColor: 'red'
+    },
+
+    editText: {
+        color: '#718096',
+        fontSize: 12,
+        fontWeight: "500",
+        flex: 1,
+        // backgroundColor: 'red'
+    },
+
     idText: {
         fontSize: 16,
         color: '#104587',

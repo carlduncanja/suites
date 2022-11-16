@@ -1,3 +1,4 @@
+// SchedulePage.js
 import React, {useState, useEffect} from 'react';
 import {StyleSheet, Dimensions} from 'react-native';
 import Animated from 'react-native-reanimated';
@@ -17,6 +18,9 @@ import SchedulePageContent from './SchedulePageContent';
 import PrintSchedule from './PrintSchedule';
 import {useNavigation} from "@react-navigation/native";
 import {emptyFn} from "../../../const";
+import { View } from 'react-native-animatable';
+import {Text} from 'react-native';
+import NewProcedureOverlayContainer from './NewProcedureOverlayContainer';
 
 const ScheduleWrapper = styled.View`
   flex: 1;
@@ -150,9 +154,11 @@ const SchedulePage = props => {
      * @param date string "YYYY-MM-DD" for the selected day.
      */
     const handleOnDaySelected = date => {
+        
         setSelectedDay(date);
         const indexOfSelected = getSelectedIndex(date, daysList);
         setSectionListIndex(indexOfSelected);
+       
     };
 
     const handleOnGoToToday = () => {
@@ -187,26 +193,54 @@ const SchedulePage = props => {
             setAppointmentsStartDate(newStartDate);
         }
     };
-
+    const [flag, setFlag] = useState(false);
+    const [currentAppointment, setCurrentAppointment] = useState({});
+    
     const handleAppointmentPress = appointment => {
         modal.openModal('BottomSheetModal', {
             // content: <ScheduleOverlayContainer appointment={appointment}/>,
             content: <ScheduleOverlayContainer appointment={appointment} closeOverlay={() => {
+                setFlag(true);
+                setCurrentAppointment(appointment)
                 modal.closeAllModals();
             }}/>,
+            initialSnap: 2,
+            snapPoints: [600, 500, 0]
+        });        
+    };
+    
+    useEffect(() => {
+        if(flag) {
+            modal.openModal('BottomSheetModal', {
+                content: <NewProcedureOverlayContainer appointment={currentAppointment} editMode={true} />,
+                initialSnap: 2,
+                snapPoints: [600, 500, 0]
+            });
+            setFlag(false);
+        }
+    }, [flag, currentAppointment])
+
+    const handleNewProcedurePress= procedure => {
+        modal.openModal('BottomSheetModal', {
+            content: <NewProcedureOverlayContainer passedDate={selectedDay}/>,
             initialSnap: 2,
             snapPoints: [600, 500, 0]
         });
     };
 
+    // handles the search bar at the to left
+    // toggles visible or hidden
     const searchPress = () => {
         setSearchOpen(true);
     };
 
+    // same ^
     const closeSearch = () => {
         setSearchOpen(false);
     };
 
+    // once a print option is selected
+    // navigates to the printschedule page
     const handlePrintOptions = option => {
         setPrintOption(option);
         setShowPrintOptions(false);
@@ -214,6 +248,7 @@ const SchedulePage = props => {
         navigation.navigate('PrintSchedulePage', {option})
     };
 
+    // updates schedule
     const handleScheduleRefresh = (successCallback = emptyFn) => {
         // fetch the schedule
         setScheduleRefreshing(true);
@@ -279,6 +314,7 @@ const SchedulePage = props => {
                         screenDimensions={screenDimensions}
                         selectedIndex={sectionListIndex}
                         onAppointmentPress={handleAppointmentPress}
+                        onNewProcedurePress={handleNewProcedurePress}
                         selectedDay={selectedDay}
                         onScheduleRefresh={handleScheduleRefresh}
                         isRefreshing={scheduleRefreshing}

@@ -178,7 +178,6 @@ function AppointmentPage({ navigation, route }) {
 
     let valid;
     const onNextButtonPress = async () => {
-
         // Validate Fields
         switch (currentTabs[currentTabIndex]) {
             case PAGE_TABS.APPOINTMENT:

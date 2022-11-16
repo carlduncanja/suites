@@ -355,6 +355,7 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, removeDraft, route}
         }
 
         if (!isValid) {
+            console.log("freckles")
             return;
         }
 
@@ -570,7 +571,7 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, removeDraft, route}
 
     const handleOnComplete = () => {
         // prepare request create case file request
-        console.log('handleOnComplete', patientFields);
+        console.log('handleOnComplete patientfields', patientFields);
         console.log('handleOnCompleted', staffInfo);
         console.log('handleOnCompleted', caseProceduresInfo);
 

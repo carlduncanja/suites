@@ -7,7 +7,9 @@ import {colors} from '../../../styles';
 import DeliveryScheduleContent from './DeliveryScheduleContent';
 import RestockScheduleContent from './RestockScheduleContent';
 import {emptyFn} from "../../../const";
-
+import {useModal} from "react-native-modalfy";
+import NewProcedureOverlayContainer from './NewProcedureOverlayContainer';
+import { appointments } from '../../../../data/Appointments';
 
 const APPOINTMENT_TYPES = {
     SURGERY: 'Procedure',
@@ -25,11 +27,12 @@ const APPOINTMENT_TYPES = {
  * @constructor
  */
 function ScheduleOverlayContainer({appointment = {}, closeOverlay = emptyFn}) {
-
+    
     const [appointmentDetails, setAppointmentDetails] = useState();
     const [isFetchingDetails, setFetchingDetails] = useState(false);
     const [caseFile, setCaseFile] = useState();
-
+   
+    const modal = useModal();
     // On Mount
     useEffect(() => {
         // fetch appointment
@@ -73,12 +76,13 @@ function ScheduleOverlayContainer({appointment = {}, closeOverlay = emptyFn}) {
 
     }, [appointmentDetails])
 
-    const handleCloseOverlay = () => {
+    const handleCloseOverlay = async () => {
         closeOverlay();
     }
 
     const getAppointment = id => {
         setFetchingDetails(true);
+
         getAppointmentById(id)
             .then(data => {
                 console.log('data: ', data);
@@ -111,14 +115,56 @@ function ScheduleOverlayContainer({appointment = {}, closeOverlay = emptyFn}) {
                 />;
 
                 // fetch case file info
-                const physicians = caseFile.staff && caseFile.staff.physicians.map(item => ({
+                let physicians = caseFile.staff && caseFile.staff.physicians.map(item => ({
                     _id: item._id,
                     firstName: item.firstName,
                     surname: item.surname,
                     position: '',
                     isLead: caseFile.staff.leadPhysician === item._id
                 }));
+                
+                /*
+                function getStaffMember(tag) {
+                    const currentRoleKeys = appointment.item.case.roleKeys;
+                    let foundTag = {};
+                    let foundPhysician = {};
 
+                    const match = currentRoleKeys.filter(result => {
+                        if(result.tag === tag) {
+                            
+                            foundTag = result
+                        }
+                    });
+
+                    const matchPhysician = physicians.filter(result => {
+                        if(result._id === foundTag._id) {
+                            foundPhysician = result;
+                        }
+                    })
+                    
+                    return {
+                        _id: foundPhysician._id,
+                        firstName: foundPhysician.firstName,
+                        surname: foundPhysician.surname ,
+                        position: foundTag.tag,
+                        isLead: false
+                    }
+                }
+                const currentLeadSurgeon = getStaffMember("Lead Surgeon");
+                const currentAnaesthesiologist = getStaffMember("Anaesthesiologist");
+                const currentAssistantSurgeon = getStaffMember("Assistant Surgeon")
+
+                const updatedPhysician = [
+                    currentLeadSurgeon,
+                    currentAnaesthesiologist,
+                    currentAssistantSurgeon
+                ]
+
+                
+
+
+                physicians = updatedPhysician;
+                */
                 const nurses = caseFile.staff.nurses.map(item => ({
                     _id: item._Id,
                     firstName: item.first_name,
@@ -127,16 +173,16 @@ function ScheduleOverlayContainer({appointment = {}, closeOverlay = emptyFn}) {
 
                 const patient = caseFile.patient;
 
-                // console.log("procedure", physicians);
-                console.log("caseFile", patient);
-
+                const finalRoleKeys = appointment.item.case.roleKeys
+                const finalPhysicians = finalRoleKeys.filter(target => target.type !== "Nurse");
+                const finalNurses = finalRoleKeys.filter(target => target.type !== "Physician");;
 
                 return <ProcedureScheduleContent
                     appointmentDetails={appointment}
-                    physicians={physicians}
+                    physicians={finalPhysicians}
                     patient={patient}
                     leadPhysicianId={caseFile.staff.leadPhysician}
-                    nurses={nurses}
+                    nurses={finalNurses}
                     closeOverlay={handleCloseOverlay}
                 />;
             }
@@ -172,6 +218,8 @@ function ScheduleOverlayContainer({appointment = {}, closeOverlay = emptyFn}) {
             }
         }
     };
+
+
 
     return (
         <View style={styles.container}>

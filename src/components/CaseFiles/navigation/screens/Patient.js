@@ -14,8 +14,12 @@ const Patient = ({
 }) => {
     const dates = procedures.map(item => {
         const {appointment} = item;
-        const {startTime} = appointment;
-        return moment(startTime);
+        //const {startTime} = appointment;
+        
+        const startTime = appointment?.startTime || "";
+        
+        return moment(startTime)
+
     });
 
     const getDate = dates => {
@@ -136,7 +140,8 @@ const Patient = ({
                 return (
                     <Insurance tabDetails={{
                         ...insurance,
-                        patient: `${firstName} ${surname}`
+                        patient: `${firstName} ${surname}`,
+                        procedures
                     }}
                     />
                 );

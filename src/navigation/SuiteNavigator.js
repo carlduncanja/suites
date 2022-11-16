@@ -1,6 +1,7 @@
+// SuiteNavigator.js
 import React, {useContext, useEffect} from 'react';
 import {View, StyleSheet, Dimensions, SafeAreaView, Text} from 'react-native';
-import AsyncStorage from '@react-native-community/async-storage';
+import AsyncStorage from '@react-native-async-storage/async-storage'
 import * as Notifications from 'expo-notifications';
 
 import {
@@ -27,6 +28,8 @@ import SideBarComponent from '../components/SideBar/SideBarComponent';
 
 import OverlaySlidePanelModal from '../modals/OverlaySlidePanelModal';
 import OverlayModal from '../modals/OverlayModal';
+import AddWorkItemModal from '../modals/AddWorkItemModal';
+import EditWorkItemModal from '../modals/EditWorkItemModal';
 import ActionContainerModal from '../modals/ActionContainerModal';
 import ReportPreviewModal from '../modals/ReportPreviewModal';
 import OverlayInfoModal from '../modals/OverlayInfoModal';
@@ -48,6 +51,9 @@ import PrintScheduleModal from "../modals/PrintScheduleModal";
  *
  * https://reactnavigation.org/docs/custom-navigators
  */
+
+// navigation bar at the left side
+// 
 const SuitesCustomNavigator = ({
                                    initialRouteName,
                                    children,
@@ -66,6 +72,7 @@ const SuitesCustomNavigator = ({
 
     useEffect(() => {
         // get user token from state,
+        // navigation
         AsyncStorage.getItem('userToken')
             .then(token => {
                 // navigation.navigate("App")
@@ -89,6 +96,8 @@ const SuitesCustomNavigator = ({
         BottomSheetModal,
         QuickActionsModal,
         ConfirmationModal,
+        AddWorkItemModal,
+        EditWorkItemModal,
     };
 
     const defaultOptions = {

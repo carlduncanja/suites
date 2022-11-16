@@ -1,3 +1,4 @@
+// LoginPage.js
 import React, {useState, useRef, useEffect, createRef} from 'react';
 import {
     View,
@@ -5,7 +6,7 @@ import {
     Alert,
     ActivityIndicator, Text,
 } from 'react-native';
-import AsyncStorage from '@react-native-community/async-storage'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 import {connect} from 'react-redux';
 import styled, {css} from '@emotion/native';
 import {login} from '../../api/network';
@@ -21,6 +22,7 @@ import PageButton from "../../components/common/Page/PageButton";
 import {useTheme} from "emotion-theming";
 import moment from "moment";
 
+// login page at the startup
 function LoginPage({navigation, signIn, expoPushToken}) {
     const theme = useTheme();
 
@@ -38,6 +40,8 @@ function LoginPage({navigation, signIn, expoPushToken}) {
 
     const [isLoading, setLoading] = useState(false);
 
+    // updates input field state
+    // on change
     const onFieldChange = fieldName => value => {
         setFields({
             ...fields,
@@ -48,9 +52,13 @@ function LoginPage({navigation, signIn, expoPushToken}) {
         setFieldError(updatedErrors)
     };
 
+    // attempts to login user
+    // checks if info valid
+    // throws error if not
     const onLoginButtonPress = () => {
         if (!isFormFieldsValid()) return;
-
+        //console.log(fields) 
+        
         setLoading(true);
         login(fields.email, fields.password, expoPushToken)
             .then(async data => {
@@ -79,6 +87,7 @@ function LoginPage({navigation, signIn, expoPushToken}) {
             });
     };
 
+    // validator
     const isFormFieldsValid = () => {
         const requiredParams = ['email', 'password']
 
@@ -95,9 +104,40 @@ function LoginPage({navigation, signIn, expoPushToken}) {
         return valid
     }
 
+    // guest login
+    // currently does nothing
+    // edit: works now
     const onGuestButtonPress = () => {
+        setLoading(true);
+        login("howard.edwards@smsja.net", "password1", expoPushToken)
+            .then(async data => {
+                // save auth data
+                console.log(data);
+                const {token = null} = data;
+                try {
+                    await AsyncStorage.setItem('userToken', token);
+                    // navigation.navigate("App")
+                    if (token) {
+                        setBearerToken(token);
+                    }
+
+                    signIn(token);
+                } catch (error) {
+                    // Error saving data
+                    console.log('Failed to save token', error);
+                }
+            })
+            .catch(e => {
+                console.log('login failed', e);
+                Alert.alert('Failed to login');
+            })
+            .finally(_ => {
+                setLoading(false);
+            });
     };
 
+    // signup button at the bottom of the form
+    // navs to there when clicked
     const goToSignUp = () => {
         navigation.navigate('signup')
     };
