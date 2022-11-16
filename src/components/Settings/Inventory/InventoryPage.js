@@ -18,7 +18,8 @@ import Header from '../../common/Table/Header';
 import { useModal } from 'react-native-modalfy';
 
 import FrameCard from '../../common/Frames/FrameCards/FrameCard';
-import ShoppingTag from '../../../../assets/svg/ShoppingTag';
+
+
 
 const ContentContainer = styled.View`
     height: 32px;
@@ -37,7 +38,7 @@ const HeaderContainer = styled.View`
 function InventoryPage({navigation, route}) {
     const theme = useTheme();
     const modal = useModal();
-    const {edited, onRefresh, categoryType, categoryTitle, page, frameTitle} = route?.params || {};
+    const {item} = route?.params || {};
     const currentTabs = ['Details'];
     const headers = [
         {
@@ -59,30 +60,28 @@ function InventoryPage({navigation, route}) {
     const [inventoryIds, setInventoryIds] = useState ([]);
   
 
-    const { isEditMode = edited ? true : false} = pageState;
+    const { isEditMode = false} = pageState;
 
     useEffect(() => {
-        getCategories(categoryType, 1000)
-            .then(data => {
-                setInventoryItems(data.data.map( item => {return item.name}));
-                setInventoryIds(data.data.map( item => {return item._id}))
-            })
-            .catch(error => {
-                console.log('Unable to retrieve iventory category items: ', error);
-            });
-
-            edited ? setPageState({
-                ...pageState,
-                isEditMode: true
-            }) : null
+        fetchCategories();
     }, []);
 
-   
+    const fetchCategories =  () => {
+        getCategories(item.categoryType, 1000)
+        .then(data => {
+            setInventoryItems(data.data.map( item => {return item.name}));
+            setInventoryIds(data.data.map( item => {return item._id}))
+        })
+        .catch(error => {
+            console.log('Unable to retrieve iventory category items: ', error);
+        });
+    }
 
     const handleEdit = (id, name) => {
         updateCategory(id, {name: name})
         .then(data => {
             successModal();
+            fetchCategories();
         })
         .catch(error => {
             errorModal();
@@ -96,8 +95,9 @@ function InventoryPage({navigation, route}) {
     }
 
     const handleAdd = (name) => {
-        addCategory({name: name, type: categoryType})
+        addCategory({name: name, type: item.categoryType})
             .then(data => {
+                fetchCategories();
                 successModal();
             })
             .catch(error => {
@@ -114,20 +114,13 @@ function InventoryPage({navigation, route}) {
                 isEditUpdate={false}
                 onAction={() => {
                     modal.closeModals('ConfirmationModal');
-                    setTimeout(() => {
-                    }, 200)
-                    onRefresh(page);
                 }}
                 onCancel={() => {
                     modal.closeModals('ConfirmationModal');
-                    setTimeout(() => {
-                    }, 200)
-                    onRefresh(page);
                 }}
             />,
             onClose: () => {
                 modal.closeModal('ConfirmationModal')
-                onRefresh(page);
             }
         }
         );
@@ -152,6 +145,7 @@ function InventoryPage({navigation, route}) {
     const removeItem = (item) => {
         deleteCategory([item])
         .then(() => {
+            fetchCategories();
             successModal();
         } 
         ).catch(error => {
@@ -189,17 +183,17 @@ function InventoryPage({navigation, route}) {
     }
 
     const details = (
-        inventoryItems.length > 0 ?
         <>
            <ScrollView>
             <View>
                 <FrameCard
-                    frameColor={(frameTitle=="Categories")? "#718096": "#FAF5FF"}
-                    titleBackgroundColor="#EEF2F6"
-                    frameBorderColor="#CCD6E0"
-                    frameTitle={frameTitle}
+                    frameColor={item.frameColor}
+                    titleBackgroundColor={item.titleBackgroundColor}
+                    frameBorderColor={item.frameBorderColor}
+                    frameTitle={item.frameTitle}
                     cardInformation={inventoryItems}
-                    icon={ShoppingTag}
+                    icon={item.frameIcon
+                    }
                     isEditMode={isEditMode}
                     normalInput={true}
                     onEdit={handleEdit}
@@ -209,9 +203,7 @@ function InventoryPage({navigation, route}) {
                 />
             </View>
             </ScrollView>  
-        </>
-        :
-        <></>
+         </>
     );
 
 
@@ -240,7 +232,7 @@ function InventoryPage({navigation, route}) {
         }}
         >
              <DetailsPage
-                headerChildren={['Custom types', categoryTitle]}
+                headerChildren={['Custom types', item.categoryTitle]}
                 onBackPress={() => {
                     navigation.navigate('Settings');
                 }}

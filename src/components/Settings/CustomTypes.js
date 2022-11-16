@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import ListItem from '../common/List/ListItem';
 import DataItem from '../common/List/DataItem';
-
+import ShoppingTag from '../../../assets/svg/ShoppingTag';
+import LabBottle from '../../../assets/svg/LabBottle';
 const CUSTOM_TYPES = [
     {
         title: 'Appointment Buffer-time',
@@ -12,21 +13,33 @@ const CUSTOM_TYPES = [
         page: 'InventoryPage',
         categoryType: 'storage',
         categoryTitle: 'Storage',
-        frameTitle: "Categories"
+        frameTitle: "Categories",
+        frameColor: '#718096',
+        titleBackgroundColor: '#EEF2F6',
+        frameBorderColor: '#CCD6E0',
+        frameIcon: ShoppingTag
     },
     {
         title: 'Inventory',
         page: 'InventoryPage',
         categoryType: 'inventory',
         categoryTitle: 'Inventory',
-        frameTitle: "Categories"
+        frameTitle: "Categories",
+        frameColor: '#718096',
+        titleBackgroundColor: '#EEF2F6',
+        frameBorderColor: '#CCD6E0',
+        frameIcon: ShoppingTag
     },
     {
         title: 'Medical Staff',
         page: 'InventoryPage',
         categoryType: 'staff',
         categoryTitle: 'Staff',
-        frameTitle: "Physicians"
+        frameTitle: "Physicians",
+        frameColor: '#805AD5',
+        titleBackgroundColor: '#FAF5FF',
+        frameBorderColor: '#D6BCFA',
+        frameIcon: LabBottle
     }
 ];
 
@@ -35,19 +48,14 @@ const CustomTypes = ({navigation}) => {
         <DataItem color="--color-gray-700" fontStyle="--text-sm-medium" flex={1} text={title}/>
     );
 
-    const onItemPress = (page) => {
-        navigation.navigate(page, {edited: false, onRefresh: handleRefresh, categoryTitle, categoryType, page, frameTitle });
+    const onItemPress = (item) => {
+        navigation.navigate(item.page, { item });
     };
-
-    const handleRefresh = (page) => {
-        navigation.navigate("Settings");
-        navigation.navigate(page, {edited: true, onRefresh: handleRefresh});
-    }
 
     const renderCustomType = (item) => (
         <ListItem
             hasCheckBox={false}
-            onItemPress={() => onItemPress(item.page)}
+            onItemPress={() => onItemPress(item)}
             itemView={customType(item.title)}
         />
     );

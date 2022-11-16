@@ -10,8 +10,9 @@ import SearchableOptionsField from '../../Input Fields/SearchableOptionsField';
 import IconButton from '../../Buttons/IconButton';
 import styled, { css } from '@emotion/native';
 import { useTheme } from 'emotion-theming';
-import InputField2 from '../../../common/Input Fields/InputField2'
+import InputField2 from '../../../common/Input Fields/InputField2';
 import { PageContext } from '../../../../contexts/PageContext';
+import FrameContentItem from './FrameContentItem';
 
 const FrameContentListWrapper = styled.View`
     width : 100%;
@@ -52,7 +53,7 @@ function FrameContentList(props) {
     const [addMode, setAddMode] = useState(false)
 
 
-    const toogleAddOption = (value) => {
+    const toggleAddOption = (value) => {
         setAddMode(value)
     }
 
@@ -77,54 +78,22 @@ function FrameContentList(props) {
 
                         :
                         cardInformation.map((itemContent, index) => {
-
-                            const [editPress, setEditPress] = useState(false)
-
-                            const editSateToggle = (value) => {
-                                setEditPress(value)
-                            }
-
                             return (
-                                itemContent === '' ?
-                                    <InputFrameItem
-                                        onChangeText={(value) => { handleAddNew(value)(index); setValue(value) }}
-                                        value={value}
-                                        onClear={() => handleEdit('remove')(index)}
-                                        placeholder="Add new item"
-                                    />
-                                    :
-
-                                    editPress && isEditMode === true ?
-                                        <FrameEditItem itemContent={{ 'name': itemContent }}
-                                            title="Edit Item"
-                                            deleteMode={true}
-                                            onDelete={() => {
-                                                onDelete(idArray[index])
-                                            }}
-                                            onCancel={() => {
-                                                editSateToggle(false)
-                                            }}
-                                            onEdit={onEdit}
-                                            buttonTitle="Save"
-                                            normalInput={normalInput}
-                                            id={idArray[index]}
-                                            physicianSelection={physicianSelection}
-                                        />
-
-                                        :
-                                        <FrameItem
-                                            itemContent={itemContent}
-                                            icon={isEditMode ? <RemoveIcon /> : null}
-                                            onPressButton={() => {
-                                                handleEdit()
-                                                editSateToggle(true)
-                                                toogleAddOption(false)
-                                                //isInEditMode=true
-
-                                            }}
-                                            isEditMode={isEditMode}
-                                        />
-
+                               <FrameContentItem
+                                itemContent = {itemContent}
+                                index = {index}
+                                isEditMode = {isEditMode}
+                                handleEdit = {handleEdit}
+                                handleAddNew = {handleAddNew}
+                                isAddNew = {isAddNew}
+                                onDelete={onDelete}
+                                idArray={idArray}
+                                onAction={onAction}
+                                onEdit={onEdit}
+                                physicianSelection={physicianSelection}
+                                normalInput={normalInput} 
+                                toggleAddOption={toggleAddOption}
+                               />
                             )
                         })
 
@@ -137,20 +106,21 @@ function FrameContentList(props) {
                         <FrameEditItem
                             title="New Item"
                             onCancel={() => {
-                                toogleAddOption(false)
+                                toggleAddOption(false)
                             }}
                             onAction={onAction}
                             buttonTitle="Add"
                             normalInput={normalInput}
                             physicianSelection={physicianSelection}
+                            toggleAddOption={toggleAddOption}
                         />
                         :
 
                         <TouchableOpacity
                             onPress={() => {
-                                toogleAddOption(true)
+                                toggleAddOption(true)
                             }}>
-                            <FrameItem itemContent="Add New" icon={<AddIcon />} isEditMode={isEditMode} onPressButton={()=>{toogleAddOption(true)}}/>
+                            <FrameItem itemContent="Add New" icon={<AddIcon />} isEditMode={isEditMode} onPressButton={()=>{toggleAddOption(true)}}/>
                         </TouchableOpacity>
                     :
                     <View>

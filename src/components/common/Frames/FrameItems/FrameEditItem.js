@@ -114,6 +114,8 @@ function FrameEditItem({
     onAction = () => { },
     onEdit = () => { },
     id,
+    toggleAddOption = () => {},
+    setEditPress = () => {}
 }) {
 
     const [physicianName, setPhysicianName] = useState(itemContent.name);
@@ -378,6 +380,8 @@ function FrameEditItem({
                                     normalInput ? buttonTitle === 'Add' ? onAction(name) : onEdit(id, name)  :  onAction(staffInfo[0]._id)
                                     :
                                     null
+                                toggleAddOption(false);
+                                setEditPress(false)
                             }}
                             theme={theme}
                             background={actionButton ? "--color-blue-600" : '--color-gray-300'}
