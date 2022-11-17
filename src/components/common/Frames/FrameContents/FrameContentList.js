@@ -120,7 +120,7 @@ function FrameContentList(props) {
                             onPress={() => {
                                 toggleAddOption(true)
                             }}>
-                            <FrameItem itemContent="Add New" icon={<AddIcon />} isEditMode={isEditMode} onPressButton={()=>{toggleAddOption(true)}}/>
+                            <FrameItem itemContent="Add New" icon={<AddIcon />} isEditMode={isEditMode} onPressButton={() => { toggleAddOption(true) }} />
                         </TouchableOpacity>
                     :
                     <View>

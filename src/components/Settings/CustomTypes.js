@@ -5,6 +5,10 @@ import ShoppingTag from '../../../assets/svg/ShoppingTag';
 import LabBottle from '../../../assets/svg/LabBottle';
 const CUSTOM_TYPES = [
     {
+        title: "Case Files",
+        page: 'CaseFilesPage'
+    },
+    {
         title: 'Appointment Buffer-time',
         page: 'AppointmentsPage',
     },
@@ -56,8 +60,8 @@ const CUSTOM_TYPES = [
 
 const CustomTypes = ({navigation}) => {
     const customType = title => (
-        <DataItem color="--color-gray-700" fontStyle="--text-sm-medium" flex={1} text={title}/>
-    );
+        <DataItem color="--color-gray-700" fontStyle="--text-sm-medium" flex={1} text={title} />
+    ); 
 
     const onItemPress = (item) => {
         navigation.navigate(item.page, { item });
@@ -70,9 +74,11 @@ const CustomTypes = ({navigation}) => {
             itemView={customType(item.title)}
         />
     );
+
+   
     return (
         <>
-            { CUSTOM_TYPES.map(type => (
+            {CUSTOM_TYPES.map(type => (
                 renderCustomType(type)
             ))}
         </>

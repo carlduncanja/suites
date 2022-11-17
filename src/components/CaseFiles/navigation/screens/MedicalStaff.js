@@ -10,7 +10,7 @@ const MedicalStaff = ({
     staff,
     selectedTab,
     isEditMode,
-    modal,
+    modal, 
     caseId,
     refreshData = () => { },
 }) => {

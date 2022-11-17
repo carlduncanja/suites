@@ -123,9 +123,14 @@ export const configEndpoint = '/configurations';
 export const updateBufferEndpoint = '/configurations/buffer';
 
 // #### INVOICES
-export const invoicesEndpoint =  '/invoices';   
-export const invoiceEndpoint = id =>`/invoices/${id}`; 
-export const updateInvoiceDetailsEndpoint= id => `/invoices/${id}`
+export const invoicesEndpoint = '/invoices';
+export const invoiceEndpoint = id => `/invoices/${id}`;
+export const updateInvoiceDetailsEndpoint = id => `/invoices/${id}`
 
 // #### EMAIL
-export const emailEndpoint =  '/email/send';   
+export const emailEndpoint = '/email/send';
+
+// #### LIFESTYLES
+export const lifestylesEndpiont = '/lifestyle_types'
+export const ItemsLifeStyleEndpiont = (id) => `/lifestyle_types/${id}/items`
+export const DeleteLifeStyleitems = `/lifestyle_types/delete/items`
