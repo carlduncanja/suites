@@ -1,22 +1,14 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { View, Text } from 'react-native';
-import styled, { css } from '@emotion/native';
 import { useTheme } from 'emotion-theming';
-
-import { getLifeStyles, addLifeStyleItems, deleteLifeStyleItems } from '../../../api/network';
-
+import { getLifeStyles, addLifeStyleItems, deleteLifeStyleItems, getHealthInsurers } from '../../../api/network';
 import DetailsPage from '../../common/DetailsPage/DetailsPage';
 import TabsContainer from '../../common/Tabs/TabsContainerComponent';
-import Table from '../../common/Table/Table';
-import DataItem from '../../common/List/DataItem';
-import InputUnitFields from '../../common/Input Fields/InputUnitFields';
-import ContentDataItem from '../../common/List/ContentDataItem';
 import ConfirmationComponent from '../../ConfirmationComponent';
 import ConfirmationCheckBoxComponent from '../../ConfirmationCheckBoxComponent'
 import LifeStyleTabs from '../../../components/OverlayTabs/LIfeStyleTabs';
-
+import HealthInsurer from '../../../components/OverlayTabs/HealthInsurerTab';
 import { PageContext } from '../../../contexts/PageContext';
-import Header from '../../common/Table/Header';
 import { useModal } from 'react-native-modalfy';
 
 
@@ -29,12 +21,14 @@ function CaseFilesPage({ navigation, route }) {
     const [pageState, setPageState] = useState({});
     const [currentTab, setCurrentTab] = useState(currentTabs[0]);
     const [lifeStyleData, setLifeStyleData] = useState([])
+    const [healthInsurers, setHealthInsurers] = useState([])
 
     const { isEditMode = false } = pageState;
 
 
     useEffect(() => {
-        fetchLifeStyleData()
+        fetchLifeStyleData();
+        fetchHealthInsurers();
     }, []);
 
 
@@ -45,13 +39,21 @@ function CaseFilesPage({ navigation, route }) {
     const fetchLifeStyleData = () => {
         getLifeStyles()
             .then(data => {
-
                 setLifeStyleData(data.data)
             })
             .catch(error => {
-                console.error('fetch.user.failed', error);
+                console.error('Fetching lifestyle data failed', error);
+            });
+    }
+
+    const fetchHealthInsurers = () => {
+        getHealthInsurers()
+            .then(data => {
+                setHealthInsurers(data.data);
             })
-            .finally();
+            .catch(error => {
+                console.error('Fetching health insurer data failed', error);
+            });
     }
 
     const addItems = (caseID, items) => {
@@ -180,7 +182,13 @@ function CaseFilesPage({ navigation, route }) {
                     />
                 )
             case 'Health Insurer':
-                return <View></View>;
+                return <> 
+                    {
+                        healthInsurers.map(insurer => {
+                           return <HealthInsurer insurer={insurer} />
+                        })
+                    }
+                </>
             default:
                 return <View />;
         }

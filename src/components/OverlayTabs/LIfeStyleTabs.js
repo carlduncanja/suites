@@ -73,22 +73,22 @@ const LifeStyleTabs = ({ LifestyleData,
         return _id;
     })
 
-    const renderItem = (categorieData) => {
+    const renderItem = (categoryData) => {
       
         return (<View style={styles.frameContainer}>
             <FrameCard
-                frameColor={categorieData.frame}
-                titleBackgroundColor={categorieData.color}
-                frameBorderColor={categorieData.border}
-                frameTitle={categorieData.name}
-                cardInformation={categorieData.itemsNames}
-                icon={categorieData.icon}
+                frameColor={categoryData.frame}
+                titleBackgroundColor={categoryData.color}
+                frameBorderColor={categoryData.border}
+                frameTitle={categoryData.name}
+                cardInformation={categoryData.itemsNames}
+                icon={categoryData.icon}
                 isEditMode={isEditMode}
                 //handleEdit={handleEdit}
                 onDelete={onDelete}
-                idArray={categorieData.itemsIds}
+                idArray={categoryData.itemsIds}
                 onAction={(data) =>
-                    onAction({ id: categorieData._id, data: data })
+                    onAction({ id: categoryData._id, data: data })
                 }
                 normalInput={true}
 
