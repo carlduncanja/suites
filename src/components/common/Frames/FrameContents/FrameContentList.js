@@ -40,7 +40,8 @@ function FrameContentList(props) {
         isEditMode = false,
         idArray,
         physicianSelection = true,
-        onAction = () => { }
+        onAction = () => { },
+        textInput = false
     } = props
 
     const [value, setValue] = useState("");
@@ -104,6 +105,7 @@ function FrameContentList(props) {
                                             }}
                                             buttonTitle="Save"
                                             physicianSelection={physicianSelection}
+                                            textInput={textInput}
                                         />
 
                                         :
@@ -129,23 +131,35 @@ function FrameContentList(props) {
                 {isEditMode ?
 
                     addMode ?
-                        <FrameEditItem
-                            title="New"
-                            onCancel={() => {
-                                toogleAddOption(false)
-                            }}
-                            onAction={onAction}
+                        textInput ?
+                            <FrameEditItem
+                                title="New"
+                                onCancel={() => {
+                                    toogleAddOption(false)
+                                }}
+                                onAction={onAction}
 
-                            buttonTitle="Add"
-                            physicianSelection={physicianSelection}
-                        />
+                                buttonTitle="Add"
+                                textInput={textInput}
+                            />
+                            :
+                            <FrameEditItem
+                                title="New"
+                                onCancel={() => {
+                                    toogleAddOption(false)
+                                }}
+                                onAction={onAction}
+
+                                buttonTitle="Add"
+                                physicianSelection={physicianSelection}
+                            />
                         :
 
                         <TouchableOpacity
                             onPress={() => {
                                 toogleAddOption(true)
                             }}>
-                            <FrameItem itemContent="Add New" icon={<AddIcon />} isEditMode={isEditMode} onPressButton={()=>{toogleAddOption(true)}}/>
+                            <FrameItem itemContent="Add New" icon={<AddIcon />} isEditMode={isEditMode} onPressButton={() => { toogleAddOption(true) }} />
                         </TouchableOpacity>
                     :
                     <View>

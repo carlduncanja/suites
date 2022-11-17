@@ -86,7 +86,10 @@ import {
     updatePurchaseOrderDocument,
     purchaseOrderInvoice, inventoryGroupsBulkUpload, proceduresUploadEndpoint, deleteCaseFileEndpoint, deleteCaseFilesEndpiont,
     invoicesEndpoint, invoiceEndpoint, updateInvoiceDetailsEndpoint,
-    emailEndpoint
+    emailEndpoint,
+    lifestylesEndpiont,
+    ItemsLifeStyleEndpiont,
+    DeleteLifeStyleitems
 } from '../const/suitesEndpoints';
 import { createDocumentLink, documentById, documentData, documentUpload } from '../const/documentGenerationEndpoints';
 
@@ -375,7 +378,7 @@ export const deleteCaseStaff = async (caseId, data) => suitesAxiosInstance
     .catch(handleError);
 
 export const addCaseStaff = async (caseId, data) => suitesAxiosInstance
-    .post(caseStaffEndpoint(caseId),  data )
+    .post(caseStaffEndpoint(caseId), data)
     .then(handleResponse)
     .catch(handleError);
 
@@ -865,8 +868,20 @@ export const sendEmail = async (body) => suitesAxiosInstance
     .catch(handleError);
 
 
+// ################# LIFESTYLES ENDPOINTS 
+export const getLifeStyles = async () => suitesAxiosInstance
+    .get(lifestylesEndpiont)
+    .then(handleResponse)
+    .catch(handleError)
 
+export const addLifeStyleItems = async (id, data) => suitesAxiosInstance
+    .post(ItemsLifeStyleEndpiont(id), data)
+    .then(handleResponse)
+    .catch(handleError)
 
-
+export const deleteLifeStyleItems = async (ids) => suitesAxiosInstance
+    .delete(DeleteLifeStyleitems, { data: { ids } })
+    .then(handleResponse)
+    .catch(handleError)
 
 

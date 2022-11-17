@@ -110,7 +110,9 @@ function FrameEditItem({
     deleteMode = false,
     physicianSelection = true,
     buttonTitle = "",
-    onAction = () => { }
+    onAction = () => { },
+    textInput = false,
+    onEdit = () => { }
 }) {
 
     const [physicianName, setPhysicianName] = useState(itemContent.name);
@@ -259,74 +261,97 @@ function FrameEditItem({
                                     <Text style={styles.title}>Name</Text>
                                 </View >
                                 <View style={{ ...styles.inputWrapper, zIndex: 7 }}>
-                                    {physicianSelection ?
-                                        <SearchableOptionsField
-                                            emptyAfterSubmit={false}
-                                            updateDB={updatePhysicianDB}
-                                            showActionButton={true}
-                                            placeholder={physicianName}
-                                            text={currentIndex === 1 ? searchValue : ''}
-                                            value={generatedLeadSurgeon}
-                                            onChangeText={(value) => {
-                                                setSearchValue(value);
-                                                setCurrentIndex(1);
-                                                setSelectedType("Physician")
-                                            }}
-                                            oneOptionsSelected={(value) => {
-                                                const staff = {
-                                                    _id: value?._id,
-                                                    name: value?.name,
-                                                    type: "Physician",
-                                                    tag: "Lead Surgeon"
-                                                }
-                                                setSearchValue('')
-                                                onStaffChange(staff);
-                                                activateButton(true);
 
+                                    {textInput ?
+                                        <View style={{ flex: 1, marginBottom: 30, zIndex: -2 }}>
+                                            <View style={{ marginBottom: 5, }}>
+                                                <Text style={styles.title}>Type</Text>
+                                            </View>
+                                            <View style={styles.inputWrapper}>
+                                                <InputField2
+                                                    onChangeText={(value) => {
+                                                        setPhysicianType(value)
+                                                        activateButton(true);
 
-                                            }}
-                                            handlePatient={handleSurgeon}
-                                            options={searchResult}
-                                            onClear={() => {
-                                                setSearchValue('')
-                                                activateButton(false)
-                                            }}
-                                            isPopoverOpen={currentIndex === 1 ? true : false}
-                                        />
+                                                    }}
+                                                    placeholder={physicianName}
+                                                    value={physicianType}
+                                                    onClear={() => {
+                                                        setPhysicianType('')
+                                                        activateButton(false)
+                                                    }}
+                                                />
+                                            </View>
+                                        </View>
                                         :
-                                        <SearchableOptionsField
-                                            emptyAfterSubmit={false}
-                                            value={generatedNurse}
-                                            handlePatient={handleSurgeon}
-                                            updateDB={updatePhysicianDB}
-                                            showActionButton={true}
-                                            placeholder={physicianName}
-                                            text={currentIndex === 4 ? searchValue : ''}
-                                            onChangeText={(value) => {
-                                                setSearchValue(value);
-                                                setCurrentIndex(4);
-                                                setSelectedType("Nurse")
-                                            }}
-                                            oneOptionsSelected={(value) => {
+                                        physicianSelection ?
+                                            <SearchableOptionsField
+                                                emptyAfterSubmit={false}
+                                                updateDB={updatePhysicianDB}
+                                                showActionButton={true}
+                                                placeholder={physicianName}
+                                                text={currentIndex === 1 ? searchValue : ''}
+                                                value={generatedLeadSurgeon}
+                                                onChangeText={(value) => {
+                                                    setSearchValue(value);
+                                                    setCurrentIndex(1);
+                                                    setSelectedType("Physician")
+                                                }}
+                                                oneOptionsSelected={(value) => {
+                                                    const staff = {
+                                                        _id: value?._id,
+                                                        name: value?.name,
+                                                        type: "Physician",
+                                                        tag: "Lead Surgeon"
+                                                    }
+                                                    setSearchValue('')
+                                                    onStaffChange(staff);
+                                                    activateButton(true);
 
-                                                const staff = {
-                                                    _id: value?._id,
-                                                    name: value?.name,
-                                                    type: "Nurse",
-                                                    tag: "Nurse"
-                                                }
-                                                setSearchValue('')
-                                                onStaffChange(staff)
-                                                activateButton(true)
-                                            }}
-                                            options={searchResult}
-                                            onClear={() => {
-                                                setSearchValue('')
-                                                deleteSurgeonTag("Nurse")
-                                                activateButton(false)
-                                            }}
 
-                                        />
+                                                }}
+                                                handlePatient={handleSurgeon}
+                                                options={searchResult}
+                                                onClear={() => {
+                                                    setSearchValue('')
+                                                    activateButton(false)
+                                                }}
+                                                isPopoverOpen={currentIndex === 1 ? true : false}
+                                            />
+                                            :
+                                            <SearchableOptionsField
+                                                emptyAfterSubmit={false}
+                                                value={generatedNurse}
+                                                handlePatient={handleSurgeon}
+                                                updateDB={updatePhysicianDB}
+                                                showActionButton={true}
+                                                placeholder={physicianName}
+                                                text={currentIndex === 4 ? searchValue : ''}
+                                                onChangeText={(value) => {
+                                                    setSearchValue(value);
+                                                    setCurrentIndex(4);
+                                                    setSelectedType("Nurse")
+                                                }}
+                                                oneOptionsSelected={(value) => {
+
+                                                    const staff = {
+                                                        _id: value?._id,
+                                                        name: value?.name,
+                                                        type: "Nurse",
+                                                        tag: "Nurse"
+                                                    }
+                                                    setSearchValue('')
+                                                    onStaffChange(staff)
+                                                    activateButton(true)
+                                                }}
+                                                options={searchResult}
+                                                onClear={() => {
+                                                    setSearchValue('')
+                                                    deleteSurgeonTag("Nurse")
+                                                    activateButton(false)
+                                                }}
+
+                                            />
 
                                     }
                                 </View>
@@ -357,9 +382,14 @@ function FrameEditItem({
 
                         <ButtonContainer
                             onPress={() => {
+
                                 actionButton ?
-                                    onAction(staffInfo[0]._id)
+                                    textInput ?
+                                        onAction(physicianType)
+                                        :
+                                        onAction(staffInfo[0]._id)
                                     :
+
                                     null
                             }}
                             theme={theme}

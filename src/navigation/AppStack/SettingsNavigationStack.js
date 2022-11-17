@@ -2,7 +2,8 @@ import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 
 import Settings from '../../page/Settings';
-import AppointmentBufferPage from '../../components/Settings/AppointmentBuffer/AppointmentBufferPage';
+import AppointmentBufferPage from '../../components/Settings/AppointmentBuffer/AppointmentBufferPage'; 
+import CaseFilesPage from '../../components/Settings/CaseFiles/CaseFilesPage'
 
 const Stack = createStackNavigator();
 
@@ -19,7 +20,13 @@ export default () => (
         <Stack.Screen
             name="AppointmentsPage"
             component={AppointmentBufferPage}
-            options={{headerShown: false,}}
+            options={{headerShown: false}}
+        /> 
+
+        <Stack.Screen
+        name="CaseFilesPage"
+        component={CaseFilesPage}
+        options={{headerShown: false}}
         />
 
     </Stack.Navigator>

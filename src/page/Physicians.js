@@ -1,9 +1,9 @@
-import React, {useState, useContext, useEffect} from 'react';
-import {View, Text, StyleSheet} from 'react-native';
+import React, { useState, useContext, useEffect } from 'react';
+import { View, Text, StyleSheet } from 'react-native';
 
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 import _ from 'lodash';
-import {withModal} from 'react-native-modalfy';
+import { withModal } from 'react-native-modalfy';
 import Page from '../components/common/Page/Page';
 import ListItem from '../components/common/List/ListItem';
 import RoundedPaginator from '../components/common/Paginators/RoundedPaginator';
@@ -27,15 +27,15 @@ import {
     handleUnauthorizedError
 } from '../helpers/caseFilesHelpers';
 
-import {setPhysicians} from '../redux/actions/physiciansActions';
-import {getPhysicians, removePhysicians} from '../api/network';
+import { setPhysicians } from '../redux/actions/physiciansActions';
+import { getPhysicians, removePhysicians } from '../api/network';
 
 import CreatePhysicianDialogContainer from '../components/Physicians/CreatePhyscianDialogContainer';
-import {LONG_PRESS_TIMER} from '../const';
+import { LONG_PRESS_TIMER } from '../const';
 import ConfirmationComponent from '../components/ConfirmationComponent';
 import DataItem from '../components/common/List/DataItem';
 
-import {PageSettingsContext} from '../contexts/PageSettingsContext';
+import { PageSettingsContext } from '../contexts/PageSettingsContext';
 
 
 const Physicians = props => {
@@ -64,7 +64,7 @@ const Physicians = props => {
 
     //  ############ Props
 
-    const {physicians, setPhysicians, navigation, modal} = props;
+    const { physicians, setPhysicians, navigation, modal } = props;
 
     //  ############ State
 
@@ -140,7 +140,7 @@ const Physicians = props => {
     };
 
     const handleOnCheckBoxPress = item => () => {
-        const {_id} = item;
+        const { _id } = item;
         const updatedPhysiciansList = checkboxItemPress(_id, selectedPhysiciansId);
         setSelectedPhysiciansId(updatedPhysiciansList);
     };
@@ -206,7 +206,7 @@ const Physicians = props => {
         setFetchingData(true);
         getPhysicians(searchValue, recordsPerPage, currentPosition)
             .then(physicianResult => {
-                const {data = [], pages = 0} = physicianResult;
+                const { data = [], pages = 0 } = physicianResult;
 
                 if (pages === 1) {
                     setPreviousDisabled(true);
@@ -232,7 +232,7 @@ const Physicians = props => {
                 console.log('failed to get physicians', error);
 
                 handleUnauthorizedError(error?.response?.status, setPhysicians);
-                setPageSettingState({...pageSettingState, isDisabled: true});
+                setPageSettingState({ ...pageSettingState, isDisabled: true });
 
                 setTotalPages(1);
                 setPreviousDisabled(true);
@@ -256,7 +256,7 @@ const Physicians = props => {
     const statusColor = status => (status === 'Active' ? '#4E5664' : '#E53E3E');
 
     const physiciansItem = item => {
-        const {_id = '', surname = '', field: type = 'Neurosurgeon', status = 'Active', casesCount = 0} = item;
+        const { _id = '', surname = '', field: type = 'Neurosurgeon', status = 'Active', casesCount = 0 } = item;
         return (
             <>
                 <View style={[styles.item, {}]}>
@@ -268,7 +268,7 @@ const Physicians = props => {
                         }]}
                     >Dr. {surname}</Text>
                 </View>
-                <View style={[styles.item, {alignItems: 'flex-start'}]}>
+                <View style={[styles.item, { alignItems: 'flex-start' }]}>
                     <Text
                         numberOfLines={1}
                         style={[styles.itemText, {
@@ -278,8 +278,8 @@ const Physicians = props => {
                     >{type}</Text>
                 </View>
                 <DataItem flex={1} text={casesCount} color="--color-blue-600" fontStyle="--text-sm-medium"
-                          align="center"/>
-                <View style={[styles.item, {alignItems: 'center'}]}>
+                    align="center" />
+                <View style={[styles.item, { alignItems: 'center' }]}>
                     <Text
                         numberOfLines={1}
                         style={[styles.itemText, {
@@ -300,7 +300,7 @@ const Physicians = props => {
             >
                 <ActionItem
                     title="Hold to Delete"
-                    icon={<WasteIcon/>}
+                    icon={<WasteIcon />}
                     onPress={() => {
                     }}
                     touchable={false}
@@ -325,7 +325,7 @@ const Physicians = props => {
         const createActionPhysician = (
             <ActionItem
                 title="Add Physician"
-                icon={<AddIcon/>}
+                icon={<AddIcon />}
                 onPress={openCreatePhysicians}
             />
         );
@@ -343,7 +343,7 @@ const Physicians = props => {
 
     const removePhysiciansLongPress = () => {
         // Done with one or more ids selected
-        if (selectedPhysiciansId.length > 0) openDeletionConfirm({ids: [...selectedPhysiciansId]});
+        if (selectedPhysiciansId.length > 0) openDeletionConfirm({ ids: [...selectedPhysiciansId] });
         else openErrorConfirmation();
     };
 
@@ -431,7 +431,7 @@ const Physicians = props => {
                 .openModal(
                     'OverlayModal',
                     {
-                        content: <CreateWorkItemDialog onCancel={() => setFloatingAction(false)}/>,
+                        content: <CreateWorkItemDialog onCancel={() => setFloatingAction(false)} />,
                         onClose: () => setFloatingAction(false)
                     }
                 );
@@ -507,16 +507,16 @@ const mapStateToProps = state => {
         // status : 'Active'
     }));
 
-    return {physicians};
+    return { physicians };
     // physicians: state.physicians
 };
 
-const mapDispatcherToProp = {setPhysicians};
+const mapDispatcherToProp = { setPhysicians };
 
 export default connect(mapStateToProps, mapDispatcherToProp)(withModal(Physicians));
 
 const styles = StyleSheet.create({
-    item: {flex: 1},
+    item: { flex: 1 },
     itemText: {},
     footer: {
         flex: 1,
