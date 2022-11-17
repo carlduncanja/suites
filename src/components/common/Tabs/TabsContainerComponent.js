@@ -40,7 +40,8 @@ function TabsContainerComponent({tabs, onPressChange, selectedTab, completedTabs
                                 tab === selectedTab ? theme.colors['--color-blue-600'] :
                                     completedTabs && completedTabs.includes(tab) ? "#4E5664" : "#718096"
                             }
-                            onTabPress={() => onPressChange(tab)}
+                            
+                            onTabPress={() => onPressChange && onPressChange(tab)}
                         />
                     )
                 })}

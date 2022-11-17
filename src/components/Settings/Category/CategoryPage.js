@@ -3,18 +3,13 @@ import {View, ScrollView} from 'react-native';
 import styled, {css} from '@emotion/native';
 import { useTheme } from 'emotion-theming';
 
-import { getCategories, updateBuffer, addCategory, deleteCategory, updateCategory } from '../../../api/network';
+import { getCategories, addCategory, deleteCategory, updateCategory } from '../../../api/network';
 
 import DetailsPage from '../../common/DetailsPage/DetailsPage';
 import TabsContainer from '../../common/Tabs/TabsContainerComponent';
-import Table from '../../common/Table/Table';
-import DataItem from '../../common/List/DataItem';
-import InputUnitFields from '../../common/Input Fields/InputUnitFields';
-import ContentDataItem from '../../common/List/ContentDataItem';
 import ConfirmationComponent from '../../ConfirmationComponent';
 import ConfirmationCheckBoxComponent from '../../ConfirmationCheckBoxComponent';
 import {PageContext} from '../../../contexts/PageContext';
-import Header from '../../common/Table/Header';
 import { useModal } from 'react-native-modalfy';
 
 import FrameCard from '../../common/Frames/FrameCards/FrameCard';
@@ -37,18 +32,7 @@ function CategoryPage({navigation, route}) {
     const modal = useModal();
     const {item} = route?.params || {};
     const currentTabs = ['Details'];
-    const headers = [
-        {
-            name: 'Item',
-            alignment: 'flex-start',
-            flex: 2.5
-        },
-        {
-            name: 'Time',
-            alignment: 'flex-start',
-            flex: 1
-        },
-    ];
+
     // ##### States
     const [currentTab, setCurrentTab] = useState(currentTabs[0]);
     const [pageState, setPageState] = useState({});
@@ -168,7 +152,7 @@ function CategoryPage({navigation, route}) {
                         removeItem(data)
                         modal.closeModals('ConfirmationModal');
                     }}
-                    message="Do you want to delete these item(s)"
+                    message="Do you want to delete this item?"
                 />,
                 onClose: () => {
                     modal.closeModals('ConfirmationModal');
