@@ -64,7 +64,7 @@ function CaseFilesPage({ navigation, route }) {
                         isEditUpdate={false}
                         onAction={() => {
                             modal.closeModals('ConfirmationModal');
-                        
+
                             fetchLifeStyleData()
                         }}
                     />,
@@ -82,10 +82,11 @@ function CaseFilesPage({ navigation, route }) {
                 }, 200)
                 console.log('failed to delete these item(s)', error)
             })
+            .finally
 
 
 
-    } 
+    }
     const openDeletionConfirm = data => {
         modal.openModal(
             'ConfirmationModal',
@@ -116,7 +117,7 @@ function CaseFilesPage({ navigation, route }) {
 
     const deleteItem = (id) => {
         let ids = []
-        ids.push(id) 
+        ids.push(id)
         deleteLifeStyleItems(ids)
             .then(data => {
                 modal.openModal(
@@ -165,23 +166,19 @@ function CaseFilesPage({ navigation, route }) {
         switch (selectedTab) {
             case 'LifeStyle':
                 return (
-                    lifeStyleData.length > 0 ?
-                        <LifeStyleTabs
-                            LifestyleData={lifeStyleData}
-                            isEditMode={isEditMode}
-                            modal={modal}
-                            onAction={(data) => {
-                                console.log(data)
-                                addItems(data.id, data.data)
-                            }}
-                            onDelete={(data) => {
-                                openDeletionConfirm(data)
-                            }}
-                        />
-                        :
-                        <View>
-
-                        </View>)
+                    <LifeStyleTabs
+                        LifestyleData={lifeStyleData}
+                        isEditMode={isEditMode}
+                        modal={modal}
+                        onAction={(data) => {
+                            console.log(data)
+                            addItems(data.id, data.data)
+                        }}
+                        onDelete={(data) => {
+                            openDeletionConfirm(data)
+                        }}
+                    />
+                )
             case 'Health Insurer':
                 return <View></View>;
             default:
