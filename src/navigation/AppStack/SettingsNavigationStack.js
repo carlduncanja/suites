@@ -4,6 +4,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import Settings from '../../page/Settings';
 import AppointmentBufferPage from '../../components/Settings/AppointmentBuffer/AppointmentBufferPage'; 
 import CaseFilesPage from '../../components/Settings/CaseFiles/CaseFilesPage'
+import CategoryPage from '../../components/Settings/Category/CategoryPage';
 
 const Stack = createStackNavigator();
 
@@ -27,6 +28,12 @@ export default () => (
         name="CaseFilesPage"
         component={CaseFilesPage}
         options={{headerShown: false}}
+        />
+
+        <Stack.Screen
+            name="CategoryPage"
+            component={CategoryPage}
+            options={{headerShown: false,}}
         />
 
     </Stack.Navigator>

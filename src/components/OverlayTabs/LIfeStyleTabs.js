@@ -16,10 +16,9 @@ const LifeStyleTabs = ({ LifestyleData,
     handleEdit = () => { },
     onDelete = () => { },
     onAction = () => { } },
-    modal
 ) => {
 
-    //const { data } = lifestyleData
+
     const updatedList = LifestyleData
 
 
@@ -28,44 +27,45 @@ const LifeStyleTabs = ({ LifestyleData,
         let backgroundColor = ''
         let frame = ''
         let icon = FramStaffIcon
-        let border=''
+        let border = ''
         const { name = "", items = [], _id = "" } = categorie
         switch (name) {
             case 'Drug Use':
                 backgroundColor = '#FAF5FF';
                 frame = '#805AD5';
-                border='#D6BCFA'
+                border = '#D6BCFA'
                 icon = drug;
                 break;
             case 'Alcohol Use':
                 backgroundColor = '#FFF5F5';
                 frame = "#E53E3E";
-                border="#FEB2B2"
+                border = "#FEB2B2"
                 icon = alcohol;
                 break;
             case 'Tobacco Use':
                 backgroundColor = '#EEF2F6';
                 frame = '#4E5664';
-                border='#A0AEC0'
+                border = '#A0AEC0'
                 icon = tobacco
                 break;
             default:
                 backgroundColor = '#90CDF4';
                 frame = "#3182CE";
+                border = "#A0AEC0"
                 break;
 
-        } 
+        }
 
         const itemsName = items.map(item => {
             const { name = '' } = item
             return name
-        }) 
-        const itemsIds = items.map(item =>{
-            const {_id=''}=item
+        })
+        const itemsIds = items.map(item => {
+            const { _id = '' } = item
             return _id
         })
 
-        return { name: name, itemsNames: itemsName, color: backgroundColor, frame: frame, icon: icon, _id: _id,itemsIds:itemsIds,border:border }
+        return { name: name, itemsNames: itemsName, color: backgroundColor, frame: frame, icon: icon, _id: _id, itemsIds: itemsIds, border: border }
     })
 
     const categoriesIds = updatedList.map(categories => {
@@ -74,7 +74,7 @@ const LifeStyleTabs = ({ LifestyleData,
     })
 
     const renderItem = (categorieData) => {
-
+        
         return (<View style={styles.frameContainer}>
             <FrameCard
                 frameColor={categorieData.frame}
@@ -88,19 +88,20 @@ const LifeStyleTabs = ({ LifestyleData,
                 onDelete={onDelete}
                 idArray={categorieData.itemsIds}
                 onAction={(data) =>
-                    onAction({id:categorieData._id, data:data})
+                    onAction({ id: categorieData._id, data: data })
                 }
-                textInput={true}
+                normalInput={true}
+
             />
         </View>)
 
     }
 
-    
+
 
     return (
         <ScrollView>
-            {Categories.map(cats => (
+            {Categories.map(cats => ( 
                 renderItem(cats)
             ))}
         </ScrollView>

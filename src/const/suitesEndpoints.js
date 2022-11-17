@@ -108,8 +108,8 @@ export const updatePurchaseOrderDocument = id => `/purchase_orders/${id}/documen
 export const purchaseOrderInvoice = id => `/purchase_orders/${id}/generate-invoice`;
 
 // ##### CATEGORIES
-export const categoriesEndpoint = '/categories/items';
-export const createCategoryEndpoint = '/categories/items';
+export const categoriesEndpoint = '/categories/';
+export const updateCategoryEndpoint = id => `/categories/${id}`;
 
 // ##### PATIENTS
 export const patientEndpoint = id => `/patients/${id}`;

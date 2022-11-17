@@ -12,6 +12,7 @@ import DataItem from '../../common/List/DataItem';
 import InputUnitFields from '../../common/Input Fields/InputUnitFields';
 import ContentDataItem from '../../common/List/ContentDataItem';
 import ConfirmationComponent from '../../ConfirmationComponent';
+import ConfirmationCheckBoxComponent from '../../ConfirmationCheckBoxComponent'
 import LifeStyleTabs from '../../../components/OverlayTabs/LIfeStyleTabs';
 
 import { PageContext } from '../../../contexts/PageContext';
@@ -63,15 +64,13 @@ function CaseFilesPage({ navigation, route }) {
                         isEditUpdate={false}
                         onAction={() => {
                             modal.closeModals('ConfirmationModal');
-                            setTimeout(() => {
-                                //fetchLifeStyleData()
-                            }, 200)
-                            navigation.navigate('Settings')
+                        
+                            fetchLifeStyleData()
                         }}
                     />,
                     onClose: () => {
                         modal.closeModal('ConfirmationModal')
-                        navigation.navigate('Settings')
+                        fetchLifeStyleData()
                     }
                 }
                 );
@@ -86,6 +85,33 @@ function CaseFilesPage({ navigation, route }) {
 
 
 
+    } 
+    const openDeletionConfirm = data => {
+        modal.openModal(
+            'ConfirmationModal',
+            {
+                content: <ConfirmationCheckBoxComponent
+                    isError={false}
+                    isEditUpdate={true}
+                    onCancel={() => {
+                        modal.closeModals('ConfirmationModal');
+                        setTimeout(() => {
+                            modal.closeModals('ActionContainerModal')
+                        }, 200)
+                    }}
+                    onAction={() => {
+                        deleteItem(data)
+                        modal.closeModals('ConfirmationModal');
+                    }}
+                    message="Do you want to delete this item?"
+                />,
+                onClose: () => {
+                    modal.closeModals('ConfirmationModal');
+                    modal.closeModals('ActionContainerModal')
+
+                }
+            }
+        );
     }
 
     const deleteItem = (id) => {
@@ -100,10 +126,7 @@ function CaseFilesPage({ navigation, route }) {
                         isEditUpdate={false}
                         onAction={() => {
                             modal.closeModals('ConfirmationModal');
-                            setTimeout(() => {
-                                //fetchLifeStyleData()
-                            }, 200)
-                            navigation.navigate('Settings')
+                            fetchLifeStyleData()
                         }}
                     />,
                     onClose: () => {
@@ -152,7 +175,7 @@ function CaseFilesPage({ navigation, route }) {
                                 addItems(data.id, data.data)
                             }}
                             onDelete={(data) => {
-                                deleteItem(data)
+                                openDeletionConfirm(data)
                             }}
                         />
                         :

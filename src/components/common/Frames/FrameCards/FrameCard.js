@@ -40,9 +40,10 @@ function FrameCard(props){
         isAddNew = true,
         handleAddNew = () =>{},
         onDelete =()=>{},
-        onAction,
-        physicianSelection=true,
-        textInput
+        onAction =()=>{},
+        onEdit =()=>{},
+        normalInput,
+        physicianSelection=true
     } = props
 
     const theme = useTheme();
@@ -68,8 +69,9 @@ function FrameCard(props){
                     onDelete={onDelete}
                     idArray={idArray}
                     onAction={onAction}
+                    onEdit={onEdit}
                     physicianSelection={physicianSelection}
-                    textInput={textInput}
+                    normalInput={normalInput}
                 />
 
 
