@@ -74,7 +74,7 @@ const LifeStyleTabs = ({ LifestyleData,
     })
 
     const renderItem = (categorieData) => {
-        
+      
         return (<View style={styles.frameContainer}>
             <FrameCard
                 frameColor={categorieData.frame}
@@ -101,7 +101,7 @@ const LifeStyleTabs = ({ LifestyleData,
 
     return (
         <ScrollView>
-            {Categories.map(cats => ( 
+            {Categories.map(cats => (
                 renderItem(cats)
             ))}
         </ScrollView>
