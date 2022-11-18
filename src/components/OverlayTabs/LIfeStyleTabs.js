@@ -74,7 +74,7 @@ const LifeStyleTabs = ({ LifestyleData,
     })
 
     const renderItem = (categorieData) => {
-      
+
         return (<View style={styles.frameContainer}>
             <FrameCard
                 frameColor={categorieData.frame}
@@ -84,7 +84,7 @@ const LifeStyleTabs = ({ LifestyleData,
                 cardInformation={categorieData.itemsNames}
                 icon={categorieData.icon}
                 isEditMode={isEditMode}
-                //handleEdit={handleEdit}
+                onEdit={handleEdit}
                 onDelete={onDelete}
                 idArray={categorieData.itemsIds}
                 onAction={(data) =>
