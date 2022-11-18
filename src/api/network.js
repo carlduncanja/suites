@@ -89,6 +89,7 @@ import {
     emailEndpoint,
     updateCategoryEndpoint,
     lifestylesEndpiont,
+    ItemsLifeStyleEndpiont,
     DeleteLifeStyleitems,
     UpdateLifeStyleItems
 } from '../const/suitesEndpoints';
