@@ -134,3 +134,4 @@ export const emailEndpoint = '/email/send';
 export const lifestylesEndpiont = '/lifestyle_types'
 export const ItemsLifeStyleEndpiont = (id) => `/lifestyle_types/${id}/items`
 export const DeleteLifeStyleitems = `/lifestyle_types/delete/items`
+export const UpdateLifeStyleItems = (id) => `/lifestyle_types/items/${id}`

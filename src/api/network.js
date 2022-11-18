@@ -89,8 +89,8 @@ import {
     emailEndpoint,
     updateCategoryEndpoint,
     lifestylesEndpiont,
-    ItemsLifeStyleEndpiont,
-    DeleteLifeStyleitems
+    DeleteLifeStyleitems,
+    UpdateLifeStyleItems
 } from '../const/suitesEndpoints';
 import { createDocumentLink, documentById, documentData, documentUpload } from '../const/documentGenerationEndpoints';
 
@@ -665,12 +665,12 @@ export const addCategory = async (data) => suitesAxiosInstance
     .catch(handleError);
 
 export const deleteCategory = async (data) => suitesAxiosInstance
-    .delete(categoriesEndpoint,{ data: { ids: data } })
+    .delete(categoriesEndpoint, { data: { ids: data } })
     .then(handleResponse)
     .catch(handleError);
 
 export const updateCategory = async (id, data) => suitesAxiosInstance
-    .put(updateCategoryEndpoint(id), data )
+    .put(updateCategoryEndpoint(id), data)
     .then(handleResponse)
     .catch(handleError);
 
@@ -892,6 +892,11 @@ export const addLifeStyleItems = async (id, data) => suitesAxiosInstance
 
 export const deleteLifeStyleItems = async (ids) => suitesAxiosInstance
     .delete(DeleteLifeStyleitems, { data: { ids } })
+    .then(handleResponse)
+    .catch(handleError)
+
+export const updateLifeStyleItems = async (id, data) => suitesAxiosInstance
+    .put(UpdateLifeStyleItems(id), data)
     .then(handleResponse)
     .catch(handleError)
 
