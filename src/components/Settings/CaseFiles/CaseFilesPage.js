@@ -10,7 +10,12 @@ import LifeStyleTabs from '../../../components/OverlayTabs/LIfeStyleTabs';
 import HealthInsurer from '../../../components/OverlayTabs/HealthInsurerTab';
 import { PageContext } from '../../../contexts/PageContext';
 import { useModal } from 'react-native-modalfy';
-
+import { ScrollView } from 'react-native-gesture-handler';
+import Footer from '../../common/Page/Footer';
+import AddIcon from '../../../../assets/svg/addIcon';
+import TransferIcon from '../../../../assets/svg/transferIcon';
+import ActionItem from '../../common/ActionItem';
+import ActionContainer from '../../common/FloatingAction/ActionContainer';
 
 function CaseFilesPage({ navigation, route }) {
 
@@ -22,7 +27,9 @@ function CaseFilesPage({ navigation, route }) {
     const [currentTab, setCurrentTab] = useState(currentTabs[0]);
     const [lifeStyleData, setLifeStyleData] = useState([])
     const [healthInsurers, setHealthInsurers] = useState([])
-
+    const [isFloatingActionDisabled, setFloatingAction] = useState(false);
+    const [selectedItems, setSelectedItems] = useState([]);
+    const [addMode, setAddMode] = useState(false);
     const { isEditMode = false } = pageState;
 
 
@@ -164,6 +171,44 @@ function CaseFilesPage({ navigation, route }) {
         );
     };
 
+    const handleAddInsurer = () => {
+        setAddMode(true);
+        modal.closeAllModals();
+    }
+
+    const floatingActions = () => {
+        let isDisabled = selectedItems.length === 1 ? false : true;
+
+        const addLocation = (
+            <ActionItem
+                title="New Insurer"
+                icon={<AddIcon/>}
+                onPress={() => handleAddInsurer()}
+                disabled={false}
+                touchable={true}
+            />
+        );
+
+        return <ActionContainer
+            floatingActions={[
+                addLocation,
+            ]}
+            title="HEALTH INSURER ACTIONS"
+        />;
+    };
+
+    const toggleActionButton = () => {
+        setFloatingAction(true);
+
+        modal.openModal('ActionContainerModal',
+            {
+                actions: floatingActions(),
+                onClose: () => {
+                    setFloatingAction(false);
+                },
+            });
+    };
+
     const getTabContent = (selectedTab) => {
         switch (selectedTab) {
             case 'LifeStyle':
@@ -173,7 +218,6 @@ function CaseFilesPage({ navigation, route }) {
                         isEditMode={isEditMode}
                         modal={modal}
                         onAction={(data) => {
-                            console.log(data)
                             addItems(data.id, data.data)
                         }}
                         onDelete={(data) => {
@@ -182,12 +226,24 @@ function CaseFilesPage({ navigation, route }) {
                     />
                 )
             case 'Health Insurer':
-                return <> 
+                return <>
+                <ScrollView> 
+                    { addMode &&  <HealthInsurer insurer={{}} addMode={true} isEditMode={isEditMode} setAddMode = {setAddMode}/>}
                     {
+                        
                         healthInsurers.map(insurer => {
-                           return <HealthInsurer insurer={insurer} />
+                           return <HealthInsurer insurer={insurer} isEditMode={isEditMode} />
                         })
                     }
+                 
+                </ScrollView>
+                <Footer
+                hasPaginator={false}
+                hasActionButton={isEditMode}
+                hasActions={true}
+                isDisabled={!isEditMode}
+                toggleActionButton={toggleActionButton}
+            />
                 </>
             default:
                 return <View />;
