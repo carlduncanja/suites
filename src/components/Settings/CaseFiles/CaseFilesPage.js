@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { View, Text } from 'react-native';
 import { useTheme } from 'emotion-theming';
-import { getLifeStyles, addLifeStyleItems, deleteLifeStyleItems, getHealthInsurers, createHealthInsurer } from '../../../api/network';
+import { getLifeStyles, addLifeStyleItems, deleteLifeStyleItems, getHealthInsurers, createHealthInsurer, deleteHealthInsurer } from '../../../api/network';
 import DetailsPage from '../../common/DetailsPage/DetailsPage';
 import TabsContainer from '../../common/Tabs/TabsContainerComponent';
 import ConfirmationComponent from '../../ConfirmationComponent';
@@ -27,6 +27,7 @@ function CaseFilesPage({ navigation, route }) {
     const [currentTab, setCurrentTab] = useState(currentTabs[0]);
     const [lifeStyleData, setLifeStyleData] = useState([])
     const [healthInsurers, setHealthInsurers] = useState([])
+    const [deleteInsurer, setDeleteInsurer] = useState(false)
     const [addMode, setAddMode] = useState(false);
     const { isEditMode = false } = pageState;
 
@@ -108,7 +109,7 @@ function CaseFilesPage({ navigation, route }) {
                         }, 200)
                     }}
                     onAction={() => {
-                        deleteItem(data)
+                        deleteInsurer ? deleteHealthInsurerLocal(data) : deleteItem(data)
                         modal.closeModals('ConfirmationModal');
                     }}
                     message="Do you want to delete this item?"
@@ -175,7 +176,6 @@ function CaseFilesPage({ navigation, route }) {
     }
 
     const handleCreateHealthInsurer = (insurer) => {
-        console.log(insurer)
         createHealthInsurer(insurer)
             .then(_ => {
                 setAddMode(false);
@@ -201,6 +201,40 @@ function CaseFilesPage({ navigation, route }) {
             })
     }
 
+    const handleDeleteInsurer = (id) => {
+        setDeleteInsurer(true);
+        openDeletionConfirm(id)
+    }
+
+    const deleteHealthInsurerLocal = (id) => {
+        console.log("IDS", [id]);
+        deleteHealthInsurer({ids: [id], status: 'removed'})
+        .then(_ => {
+            setDeleteInsurer(false);
+            modal.openModal(
+                'ConfirmationModal', {
+                content: <ConfirmationComponent
+                    isError={false}
+                    isEditUpdate={false}
+                    onAction={() => {
+                        modal.closeModals('ConfirmationModal');
+                        fetchHealthInsurers();
+                        // console.log(healthInsurers);
+                    }}
+                />,
+                onClose: () => {
+                    modal.closeModal('ConfirmationModal')
+                    fetchHealthInsurers();
+                }
+            }
+            );
+        })
+        .catch(error => {
+            modal.closeModals('ConfirmationModal');
+            console.log('Failed to delete health insurer', error)
+        })
+    }
+
     const floatingActions = () => {
         const addLocation = (
             <ActionItem
@@ -221,14 +255,9 @@ function CaseFilesPage({ navigation, route }) {
     };
 
     const toggleActionButton = () => {
-        setFloatingAction(true);
-
         modal.openModal('ActionContainerModal',
             {
                 actions: floatingActions(),
-                onClose: () => {
-                    setFloatingAction(false);
-                },
             });
     };
 
@@ -255,7 +284,7 @@ function CaseFilesPage({ navigation, route }) {
                     {
                         
                         healthInsurers.map(insurer => {
-                           return <HealthInsurer insurer={insurer} isEditMode={isEditMode} />
+                           return <HealthInsurer insurer={insurer} isEditMode={isEditMode} handleDelete={handleDeleteInsurer} />
                         })
                     }
                  

@@ -27,12 +27,13 @@ margin-top: 5px;
 margin-bottom: 24px;
 `;
 
-const HealthInsurer = ({ insurer, isEditMode = false, addMode, onCancel = () => { }, setAddMode, handleAdd = () => {} }) => {
+const HealthInsurer = ({ insurer, isEditMode = false, addMode, onCancel = () => { }, setAddMode, handleAdd = () => {}, handleDelete = () => {}, deleteInsurer }) => {
     const theme = useTheme();
     const [localEditMode, setLocalEditMode] = useState(addMode ? true : false);
     const [errors, setErrors] = useState({});
 
     const {
+        _id,
         name = '',
         email = '',
         representative = [],
@@ -127,8 +128,8 @@ const HealthInsurer = ({ insurer, isEditMode = false, addMode, onCancel = () => 
                             isEditMode &&
                             <IconButton
                                 Icon={
-                                    isEditMode ? <EditIcon /> : <WasteIcon strokeColor={!isEditMode ? theme.colors['--color-gray-500'] : "#C53030"} />}
-                                onPress={() => { setLocalEditMode(!localEditMode) }}
+                                    isEditMode && !localEditMode ? <EditIcon /> : <WasteIcon strokeColor={!isEditMode ? theme.colors['--color-gray-500'] : "#C53030"} />}
+                                onPress={() => { localEditMode ? handleDelete(_id) :  setLocalEditMode(!localEditMode) }}
                                 disabled={!isEditMode}
                             />
                         }
@@ -257,12 +258,12 @@ const HealthInsurer = ({ insurer, isEditMode = false, addMode, onCancel = () => 
                                 />
                             </RowWrapper>
                             {
-                                addMode &&
+                                (addMode || localEditMode) &&
                                 <>
                                 <Accent />
                                 <FrameContent style={[{marginBottom: 10}]}>
                                     <CancelButtonContainer theme={theme} background='--color-gray-300'
-                                        onPress={() => setAddMode(false)}
+                                        onPress={() => addMode ? setAddMode(false) : setLocalEditMode(!localEditMode)}
                                     >
                                         <ModalText theme={theme} textColor="--color-blue-600" font="--text-base-bold">Cancel</ModalText>
                                     </CancelButtonContainer>

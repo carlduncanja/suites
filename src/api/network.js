@@ -908,4 +908,9 @@ export const createHealthInsurer = async (data) => suitesAxiosInstance
     .then(handleResponse)
     .catch(handleError)
 
+export const deleteHealthInsurer = async (data) => suitesAxiosInstance
+    .put(healthInsurerEndpoint, data)
+    .then(handleResponse)
+    .catch(handleError)
+
 
