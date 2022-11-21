@@ -11,7 +11,7 @@ import { createCaseFile } from '../../../api/network'
 import { addCaseFile } from '../../../redux/actions/caseFilesActions';
 import SearchableOptionsField from '../../../components/common/Input Fields/SearchableOptionsField';
 import _, { reduce, set } from "lodash";
-import { getProcedures, getPhysicians, getCaseFileById } from '../../../api/network';
+import { getProcedures, getPhysicians, getCaseFileById, getPatients } from '../../../api/network';
 import moment from 'moment';
 import { useModal } from 'react-native-modalfy';
 import ConfirmationComponent from '../../../components/ConfirmationComponent';
@@ -143,8 +143,8 @@ function NewProcedureOverlayContainer({ appointment = {}, editMode = false, pass
         let foundInvalidField = true;
         const locationCheck = location;
         const procedureCheck = procedure;
-        const dateCheck =selectedDate;
-        const timeCheck =startTime;
+        const dateCheck = selectedDate;
+        const timeCheck = startTime;
         const staffCheck = staffInfo.length
 
         if (locationCheck !== undefined &&
@@ -449,15 +449,23 @@ function NewProcedureOverlayContainer({ appointment = {}, editMode = false, pass
     };
 
     const fetchPatients = () => {
-        /*const data =  {
-            _id: "1",
-            name: "bob ross"
-        }*/
+        getPatients(searchPatientValue, 5)
+            .then((patientInfo) => {
+                const { data = [], page } = patientInfo;
+                const fulldata = data.map(person => {
 
-        // const data = [];
-
-        setSearchPatientResult([])
-    }
+                    const { _id = '', patientNumber = '', firstName = '', middleName = '', surname = '' } = person
+                    const name = `${firstName} ${middleName} ${surname}`
+                    return { _id: _id, patientNumber: patientNumber, firstName: firstName, middleName: middleName, surname: surname, name: name }
+                })
+                setSearchPatientResult(fulldata || [])
+            })
+            .catch((error) => {
+                // TODO handle error
+                console.log("failed to get patients", error);
+                setSearchPatientResult([])
+            });
+    };
 
     const fetchProcedures = () => {
         getProcedures(searchProcedureValue, 5)
@@ -467,7 +475,7 @@ function NewProcedureOverlayContainer({ appointment = {}, editMode = false, pass
             })
             .catch((error) => {
                 // TODO handle error
-                console.log("failed to get procedures");
+                console.log("failed to get procedures", error);
                 setSearchProcedureResult([]);
             });
     };
@@ -900,7 +908,7 @@ function NewProcedureOverlayContainer({ appointment = {}, editMode = false, pass
                     <SearchableOptionsField
                         emptyAfterSubmit={attemptedSubmit && patientValue === undefined ? true : false}
                         updateDB={updatePatientDB}
-                        highlightOn={true}
+                        highlightOn={true}  
                         highlightColor="#F6F8F8"
                         title={"Patient"}
                         showActionButton={true}
