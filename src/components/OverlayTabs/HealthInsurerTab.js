@@ -11,11 +11,10 @@ import { FrameContentListWrapper, FrameContentListContainer } from "../common/Fr
 import IconButton from "../common/Buttons/IconButton";
 import EditIcon from "../../../assets/svg/editIcon";
 import WasteIcon from "../../../assets/svg/wasteIcon";
-import { RowWrapper, FieldContainer } from "../common/Frames/FrameContents/FrameInsurerContent";
+import { RowWrapper } from "../common/Frames/FrameContents/FrameInsurerContent";
 import InputField2 from "../common/Input Fields/InputField2";
-import ActionContainer from "../common/FloatingAction/ActionContainer";
 import { ButtonContainer, ModalText, CancelButtonContainer, FrameContent } from "../common/Frames/FrameItems/FrameEditItem";
-
+import { formatPhoneNumber, isValidEmail } from "../../utils/formatter";
 const Seperator = styled.View`
     marginRight: 50;
 `;
@@ -28,28 +27,28 @@ margin-top: 5px;
 margin-bottom: 24px;
 `;
 
-const HealthInsurer = ({ insurer, isEditMode = false, addMode, onCancel = () => { }, setAddMode }) => {
+const HealthInsurer = ({ insurer, isEditMode = false, addMode, onCancel = () => { }, setAddMode, handleAdd = () => {} }) => {
     const theme = useTheme();
-    console.log("ADD mode", addMode);
-    const [localEditMode, setLocalEditMode] = useState(false);
+    const [localEditMode, setLocalEditMode] = useState(addMode ? true : false);
+    const [errors, setErrors] = useState({});
 
     const {
-        firstName = '',
-        lastName = '',
-        email = '',
         name = '',
+        email = '',
         representative = [],
         contactInfo = {},
         address = {},
     } = insurer;
+
     const [fields, setFields] = useState({
-        firstName,
-        lastName,
-        email,
         name,
-        representative,
-        contactInfo,
-        address,
+        email,
+        address: address[0]?.line1,
+        phoneOne: contactInfo?.phones && contactInfo?.phones[0]?.phone,
+        phoneTwo: contactInfo?.phones && contactInfo?.phones[1]?.phone,
+        repName: representative[0]?.name,
+        repExt: representative[0]?.contactInfo?.phones[0]?.phone,
+        repEmail: representative[0]?.contactInfo?.emails[0]?.email
     });
 
     const onFieldChange = fieldName => value => {
@@ -63,17 +62,56 @@ const HealthInsurer = ({ insurer, isEditMode = false, addMode, onCancel = () => 
 
     const handlePhoneChange = (number, field) => {
         const formattedNumber = number.replace(/\s/g, ''); // remove whitespaces
-
-        if (number === '') onFieldChange(field)(formattedNumber);
-        else if (/^\d+$/g.test(formattedNumber) || !number) onFieldChange(field)(number);
+        if (number === '') onFieldChange(field);
+        else if (/^\d+$/g.test(formattedNumber) || !number) onFieldChange(field)(formatPhoneNumber(formattedNumber));
     };
 
-    const handleEmailChange = (email, emailType) => {
-        const updatedEmails = updateEmail(email, emailType);
-
-        if (email === '') onFieldChange('emails')(updatedEmails);
-        else if (isValidEmail(email) || !email) onFieldChange('emails')(updatedEmails);
+    const handleEmailChange = (email, field) => {
+        let fieldErrors = {};
+         if (!isValidEmail(email) && email){
+            fieldErrors = {...errors, [field]: 'Invalid email' };
+            
+         }else{
+            delete fieldErrors[field];
+         }       
+         onFieldChange(field);
+         setErrors(fieldErrors);      
     };
+
+    const validateFields = () => {
+        let errors = {};
+        let isValid = true;
+        const requiredFields = [ 
+            'name',
+            'email',
+            'address',
+            'phoneOne',
+            'phoneTwo',
+            'repName',
+            'repEmail']
+
+        for (const requiredField of requiredFields) {
+            if (!fields[requiredField]) {
+                errors = {
+                    ...errors,
+                    [requiredField]: "Value is required"
+                }
+                isValid = false;
+            }
+        }
+
+        setErrors(errors)
+        const insurer = {
+            name: fields.name,
+            email: fields.email,
+            address: {line1: fields.address},
+            contactInfo: {
+                phones: [{phone: fields.phoneOne}, fields.phoneTwo && {phone: fields.phoneTwo}],
+            },
+            representative: [{name: fields.repName, contactInfo: {phones: [{phone: fields.phoneOne}], emails: [{email: fields.repEmail}]}}],
+        }
+        if (isValid) handleAdd(insurer);
+    }
 
     return (
         <View style={styles.frameContainer}>
@@ -102,11 +140,13 @@ const HealthInsurer = ({ insurer, isEditMode = false, addMode, onCancel = () => 
                                     enabled={localEditMode}
                                     value={fields.name}
                                     label="Insurer"
-                                    onChangeText={() => { }}
-                                    onClear={() => { }}
+                                    onChangeText={(value) => { onFieldChange('name')(value)}}
+                                    onClear={onFieldChange('name')}
                                     backgroundColor='--default-shade-white'
                                     labelWidth={50}
                                     labelFont={'--text-base-regular'}
+                                    hasError={errors["name"]}
+                                    errorMessage={errors["name"]}
                                 />
                             </RowWrapper>
                             <RowWrapper theme={theme}>
@@ -114,47 +154,60 @@ const HealthInsurer = ({ insurer, isEditMode = false, addMode, onCancel = () => 
                                     enabled={localEditMode}
                                     value={fields.email}
                                     label="Email"
-                                    onChangeText={() => { }}
-                                    onClear={() => { }}
+                                    onChangeText={(value) => { onFieldChange('email')(value)}}
+                                    onClear={onFieldChange('email')}
                                     backgroundColor='--default-shade-white'
                                     labelWidth={50}
                                     labelFont={'--text-base-regular'}
+                                    hasError={errors["email"]}
+                                    errorMessage={errors["email"]}
+                                    onEndEditing={() => {handleEmailChange(fields.email, 'email')}}
+                                    autoCapitalize={'none'}
                                 />
                             </RowWrapper>
                             <RowWrapper theme={theme}>
                                 <InputField2
                                     enabled={localEditMode}
-                                    value={fields.address[0]?.line1}
+                                    value={fields.address}
                                     label="Address"
-                                    onChangeText={() => { }}
-                                    onClear={() => { }}
+                                    onChangeText={(value) => { onFieldChange('address')(value)}}
+                                    onClear={onFieldChange('address')}
                                     backgroundColor='--default-shade-white'
                                     labelWidth={50}
                                     labelFont={'--text-base-regular'}
+                                    hasError={errors["address"]}
+                                    errorMessage={errors["address"]}
+                                    
                                 />
                             </RowWrapper>
 
                             <RowWrapper theme={theme}>
                                 <InputField2
                                     enabled={localEditMode}
-                                    value={fields.contactInfo?.phones && fields.contactInfo?.phones[0]?.phone}
+                                    value={fields.phoneOne}
                                     label="Phone"
-                                    onChangeText={() => { }}
-                                    onClear={() => { }}
+                                    placeholder={'876-000-0000'}
+                                    onChangeText={(value) => {handlePhoneChange(value, 'phoneOne') }}
+                                    onClear={onFieldChange('phoneOne')}
                                     backgroundColor='--default-shade-white'
                                     labelWidth={50}
                                     labelFont={'--text-base-regular'}
+                                    hasError={errors["phoneOne"]}
+                                    errorMessage={errors["phoneOne"]}
                                 />
                                 <Seperator />
                                 <InputField2
                                     enabled={localEditMode}
-                                    value={fields.contactInfo?.phones && fields.contactInfo?.phones[1]?.phone}
+                                    value={fields.phoneTwo}
                                     label="Phone"
-                                    onChangeText={() => { }}
-                                    onClear={() => { }}
+                                    placeholder={'876-000-0000'}
+                                    onChangeText={(value) => {handlePhoneChange(value, 'phoneTwo') }}
+                                    onClear={onFieldChange('phoneTwo')}
                                     backgroundColor='--default-shade-white'
                                     labelWidth={50}
                                     labelFont={'--text-base-regular'}
+                                    hasError={errors["phoneTwo"]}
+                                    errorMessage={errors["phoneTwo"]}
                                 />
 
                             </RowWrapper>
@@ -162,21 +215,24 @@ const HealthInsurer = ({ insurer, isEditMode = false, addMode, onCancel = () => 
                             <RowWrapper theme={theme}>
                                 <InputField2
                                     enabled={localEditMode}
-                                    value={`${fields.representative[0]?.firstName} ${fields.representative[0]?.lastName}`}
+                                    value={fields.repName}
                                     label="Rep."
-                                    onChangeText={() => { }}
-                                    onClear={() => { }}
+                                    onChangeText={(value) => {onFieldChange('repName')(value)}}
+                                    onClear={onFieldChange('repName')}
                                     backgroundColor='--default-shade-white'
                                     labelWidth={50}
                                     labelFont={'--text-base-regular'}
+                                    hasError={errors["repName"]}
+                                    errorMessage={errors["repName"]}
                                 />
                                 <Seperator />
                                 <InputField2
                                     enabled={localEditMode}
-                                    value={fields.representative[0]?.contactInfo?.phones[0]?.phone}
+                                    value={fields.repExt}
                                     label="Ext."
-                                    onChangeText={() => { }}
-                                    onClear={() => { }}
+                                    placeholder={'1111'}
+                                    onChangeText={(value) => {onFieldChange('repExt')(value)}}
+                                    onClear={onFieldChange('repExt')}
                                     backgroundColor='--default-shade-white'
                                     labelWidth={50}
                                     labelFont={'--text-base-regular'}
@@ -187,13 +243,17 @@ const HealthInsurer = ({ insurer, isEditMode = false, addMode, onCancel = () => 
                             <RowWrapper theme={theme}>
                                 <InputField2
                                     enabled={localEditMode}
-                                    value={fields.representative[0]?.contactInfo?.emails[0]?.email}
+                                    value={fields.repEmail}
                                     label="Email"
-                                    onChangeText={() => { }}
-                                    onClear={() => { }}
+                                    onChangeText={(value) => {onFieldChange('repEmail')(value)}}
+                                    onClear={onFieldChange('repEmail')}
                                     backgroundColor='--default-shade-white'
                                     labelWidth={50}
                                     labelFont={'--text-base-regular'}
+                                    hasError={errors["repEmail"]}
+                                    errorMessage={errors["repEmail"]}
+                                    onEndEditing={() => {handleEmailChange(fields.repEmail, 'repEmail')}}
+                                    autoCapitalize={'none'}
                                 />
                             </RowWrapper>
                             {
@@ -208,15 +268,9 @@ const HealthInsurer = ({ insurer, isEditMode = false, addMode, onCancel = () => 
                                     </CancelButtonContainer>
 
                                     <ButtonContainer
-                                        // onPress={() => {
-                                        //     actionButton ?
-                                        //         normalInput ? buttonTitle === 'Add' ? onAction(name) : onEdit(id, name) : onAction(staffInfo[0]._id)
-                                        //         :
-
-                                        //         null
-                                        //     toggleAddOption(false);
-                                        //     setEditPress(false)
-                                        // }}
+                                        onPress={() => {
+                                            validateFields();
+                                        }}
                                         theme={theme}
                                         background={addMode ? "--color-blue-600" : '--color-gray-300'}
                                     >

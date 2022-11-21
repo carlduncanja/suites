@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { View, Text } from 'react-native';
 import { useTheme } from 'emotion-theming';
-import { getLifeStyles, addLifeStyleItems, deleteLifeStyleItems, getHealthInsurers } from '../../../api/network';
+import { getLifeStyles, addLifeStyleItems, deleteLifeStyleItems, getHealthInsurers, createHealthInsurer } from '../../../api/network';
 import DetailsPage from '../../common/DetailsPage/DetailsPage';
 import TabsContainer from '../../common/Tabs/TabsContainerComponent';
 import ConfirmationComponent from '../../ConfirmationComponent';
@@ -27,8 +27,6 @@ function CaseFilesPage({ navigation, route }) {
     const [currentTab, setCurrentTab] = useState(currentTabs[0]);
     const [lifeStyleData, setLifeStyleData] = useState([])
     const [healthInsurers, setHealthInsurers] = useState([])
-    const [isFloatingActionDisabled, setFloatingAction] = useState(false);
-    const [selectedItems, setSelectedItems] = useState([]);
     const [addMode, setAddMode] = useState(false);
     const { isEditMode = false } = pageState;
 
@@ -176,9 +174,34 @@ function CaseFilesPage({ navigation, route }) {
         modal.closeAllModals();
     }
 
-    const floatingActions = () => {
-        let isDisabled = selectedItems.length === 1 ? false : true;
+    const handleCreateHealthInsurer = (insurer) => {
+        console.log(insurer)
+        createHealthInsurer(insurer)
+            .then(_ => {
+                setAddMode(false);
+                fetchHealthInsurers();
+                modal.openModal(
+                    'ConfirmationModal', {
+                    content: <ConfirmationComponent
+                        isError={false}
+                        isEditUpdate={false}
+                        onAction={() => {
+                            modal.closeModals('ConfirmationModal');
+                        }}
+                    />,
+                    onClose: () => {
+                        modal.closeModal('ConfirmationModal')
+                    }
+                }
+                );
+            })
+            .catch(error => {
+                modal.closeModals('ConfirmationModal');
+                console.log('Failed to create health insurer', error)
+            })
+    }
 
+    const floatingActions = () => {
         const addLocation = (
             <ActionItem
                 title="New Insurer"
@@ -228,7 +251,7 @@ function CaseFilesPage({ navigation, route }) {
             case 'Health Insurer':
                 return <>
                 <ScrollView> 
-                    { addMode &&  <HealthInsurer insurer={{}} addMode={true} isEditMode={isEditMode} setAddMode = {setAddMode}/>}
+                    { addMode &&  <HealthInsurer insurer={{}} addMode={true} isEditMode={true} setAddMode = {setAddMode} handleAdd={handleCreateHealthInsurer}/>}
                     {
                         
                         healthInsurers.map(insurer => {
@@ -258,7 +281,6 @@ function CaseFilesPage({ navigation, route }) {
                 onBackPress={() => {
                     navigation.navigate('Settings');
                 }}
-                //isArchive={getIsEditable()}
                 pageTabs={(
                     <TabsContainer
                         tabs={currentTabs}
