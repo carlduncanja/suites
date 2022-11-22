@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { View, Text } from 'react-native';
 import { useTheme } from 'emotion-theming';
-import { getLifeStyles, addLifeStyleItems, deleteLifeStyleItems, getHealthInsurers, createHealthInsurer, deleteHealthInsurer, updateHealthInsurer } from '../../../api/network';
+import { getLifeStyles, addLifeStyleItems, deleteLifeStyleItems, getHealthInsurers, createHealthInsurer, deleteHealthInsurer, updateHealthInsurer, updateLifeStyleItems } from '../../../api/network';
 import DetailsPage from '../../common/DetailsPage/DetailsPage';
 import TabsContainer from '../../common/Tabs/TabsContainerComponent';
 import ConfirmationComponent from '../../ConfirmationComponent';
@@ -88,7 +88,7 @@ function CaseFilesPage({ navigation, route }) {
                 }, 200)
                 console.log('failed to delete these item(s)', error)
             })
-            .finally
+
 
 
 
@@ -152,6 +152,37 @@ function CaseFilesPage({ navigation, route }) {
             })
     }
 
+    const updateItems = (itemId, data) => {
+        updateLifeStyleItems(itemId, { name: data })
+            .then(data => {
+                modal.openModal(
+                    'ConfirmationModal', {
+                    content: <ConfirmationComponent
+                        isError={false}
+                        isEditUpdate={false}
+                        onAction={() => {
+                            modal.closeModals('ConfirmationModal');
+
+                            fetchLifeStyleData()
+                        }}
+                    />,
+                    onClose: () => {
+                        modal.closeModal('ConfirmationModal')
+                        fetchLifeStyleData()
+                    }
+                }
+                );
+            })
+            .catch(error => {
+                openErrorConfirmation();
+                setTimeout(() => {
+                    modal.closeModals('ActionContainerModal');
+                }, 200)
+                console.log('failed to delete these item(s)', error)
+            })
+    }
+
+    
     const openErrorConfirmation = () => {
         modal.openModal(
             'ConfirmationModal',
@@ -295,6 +326,9 @@ function CaseFilesPage({ navigation, route }) {
                         }}
                         onDelete={(data) => {
                             openDeletionConfirm(data)
+                        }}
+                        handleEdit={(id, data) => {
+                            updateItems(id, data)
                         }}
                     />
                 )

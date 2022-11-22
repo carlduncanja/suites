@@ -80,7 +80,7 @@ const LifeStyleTabs = ({ LifestyleData,
                 cardInformation={categoryData.itemsNames}
                 icon={categoryData.icon}
                 isEditMode={isEditMode}
-                //handleEdit={handleEdit}
+                onEdit={handleEdit}
                 onDelete={onDelete}
                 idArray={categoryData.itemsIds}
                 onAction={(data) =>
