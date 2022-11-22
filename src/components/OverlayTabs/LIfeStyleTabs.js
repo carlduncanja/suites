@@ -1,15 +1,11 @@
-import React, { useRef, useContext, useState, useEffect } from "react";
-import { View, Text, StyleSheet, ScrollView, FlatList, TouchableOpacity } from "react-native";
-import { addLifeStyleItems } from '../../api/network'
+import React from "react";
+import { View, StyleSheet, ScrollView } from "react-native";
 import _ from "lodash";
-import Footer from "../common/Page/Footer";
 import FramStaffIcon from '../../../assets/svg/frameMedicalStaff';
 import FrameCard from '../common/Frames/FrameCards/FrameCard';
 import drug from '../../../assets/svg/drug'
 import alcohol from "../../../assets/svg/alcohol";
 import tobacco from "../../../assets/svg/tobacco";
-import ConfirmationCheckBoxComponent from '../../components/ConfirmationCheckBoxComponent';
-import ConfirmationComponent from '../../components/ConfirmationComponent'
 
 const LifeStyleTabs = ({ LifestyleData,
     isEditMode,
@@ -73,9 +69,9 @@ const LifeStyleTabs = ({ LifestyleData,
         return _id;
     })
 
-    const renderItem = (categoryData) => {
+    const renderItem = (categoryData, index) => {
       
-        return (<View style={styles.frameContainer}>
+        return (<View style={styles.frameContainer} key={index}>
             <FrameCard
                 frameColor={categoryData.frame}
                 titleBackgroundColor={categoryData.color}
@@ -101,8 +97,8 @@ const LifeStyleTabs = ({ LifestyleData,
 
     return (
         <ScrollView>
-            {Categories.map(cats => (
-                renderItem(cats)
+            {Categories.map((item, index) => (
+                renderItem(item, index)
             ))}
         </ScrollView>
 

@@ -13,10 +13,8 @@ import { useModal } from 'react-native-modalfy';
 import { ScrollView } from 'react-native-gesture-handler';
 import Footer from '../../common/Page/Footer';
 import AddIcon from '../../../../assets/svg/addIcon';
-import TransferIcon from '../../../../assets/svg/transferIcon';
 import ActionItem from '../../common/ActionItem';
 import ActionContainer from '../../common/FloatingAction/ActionContainer';
-import DefaultScheduleContent from '../../../page/Schedule/SchedulePage/DefaultScheduleContent';
 
 function CaseFilesPage({ navigation, route }) {
 
@@ -28,7 +26,6 @@ function CaseFilesPage({ navigation, route }) {
     const [currentTab, setCurrentTab] = useState(currentTabs[0]);
     const [lifeStyleData, setLifeStyleData] = useState([])
     const [healthInsurers, setHealthInsurers] = useState([])
-    const [deleteInsurer, setDeleteInsurer] = useState(false)
     const [addMode, setAddMode] = useState(false);
     const { isEditMode = false } = pageState;
 
@@ -96,7 +93,7 @@ function CaseFilesPage({ navigation, route }) {
 
 
     }
-    const openDeletionConfirm = data => {
+    const openDeletionConfirm = (data, deleteInsurer) => {
         modal.openModal(
             'ConfirmationModal',
             {
@@ -110,8 +107,7 @@ function CaseFilesPage({ navigation, route }) {
                         }, 200)
                     }}
                     onAction={() => {
-                        // deleteInsurer ? deleteHealthInsurerLocal(data) : deleteItem(data)
-                        deleteHealthInsurerLocal(data);
+                        deleteInsurer ? deleteHealthInsurerLocal(data) : deleteItem(data)
                         modal.closeModals('ConfirmationModal');
                     }}
                     message="Do you want to delete this item?"
@@ -181,13 +177,14 @@ function CaseFilesPage({ navigation, route }) {
         createHealthInsurer(insurer)
             .then(_ => {
                 setAddMode(false);
-                fetchHealthInsurers();
                 modal.openModal(
                     'ConfirmationModal', {
                     content: <ConfirmationComponent
                         isError={false}
                         isEditUpdate={false}
                         onAction={() => {
+                            setHealthInsurers([]);
+                            fetchHealthInsurers();
                             modal.closeModals('ConfirmationModal');
                         }}
                     />,
@@ -198,23 +195,18 @@ function CaseFilesPage({ navigation, route }) {
                 );
             })
             .catch(error => {
-                modal.closeModals('ConfirmationModal');
+                openErrorConfirmation();
                 console.log('Failed to create health insurer', error)
             })
     }
 
     const handleDeleteInsurer = (id) => {
-        setDeleteInsurer(true);
-        openDeletionConfirm(id)
+        openDeletionConfirm(id, true)
     }
 
     const deleteHealthInsurerLocal = (id) => {
-        console.log("IDS", [id]);
         deleteHealthInsurer({ids: [id], status: 'removed'})
         .then(_ => {
-            setHealthInsurers([]);
-            fetchHealthInsurers();
-            setDeleteInsurer(false);
             modal.openModal(
                 'ConfirmationModal', {
                 content: <ConfirmationComponent
@@ -222,6 +214,8 @@ function CaseFilesPage({ navigation, route }) {
                     isEditUpdate={false}
                     onAction={() => {
                         modal.closeModals('ConfirmationModal');
+                        setHealthInsurers([]);
+                        fetchHealthInsurers();
                     }}
                 />,
                 onClose: () => {
@@ -231,7 +225,7 @@ function CaseFilesPage({ navigation, route }) {
             );
         })
         .catch(error => {
-            modal.closeModals('ConfirmationModal');
+            openErrorConfirmation();
             console.log('Failed to delete health insurer', error)
         })
     }
@@ -283,9 +277,8 @@ function CaseFilesPage({ navigation, route }) {
                 <ScrollView> 
                     { addMode &&  <HealthInsurer insurer={{}} addMode={true} isEditMode={true} setAddMode = {setAddMode} handleAdd={handleCreateHealthInsurer}/>}
                     {
-                        healthInsurers.map(insurer => {
-                            console.log(insurer);
-                           return <HealthInsurer insurer={insurer} isEditMode={isEditMode} handleDelete={handleDeleteInsurer} />
+                        healthInsurers.map((insurer, key) => {
+                           return <HealthInsurer key={key} insurer={insurer} isEditMode={isEditMode} handleDelete={handleDeleteInsurer} />
                         })
                     }
                  

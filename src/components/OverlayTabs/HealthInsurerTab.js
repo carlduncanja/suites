@@ -27,7 +27,7 @@ margin-top: 5px;
 margin-bottom: 24px;
 `;
 
-const HealthInsurer = ({ insurer, isEditMode = false, addMode, onCancel = () => { }, setAddMode, handleAdd = () => {}, handleDelete = () => {}, deleteInsurer }) => {
+const HealthInsurer = ({ insurer, isEditMode = false, addMode, onCancel = () => { }, setAddMode, handleAdd = () => {}, handleDelete = () => {}  }) => {
     const theme = useTheme();
     const [localEditMode, setLocalEditMode] = useState(addMode ? true : false);
     const [errors, setErrors] = useState({});
@@ -109,7 +109,7 @@ const HealthInsurer = ({ insurer, isEditMode = false, addMode, onCancel = () => 
             contactInfo: {
                 phones: [{phone: fields.phoneOne}, fields.phoneTwo && {phone: fields.phoneTwo}],
             },
-            representative: [{name: fields.repName, contactInfo: {phones: [{phone: fields.phoneOne}], emails: [{email: fields.repEmail}]}}],
+            representative: [{name: fields.repName, contactInfo: {phones: [{phone: fields.repExt}], emails: [{email: fields.repEmail}]}}],
         }
         if (isValid) handleAdd(insurer);
     }
