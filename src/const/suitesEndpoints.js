@@ -140,6 +140,3 @@ export const UpdateLifeStyleItems = (id) => `/lifestyle_types/items/${id}`
 export const healthInsurerEndpoint = '/health_insurer'
 export const updateHealthInsurerEndpoint = id => `/health_insurer/${id}`
 
-// #### HEALTH INSURERS
-export const healthInsurerEndpoint = '/health_insurer'
-export const updateHealthInsurerEndpoint = id => `/health_insurer/${id}`

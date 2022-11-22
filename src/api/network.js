@@ -898,6 +898,13 @@ export const deleteLifeStyleItems = async (ids) => suitesAxiosInstance
     .then(handleResponse)
     .catch(handleError)
 
+        
+export const updateLifeStyleItems = async (id, data) => suitesAxiosInstance
+    .put(UpdateLifeStyleItems(id), data)
+    .then(handleResponse)
+    .catch(handleError)
+
+
 // ################# HEALTH INSURER ENDPOINTS 
 
 export const getHealthInsurers = async () => suitesAxiosInstance
@@ -917,10 +924,6 @@ export const deleteHealthInsurer = async (data) => suitesAxiosInstance
 
 export const updateHealthInsurer = async (id, data) => suitesAxiosInstance
     .put(updateHealthInsurerEndpoint(id), data)
-    .then(handleResponse)
-    .catch(handleError)
-export const updateLifeStyleItems = async (id, data) => suitesAxiosInstance
-    .put(UpdateLifeStyleItems(id), data)
     .then(handleResponse)
     .catch(handleError)
 
