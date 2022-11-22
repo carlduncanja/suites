@@ -137,3 +137,4 @@ export const DeleteLifeStyleitems = `/lifestyle_types/delete/items`
 
 // #### HEALTH INSURERS
 export const healthInsurerEndpoint = '/health_insurer'
+export const updateHealthInsurerEndpoint = id => `/health_insurer/${id}`

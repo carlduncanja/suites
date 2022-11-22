@@ -91,7 +91,8 @@ import {
     lifestylesEndpiont,
     ItemsLifeStyleEndpiont,
     DeleteLifeStyleitems,
-    healthInsurerEndpoint
+    healthInsurerEndpoint,
+    updateHealthInsurerEndpoint
 } from '../const/suitesEndpoints';
 import { createDocumentLink, documentById, documentData, documentUpload } from '../const/documentGenerationEndpoints';
 
@@ -913,4 +914,9 @@ export const deleteHealthInsurer = async (data) => suitesAxiosInstance
     .then(handleResponse)
     .catch(handleError)
 
+export const updateHealthInsurer = async (id, data) => suitesAxiosInstance
+    .put(updateHealthInsurerEndpoint(id), data)
+    .then(handleResponse)
+    .catch(handleError)
 
+    

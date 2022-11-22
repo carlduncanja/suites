@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { View, Text } from 'react-native';
 import { useTheme } from 'emotion-theming';
-import { getLifeStyles, addLifeStyleItems, deleteLifeStyleItems, getHealthInsurers, createHealthInsurer, deleteHealthInsurer } from '../../../api/network';
+import { getLifeStyles, addLifeStyleItems, deleteLifeStyleItems, getHealthInsurers, createHealthInsurer, deleteHealthInsurer, updateHealthInsurer } from '../../../api/network';
 import DetailsPage from '../../common/DetailsPage/DetailsPage';
 import TabsContainer from '../../common/Tabs/TabsContainerComponent';
 import ConfirmationComponent from '../../ConfirmationComponent';
@@ -230,6 +230,33 @@ function CaseFilesPage({ navigation, route }) {
         })
     }
 
+    const handleEditInsurer = (id, data) => {
+        console.log(id,data);
+        updateHealthInsurer(id, data)
+        .then(_ => {
+            modal.openModal(
+                'ConfirmationModal', {
+                content: <ConfirmationComponent
+                    isError={false}
+                    isEditUpdate={false}
+                    onAction={() => {
+                        modal.closeModals('ConfirmationModal');
+                        setHealthInsurers([]);
+                        fetchHealthInsurers();
+                    }}
+                />,
+                onClose: () => {
+                    modal.closeModal('ConfirmationModal')
+                }
+            }
+            );
+        })
+        .catch(error => {
+            openErrorConfirmation();
+            console.log('Failed to update health insurer', error)
+        })
+    }
+
     const floatingActions = () => {
         const addLocation = (
             <ActionItem
@@ -278,7 +305,7 @@ function CaseFilesPage({ navigation, route }) {
                     { addMode &&  <HealthInsurer insurer={{}} addMode={true} isEditMode={true} setAddMode = {setAddMode} handleAdd={handleCreateHealthInsurer}/>}
                     {
                         healthInsurers.map((insurer, key) => {
-                           return <HealthInsurer key={key} insurer={insurer} isEditMode={isEditMode} handleDelete={handleDeleteInsurer} />
+                           return <HealthInsurer key={key} insurer={insurer} isEditMode={isEditMode} handleDelete={handleDeleteInsurer} handleEdit={handleEditInsurer}/>
                         })
                     }
                  

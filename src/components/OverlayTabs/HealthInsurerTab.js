@@ -27,10 +27,11 @@ margin-top: 5px;
 margin-bottom: 24px;
 `;
 
-const HealthInsurer = ({ insurer, isEditMode = false, addMode, onCancel = () => { }, setAddMode, handleAdd = () => {}, handleDelete = () => {}  }) => {
+const HealthInsurer = ({ insurer, isEditMode = false, addMode, handleEdit = () => { }, setAddMode, handleAdd = () => {}, handleDelete = () => {}  }) => {
     const theme = useTheme();
     const [localEditMode, setLocalEditMode] = useState(addMode ? true : false);
     const [errors, setErrors] = useState({});
+    const [validEmail, setValidEmail] = useState(true);
 
     const {
         _id,
@@ -71,9 +72,10 @@ const HealthInsurer = ({ insurer, isEditMode = false, addMode, onCancel = () => 
         let fieldErrors = {};
          if (!isValidEmail(email) && email){
             fieldErrors = {...errors, [field]: 'Invalid email' };
-            
+            setValidEmail(false);
          }else{
             delete fieldErrors[field];
+            setValidEmail(true);
          }       
          onFieldChange(field);
          setErrors(fieldErrors);      
@@ -87,7 +89,6 @@ const HealthInsurer = ({ insurer, isEditMode = false, addMode, onCancel = () => 
             'email',
             'address',
             'phoneOne',
-            'phoneTwo',
             'repName',
             'repEmail']
 
@@ -111,7 +112,10 @@ const HealthInsurer = ({ insurer, isEditMode = false, addMode, onCancel = () => 
             },
             representative: [{name: fields.repName, contactInfo: {phones: [{phone: fields.repExt}], emails: [{email: fields.repEmail}]}}],
         }
-        if (isValid) handleAdd(insurer);
+        
+        if(validEmail && isValid) {
+           addMode ? handleAdd(insurer) : handleEdit(_id, insurer);
+        }
     }
 
     return (
@@ -207,8 +211,6 @@ const HealthInsurer = ({ insurer, isEditMode = false, addMode, onCancel = () => 
                                     backgroundColor='--default-shade-white'
                                     labelWidth={50}
                                     labelFont={'--text-base-regular'}
-                                    hasError={errors["phoneTwo"]}
-                                    errorMessage={errors["phoneTwo"]}
                                 />
 
                             </RowWrapper>
@@ -273,7 +275,7 @@ const HealthInsurer = ({ insurer, isEditMode = false, addMode, onCancel = () => 
                                             validateFields();
                                         }}
                                         theme={theme}
-                                        background={addMode ? "--color-blue-600" : '--color-gray-300'}
+                                        background={"--color-blue-600"}
                                     >
 
                                         <ModalText theme={theme} textColor="--default-shade-white" font="--text-base-bold">Save</ModalText>
