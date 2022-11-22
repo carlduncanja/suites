@@ -16,6 +16,7 @@ import AddIcon from '../../../../assets/svg/addIcon';
 import TransferIcon from '../../../../assets/svg/transferIcon';
 import ActionItem from '../../common/ActionItem';
 import ActionContainer from '../../common/FloatingAction/ActionContainer';
+import DefaultScheduleContent from '../../../page/Schedule/SchedulePage/DefaultScheduleContent';
 
 function CaseFilesPage({ navigation, route }) {
 
@@ -109,7 +110,8 @@ function CaseFilesPage({ navigation, route }) {
                         }, 200)
                     }}
                     onAction={() => {
-                        deleteInsurer ? deleteHealthInsurerLocal(data) : deleteItem(data)
+                        // deleteInsurer ? deleteHealthInsurerLocal(data) : deleteItem(data)
+                        deleteHealthInsurerLocal(data);
                         modal.closeModals('ConfirmationModal');
                     }}
                     message="Do you want to delete this item?"
@@ -210,6 +212,8 @@ function CaseFilesPage({ navigation, route }) {
         console.log("IDS", [id]);
         deleteHealthInsurer({ids: [id], status: 'removed'})
         .then(_ => {
+            setHealthInsurers([]);
+            fetchHealthInsurers();
             setDeleteInsurer(false);
             modal.openModal(
                 'ConfirmationModal', {
@@ -218,13 +222,10 @@ function CaseFilesPage({ navigation, route }) {
                     isEditUpdate={false}
                     onAction={() => {
                         modal.closeModals('ConfirmationModal');
-                        fetchHealthInsurers();
-                        // console.log(healthInsurers);
                     }}
                 />,
                 onClose: () => {
                     modal.closeModal('ConfirmationModal')
-                    fetchHealthInsurers();
                 }
             }
             );
@@ -282,8 +283,8 @@ function CaseFilesPage({ navigation, route }) {
                 <ScrollView> 
                     { addMode &&  <HealthInsurer insurer={{}} addMode={true} isEditMode={true} setAddMode = {setAddMode} handleAdd={handleCreateHealthInsurer}/>}
                     {
-                        
                         healthInsurers.map(insurer => {
+                            console.log(insurer);
                            return <HealthInsurer insurer={insurer} isEditMode={isEditMode} handleDelete={handleDeleteInsurer} />
                         })
                     }
