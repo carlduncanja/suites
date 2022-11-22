@@ -15,7 +15,7 @@ import { RowWrapper } from "../common/Frames/FrameContents/FrameInsurerContent";
 import InputField2 from "../common/Input Fields/InputField2";
 import { ButtonContainer, ModalText, CancelButtonContainer, FrameContent } from "../common/Frames/FrameItems/FrameEditItem";
 import { formatPhoneNumber, isValidEmail } from "../../utils/formatter";
-const Seperator = styled.View`
+const Seperator = styled.View`  
     marginRight: 50;
 `;
 
@@ -27,7 +27,7 @@ margin-top: 5px;
 margin-bottom: 24px;
 `;
 
-const HealthInsurer = ({ insurer, isEditMode = false, addMode, handleEdit = () => { }, setAddMode, handleAdd = () => {}, handleDelete = () => {}  }) => {
+const HealthInsurer = ({ insurer, isEditMode = false, addMode, handleEdit = () => { }, setAddMode, handleAdd = () => { }, handleDelete = () => { } }) => {
     const theme = useTheme();
     const [localEditMode, setLocalEditMode] = useState(addMode ? true : false);
     const [errors, setErrors] = useState({});
@@ -53,6 +53,11 @@ const HealthInsurer = ({ insurer, isEditMode = false, addMode, handleEdit = () =
         repEmail: representative[0]?.contactInfo?.emails[0]?.email
     });
 
+    useEffect(() => {
+       setFields(returnObj);
+       setLocalEditMode(false)
+    }, [isEditMode]);
+
     const onFieldChange = fieldName => value => {
         const updatedFields = {
             ...fields,
@@ -70,21 +75,39 @@ const HealthInsurer = ({ insurer, isEditMode = false, addMode, handleEdit = () =
 
     const handleEmailChange = (email, field) => {
         let fieldErrors = {};
-         if (!isValidEmail(email) && email){
-            fieldErrors = {...errors, [field]: 'Invalid email' };
+        if (!isValidEmail(email) && email) {
+            fieldErrors = { ...errors, [field]: 'Invalid email' };
             setValidEmail(false);
-         }else{
+        } else {
             delete fieldErrors[field];
             setValidEmail(true);
-         }       
-         onFieldChange(field);
-         setErrors(fieldErrors);      
+        }
+        onFieldChange(field);
+        setErrors(fieldErrors);
     };
+
+    const handleCancel = () => {
+        setFields(returnObj())
+        setLocalEditMode(!localEditMode)
+    }
+
+    const returnObj = () => {
+        return {
+            name,
+            email,
+            address: address[0]?.line1,
+            phoneOne: contactInfo?.phones && contactInfo?.phones[0]?.phone,
+            phoneTwo: contactInfo?.phones && contactInfo?.phones[1]?.phone,
+            repName: representative[0]?.name,
+            repExt: representative[0]?.contactInfo?.phones[0]?.phone,
+            repEmail: representative[0]?.contactInfo?.emails[0]?.email
+        };
+    }
 
     const validateFields = () => {
         let errors = {};
         let isValid = true;
-        const requiredFields = [ 
+        const requiredFields = [
             'name',
             'email',
             'address',
@@ -106,15 +129,15 @@ const HealthInsurer = ({ insurer, isEditMode = false, addMode, handleEdit = () =
         const insurer = {
             name: fields.name,
             email: fields.email,
-            address: {line1: fields.address},
+            address: { line1: fields.address },
             contactInfo: {
-                phones: [{phone: fields.phoneOne}, fields.phoneTwo && {phone: fields.phoneTwo}],
+                phones: [{ phone: fields.phoneOne }, fields.phoneTwo && { phone: fields.phoneTwo }],
             },
-            representative: [{name: fields.repName, contactInfo: {phones: [{phone: fields.repExt}], emails: [{email: fields.repEmail}]}}],
+            representative: [{ name: fields.repName, contactInfo: { phones: [{ phone: fields.repExt }], emails: [{ email: fields.repEmail }] } }],
         }
-        
-        if(validEmail && isValid) {
-           addMode ? handleAdd(insurer) : handleEdit(_id, insurer);
+
+        if (validEmail && isValid) {
+            addMode ? handleAdd(insurer) : handleEdit(_id, insurer);
         }
     }
 
@@ -133,7 +156,7 @@ const HealthInsurer = ({ insurer, isEditMode = false, addMode, handleEdit = () =
                             <IconButton
                                 Icon={
                                     isEditMode && !localEditMode ? <EditIcon /> : <WasteIcon strokeColor={!isEditMode ? theme.colors['--color-gray-500'] : "#C53030"} />}
-                                onPress={() => { localEditMode ? handleDelete(_id) :  setLocalEditMode(!localEditMode) }}
+                                onPress={() => { localEditMode ? handleDelete(_id) : setLocalEditMode(!localEditMode) }}
                                 disabled={!isEditMode}
                             />
                         }
@@ -145,7 +168,7 @@ const HealthInsurer = ({ insurer, isEditMode = false, addMode, handleEdit = () =
                                     enabled={localEditMode}
                                     value={fields.name}
                                     label="Insurer"
-                                    onChangeText={(value) => { onFieldChange('name')(value)}}
+                                    onChangeText={(value) => { onFieldChange('name')(value) }}
                                     onClear={onFieldChange('name')}
                                     backgroundColor='--default-shade-white'
                                     labelWidth={50}
@@ -159,14 +182,14 @@ const HealthInsurer = ({ insurer, isEditMode = false, addMode, handleEdit = () =
                                     enabled={localEditMode}
                                     value={fields.email}
                                     label="Email"
-                                    onChangeText={(value) => { onFieldChange('email')(value)}}
+                                    onChangeText={(value) => { onFieldChange('email')(value) }}
                                     onClear={onFieldChange('email')}
                                     backgroundColor='--default-shade-white'
                                     labelWidth={50}
                                     labelFont={'--text-base-regular'}
                                     hasError={errors["email"]}
                                     errorMessage={errors["email"]}
-                                    onEndEditing={() => {handleEmailChange(fields.email, 'email')}}
+                                    onEndEditing={() => { handleEmailChange(fields.email, 'email') }}
                                     autoCapitalize={'none'}
                                 />
                             </RowWrapper>
@@ -175,14 +198,14 @@ const HealthInsurer = ({ insurer, isEditMode = false, addMode, handleEdit = () =
                                     enabled={localEditMode}
                                     value={fields.address}
                                     label="Address"
-                                    onChangeText={(value) => { onFieldChange('address')(value)}}
+                                    onChangeText={(value) => { onFieldChange('address')(value) }}
                                     onClear={onFieldChange('address')}
                                     backgroundColor='--default-shade-white'
                                     labelWidth={50}
                                     labelFont={'--text-base-regular'}
                                     hasError={errors["address"]}
                                     errorMessage={errors["address"]}
-                                    
+
                                 />
                             </RowWrapper>
 
@@ -192,7 +215,7 @@ const HealthInsurer = ({ insurer, isEditMode = false, addMode, handleEdit = () =
                                     value={fields.phoneOne}
                                     label="Phone"
                                     placeholder={'876-000-0000'}
-                                    onChangeText={(value) => {handlePhoneChange(value, 'phoneOne') }}
+                                    onChangeText={(value) => { handlePhoneChange(value, 'phoneOne') }}
                                     onClear={onFieldChange('phoneOne')}
                                     backgroundColor='--default-shade-white'
                                     labelWidth={50}
@@ -206,7 +229,7 @@ const HealthInsurer = ({ insurer, isEditMode = false, addMode, handleEdit = () =
                                     value={fields.phoneTwo}
                                     label="Phone"
                                     placeholder={'876-000-0000'}
-                                    onChangeText={(value) => {handlePhoneChange(value, 'phoneTwo') }}
+                                    onChangeText={(value) => { handlePhoneChange(value, 'phoneTwo') }}
                                     onClear={onFieldChange('phoneTwo')}
                                     backgroundColor='--default-shade-white'
                                     labelWidth={50}
@@ -220,7 +243,7 @@ const HealthInsurer = ({ insurer, isEditMode = false, addMode, handleEdit = () =
                                     enabled={localEditMode}
                                     value={fields.repName}
                                     label="Rep."
-                                    onChangeText={(value) => {onFieldChange('repName')(value)}}
+                                    onChangeText={(value) => { onFieldChange('repName')(value) }}
                                     onClear={onFieldChange('repName')}
                                     backgroundColor='--default-shade-white'
                                     labelWidth={50}
@@ -234,7 +257,7 @@ const HealthInsurer = ({ insurer, isEditMode = false, addMode, handleEdit = () =
                                     value={fields.repExt}
                                     label="Ext."
                                     placeholder={'1111'}
-                                    onChangeText={(value) => {onFieldChange('repExt')(value)}}
+                                    onChangeText={(value) => { onFieldChange('repExt')(value) }}
                                     onClear={onFieldChange('repExt')}
                                     backgroundColor='--default-shade-white'
                                     labelWidth={50}
@@ -248,40 +271,40 @@ const HealthInsurer = ({ insurer, isEditMode = false, addMode, handleEdit = () =
                                     enabled={localEditMode}
                                     value={fields.repEmail}
                                     label="Email"
-                                    onChangeText={(value) => {onFieldChange('repEmail')(value)}}
+                                    onChangeText={(value) => { onFieldChange('repEmail')(value) }}
                                     onClear={onFieldChange('repEmail')}
                                     backgroundColor='--default-shade-white'
                                     labelWidth={50}
                                     labelFont={'--text-base-regular'}
                                     hasError={errors["repEmail"]}
                                     errorMessage={errors["repEmail"]}
-                                    onEndEditing={() => {handleEmailChange(fields.repEmail, 'repEmail')}}
+                                    onEndEditing={() => { handleEmailChange(fields.repEmail, 'repEmail') }}
                                     autoCapitalize={'none'}
                                 />
                             </RowWrapper>
                             {
                                 (addMode || localEditMode) &&
                                 <>
-                                <Accent />
-                                <FrameContent style={[{marginBottom: 10}]}>
-                                    <CancelButtonContainer theme={theme} background='--color-gray-300'
-                                        onPress={() => addMode ? setAddMode(false) : setLocalEditMode(!localEditMode)}
-                                    >
-                                        <ModalText theme={theme} textColor="--color-blue-600" font="--text-base-bold">Cancel</ModalText>
-                                    </CancelButtonContainer>
+                                    <Accent />
+                                    <FrameContent style={[{ marginBottom: 10 }]}>
+                                        <CancelButtonContainer theme={theme} background='--color-gray-300'
+                                            onPress={() => addMode ? setAddMode(false) : handleCancel()}
+                                        >
+                                            <ModalText theme={theme} textColor="--color-blue-600" font="--text-base-bold">Cancel</ModalText>
+                                        </CancelButtonContainer>
 
-                                    <ButtonContainer
-                                        onPress={() => {
-                                            validateFields();
-                                        }}
-                                        theme={theme}
-                                        background={"--color-blue-600"}
-                                    >
+                                        <ButtonContainer
+                                            onPress={() => {
+                                                validateFields();
+                                            }}
+                                            theme={theme}
+                                            background={"--color-blue-600"}
+                                        >
 
-                                        <ModalText theme={theme} textColor="--default-shade-white" font="--text-base-bold">Save</ModalText>
-                                    </ButtonContainer>
+                                            <ModalText theme={theme} textColor="--default-shade-white" font="--text-base-bold">Save</ModalText>
+                                        </ButtonContainer>
 
-                                </FrameContent>
+                                    </FrameContent>
                                 </>
                             }
                         </FrameContentListContainer>

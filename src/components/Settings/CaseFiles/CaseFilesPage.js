@@ -231,7 +231,6 @@ function CaseFilesPage({ navigation, route }) {
     }
 
     const handleEditInsurer = (id, data) => {
-        console.log(id,data);
         updateHealthInsurer(id, data)
         .then(_ => {
             modal.openModal(
