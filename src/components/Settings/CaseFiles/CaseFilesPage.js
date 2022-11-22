@@ -35,6 +35,9 @@ function CaseFilesPage({ navigation, route }) {
         fetchHealthInsurers();
     }, []);
 
+    useEffect(() => {
+        !isEditMode && setAddMode(false);
+    }, [isEditMode])
 
     const onTabPress = (selectedTab) => {
         if (!isEditMode) setCurrentTab(selectedTab);

@@ -32,6 +32,7 @@ const HealthInsurer = ({ insurer, isEditMode = false, addMode, handleEdit = () =
     const [localEditMode, setLocalEditMode] = useState(addMode ? true : false);
     const [errors, setErrors] = useState({});
     const [validEmail, setValidEmail] = useState(true);
+    const firstRender = useRef(true);
 
     const {
         _id,
@@ -54,8 +55,12 @@ const HealthInsurer = ({ insurer, isEditMode = false, addMode, handleEdit = () =
     });
 
     useEffect(() => {
-       setFields(returnObj);
-       setLocalEditMode(false)
+        if(firstRender.current){
+           firstRender.current = false; 
+        }else{
+            setFields(returnObj);
+            setLocalEditMode(false);
+        }
     }, [isEditMode]);
 
     const onFieldChange = fieldName => value => {
