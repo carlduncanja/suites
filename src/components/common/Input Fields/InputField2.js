@@ -40,10 +40,10 @@ const LabelWrapper = styled.View(({theme, label}) => ({
     marginRight: label ? 20 : 0
 }));
 
-const TextInputWrapper = styled.View`
-  flex: 1;
-  height: ${({inputHeight}) => inputHeight ? inputHeight : '48px'};
-`;
+const TextInputWrapper = styled.View(({inputHeight}) => ({
+    flex: 1,
+    height: inputHeight ? inputHeight : 32
+}));
 
 const TextInputContainer = styled.View`
   position: relative;
@@ -127,7 +127,7 @@ function InputField2({
                 </LabelWrapper>
             }
 
-            <TextInputWrapper>
+            <TextInputWrapper inputHeight={inputHeight}>
                 <TextInputContainer
                     backgroundColor={backgroundColor}
                     enabled={enabled}

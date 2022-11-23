@@ -9,42 +9,55 @@ import {
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { connect } from 'react-redux';
 import styled, { css } from '@emotion/native';
-import { login } from '../../api/network';
 import LoginBackground from '../../components/Onboarding/LoginBackground';
 import Logo from '../../../assets/svg/logo';
-import InputFieldWithIcon from '../../components/common/Input Fields/InputFieldWithIcon';
-import PersonIcon from '../../../assets/svg/personIcon';
-import PasswordIcon from '../../../assets/svg/lockIcon';
+
 import Button from '../../components/common/Buttons/Button';
 import { signIn } from '../../redux/actions/authActions';
-import { setBearerToken } from '../../api';
-import PageButton from "../../components/common/Page/PageButton";
 import { useTheme } from "emotion-theming";
-import moment from "moment";
 import InputField2 from '../../components/common/Input Fields/InputField2';
-
+import { isValidEmail } from '../../utils/formatter';
 // login page at the startup
 function ForgotPasswordPage({ navigation }) {
     const theme = useTheme();
 
-    const emailRef = useRef();
-    const passwordRef = useRef();
 
     const [fields, setFields] = useState({
         email: '',
-        password: '',
     });
-    const [fieldError, setFieldError] = useState({})
+    const [error, setError] = useState('')
 
-
-
-
-
-    
     const goToLogin = () => {
         navigation.navigate('login')
     };
 
+    const onFieldChange = fieldName => value => {
+        const updatedFields = {
+            ...fields,
+            [fieldName]: value
+        };
+
+        setFields(updatedFields);
+    };
+
+    const handleSendCode = () => {
+       console.log('Code sent');
+    }
+
+    const validate = () => {
+        let message = ''
+        let isValid = true;
+        const { email } = fields;
+
+        if(!email) message = 'Please provide an email.'
+        if(!isValidEmail(email) && email) message = 'The email provided is invalid.';
+        
+
+        setError(message)
+        if(!error) isValid = false;
+
+        if (isValid) handleSendCode();
+    }
 
     return (
         <PageWrapper theme={theme}>
@@ -69,51 +82,39 @@ function ForgotPasswordPage({ navigation }) {
                                 </FormBodyText>
                                 <LabelWrapper>
                                     <InputLabel>Email</InputLabel>
-                                    <InputField2 borderColor={'--color-gray-300'} inputHeight={'48px'} />
+                                    <InputField2
+                                        placeholder='Your email'
+                                        onChangeText={value => onFieldChange('email')(value)}
+                                        onClear={onFieldChange('email')}
+                                        value={fields.email}
+                                        autoCapitalize={'none'}
+                                        keyboardType="email-address"
+                                        borderColor={'--color-gray-300'}
+                                        inputHeight={48} />
+                                   {error ?  <Text style={[styles.errorText]}>{error}</Text> : null } 
                                 </LabelWrapper>
 
-                                <View
-                                    style={[
-                                        styles.button,
-                                        {
-                                            backgroundColor: '#104587',
-                                            borderColor: '#104587',
-                                            borderWidth: 1,
-                                            height: 48
-                                        },
-                                    ]}
-                                >
+                                <View style={[styles.button]}>
                                     <Button
                                         backgroundColor={theme.colors['--company']}
-                                        buttonPress={goToLogin}
+                                        buttonPress={validate}
                                         title="Send Code"
                                         color={theme.colors['--default-shade-white']}
                                     />
                                 </View>
-                                <View style={{justifyContent: 'center'}} >
-                                <BackToLogin onPress={ ()=> goToLogin() }>Back to Login</BackToLogin>
+                                <View style={{ justifyContent: 'center' }} >
+                                    <BackToLogin onPress={() => goToLogin()}>Back to Login</BackToLogin>
                                 </View>
                             </FormContentWrapper>
                         </FormContainer>
                     </FormWrapper>
 
-                </PageContainer>  
+                </PageContainer>
             </PageWrapper>
 
         </PageWrapper>
     );
 }
-
-const divider = (
-    <View
-        style={{
-            flex: 1,
-            borderWidth: 1,
-            borderColor: '#CCD6E0',
-            height: 0,
-        }}
-    />
-);
 
 const PageWrapper = styled.View`
   flex: 1;
@@ -196,7 +197,7 @@ const BackToLogin = styled.Text(({ theme }) => ({
 }))
 
 const LabelWrapper = styled.View`
-  height: 68px;
+  height: 85px;
   width: 100%;
   justify-content: between;
   margin-top: ${({ theme }) => theme.space['--space-16']};
@@ -211,63 +212,19 @@ const InputLabel = styled.Text(({ theme }) => ({
 }))
 
 
-
-
-
 const styles = StyleSheet.create({
-    overlay: {
-        position: 'absolute',
-        flex: 1,
-        width: '100%',
-        height: '100%',
-    },
-    page: {
-        // position:'absolute',
-        flex: 1,
-        // width:'100%',
-        // height:'100%',
-        alignItems: 'center',
-        justifyContent: 'center',
-        bottom: 50,
-    },
-    logo: {
-        backgroundColor: '#FFFFFF',
-        // padding:10,
-        borderRadius: 58,
-        marginBottom: 30,
-        height: 116,
-        width: 116,
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    form: {
-        backgroundColor: '#FFFFFF',
-        padding: 30,
-        height: 356,
-        width: 325,
-        borderRadius: 12,
-    },
-    row: {
-        width: '100%',
-        height: 65,
-        marginBottom: 20,
-    },
     button: {
-        borderRadius: 6,
-        backgroundColor: '#104587',
-        paddingTop: 8,
         width: '100%',
-        paddingBottom: 8,
-        height: 35,
+        backgroundColor: '#104587',
+        borderColor: '#104587',
+        borderWidth: 1,
+        height: 48,
+        borderRadius: 8
     },
-    loginDivider: {
-        width: 261,
-        flexDirection: 'row',
-        alignItems: 'center',
-        margin: 20,
-        marginLeft: 0,
-        marginRight: 0,
-    },
+    errorText: {
+        color: '#c53030',
+        fontSize: 13
+    }
 });
 
 ForgotPasswordPage.propTypes = {};
