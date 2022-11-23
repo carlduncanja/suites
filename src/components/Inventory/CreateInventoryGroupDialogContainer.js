@@ -344,6 +344,9 @@ function CreateInventoryGroupDialogContainer({ navigation, route }) {
                         errorMessage="Name must be filled."
                     />
                 </FieldContainer>
+               
+            </Row>
+            <Row>
                 <FieldContainer>
                     <InputField2
                         label={"Category"}
