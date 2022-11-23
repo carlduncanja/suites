@@ -86,7 +86,7 @@ function CreateInventoryGroupDialogContainer({ navigation, route }) {
         category: '',
         name: '',
         unit: '',
-        stock: '',
+        levels: {low:''},
         unitOfMeasurement: '',
         markup: ''
     });
@@ -197,9 +197,20 @@ function CreateInventoryGroupDialogContainer({ navigation, route }) {
 
     };
 
+    const onStockChange = (fieldName) => (value) => {
+        
+        setFields({ ...fields, levels: {low:value} });
+
+
+        const updatedErrors = { ...errorFields }
+        delete updatedErrors[fieldName]
+        setErrorFields(updatedErrors)
+
+    };
+
     const validateGroup = () => {
         let isValid = true
-        let requiredFields = ['name', 'stock']
+        let requiredFields = ['name', 'levels']
 
         let errorObj = { ...errorFields } || {}
 
@@ -344,10 +355,10 @@ function CreateInventoryGroupDialogContainer({ navigation, route }) {
                 <FieldContainer>
                     <InputField2
                         label={"Low Stock"}
-                        onChangeText={onFieldChange('stock')}
-                        value={fields['stock']}
-                        onClear={() => onFieldChange('stock')('')}
-                        hasError={errorFields['stock']}
+                        onChangeText={onStockChange('levels')}
+                        value={fields['levels']}
+                        onClear={() => onStockChange('levels')('')}
+                        hasError={errorFields['levels']}
                         errorMessage="Low Stock must be filled."
                     />
                 </FieldContainer>
