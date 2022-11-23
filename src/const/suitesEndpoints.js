@@ -3,6 +3,7 @@ export const loginEndpoint = '/auth/login';
 export const logoutEndpoint = '/auth/logout';
 export const registrationEndpoint = '/auth/register';
 export const guestLoginEndpoint = '/auth/login/guest';
+export const forgotPassword = '/auth/forgot-password';
 
 // ##### Users
 export const users = '/users';

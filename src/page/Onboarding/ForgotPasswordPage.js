@@ -103,7 +103,7 @@ function ForgotPasswordPage({ navigation }) {
                                     />
                                 </View>
                                 <View style={{ justifyContent: 'center' }} >
-                                    <BackToLogin onPress={() => goToLogin()}>Back to Login</BackToLogin>
+                                    <BackToLogin onPress={goToLogin}>Back to Login</BackToLogin>
                                 </View>
                             </FormContentWrapper>
                         </FormContainer>
@@ -188,7 +188,7 @@ const FormBodyText = styled.Text(({ theme }) => ({
     width: '100%'
 }))
 
-const BackToLogin = styled.Text(({ theme }) => ({
+export const BackToLogin = styled.Text(({ theme }) => ({
     ...theme.font['--text-base-regular'],
     color: theme.colors['--color-gray-700'],
     marginTop: 32,

@@ -139,6 +139,10 @@ function LoginPage({navigation, signIn, expoPushToken}) {
     // signup button at the bottom of the form
     // navs to there when clicked
     const goToSignUp = () => {
+        navigation.navigate('signup')
+    };
+
+    const goToForgotPassword = () => {
         navigation.navigate('forgot')
     };
 
@@ -217,6 +221,13 @@ function LoginPage({navigation, signIn, expoPushToken}) {
                                     text={'Continue As Guest'}
                                 />
                             </ButtonWrapper>
+
+                             <View style={{justifyContent: 'center'}}>
+                             <ForgotPasswordText onPress={goToForgotPassword}>
+                                Forgot Password?
+                            </ForgotPasswordText>
+                                </View>       
+                            
 
                             <DividerContainer theme={theme}>
                                 {divider}
@@ -370,7 +381,13 @@ const ButtonWrapper = styled.View`
   margin-top: 16px;
   width: 100%
 `
-
+const ForgotPasswordText = styled.Text(({ theme }) => ({
+    ...theme.font['--text-base-regular'],
+    color: '#00A9CE',
+    marginTop: 32,
+    width: '100%',
+    textDecorationLine: 'underline'
+}))
 
 const styles = StyleSheet.create({
     overlay: {
