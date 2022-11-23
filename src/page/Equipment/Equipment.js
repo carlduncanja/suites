@@ -527,6 +527,11 @@ const Equipment = props => {
         navigation.navigate('AssignEquipmentPage', {equipment, onCreated: handleDataRefresh});
     };
 
+    const openCreateGroupDialog = () => {
+        modal.closeAllModals();
+        navigation.navigate('AddEquipmentCategory');
+    }
+
     const getFabActions = () => {
         const isGroupDeleteDisabled = !selectedTypesIds.length;
 
@@ -620,6 +625,15 @@ const Equipment = props => {
             />
         );
 
+        const addCategory = (
+            <ActionItem
+                title='Create Item Group'
+                icon = {<AddIcon/>}
+                onPress={openCreateGroupDialog}
+            />
+
+        );
+
         return (
             <ActionContainer
                 floatingActions={[
@@ -628,6 +642,7 @@ const Equipment = props => {
                     assignEquipment,
                     createEquipmentType,
                     createEquipment,
+                    addCategory,
                 ]}
                 title="EQUIPMENT ACTIONS"
             />
