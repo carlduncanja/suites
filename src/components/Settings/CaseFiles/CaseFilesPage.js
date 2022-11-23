@@ -1,24 +1,20 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { View, Text } from 'react-native';
-import styled, { css } from '@emotion/native';
 import { useTheme } from 'emotion-theming';
-
-import { getLifeStyles, addLifeStyleItems, deleteLifeStyleItems, updateLifeStyleItems } from '../../../api/network';
-
+import { getLifeStyles, addLifeStyleItems, deleteLifeStyleItems, getHealthInsurers, createHealthInsurer, deleteHealthInsurer, updateHealthInsurer, updateLifeStyleItems } from '../../../api/network';
 import DetailsPage from '../../common/DetailsPage/DetailsPage';
 import TabsContainer from '../../common/Tabs/TabsContainerComponent';
-import Table from '../../common/Table/Table';
-import DataItem from '../../common/List/DataItem';
-import InputUnitFields from '../../common/Input Fields/InputUnitFields';
-import ContentDataItem from '../../common/List/ContentDataItem';
 import ConfirmationComponent from '../../ConfirmationComponent';
 import ConfirmationCheckBoxComponent from '../../ConfirmationCheckBoxComponent'
 import LifeStyleTabs from '../../../components/OverlayTabs/LIfeStyleTabs';
-
+import HealthInsurer from '../../../components/OverlayTabs/HealthInsurerTab';
 import { PageContext } from '../../../contexts/PageContext';
-import Header from '../../common/Table/Header';
 import { useModal } from 'react-native-modalfy';
-
+import { ScrollView } from 'react-native-gesture-handler';
+import Footer from '../../common/Page/Footer';
+import AddIcon from '../../../../assets/svg/addIcon';
+import ActionItem from '../../common/ActionItem';
+import ActionContainer from '../../common/FloatingAction/ActionContainer';
 
 function CaseFilesPage({ navigation, route }) {
 
@@ -29,14 +25,19 @@ function CaseFilesPage({ navigation, route }) {
     const [pageState, setPageState] = useState({});
     const [currentTab, setCurrentTab] = useState(currentTabs[0]);
     const [lifeStyleData, setLifeStyleData] = useState([])
-
+    const [healthInsurers, setHealthInsurers] = useState([])
+    const [addMode, setAddMode] = useState(false);
     const { isEditMode = false } = pageState;
 
 
     useEffect(() => {
-        fetchLifeStyleData()
+        fetchLifeStyleData();
+        fetchHealthInsurers();
     }, []);
 
+    useEffect(() => {
+        !isEditMode && setAddMode(false);
+    }, [isEditMode])
 
     const onTabPress = (selectedTab) => {
         if (!isEditMode) setCurrentTab(selectedTab);
@@ -45,13 +46,21 @@ function CaseFilesPage({ navigation, route }) {
     const fetchLifeStyleData = () => {
         getLifeStyles()
             .then(data => {
-
                 setLifeStyleData(data.data)
             })
             .catch(error => {
-                console.error('fetch.user.failed', error);
+                console.error('Fetching lifestyle data failed', error);
+            });
+    }
+
+    const fetchHealthInsurers = () => {
+        getHealthInsurers()
+            .then(data => {
+                setHealthInsurers(data.data);
             })
-            .finally();
+            .catch(error => {
+                console.error('Fetching health insurer data failed', error);
+            });
     }
 
     const addItems = (caseID, items) => {
@@ -87,7 +96,7 @@ function CaseFilesPage({ navigation, route }) {
 
 
     }
-    const openDeletionConfirm = data => {
+    const openDeletionConfirm = (data, deleteInsurer) => {
         modal.openModal(
             'ConfirmationModal',
             {
@@ -101,7 +110,7 @@ function CaseFilesPage({ navigation, route }) {
                         }, 200)
                     }}
                     onAction={() => {
-                        deleteItem(data)
+                        deleteInsurer ? deleteHealthInsurerLocal(data) : deleteItem(data)
                         modal.closeModals('ConfirmationModal');
                     }}
                     message="Do you want to delete this item?"
@@ -193,6 +202,120 @@ function CaseFilesPage({ navigation, route }) {
         );
     };
 
+    const handleAddInsurer = () => {
+        setAddMode(true);
+        modal.closeAllModals();
+    }
+
+    const handleCreateHealthInsurer = (insurer) => {
+        createHealthInsurer(insurer)
+            .then(_ => {
+                setAddMode(false);
+                modal.openModal(
+                    'ConfirmationModal', {
+                    content: <ConfirmationComponent
+                        isError={false}
+                        isEditUpdate={false}
+                        onAction={() => {
+                            setHealthInsurers([]);
+                            fetchHealthInsurers();
+                            modal.closeModals('ConfirmationModal');
+                        }}
+                    />,
+                    onClose: () => {
+                        modal.closeModal('ConfirmationModal')
+                    }
+                }
+                );
+            })
+            .catch(error => {
+                openErrorConfirmation();
+                console.log('Failed to create health insurer', error)
+            })
+    }
+
+    const handleDeleteInsurer = (id) => {
+        openDeletionConfirm(id, true)
+    }
+
+    const deleteHealthInsurerLocal = (id) => {
+        deleteHealthInsurer({ids: [id], status: 'removed'})
+        .then(_ => {
+            modal.openModal(
+                'ConfirmationModal', {
+                content: <ConfirmationComponent
+                    isError={false}
+                    isEditUpdate={false}
+                    onAction={() => {
+                        modal.closeModals('ConfirmationModal');
+                        setHealthInsurers([]);
+                        fetchHealthInsurers();
+                    }}
+                />,
+                onClose: () => {
+                    modal.closeModal('ConfirmationModal')
+                }
+            }
+            );
+        })
+        .catch(error => {
+            openErrorConfirmation();
+            console.log('Failed to delete health insurer', error)
+        })
+    }
+
+    const handleEditInsurer = (id, data) => {
+        updateHealthInsurer(id, data)
+        .then(_ => {
+            modal.openModal(
+                'ConfirmationModal', {
+                content: <ConfirmationComponent
+                    isError={false}
+                    isEditUpdate={false}
+                    onAction={() => {
+                        modal.closeModals('ConfirmationModal');
+                        setHealthInsurers([]);
+                        fetchHealthInsurers();
+                    }}
+                />,
+                onClose: () => {
+                    modal.closeModal('ConfirmationModal')
+                }
+            }
+            );
+        })
+        .catch(error => {
+            openErrorConfirmation();
+            console.log('Failed to update health insurer', error)
+        })
+    }
+
+    const floatingActions = () => {
+        const addLocation = (
+            <ActionItem
+                title="New Insurer"
+                icon={<AddIcon/>}
+                onPress={() => handleAddInsurer()}
+                disabled={false}
+                touchable={true}
+            />
+        );
+
+        return <ActionContainer
+            floatingActions={[
+                addLocation,
+            ]}
+            title="HEALTH INSURER ACTIONS"
+        />;
+    };
+
+    const toggleActionButton = () => {
+        modal.openModal('ActionContainerModal',
+            {
+                actions: floatingActions(),
+            });
+    };
+
     const getTabContent = (selectedTab) => {
         switch (selectedTab) {
             case 'LifeStyle':
@@ -202,7 +325,6 @@ function CaseFilesPage({ navigation, route }) {
                         isEditMode={isEditMode}
                         modal={modal}
                         onAction={(data) => {
-                            console.log(data)
                             addItems(data.id, data.data)
                         }}
                         onDelete={(data) => {
@@ -214,7 +336,24 @@ function CaseFilesPage({ navigation, route }) {
                     />
                 )
             case 'Health Insurer':
-                return <View></View>;
+                return <>
+                <ScrollView> 
+                    { addMode &&  <HealthInsurer insurer={{}} addMode={true} isEditMode={true} setAddMode = {setAddMode} handleAdd={handleCreateHealthInsurer}/>}
+                    {
+                        healthInsurers.map((insurer, key) => {
+                           return <HealthInsurer key={key} insurer={insurer} isEditMode={isEditMode} handleDelete={handleDeleteInsurer} handleEdit={handleEditInsurer}/>
+                        })
+                    }
+                 
+                </ScrollView>
+                <Footer
+                hasPaginator={false}
+                hasActionButton={isEditMode}
+                hasActions={true}
+                isDisabled={!isEditMode}
+                toggleActionButton={toggleActionButton}
+            />
+                </>
             default:
                 return <View />;
         }
@@ -228,7 +367,6 @@ function CaseFilesPage({ navigation, route }) {
                 onBackPress={() => {
                     navigation.navigate('Settings');
                 }}
-                //isArchive={getIsEditable()}
                 pageTabs={(
                     <TabsContainer
                         tabs={currentTabs}
