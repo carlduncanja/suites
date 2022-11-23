@@ -275,8 +275,8 @@ function Settings({navigation}) {
                 content={(
                     <>
                         {
-                            roles.map(item => (
-                                <>
+                            roles.map((item, index) => (
+                                <React.Fragment key={index}>
                                     <RoleTypeComponent
                                         key={`SettingsRoleSection_${item._id}`}
                                         header={() => roleHeader(item.name)}
@@ -289,7 +289,7 @@ function Settings({navigation}) {
                                         )}
                                     />
                                     <Space/>
-                                </>
+                                </React.Fragment>
                             ))
                         }
                     </>

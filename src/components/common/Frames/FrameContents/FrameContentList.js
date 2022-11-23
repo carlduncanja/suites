@@ -14,10 +14,10 @@ import InputField2 from '../../../common/Input Fields/InputField2';
 import { PageContext } from '../../../../contexts/PageContext';
 import FrameContentItem from './FrameContentItem';
 
-const FrameContentListWrapper = styled.View`
+export const FrameContentListWrapper = styled.View`
     width : 100%;
 `;
-const FrameContentListContainer = styled.View`
+export const FrameContentListContainer = styled.View`
     width : 100%;
     border-width : 1px;
     background-color: ${({ theme }) => theme.colors['--color-gray-100']};

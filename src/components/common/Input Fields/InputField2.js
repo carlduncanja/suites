@@ -87,6 +87,7 @@ const IconContainer = styled.View`
 function InputField2({
                          label,
                          labelWidth,
+                         labelFont,
                          secureTextEntry = false,
                          onChangeText = () => {
                          },
@@ -120,7 +121,7 @@ function InputField2({
             {
                 label &&
                 <LabelWrapper>
-                    <InputLabelComponent label={label} width={labelWidth}/>
+                    <InputLabelComponent label={label} width={labelWidth} labelFont={labelFont}/>
                 </LabelWrapper>
             }
 
