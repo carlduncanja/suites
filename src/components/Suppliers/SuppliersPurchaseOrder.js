@@ -240,6 +240,9 @@ const SuppliersPurchaseOrder = ({ details, onUpdateItems, onClearPress, onListFo
             listItemFormat={listItemFormat}
             headers={headers}
             isCheckBox={false}
+            onBackPress={() => {
+                navigation.navigate('purchase-order');
+            }}
             data={purchaseOrders}
             onFooterPress={onFooterPress}
             onClearPress={onClearItems}

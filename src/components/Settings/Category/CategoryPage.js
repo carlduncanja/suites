@@ -192,8 +192,7 @@ function InventoryPage({navigation, route}) {
                     frameBorderColor={item.frameBorderColor}
                     frameTitle={item.frameTitle}
                     cardInformation={inventoryItems}
-                    icon={item.frameIcon
-                    }
+                    icon={item.frameIcon}
                     isEditMode={isEditMode}
                     normalInput={true}
                     onEdit={handleEdit}

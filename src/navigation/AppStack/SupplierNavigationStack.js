@@ -10,6 +10,7 @@ import ArchivedSuppliers from '../../page/ArchivedSuppliers/ArchivedSuppliersPag
 import ArchivedSupplier from '../../page/ArchivedSuppliers/ArchivedSupplier';
 import SupplierProductPage from '../../page/Suppliers/SupplierProductPage';
 import SupplierProductCreationPage from '../../page/Suppliers/SupplierProductCreationPage';
+import Orders from '../../page/PurchaseOrders/Orders';
 
 const Stack = createStackNavigator();
 
@@ -137,6 +138,24 @@ export default (props) => {
                 }}
             />
 
-        </Stack.Navigator>
+            <Stack.Screen
+                name="purchase-order"
+                component={Orders}
+                options={{
+                    headerShown: false,
+                    headerLeft: (props) => (
+                        <HeaderBackComponent
+                            {...props}
+                        />
+                    ),
+                    headerStyle: {
+                        height: 100,
+
+                    },
+                    headerTitle: ''
+                }}
+            />
+
+            </Stack.Navigator>
     );
 };
