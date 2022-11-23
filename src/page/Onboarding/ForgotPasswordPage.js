@@ -21,9 +21,10 @@ import { setBearerToken } from '../../api';
 import PageButton from "../../components/common/Page/PageButton";
 import { useTheme } from "emotion-theming";
 import moment from "moment";
+import InputField2 from '../../components/common/Input Fields/InputField2';
 
 // login page at the startup
-function ForgotPasswordPage({ navigation, signIn, expoPushToken }) {
+function ForgotPasswordPage({ navigation }) {
     const theme = useTheme();
 
     const emailRef = useRef();
@@ -35,111 +36,13 @@ function ForgotPasswordPage({ navigation, signIn, expoPushToken }) {
     });
     const [fieldError, setFieldError] = useState({})
 
-    useEffect(() => {
-    }, []);
 
-    const [isLoading, setLoading] = useState(false);
 
-    // updates input field state
-    // on change
-    const onFieldChange = fieldName => value => {
-        setFields({
-            ...fields,
-            [fieldName]: value,
-        });
-        const updatedErrors = { ...fieldError }
-        delete updatedErrors[fieldName]
-        setFieldError(updatedErrors)
-    };
 
-    // attempts to login user
-    // checks if info valid
-    // throws error if not
-    const onLoginButtonPress = () => {
-        if (!isFormFieldsValid()) return;
-        //console.log(fields) 
 
-        setLoading(true);
-        login(fields.email, fields.password, expoPushToken)
-            .then(async data => {
-                // save auth data
-                console.log(data);
-                const { token = null } = data;
-                try {
-                    await AsyncStorage.setItem('userToken', token);
-                    // navigation.navigate("App")
-                    if (token) {
-                        setBearerToken(token);
-                    }
-
-                    signIn(token);
-                } catch (error) {
-                    // Error saving data
-                    console.log('Failed to save token', error);
-                }
-            })
-            .catch(e => {
-                console.log('login failed', e);
-                Alert.alert('Failed to login');
-            })
-            .finally(_ => {
-                setLoading(false);
-            });
-    };
-
-    // validator
-    const isFormFieldsValid = () => {
-        const requiredParams = ['email', 'password']
-
-        let valid = true;
-        const errors = {}
-        for (const requiredParam of requiredParams) {
-            if (!fields[requiredParam]) {
-                valid = false;
-                errors[requiredParam] = "Please enter value"
-            }
-        }
-
-        setFieldError(errors)
-        return valid
-    }
-
-    // guest login
-    // currently does nothing
-    // edit: works now
-    const onGuestButtonPress = () => {
-        setLoading(true);
-        login("howard.edwards@smsja.net", "password1", expoPushToken)
-            .then(async data => {
-                // save auth data
-                console.log(data);
-                const { token = null } = data;
-                try {
-                    await AsyncStorage.setItem('userToken', token);
-                    // navigation.navigate("App")
-                    if (token) {
-                        setBearerToken(token);
-                    }
-
-                    signIn(token);
-                } catch (error) {
-                    // Error saving data
-                    console.log('Failed to save token', error);
-                }
-            })
-            .catch(e => {
-                console.log('login failed', e);
-                Alert.alert('Failed to login');
-            })
-            .finally(_ => {
-                setLoading(false);
-            });
-    };
-
-    // signup button at the bottom of the form
-    // navs to there when clicked
-    const goToSignUp = () => {
-        navigation.navigate('signup')
+    
+    const goToLogin = () => {
+        navigation.navigate('login')
     };
 
 
@@ -158,99 +61,43 @@ function ForgotPasswordPage({ navigation, signIn, expoPushToken }) {
                                 </LogoContainer>
                             </LogoWrapper>
 
+                            <FormContentWrapper>
+                                <FormHeaderText>Forgot Password?</FormHeaderText>
+                                <FormBodyText>
+                                    Enter the email associated with your account. A verification
+                                    code will be sent to you to help us confirm your account.
+                                </FormBodyText>
+                                <LabelWrapper>
+                                    <InputLabel>Email</InputLabel>
+                                    <InputField2 borderColor={'--color-gray-300'} inputHeight={'48px'} />
+                                </LabelWrapper>
 
-                            <FormHeaderText>Login</FormHeaderText>
-
-                            {/* <RowContainer theme={theme}>
-                                <InputFieldWithIcon
-                                    placeholder="Email"
-                                    onChangeText={value => onFieldChange('email')(value)}
-                                    hasError={!!fieldError['email']}
-                                    errorMessage={fieldError['email']}
-                                    value={fields.email}
-                                    keyboardType="email-address"
-                                    autoCapitalize="none"
-                                    onClear={() => onFieldChange('email')('')}
-                                    icon={<PersonIcon/>}
-                                    inputRef={emailRef}
-                                    isFocus={emailRef?.current?.isFocused() || false}
-                                />
-                            </RowContainer> */}
-
-                            {/* <RowContainer theme={theme}>
-                                <InputFieldWithIcon
-                                    placeholder="Password"
-                                    onChangeText={value => onFieldChange('password')(value)}
-                                    value={fields.password}
-                                    autoCapitalize={'none'}
-                                    hasError={!!fieldError['password']}
-                                    errorMessage={fieldError['password']}
-                                    onClear={() => onFieldChange('password')('')}
-                                    icon={<PasswordIcon/>}
-                                    secureTextEntry={true}
-                                    inputRef={passwordRef}
-                                    isFocus={passwordRef?.current?.isFocused() || false}
-                                />
-                            </RowContainer> */}
-
-                            {/* <LoginButtonWrapper theme={theme}>
-                                {isLoading ? (
-                                    <ActivityIndicator size="small" color="#00ff00"/>
-                                ) : (
+                                <View
+                                    style={[
+                                        styles.button,
+                                        {
+                                            backgroundColor: '#104587',
+                                            borderColor: '#104587',
+                                            borderWidth: 1,
+                                            height: 48
+                                        },
+                                    ]}
+                                >
                                     <Button
-                                        backgroundColor="#104587"
-                                        buttonPress={onLoginButtonPress}
-                                        title="Login"
-                                        color="#FFFFFF"
+                                        backgroundColor={theme.colors['--company']}
+                                        buttonPress={goToLogin}
+                                        title="Send Code"
+                                        color={theme.colors['--default-shade-white']}
                                     />
-                                )}
-                            </LoginButtonWrapper> */}
-
-                            {/* <ButtonWrapper theme={theme}>
-                                <PageButton
-                                    onPress={onGuestButtonPress}
-                                    fontStyle={theme.font['--text-xs-medium']}
-                                    fontColor={theme.colors['--accent-line']}
-                                    backgroundColor={theme.colors['--color-gray-100']}
-                                    text={'Continue As Guest'}
-                                />
-                            </ButtonWrapper> */}
-                            {/* 
-                            <DividerContainer theme={theme}>
-                                {divider}
-                                <DividerText>OR</DividerText>
-                                {divider}
-                            </DividerContainer> */}
-
-                            {/* <View
-                                style={[
-                                    styles.button,
-                                    {
-                                        backgroundColor: '#F8FAFB',
-                                        borderColor: '#00A9CE',
-                                        borderWidth: 1,
-                                    },
-                                ]}
-                            >
-                                <Button
-                                    backgroundColor="#F8FAFB"
-                                    buttonPress={goToSignUp}
-                                    title="Signup"
-                                    color="#00A9CE"
-                                />
-                            </View> */}
-
+                                </View>
+                                <View style={{justifyContent: 'center'}} >
+                                <BackToLogin onPress={ ()=> goToLogin() }>Back to Login</BackToLogin>
+                                </View>
+                            </FormContentWrapper>
                         </FormContainer>
                     </FormWrapper>
 
-                </PageContainer>
-
-                {/* <CopyRightContainer theme={theme}>
-                    <CopyRightText theme={theme}>
-                        {'\u00A9'} Copyright { moment().format('YYYY').toString() } The Suites
-                    </CopyRightText>
-                </CopyRightContainer> */}
-
+                </PageContainer>  
             </PageWrapper>
 
         </PageWrapper>
@@ -278,27 +125,44 @@ const PageContainer = styled.View`
   flex: 1;
   height: 100%;
   width: 100%;
-  align-items: center;
-  justify-content: center;
-
 `;
 
-const CopyRightContainer = styled.View`
+const FormWrapper = styled.View`
+  position: absolute;
+  bottom: 0px;
+  display: flex;
+  height: 80%;
+  background-color: ${({ theme }) => theme.colors['--default-shade-white']};
+  padding: ${({ theme }) => theme.space['--space-32']};
+  width: 100%;
+  border-radius: 12px;
   align-items: center;
-  justify-content: flex-end;
-  bottom: 30px;
-`
-const CopyRightText = styled.Text(({ theme }) => ({
-    ...theme.font['--text-xs-regular'],
-    color: theme.colors['--default-shade-white']
+  justify-content: center;
+`;
 
-}))
+const FormContainer = styled.View`
+  display: flex;
+  width: 459px;
+  height: 85%;
+  align-items: center;
+//   background-color: red;
+`;
+
+const FormContentWrapper = styled.View`
+    display: flex;
+    width: 459px;
+    align-items: center;
+    justify-content: space-between;
+    // background-color: yellow;
+`
 
 const LogoWrapper = styled.View`
   height: 116px;
   width: 116px;
-  margin-top: 100px;
+  margin-bottom: ${({ theme }) => theme.space['--space-32']};
+// background-color: green;
 `;
+
 const LogoContainer = styled.View`
   height: 100%;
   width: 100%;
@@ -308,67 +172,46 @@ const LogoContainer = styled.View`
   justify-content: center;
 `;
 
-const FormWrapper = styled.View`
-  display: flex;
-  background-color: ${({ theme }) => theme.colors['--default-shade-white']};
-  padding: ${({ theme }) => theme.space['--space-32']};
-  //align-self: center;
-  min-height: 80%;
-  width: 100%;
-  border-radius: 12px;
-  justify-content: flex-start;
-  align-items: center;
-  margin-top: 40%;
-`;
+
 
 const FormHeaderText = styled.Text(({ theme }) => ({
     ...theme.font['--text-2xl-medium'],
-    color: theme.colors['--company'],
-    marginBottom: 32
+    color: theme.colors['--color-black'],
 }))
 
-const FormContainer = styled.View`
-  display: flex;
-  width: 261px;
-  align-self: center;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
+const FormBodyText = styled.Text(({ theme }) => ({
+    ...theme.font['--text-base-regular'],
+    color: theme.colors['--color-gray-600'],
+    marginTop: 16,
+    marginBottom: 32,
+    width: '100%'
+}))
+
+const BackToLogin = styled.Text(({ theme }) => ({
+    ...theme.font['--text-base-regular'],
+    color: theme.colors['--color-gray-700'],
+    marginTop: 32,
+    width: '100%',
+    textDecorationLine: 'underline'
+}))
+
+const LabelWrapper = styled.View`
+  height: 68px;
+  width: 100%;
+  justify-content: between;
+  margin-top: ${({ theme }) => theme.space['--space-16']};
+  margin-bottom: ${({ theme }) => theme.space['--space-32']};
+//   background-color: purple;
 `;
 
-const RowContainer = styled.View`
-  width: 100%;
-  height: 36px;
-  margin-bottom: ${({ theme }) => theme.space['--space-20']};
-`
-
-const DividerContainer = styled.View`
-  width: 100%;
-  height: 56px;
-  flex-direction: row;
-  align-items: center;
-`
-const DividerText = styled.Text(({ theme }) => ({
-    ...theme.font['--text-xs-regular'],
-    color: theme.colors['--color-gray-400'],
-    marginLeft: 10,
-    marginRight: 10
+const InputLabel = styled.Text(({ theme }) => ({
+    ...theme.font['--text-base-regular'],
+    color: theme.colors['--color-gray-600'],
+    flex: 1,
 }))
 
-const LoginButtonWrapper = styled.View`
-  border-radius: 6px;
-  background-color: ${({ theme }) => theme.colors['--company']};
-  padding-top: ${({ theme }) => theme.space['--space-8']};
-  padding-bottom: ${({ theme }) => theme.space['--space-8']};
-  height: 35px;
-  width: 100%
-`
 
-const ButtonWrapper = styled.View`
-  height: 36px;
-  margin-top: 16px;
-  width: 100%
-`
+
 
 
 const styles = StyleSheet.create({

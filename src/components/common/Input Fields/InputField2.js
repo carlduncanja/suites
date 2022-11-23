@@ -42,8 +42,9 @@ const LabelWrapper = styled.View(({theme, label}) => ({
 
 const TextInputWrapper = styled.View`
   flex: 1;
-  height: 32px;
+  height: ${({inputHeight}) => inputHeight ? inputHeight : '48px'};
 `;
+
 const TextInputContainer = styled.View`
   position: relative;
   height: 100%;
@@ -109,7 +110,8 @@ function InputField2({
                          hasBorder = true,
                          Icon,
                          IconRight,
-                         maxLength
+                         maxLength,
+                         inputHeight
                      }) {
     const theme = useTheme();
     const inputRef = useRef();
