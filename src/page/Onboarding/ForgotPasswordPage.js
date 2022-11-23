@@ -1,5 +1,5 @@
-// LoginPage.js
-import React, {useState, useRef, useEffect, createRef} from 'react';
+// ForgotPasswordPage.js
+import React, { useState, useRef, useEffect, createRef } from 'react';
 import {
     View,
     StyleSheet,
@@ -7,23 +7,23 @@ import {
     ActivityIndicator, Text,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import {connect} from 'react-redux';
-import styled, {css} from '@emotion/native';
-import {login} from '../../api/network';
+import { connect } from 'react-redux';
+import styled, { css } from '@emotion/native';
+import { login } from '../../api/network';
 import LoginBackground from '../../components/Onboarding/LoginBackground';
 import Logo from '../../../assets/svg/logo';
 import InputFieldWithIcon from '../../components/common/Input Fields/InputFieldWithIcon';
 import PersonIcon from '../../../assets/svg/personIcon';
 import PasswordIcon from '../../../assets/svg/lockIcon';
 import Button from '../../components/common/Buttons/Button';
-import {signIn} from '../../redux/actions/authActions';
-import {setBearerToken} from '../../api';
+import { signIn } from '../../redux/actions/authActions';
+import { setBearerToken } from '../../api';
 import PageButton from "../../components/common/Page/PageButton";
-import {useTheme} from "emotion-theming";
+import { useTheme } from "emotion-theming";
 import moment from "moment";
 
 // login page at the startup
-function LoginPage({navigation, signIn, expoPushToken}) {
+function ForgotPasswordPage({ navigation, signIn, expoPushToken }) {
     const theme = useTheme();
 
     const emailRef = useRef();
@@ -47,7 +47,7 @@ function LoginPage({navigation, signIn, expoPushToken}) {
             ...fields,
             [fieldName]: value,
         });
-        const updatedErrors = {...fieldError}
+        const updatedErrors = { ...fieldError }
         delete updatedErrors[fieldName]
         setFieldError(updatedErrors)
     };
@@ -58,13 +58,13 @@ function LoginPage({navigation, signIn, expoPushToken}) {
     const onLoginButtonPress = () => {
         if (!isFormFieldsValid()) return;
         //console.log(fields) 
-        
+
         setLoading(true);
         login(fields.email, fields.password, expoPushToken)
             .then(async data => {
                 // save auth data
                 console.log(data);
-                const {token = null} = data;
+                const { token = null } = data;
                 try {
                     await AsyncStorage.setItem('userToken', token);
                     // navigation.navigate("App")
@@ -113,7 +113,7 @@ function LoginPage({navigation, signIn, expoPushToken}) {
             .then(async data => {
                 // save auth data
                 console.log(data);
-                const {token = null} = data;
+                const { token = null } = data;
                 try {
                     await AsyncStorage.setItem('userToken', token);
                     // navigation.navigate("App")
@@ -139,31 +139,29 @@ function LoginPage({navigation, signIn, expoPushToken}) {
     // signup button at the bottom of the form
     // navs to there when clicked
     const goToSignUp = () => {
-        navigation.navigate('forgot')
+        navigation.navigate('signup')
     };
 
 
     return (
         <PageWrapper theme={theme}>
 
-            <LoginBackground/>
-            {/*<Text>{process.env.BASE_URL}</Text>*/}
-            {/*<Text>{process.env.NODE_ENV}</Text>*/}
-
+            <LoginBackground />
             <PageWrapper theme={theme}>
                 <PageContainer>
-                    <LogoWrapper theme={theme}>
-                        <LogoContainer theme={theme}>
-                            <Logo/>
-                        </LogoContainer>
-                    </LogoWrapper>
-
                     <FormWrapper theme={theme}>
                         <FormContainer theme={theme}>
 
+                            <LogoWrapper theme={theme}>
+                                <LogoContainer theme={theme}>
+                                    <Logo />
+                                </LogoContainer>
+                            </LogoWrapper>
+
+
                             <FormHeaderText>Login</FormHeaderText>
 
-                            <RowContainer theme={theme}>
+                            {/* <RowContainer theme={theme}>
                                 <InputFieldWithIcon
                                     placeholder="Email"
                                     onChangeText={value => onFieldChange('email')(value)}
@@ -177,9 +175,9 @@ function LoginPage({navigation, signIn, expoPushToken}) {
                                     inputRef={emailRef}
                                     isFocus={emailRef?.current?.isFocused() || false}
                                 />
-                            </RowContainer>
+                            </RowContainer> */}
 
-                            <RowContainer theme={theme}>
+                            {/* <RowContainer theme={theme}>
                                 <InputFieldWithIcon
                                     placeholder="Password"
                                     onChangeText={value => onFieldChange('password')(value)}
@@ -193,9 +191,9 @@ function LoginPage({navigation, signIn, expoPushToken}) {
                                     inputRef={passwordRef}
                                     isFocus={passwordRef?.current?.isFocused() || false}
                                 />
-                            </RowContainer>
+                            </RowContainer> */}
 
-                            <LoginButtonWrapper theme={theme}>
+                            {/* <LoginButtonWrapper theme={theme}>
                                 {isLoading ? (
                                     <ActivityIndicator size="small" color="#00ff00"/>
                                 ) : (
@@ -206,9 +204,9 @@ function LoginPage({navigation, signIn, expoPushToken}) {
                                         color="#FFFFFF"
                                     />
                                 )}
-                            </LoginButtonWrapper>
+                            </LoginButtonWrapper> */}
 
-                            <ButtonWrapper theme={theme}>
+                            {/* <ButtonWrapper theme={theme}>
                                 <PageButton
                                     onPress={onGuestButtonPress}
                                     fontStyle={theme.font['--text-xs-medium']}
@@ -216,15 +214,15 @@ function LoginPage({navigation, signIn, expoPushToken}) {
                                     backgroundColor={theme.colors['--color-gray-100']}
                                     text={'Continue As Guest'}
                                 />
-                            </ButtonWrapper>
-
+                            </ButtonWrapper> */}
+                            {/* 
                             <DividerContainer theme={theme}>
                                 {divider}
                                 <DividerText>OR</DividerText>
                                 {divider}
-                            </DividerContainer>
+                            </DividerContainer> */}
 
-                            <View
+                            {/* <View
                                 style={[
                                     styles.button,
                                     {
@@ -240,18 +238,18 @@ function LoginPage({navigation, signIn, expoPushToken}) {
                                     title="Signup"
                                     color="#00A9CE"
                                 />
-                            </View>
+                            </View> */}
 
                         </FormContainer>
                     </FormWrapper>
 
                 </PageContainer>
 
-                <CopyRightContainer theme={theme}>
+                {/* <CopyRightContainer theme={theme}>
                     <CopyRightText theme={theme}>
                         {'\u00A9'} Copyright { moment().format('YYYY').toString() } The Suites
                     </CopyRightText>
-                </CopyRightContainer>
+                </CopyRightContainer> */}
 
             </PageWrapper>
 
@@ -282,7 +280,7 @@ const PageContainer = styled.View`
   width: 100%;
   align-items: center;
   justify-content: center;
-  padding-bottom: 100px;
+
 `;
 
 const CopyRightContainer = styled.View`
@@ -290,7 +288,7 @@ const CopyRightContainer = styled.View`
   justify-content: flex-end;
   bottom: 30px;
 `
-const CopyRightText = styled.Text(({theme}) => ({
+const CopyRightText = styled.Text(({ theme }) => ({
     ...theme.font['--text-xs-regular'],
     color: theme.colors['--default-shade-white']
 
@@ -299,12 +297,12 @@ const CopyRightText = styled.Text(({theme}) => ({
 const LogoWrapper = styled.View`
   height: 116px;
   width: 116px;
-  margin-bottom: ${({theme}) => theme.space['--space-32']};
+  margin-top: 100px;
 `;
 const LogoContainer = styled.View`
   height: 100%;
   width: 100%;
-  background-color: ${({theme}) => theme.colors['--default-shade-white']};
+  background-color: ${({ theme }) => theme.colors['--default-shade-white']};
   border-radius: 58px;
   align-items: center;
   justify-content: center;
@@ -312,17 +310,18 @@ const LogoContainer = styled.View`
 
 const FormWrapper = styled.View`
   display: flex;
-  background-color: ${({theme}) => theme.colors['--default-shade-white']};
-  padding: ${({theme}) => theme.space['--space-32']};
+  background-color: ${({ theme }) => theme.colors['--default-shade-white']};
+  padding: ${({ theme }) => theme.space['--space-32']};
   //align-self: center;
-  //min-height: 200px;
-  //width: 352px;
+  min-height: 80%;
+  width: 100%;
   border-radius: 12px;
   justify-content: flex-start;
   align-items: center;
+  margin-top: 40%;
 `;
 
-const FormHeaderText = styled.Text(({theme}) => ({
+const FormHeaderText = styled.Text(({ theme }) => ({
     ...theme.font['--text-2xl-medium'],
     color: theme.colors['--company'],
     marginBottom: 32
@@ -340,7 +339,7 @@ const FormContainer = styled.View`
 const RowContainer = styled.View`
   width: 100%;
   height: 36px;
-  margin-bottom: ${({theme}) => theme.space['--space-20']};
+  margin-bottom: ${({ theme }) => theme.space['--space-20']};
 `
 
 const DividerContainer = styled.View`
@@ -349,7 +348,7 @@ const DividerContainer = styled.View`
   flex-direction: row;
   align-items: center;
 `
-const DividerText = styled.Text(({theme}) => ({
+const DividerText = styled.Text(({ theme }) => ({
     ...theme.font['--text-xs-regular'],
     color: theme.colors['--color-gray-400'],
     marginLeft: 10,
@@ -358,9 +357,9 @@ const DividerText = styled.Text(({theme}) => ({
 
 const LoginButtonWrapper = styled.View`
   border-radius: 6px;
-  background-color: ${({theme}) => theme.colors['--company']};
-  padding-top: ${({theme}) => theme.space['--space-8']};
-  padding-bottom: ${({theme}) => theme.space['--space-8']};
+  background-color: ${({ theme }) => theme.colors['--company']};
+  padding-top: ${({ theme }) => theme.space['--space-8']};
+  padding-bottom: ${({ theme }) => theme.space['--space-8']};
   height: 35px;
   width: 100%
 `
@@ -428,11 +427,11 @@ const styles = StyleSheet.create({
     },
 });
 
-LoginPage.propTypes = {};
-LoginPage.defaultProps = {};
+ForgotPasswordPage.propTypes = {};
+ForgotPasswordPage.defaultProps = {};
 
-const mapStateToProps = state => ({expoPushToken: state.auth.expoPushToken});
+const mapStateToProps = state => ({ expoPushToken: state.auth.expoPushToken });
 
-const mapDispatcherToProps = {signIn,};
+const mapDispatcherToProps = { signIn, };
 
-export default connect(mapStateToProps, mapDispatcherToProps)(LoginPage);
+export default connect(mapStateToProps, mapDispatcherToProps)(ForgotPasswordPage);
