@@ -14,7 +14,11 @@ export const role = roleId => `/users/roles/${roleId}`;
 
 // ##### Appointments
 export const appointmentsEndpoint = '/appointments/';
-export const appointmentEndpoint = id => `/appointments/${id}`;
+export const appointmentEndpoint = id => `/appointments/${id}`; 
+
+// #### Appiontment Type
+export const appointmentTypeEndPiont = `/appointment-types` 
+export const updateAppiontmentTypeEndpiont = id => `/appointment-types/${id}`
 
 // ##### Theatre
 export const theatresEndpoint = '/theatres';

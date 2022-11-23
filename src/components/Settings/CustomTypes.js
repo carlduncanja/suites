@@ -35,6 +35,10 @@ const CUSTOM_TYPES = [
         frameIcon: ShoppingTag
     },
     {
+        title: "Schedule",
+        page: "SchedulePage"
+    },
+    {
         title: 'Medical Staff',
         page: 'CategoryPage',
         categoryType: 'staff',
@@ -58,10 +62,10 @@ const CUSTOM_TYPES = [
     }
 ];
 
-const CustomTypes = ({navigation}) => {
+const CustomTypes = ({ navigation }) => {
     const customType = title => (
         <DataItem color="--color-gray-700" fontStyle="--text-sm-medium" flex={1} text={title} />
-    ); 
+    );
 
     const onItemPress = (item) => {
         navigation.navigate(item.page, { item });
@@ -75,7 +79,7 @@ const CustomTypes = ({navigation}) => {
         />
     );
 
-   
+
     return (
         <>
             {CUSTOM_TYPES.map(type => (
