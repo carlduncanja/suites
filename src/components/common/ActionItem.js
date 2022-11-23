@@ -42,7 +42,7 @@ const ActionItemContainer = styled.View`
 `;
 
 const ActionTitle = styled.Text(({ theme, disabled }) => ({
-    font: theme.font['--text-base-regular'],
+     ...theme.font['--text-base-regular'],
     color: disabled ? theme.colors['--color-gray-600'] : theme.colors['--color-gray-800'],
     marginLeft: 13,
     fontSize: 12,
@@ -51,7 +51,7 @@ const ActionTitle = styled.Text(({ theme, disabled }) => ({
 }));
 
 const PatientName = styled.Text(({ theme, disabled }) => ({
-    font: theme.font['--text-base-regular'],
+    ...theme.font['--text-base-regular'],
     color: theme.colors['--color-blue-600'],
     marginLeft: 13,
     fontSize: 12,

@@ -59,12 +59,12 @@ height:171px;
 justify-content:center;
 
 `
-const FrameContent = styled.View`
+export const FrameContent = styled.View`
 flex-direction : row;
 justify-content : space-between;
 `
 
-const CancelButtonContainer = styled.TouchableOpacity`
+export const CancelButtonContainer = styled.TouchableOpacity`
     align-items: center;
     padding: 10px;
     padding-top : 12px;
@@ -77,7 +77,7 @@ const CancelButtonContainer = styled.TouchableOpacity`
     /* margin-left:5px; */
 `;
 
-const ModalText = styled.Text(({ textColor = '--color-gray-600', theme, font = '--confirm-title' }) => ({
+export const ModalText = styled.Text(({ textColor = '--color-gray-600', theme, font = '--confirm-title' }) => ({
     ...theme.font[font],
     color: theme.colors[textColor],
     paddingTop: 2,
@@ -88,7 +88,7 @@ const RecordContainer = styled.View`
 width:52px;
 `
 
-const ButtonContainer = styled.TouchableOpacity`
+export const ButtonContainer = styled.TouchableOpacity`
     height : 40px;
     width : ${({ fullWidth }) => fullWidth === true ? '100%' : null};
     display:flex;
