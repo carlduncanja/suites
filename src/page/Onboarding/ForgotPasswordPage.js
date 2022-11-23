@@ -1,27 +1,26 @@
 // ForgotPasswordPage.js
-import React, { useState, useRef, useEffect, createRef } from 'react';
+import React, { useState } from 'react';
 import {
     View,
     StyleSheet,
-    Alert,
     ActivityIndicator, Text,
+    TouchableOpacity
 } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage'
 import { connect } from 'react-redux';
 import styled, { css } from '@emotion/native';
 import LoginBackground from '../../components/Onboarding/LoginBackground';
 import Logo from '../../../assets/svg/logo';
-
-import Button from '../../components/common/Buttons/Button';
 import { signIn } from '../../redux/actions/authActions';
 import { useTheme } from "emotion-theming";
 import InputField2 from '../../components/common/Input Fields/InputField2';
 import { isValidEmail } from '../../utils/formatter';
+import { forgotPassword } from '../../api/network';
+
 // login page at the startup
 function ForgotPasswordPage({ navigation }) {
     const theme = useTheme();
 
-
+    const[isLoading, setLoading] = useState(false);
     const [fields, setFields] = useState({
         email: '',
     });
@@ -41,20 +40,35 @@ function ForgotPasswordPage({ navigation }) {
     };
 
     const handleSendCode = () => {
-       console.log('Code sent');
+        setLoading(true);
+        forgotPassword(fields.email)
+        .then(_ => {
+         console.log('success');
+        })
+        .catch(error => {
+            console.log(error);
+            setError('An error occured whilst trying to send verification code.');
+        }).finally(_ => {
+            setLoading(false);
+        })
     }
 
     const validate = () => {
+        console.log('test')
         let message = ''
         let isValid = true;
         const { email } = fields;
 
-        if(!email) message = 'Please provide an email.'
-        if(!isValidEmail(email) && email) message = 'The email provided is invalid.';
+        if(!email){
+            message = 'Please provide an email.'
+            isValid = false;
+        } 
+        if(!isValidEmail(email) && email) {
+            message = 'The email provided is invalid.';
+            isValid = false;
+        }
         
-
-        setError(message)
-        if(!error) isValid = false;
+        message && setError(message)
 
         if (isValid) handleSendCode();
     }
@@ -94,14 +108,13 @@ function ForgotPasswordPage({ navigation }) {
                                    {error ?  <Text style={[styles.errorText]}>{error}</Text> : null } 
                                 </LabelWrapper>
 
-                                <View style={[styles.button]}>
-                                    <Button
-                                        backgroundColor={theme.colors['--company']}
-                                        buttonPress={validate}
-                                        title="Send Code"
-                                        color={theme.colors['--default-shade-white']}
-                                    />
-                                </View>
+                                <TouchableOpacity style={[styles.button]} onPress={validate} disabled={isLoading}>
+                                {isLoading ? (
+                                    <ActivityIndicator style={{paddingTop: 10}} size="small" color="#FFFFFF"/>
+                                    ) :
+                                    ( <ButtonText theme={theme} >Send Code</ButtonText> )
+                                }
+                                </TouchableOpacity>
                                 <View style={{ justifyContent: 'center' }} >
                                     <BackToLogin onPress={goToLogin}>Back to Login</BackToLogin>
                                 </View>
@@ -188,12 +201,19 @@ const FormBodyText = styled.Text(({ theme }) => ({
     width: '100%'
 }))
 
-export const BackToLogin = styled.Text(({ theme }) => ({
+const BackToLogin = styled.Text(({ theme }) => ({
     ...theme.font['--text-base-regular'],
     color: theme.colors['--color-gray-700'],
     marginTop: 32,
     width: '100%',
     textDecorationLine: 'underline'
+}))
+
+const ButtonText = styled.Text(({ theme }) => ({
+    ...theme.font['--text-base-regular'],
+    color: theme.colors['--default-shade-white'],
+    textAlign: 'center',
+    paddingTop: 15
 }))
 
 const LabelWrapper = styled.View`

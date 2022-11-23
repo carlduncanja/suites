@@ -42,6 +42,7 @@ import {
     storageLocationEndpoint,
     categoriesEndpoint,
     loginEndpoint,
+    forgotPasswordEndpoint,
     appointmentsEndpoint,
     appointmentEndpoint,
     validateCaseProcedureEndpoint,
@@ -113,6 +114,11 @@ export const login = async (email, password, pushToken) => suitesAxiosInstance
 
 export const logout = async (userId, pushToken) => suitesAxiosInstance
     .put(logoutEndpoint, { user_id: userId, pushToken })
+    .then(handleResponse)
+    .catch(handleError);
+
+export const forgotPassword = async (email) => suitesAxiosInstance
+    .post(forgotPasswordEndpoint, {email})
     .then(handleResponse)
     .catch(handleError);
 
