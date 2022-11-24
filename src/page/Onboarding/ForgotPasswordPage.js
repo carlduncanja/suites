@@ -27,7 +27,7 @@ function ForgotPasswordPage({ navigation }) {
     const [error, setError] = useState('')
 
     const goToLogin = () => {
-        navigation.navigate('login')
+        navigation.navigate('login');
     };
 
     const onFieldChange = fieldName => value => {
@@ -43,7 +43,7 @@ function ForgotPasswordPage({ navigation }) {
         setLoading(true);
         forgotPassword(fields.email)
         .then(_ => {
-         console.log('success');
+            navigation.navigate('verification-sent')
         })
         .catch(error => {
             console.log(error);
@@ -129,19 +129,19 @@ function ForgotPasswordPage({ navigation }) {
     );
 }
 
-const PageWrapper = styled.View`
+export const PageWrapper = styled.View`
   flex: 1;
   height: 100%;
   width: 100%;
 `;
 
-const PageContainer = styled.View`
+export const PageContainer = styled.View`
   flex: 1;
   height: 100%;
   width: 100%;
 `;
 
-const FormWrapper = styled.View`
+export const FormWrapper = styled.View`
   position: absolute;
   bottom: 0px;
   display: flex;
@@ -154,7 +154,7 @@ const FormWrapper = styled.View`
   justify-content: center;
 `;
 
-const FormContainer = styled.View`
+export const FormContainer = styled.View`
   display: flex;
   width: 459px;
   height: 85%;
@@ -162,7 +162,7 @@ const FormContainer = styled.View`
 //   background-color: red;
 `;
 
-const FormContentWrapper = styled.View`
+export const FormContentWrapper = styled.View`
     display: flex;
     width: 459px;
     align-items: center;
@@ -170,14 +170,14 @@ const FormContentWrapper = styled.View`
     // background-color: yellow;
 `
 
-const LogoWrapper = styled.View`
+export const LogoWrapper = styled.View`
   height: 116px;
   width: 116px;
   margin-bottom: ${({ theme }) => theme.space['--space-32']};
 // background-color: green;
 `;
 
-const LogoContainer = styled.View`
+export const LogoContainer = styled.View`
   height: 100%;
   width: 100%;
   background-color: ${({ theme }) => theme.colors['--default-shade-white']};
@@ -188,12 +188,12 @@ const LogoContainer = styled.View`
 
 
 
-const FormHeaderText = styled.Text(({ theme }) => ({
+export const FormHeaderText = styled.Text(({ theme }) => ({
     ...theme.font['--text-2xl-medium'],
     color: theme.colors['--color-black'],
 }))
 
-const FormBodyText = styled.Text(({ theme }) => ({
+export const FormBodyText = styled.Text(({ theme }) => ({
     ...theme.font['--text-base-regular'],
     color: theme.colors['--color-gray-600'],
     marginTop: 16,
@@ -201,7 +201,7 @@ const FormBodyText = styled.Text(({ theme }) => ({
     width: '100%'
 }))
 
-const BackToLogin = styled.Text(({ theme }) => ({
+export const BackToLogin = styled.Text(({ theme }) => ({
     ...theme.font['--text-base-regular'],
     color: theme.colors['--color-gray-700'],
     marginTop: 32,
@@ -209,14 +209,14 @@ const BackToLogin = styled.Text(({ theme }) => ({
     textDecorationLine: 'underline'
 }))
 
-const ButtonText = styled.Text(({ theme }) => ({
+export const ButtonText = styled.Text(({ theme }) => ({
     ...theme.font['--text-base-regular'],
     color: theme.colors['--default-shade-white'],
     textAlign: 'center',
     paddingTop: 15
 }))
 
-const LabelWrapper = styled.View`
+export const LabelWrapper = styled.View`
   height: 85px;
   width: 100%;
   justify-content: between;
@@ -225,7 +225,7 @@ const LabelWrapper = styled.View`
 //   background-color: purple;
 `;
 
-const InputLabel = styled.Text(({ theme }) => ({
+export const InputLabel = styled.Text(({ theme }) => ({
     ...theme.font['--text-base-regular'],
     color: theme.colors['--color-gray-600'],
     flex: 1,
