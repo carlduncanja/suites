@@ -144,7 +144,7 @@ export const createRoleCall = async data => suitesAxiosInstance
     .catch(handleError);
 
 export const getRolesCall = async (query, page, max) => suitesAxiosInstance
-    .get(roles(query, page, max))
+    .get(roles, { params: { query, page, max } })
     .then(handleResponse)
     .catch(handleError);
 
