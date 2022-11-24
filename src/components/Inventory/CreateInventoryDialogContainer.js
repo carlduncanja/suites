@@ -81,12 +81,7 @@ function CreateInventoryDialogContainer({navigation, route, addInventory}) {
     const [selectedIndex, setSelectedTabIndex] = useState(0);
     const [unitPriceText, setUnitPriceText] = useState(0);
     const [customPriceText, setCustomPriceText] = useState(0);
-
-    const [fields, setFields] = useState({
-        name: '',
-        levels: {low:''},
-    });
-
+    const [fields, setFields] = useState({});
     const [categories, setCategories] = useState([]);
     const [errorFields, setErrorFields] = useState({});
     const [popoverList, setPopoverList] = useState([
@@ -293,18 +288,11 @@ function CreateInventoryDialogContainer({navigation, route, addInventory}) {
 
     const onFieldChange = fieldName => value => {
         const updatedFields = {...fields};
-        if(fieldName == "levels") {
-            setFields({
-                ...updatedFields,
-                [fieldName]: {low:value}
-            })
-        }
-        else{
-            setFields({
-                ...updatedFields,
-                [fieldName]: value
-            })
-        }
+        setFields({
+            ...updatedFields,
+            [fieldName]: value
+        });
+
         const updatedErrors = {...errorFields};
         delete updatedErrors[fieldName];
         setErrorFields(updatedErrors);
@@ -548,18 +536,6 @@ function CreateInventoryDialogContainer({navigation, route, addInventory}) {
 
                 </FieldContainer>
 
-            </Row>
-
-            <Row>
-                <FieldContainer>
-                    <InputField2
-                        label={"Low Stock"}
-                        onChangeText={(value) => {onFieldChange('levels')(value)}}
-                        value={fields.levels.low}
-                        onClear={() => onFieldChange('levels')('')}
-    
-                    />
-                </FieldContainer>
             </Row>
 
         </>
