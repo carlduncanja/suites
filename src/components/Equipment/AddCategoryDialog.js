@@ -8,7 +8,7 @@ import Row from '../common/Row';
 import FieldContainer from '../common/FieldContainerComponent';
 import ConfirmationComponent from '../ConfirmationComponent';
 import _ from "lodash";
-
+import { connect } from "react-redux";
 import styled, { css } from '@emotion/native';
 import { useTheme } from 'emotion-theming';
 import { addEquipment } from '../../redux/actions/equipmentActions';

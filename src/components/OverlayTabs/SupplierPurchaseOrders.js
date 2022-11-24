@@ -495,6 +495,10 @@ const SupplierPurchaseOrders = ({
         });
     };
 
+    const handleDataRefresh = () => {
+        fetchOrdersData();
+    };
+
     const renderListFn = item => (
         <Item
             hasCheckBox={true}
