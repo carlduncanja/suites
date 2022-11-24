@@ -46,15 +46,14 @@ function ForgotPasswordPage({ navigation }) {
             navigation.navigate('verification-sent')
         })
         .catch(error => {
-            console.log(error);
-            setError('An error occured whilst trying to send verification code.');
+            const {status} = error.response
+            status === 404 ? setError('This email address could not be located.') : setError('An error occured whilst trying to send verification code.');
         }).finally(_ => {
             setLoading(false);
         })
     }
 
     const validate = () => {
-        console.log('test')
         let message = ''
         let isValid = true;
         const { email } = fields;
@@ -103,8 +102,10 @@ function ForgotPasswordPage({ navigation }) {
                                         value={fields.email}
                                         autoCapitalize={'none'}
                                         keyboardType="email-address"
-                                        borderColor={'--color-gray-300'}
-                                        inputHeight={48} />
+                                        inputHeight={48}
+                                        backgroundColor={error ? '--color-red-100' : '--default-shade-white'}
+                                        hasError={error ? true : false}
+                                        errorMessage={''}/>
                                    {error ?  <Text style={[styles.errorText]}>{error}</Text> : null } 
                                 </LabelWrapper>
 

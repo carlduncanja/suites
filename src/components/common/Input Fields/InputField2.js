@@ -136,6 +136,7 @@ function InputField2({
                     hasBorder={hasBorder}
                     hasIcon={!!Icon}
                     hasIconRight={!!IconRight}
+                    hasError={hasError}
                 >
 
                     {Icon}

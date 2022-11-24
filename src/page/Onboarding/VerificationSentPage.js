@@ -3,7 +3,6 @@ import React, { useState } from 'react';
 import {
     View,
     StyleSheet,
-    ActivityIndicator, Text,
     TouchableOpacity
 } from 'react-native';
 import { connect } from 'react-redux';
@@ -12,7 +11,6 @@ import LoginBackground from '../../components/Onboarding/LoginBackground';
 import Mail from '../../../assets/svg/mail';
 import { signIn } from '../../redux/actions/authActions';
 import { useTheme } from "emotion-theming";
-import InputField2 from '../../components/common/Input Fields/InputField2';
 import { isValidEmail } from '../../utils/formatter';
 import { forgotPassword } from '../../api/network';
 import {
@@ -20,29 +18,14 @@ import {
     PageContainer, FormWrapper, FormContainer,
     FormContentWrapper, LogoWrapper, LogoContainer,
     FormHeaderText, FormBodyText, BackToLogin,
-    ButtonText, LabelWrapper, InputLabel
+    ButtonText
 } from './ForgotPasswordPage';
 // login page at the startup
 function VerificationSentPage({ navigation }) {
     const theme = useTheme();
-
-    const [isLoading, setLoading] = useState(false);
-    const [fields, setFields] = useState({
-        email: '',
-    });
-    const [error, setError] = useState('')
-
+    
     const goToLogin = () => {
         navigation.navigate('login')
-    };
-
-    const onFieldChange = fieldName => value => {
-        const updatedFields = {
-            ...fields,
-            [fieldName]: value
-        };
-
-        setFields(updatedFields);
     };
 
     const handleSendCode = () => {
@@ -113,7 +96,7 @@ function VerificationSentPage({ navigation }) {
                                    {error ?  <Text style={[styles.errorText]}>{error}</Text> : null } 
                                 </LabelWrapper> */}
 
-                                <TouchableOpacity style={[styles.button]} onPress={validate} disabled={isLoading}>
+                                <TouchableOpacity style={[styles.button]} onPress={validate}>
                                     <ButtonText theme={theme} >Continue</ButtonText>
                                 </TouchableOpacity>
                                 <View style={{ justifyContent: 'center' }} >
