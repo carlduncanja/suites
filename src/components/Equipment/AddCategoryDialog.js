@@ -11,6 +11,7 @@ import _ from "lodash";
 import { connect } from "react-redux";
 import styled, { css } from '@emotion/native';
 import { useTheme } from 'emotion-theming';
+import SearchWithInput from '../common/Input Fields/SearchWithInput';
 import { addEquipment } from '../../redux/actions/equipmentActions';
 
 import { createEquipmentType, getCategories } from "../../api/network";
@@ -238,6 +239,7 @@ function AddCategoryDialog({ navigation, route }) {
                         value={fields['categoryType']}
                         onClear={() => onFieldChange('categoryType')('')}
                         hasError={errorFields['categoryType']}
+                        onClick={()=> <SearchWithInput data = {categorySearchResults} open ={true} />}
                         errorMessage="category field must be filled."
                     />
                 </FieldContainer>
