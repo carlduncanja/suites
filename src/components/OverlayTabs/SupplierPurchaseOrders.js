@@ -431,6 +431,7 @@ const SupplierPurchaseOrders = ({
                     text={purchaseOrderNumber}
                     fontStyle="--text-base-medium"
                     flex={1.2}
+                    color={invoiceColor}
                 />
                 <DataItemWithIcon
                     text={invoice?.invoiceNumber || 'n/a'}
