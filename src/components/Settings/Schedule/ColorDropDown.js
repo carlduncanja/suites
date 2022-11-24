@@ -23,6 +23,7 @@ import { useModal } from 'react-native-modalfy';
 import { FlatList, TouchableOpacity } from 'react-native-gesture-handler';
 
 
+
 const OptionContainer = styled.TouchableOpacity`
   width: 100%;
   height: 40px;
@@ -30,7 +31,7 @@ const OptionContainer = styled.TouchableOpacity`
   padding-right: 4px;
   background-color: "#FFFFF"
   justify-content: center;
-
+  
 `;
 
 
@@ -43,7 +44,7 @@ function ColorDropDown({
     const [dropDownActivated, setDropDownActivated] = useState(false)
     const [activateFlatList, setActivateFlatList] = useState(false)
 
-    colors = [
+    const colors = [
         { color: 'red' },
         { color: 'blue' },
         { color: 'teal' },
@@ -115,7 +116,7 @@ function ColorDropDown({
                 </View>
             </View>
             {activateFlatList ?
-                <View style={{zIndex:6, flexDirection:'row-reverse'}}>
+                <View style={styles.dropDown}>
                     <View style={styles.dropDownStyle}>
                         <FlatList
                             keyExtractor={(item, index) => `${index}`}
@@ -138,7 +139,9 @@ const styles = StyleSheet.create({
         flex: 2,
         marginBottom: 24,
         justifyContent: "space-between",
-        position: ""
+        position: "relative",
+        zIndex:-2
+
 
     },
     container: {
@@ -167,9 +170,17 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         flexDirection: "row",
         justifyContent: "center",
-        zIndex: 5,
+        position:"absolute",
+        //zIndex: 5,
         width: 134,
         backgroundColor: "#FFFFFF",
 
+    },
+    dropDown: {
+        zIndex: 1,
+        flexDirection: 'row-reverse',
+        backgroundColor: "#FFF",
+        zIndex:2
     }
+
 })
