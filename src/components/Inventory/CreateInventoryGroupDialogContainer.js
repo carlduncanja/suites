@@ -185,21 +185,19 @@ function CreateInventoryGroupDialogContainer({ navigation, route }) {
 
     const onFieldChange = (fieldName) => (value) => {
         const updatedFields = { ...fields }
-        setFields({
-            ...updatedFields,
-            [fieldName]: value
-        })
-
-
-        const updatedErrors = { ...errorFields }
-        delete updatedErrors[fieldName]
-        setErrorFields(updatedErrors)
-
-    };
-
-    const onStockChange = (fieldName) => (value) => {
         
-        setFields({ ...fields, levels: {low:value} });
+        if(fieldName == "levels") {
+            setFields({
+                ...updatedFields,
+                [fieldName]: {low:value}
+            })
+        }
+        else{
+            setFields({
+                ...updatedFields,
+                [fieldName]: value
+            })
+        }
 
 
         const updatedErrors = { ...errorFields }
@@ -210,7 +208,7 @@ function CreateInventoryGroupDialogContainer({ navigation, route }) {
 
     const validateGroup = () => {
         let isValid = true
-        let requiredFields = ['name', 'levels']
+        let requiredFields = ['name']
 
         let errorObj = { ...errorFields } || {}
 
@@ -337,7 +335,7 @@ function CreateInventoryGroupDialogContainer({ navigation, route }) {
                 <FieldContainer>
                     <InputField2
                         label={"Item Name"}
-                        onChangeText={onFieldChange('name')}
+                        onChangeText={(value) => {onFieldChange('name')(value)}}
                         value={fields['name']}
                         onClear={() => onFieldChange('name')('')}
                         hasError={errorFields['name']}
@@ -358,11 +356,10 @@ function CreateInventoryGroupDialogContainer({ navigation, route }) {
                 <FieldContainer>
                     <InputField2
                         label={"Low Stock"}
-                        onChangeText={onStockChange('levels')}
-                        value={fields['levels']}
-                        onClear={() => onStockChange('levels')('')}
-                        hasError={errorFields['levels']}
-                        errorMessage="Low Stock must be filled."
+                        onChangeText={(value) => {onFieldChange('levels')(value)}}
+                        value={fields.levels.low}
+                        onClear={() => onFieldChange('levels')('')}
+    
                     />
                 </FieldContainer>
             </Row>
