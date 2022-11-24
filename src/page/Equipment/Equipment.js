@@ -529,7 +529,20 @@ const Equipment = props => {
 
     const openCreateGroupDialog = () => {
         modal.closeAllModals();
-        navigation.navigate('AddEquipmentCategory');
+        //navigation.navigate('AddEquipmentCategory');
+        navigation.navigate('AddEquipmentCategory', {
+            screen: 'AddEquipmentCategory',
+            initial: false,
+            onCreated: () => {
+                onRefresh();
+                setFloatingAction(false);
+                navigation.goBack();
+            },
+            onCancel: () => {
+                setFloatingAction(false);
+                navigation.goBack();
+            },
+        });
     }
 
     const getFabActions = () => {

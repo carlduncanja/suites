@@ -480,32 +480,12 @@ const SupplierPurchaseOrders = ({
         });
     };
 
-    const handleOnItemPress = (item, isOpenEditable) => {
-        console.log("Tapped order item");
-        navigation.navigate("OrderItemPage", {
-            initial: false,
-            order: item,
-            isEdit: isOpenEditable,
-            updateOrders: () => {
-                {
-                    handleDataRefresh();
-                    console.log("Refreshed")
-                }
-            }
-        });
-    };
-
-    const handleDataRefresh = () => {
-        fetchOrdersData();
-    };
-
     const renderListFn = item => (
         <Item
             hasCheckBox={true}
             isChecked={checkBoxList.includes(item)}
             onCheckBoxPress={toggleCheckbox(item)}
-           // onItemPress={() => (item?.status === 'billed' && goToDetailsTab(item))}
-            onItemPress={() => handleOnItemPress(item, false)}
+            onItemPress={() => (item?.status === 'billed' && goToDetailsTab(item))}
             itemView={listItemFormat(item)}
         />
     );

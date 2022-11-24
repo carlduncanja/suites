@@ -279,6 +279,9 @@ function AddCategoryDialog({ navigation, route }) {
 
 }
 
+AddCategoryDialog.propTypes = {};
+AddCategoryDialog.defaultProps = {};
+
 const mapDispatcherToProps = {
     addEquipment
 };
