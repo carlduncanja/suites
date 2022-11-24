@@ -92,6 +92,8 @@ import {
     lifestylesEndpiont,
     ItemsLifeStyleEndpiont,
     DeleteLifeStyleitems,
+    healthInsurerEndpoint,
+    updateHealthInsurerEndpoint,
     UpdateLifeStyleItems
 } from '../const/suitesEndpoints';
 import { createDocumentLink, documentById, documentData, documentUpload } from '../const/documentGenerationEndpoints';
@@ -902,9 +904,34 @@ export const deleteLifeStyleItems = async (ids) => suitesAxiosInstance
     .then(handleResponse)
     .catch(handleError)
 
+        
 export const updateLifeStyleItems = async (id, data) => suitesAxiosInstance
     .put(UpdateLifeStyleItems(id), data)
     .then(handleResponse)
     .catch(handleError)
 
 
+// ################# HEALTH INSURER ENDPOINTS 
+
+export const getHealthInsurers = async () => suitesAxiosInstance
+    .get(healthInsurerEndpoint)
+    .then(handleResponse)
+    .catch(handleError)
+
+export const createHealthInsurer = async (data) => suitesAxiosInstance
+    .post(healthInsurerEndpoint, data)
+    .then(handleResponse)
+    .catch(handleError)
+
+export const deleteHealthInsurer = async (data) => suitesAxiosInstance
+    .put(healthInsurerEndpoint, data)
+    .then(handleResponse)
+    .catch(handleError)
+
+export const updateHealthInsurer = async (id, data) => suitesAxiosInstance
+    .put(updateHealthInsurerEndpoint(id), data)
+    .then(handleResponse)
+    .catch(handleError)
+
+
+    

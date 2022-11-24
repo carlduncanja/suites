@@ -174,14 +174,16 @@ function NewProcedureOverlayContainer({ appointment = {}, editMode = false, pass
     }
     const errorStateSetter = () => {
         setErrors(true)
-    }
+    }  
+
+
 
     useEffect(() => {
 
 
         if (allowedToSubmit) {
-            const nameToken = fields.firstName.split(" ");
-
+            const nameToken = patientValue === undefined ? fields.firstName.split(" ") : patientValue.name.split(" ") ;
+             
             // size 1 ? firstname
             if (nameToken.length === 1) {
                 patientFields.firstName = nameToken[0];
@@ -391,17 +393,18 @@ function NewProcedureOverlayContainer({ appointment = {}, editMode = false, pass
     }
 
     const handlePatient = (value) => {
-
+       
         setPatient(value
             ? {
                 _id: value._id,
                 name: value.name,
             }
             : value);
-
+       
         setSearchPatientValue('')
         setSearchPatientResult([]);
-        setSearchPatientQuery(undefined);
+        setSearchPatientQuery(undefined); 
+
     };
 
     const handleSurgeon = (value) => {
