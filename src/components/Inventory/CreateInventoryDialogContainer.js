@@ -81,7 +81,12 @@ function CreateInventoryDialogContainer({navigation, route, addInventory}) {
     const [selectedIndex, setSelectedTabIndex] = useState(0);
     const [unitPriceText, setUnitPriceText] = useState(0);
     const [customPriceText, setCustomPriceText] = useState(0);
-    const [fields, setFields] = useState({});
+
+    const [fields, setFields] = useState({
+        name: '',
+        levels: {low:''},
+    });
+
     const [categories, setCategories] = useState([]);
     const [errorFields, setErrorFields] = useState({});
     const [popoverList, setPopoverList] = useState([
