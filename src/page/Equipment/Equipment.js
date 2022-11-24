@@ -637,15 +637,9 @@ const Equipment = props => {
                 }}
             />
         );
+    
+        const addCategory  = <ActionItem title="Create Item Group" icon={<AddIcon/>} onPress={openCreateGroupDialog}/>;
 
-        const addCategory = (
-            <ActionItem
-                title='Create Item Group'
-                icon = {<AddIcon/>}
-                onPress={openCreateGroupDialog}
-            />
-
-        );
 
         return (
             <ActionContainer
