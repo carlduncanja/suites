@@ -105,7 +105,6 @@ function VerificationCodePage({ navigation, route }) {
     }
 
     const handleSendCode = () => {
-        console.log(userId);
         let code = '';
         Object.values(fields).forEach(item => { code = code + item.value })
         if (code.length < 6) {
@@ -115,7 +114,7 @@ function VerificationCodePage({ navigation, route }) {
         setLoading(true);
         verifyOtp(userId, code)
             .then(_ => {
-                navigation.navigate('new-password');
+                navigation.navigate('new-password', userId);
             })
             .catch(error => {
                 console.log(error);

@@ -13,7 +13,7 @@ import Logo from '../../../assets/svg/logo';
 import { signIn } from '../../redux/actions/authActions';
 import { useTheme } from "emotion-theming";
 import { isValidEmail } from '../../utils/formatter';
-import { forgotPassword } from '../../api/network';
+import { forgotPassword, resetPassword } from '../../api/network';
 import {
     PageWrapper,
     PageContainer, FormWrapper, FormContainer,
@@ -29,7 +29,7 @@ function NewPasswordPage({ navigation, route }) {
     const theme = useTheme();
     const [errors, setErrors] = useState({});
     const [fields, setFields] = useState({});
-    // const  { userId, email } = route.params;
+    const  { userId = '5ec2f18e2a94f10cbe7e4791' } = route.params;
 
     const goToLogin = () => {
         navigation.navigate('login')
@@ -67,11 +67,8 @@ function NewPasswordPage({ navigation, route }) {
             errors['confirmPassword'] = 'Password does not match.'
             isValid = false;
         }
-        if (isValid && password.length < 6) {
-            errors['password'] = 'Must have at least six characters';
-            isValid = false;
-        }
-        if (isValid && confirmPassword.length < 6) {
+        if (isValid && (password.length < 6 || confirmPassword.length < 6)) {
+            errors['password'] = 'match';
             errors['confirmPassword'] = 'Must have at least six characters';
             isValid = false;
         }
@@ -89,7 +86,13 @@ function NewPasswordPage({ navigation, route }) {
     }
 
     const handleSetNewPassword = () => {
-        console.log("set")
+        resetPassword(userId, {password: fields.password, confirm_password: fields.confirmPassword})
+        .then(_ => {
+            console.log('success');
+        })
+        .catch(error => {
+            console.log(error)
+        })
     }
 
     return (

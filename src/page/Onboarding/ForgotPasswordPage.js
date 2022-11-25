@@ -108,7 +108,7 @@ function ForgotPasswordPage({ navigation }) {
                                         backgroundColor={error ? '--color-red-100' : '--default-shade-white'}
                                         hasError={error ? true : false}
                                         errorMessage={''}/>
-                                   {error && ( <Text style={[styles.errorText]}>{error}</Text>) } 
+                                   {error ?  <Text style={[styles.errorText]}>{error}</Text> : null } 
                                 </LabelWrapper>
 
                                 <TouchableOpacity style={[styles.button]} onPress={validate} disabled={isLoading}>
