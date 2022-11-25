@@ -62,7 +62,8 @@ function SchedulePage({ navigation, route }) {
     }
 
     const updateItem = (itemId, data) => {
-        updateAppiontmentTypes(itemId, data)
+        console.log(itemId, data)
+        updateAppiontmentTypes(itemId, { color: data })
             .then(data => {
                 modal.openModal(
                     'ConfirmationModal', {
@@ -77,7 +78,7 @@ function SchedulePage({ navigation, route }) {
                     />,
                     onClose: () => {
                         modal.closeModal('ConfirmationModal')
-                        fetchLifeStyleData()
+                        fetchAppiontmentTypes()
                     }
                 }
                 );
@@ -110,17 +111,26 @@ function SchedulePage({ navigation, route }) {
         );
     };
 
-    
+
 
     const renderItem = item => {
+        let zIndecator = appiontmentType.length - parseInt(item._id)
+        //console.log(zIndecator)
         return (
-            <ColorDropDown isEditMode={isEditMode} item={item} onUpdate={(color,id)=>{
-                console.log(color)
-            }}/>
+            <View >
+                <ColorDropDown 
+                isEditMode={isEditMode} 
+                item={item} 
+                zIndecator={zIndecator}
+                onUpdate={(color) => {
+                    updateItem(item._id, color) 
+
+                }} />
+            </View>
         )
     }
 
-   
+
 
     return (
         <PageContext.Provider value={{ pageState, setPageState }}>
@@ -138,12 +148,14 @@ function SchedulePage({ navigation, route }) {
                     />
                 )}
             >
+
                 <Table
                     headers={headers}
                     isCheckbox={false}
                     data={appiontmentType}
                     listItemFormat={renderItem}
                 />
+
                 <Footer
                     hasActions={false}
                     hasPaginator={false}

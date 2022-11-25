@@ -24,6 +24,7 @@ import { FlatList, TouchableOpacity } from 'react-native-gesture-handler';
 
 
 
+
 const OptionContainer = styled.TouchableOpacity`
   width: 100%;
   height: 40px;
@@ -31,16 +32,16 @@ const OptionContainer = styled.TouchableOpacity`
   padding-right: 4px;
   background-color: "#FFFFF"
   justify-content: center;
-  
 `;
 
 
 function ColorDropDown({
     isEditMode,
     item,
+    zIndecator,
     onUpdate = () => { }
 }) {
-
+   
     const [dropDownActivated, setDropDownActivated] = useState(false)
     const [activateFlatList, setActivateFlatList] = useState(false)
 
@@ -48,7 +49,7 @@ function ColorDropDown({
         { color: 'red' },
         { color: 'blue' },
         { color: 'teal' },
-        { color: 'indego' },
+        { color: 'indigo' },
         { color: 'orange' },
         { color: 'pink' },
         { color: 'green' },
@@ -73,6 +74,15 @@ function ColorDropDown({
             case 'green':
                 backgroundColor = "#38A169";
                 break
+            case 'indigo':
+                backgroundColor="#3949AB"
+                break 
+            case 'orange':
+                backgroundColor="#FB8C00"
+                break
+            case 'teal':
+                backgroundColor="#00897B"
+                break
             default:
                 backgroundColor = "#757575";
                 break
@@ -85,10 +95,10 @@ function ColorDropDown({
 
     const renderOptions = ({ item }) => {
         let backgroundColor = colorRender(item.color)
-
+        let textColor = item.color
         return (<OptionContainer >
             <TouchableOpacity onPress={() => {
-                onUpdate(backgroundColor)
+                onUpdate(textColor)
             }}>
                 <View style={[styles.box, { backgroundColor: backgroundColor, width: 120, height: 16 }]}></View>
             </TouchableOpacity>
@@ -96,39 +106,50 @@ function ColorDropDown({
     }
 
     return (
-        <View>
-            <View style={styles.itemContianer}>
-                <DataItem flex={2} align="flex-start" text={item?.name} color="--color-blue-600" fontStyle="--text-base-medium" />
-                <View style={[styles.container, { justifyContent: isEditMode ? "space-between" : "center" }]}>
-                    <View style={[styles.box, { backgroundColor: backgroundColor, width: isEditMode ? 94 : 120, height: 16 }]}></View>
-                    {isEditMode ?
-                        <View style={styles.iconContianer}>
-                            <TouchableOpacity onPress={() => {
-                                setDropDownActivated(!dropDownActivated)
-                                setActivateFlatList(!activateFlatList)
-                            }}>
-                                {dropDownActivated ? <CollapsedIcon /> : <DropDownIcon />}
-                            </TouchableOpacity>
-                        </View> :
-                        <View style={styles.iconContianer}></View>
-                    }
+        <>
+            <View>
 
-                </View>
-            </View>
-            {activateFlatList ?
-                <View style={styles.dropDown}>
-                    <View style={styles.dropDownStyle}>
-                        <FlatList
-                            keyExtractor={(item, index) => `${index}`}
-                            data={colors}
-                            renderItem={renderOptions}
-                        />
+                <View>
+                    <View style={styles.itemContianer}>
+
+                        <DataItem flex={2} align="flex-start" text={item?.name} color="--color-blue-600" fontStyle="--text-base-medium" />
+
+                        <View style={[styles.container, { justifyContent: isEditMode ? "space-between" : "center" }]}>
+                            <View style={[styles.box, { backgroundColor: backgroundColor, width: isEditMode ? 94 : 120, height: 16 }]}></View>
+
+                            {isEditMode ?
+
+                                <View style={styles.iconContianer}>
+                                    <TouchableOpacity onPress={() => {
+                                        setDropDownActivated(!dropDownActivated)
+                                        setActivateFlatList(!activateFlatList)
+                                    }}>
+                                        {dropDownActivated ? <CollapsedIcon /> : <DropDownIcon />}
+                                    </TouchableOpacity>
+                                </View> :
+                                <View style={styles.iconContianer}></View>
+                            }
+
+                        </View>
                     </View>
+                    
                 </View>
-                :
-                null
-            }
-        </View>)
+                {activateFlatList ?
+                        <View style={styles.dropDown}>
+                            <View style={[styles.dropDownStyle,{zIndex:zIndecator}]}>
+                                <FlatList
+                                    keyExtractor={(item, index) => `${index}`}
+                                    data={colors}
+                                    renderItem={renderOptions}
+                                    style={{ backgroundColor: '#FFFFFF' }}
+                                />
+                            </View>
+                        </View>
+                        :
+                        null
+                    }
+            </View>
+        </>)
 
 
 }
@@ -139,9 +160,8 @@ const styles = StyleSheet.create({
         flex: 2,
         marginBottom: 24,
         justifyContent: "space-between",
-        position: "relative",
-        zIndex:-2
-
+        zIndex:1,
+        position:"relative"
 
     },
     container: {
@@ -151,36 +171,39 @@ const styles = StyleSheet.create({
         width: 134,
         height: 32,
         //justifyContent: "space-between",
-        flexDirection: "row"
+        flexDirection: "row",
+        position:"relative"
 
     },
     box: {
         top: 8,
         bottom: 8,
         right: 4,
-        left: 4
-
+        left: 4,
+        position:"relative"
     },
     iconContianer: {
         justifyContent: "center",
-        paddingRight: 8
+        paddingRight: 8,
+        zIndex: 1,
+         
     },
     dropDownStyle: {
         borderColor: "#E3E8EF",
         borderWidth: 1,
         flexDirection: "row",
         justifyContent: "center",
-        position:"absolute",
-        //zIndex: 5,
+        position: "relative",
         width: 134,
         backgroundColor: "#FFFFFF",
-
+        display:"block"
+        
     },
     dropDown: {
-        zIndex: 1,
         flexDirection: 'row-reverse',
-        backgroundColor: "#FFF",
-        zIndex:2
+        position: "relative",
+        display:"block",
+        
     }
 
 })
