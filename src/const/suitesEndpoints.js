@@ -116,6 +116,7 @@ export const updateCategoryEndpoint = id => `/categories/${id}`;
 
 // ##### PATIENTS
 export const patientEndpoint = id => `/patients/${id}`;
+export const allPatientsEndpoint = '/patients'
 
 // ##### ALERTS
 export const alertsEndpoint = '/alerts';
