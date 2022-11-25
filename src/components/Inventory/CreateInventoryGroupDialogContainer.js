@@ -86,6 +86,7 @@ function CreateInventoryGroupDialogContainer({ navigation, route }) {
         category: '',
         name: '',
         unit: '',
+        levels: {low:''},
         unitOfMeasurement: '',
         markup: ''
     });
@@ -184,10 +185,19 @@ function CreateInventoryGroupDialogContainer({ navigation, route }) {
 
     const onFieldChange = (fieldName) => (value) => {
         const updatedFields = { ...fields }
-        setFields({
-            ...updatedFields,
-            [fieldName]: value
-        })
+        
+        if(fieldName == "levels") {
+            setFields({
+                ...updatedFields,
+                [fieldName]: {low:value}
+            })
+        }
+        else{
+            setFields({
+                ...updatedFields,
+                [fieldName]: value
+            })
+        }
 
 
         const updatedErrors = { ...errorFields }
@@ -325,11 +335,31 @@ function CreateInventoryGroupDialogContainer({ navigation, route }) {
                 <FieldContainer>
                     <InputField2
                         label={"Item Name"}
-                        onChangeText={onFieldChange('name')}
+                        onChangeText={(value) => {onFieldChange('name')(value)}}
                         value={fields['name']}
                         onClear={() => onFieldChange('name')('')}
                         hasError={errorFields['name']}
                         errorMessage="Name must be filled."
+                    />
+                </FieldContainer>
+               
+            </Row>
+            <Row>
+                <FieldContainer>
+                    <InputField2
+                        label={"Category"}
+                        onChangeText={onFieldChange('')}
+                        value={fields['']}
+                        onClear={() => onFieldChange('')('')}
+                    />
+                </FieldContainer>
+                <FieldContainer>
+                    <InputField2
+                        label={"Low Stock"}
+                        onChangeText={(value) => {onFieldChange('levels')(value)}}
+                        value={fields.levels.low}
+                        onClear={() => onFieldChange('levels')('')}
+    
                     />
                 </FieldContainer>
             </Row>
