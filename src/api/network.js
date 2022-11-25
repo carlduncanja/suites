@@ -70,6 +70,7 @@ import {
     roles,
     role,
     patientEndpoint,
+    allPatientsEndpoint,
     alertsEndpoint,
     closeAlertEndpoint,
     configEndpoint,
@@ -513,7 +514,7 @@ export const updateCaseProcedureAppointmentCall = async (caseId, caseProcedureId
 
 // ################# Procedures Endpoints
 export const getProcedures = async (query, max, page) => suitesAxiosInstance
-    .get(proceduresEndpoint, { params: { query, max, page } })
+    .get(proceduresEndpoint, (query, max, page))
     .then(handleResponse)
     .catch(handleError);
 
@@ -811,6 +812,11 @@ export const updatePatient = async (id, data) => suitesAxiosInstance
     .put(patientEndpoint(id), data)
     .then(handleResponse)
     .catch(handleError);
+
+export const getPatients = async (query, max, page) => suitesAxiosInstance
+    .get(allPatientsEndpoint,  (query, max, page))
+    .then(handleResponse)
+    .catch(handleError)
 
 // ################# Document Generation Endpoints
 export const generateDocumentLink = async data => documentGenerationInstance.post(createDocumentLink, data)
