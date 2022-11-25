@@ -425,15 +425,13 @@ const SupplierPurchaseOrders = ({
         const { invoice = {}, purchaseOrderNumber = '', status = '', nextOrderDate = '', deliveryDate = '', } = item;
         const invoiceColor = invoice === '' ? '--color-gray-500' : '--color-blue-600';
         const statusColor = status === 'Request Sent' ? '--color-teal-600' : '--color-red-700';
-        // console.log('Doc id: ', invoice);
         return (
             <>
-                <TouchableDataItem
+                <DataItem
                     text={purchaseOrderNumber}
-                    onPress={() => {
-                    }}
                     fontStyle="--text-base-medium"
                     flex={1.2}
+                    color={invoiceColor}
                 />
                 <DataItemWithIcon
                     text={invoice?.invoiceNumber || 'n/a'}
@@ -480,12 +478,33 @@ const SupplierPurchaseOrders = ({
         });
     };
 
+    const handleOnItemPress = (item, isOpenEditable) => {
+        navigation.navigate("Orders", {
+            screen: 'OrderItemPage',
+            params: {
+                initial: false,
+                order: item,
+                isEdit: isOpenEditable,
+            },
+            updateOrders: () => {
+                {
+                    handleDataRefresh();
+                    console.log("Refreshed")
+                }
+            }
+        });
+    };
+
+    const handleDataRefresh = () => {
+        fetchOrdersData();
+    };
+
     const renderListFn = item => (
         <Item
             hasCheckBox={true}
             isChecked={checkBoxList.includes(item)}
             onCheckBoxPress={toggleCheckbox(item)}
-            onItemPress={() => (item?.status === 'billed' && goToDetailsTab(item))}
+            onItemPress={() => handleOnItemPress(item, false)}
             itemView={listItemFormat(item)}
         />
     );
