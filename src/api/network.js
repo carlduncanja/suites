@@ -42,6 +42,7 @@ import {
     storageLocationEndpoint,
     categoriesEndpoint,
     loginEndpoint,
+    forgotPasswordEndpoint,
     appointmentsEndpoint,
     appointmentEndpoint,
     validateCaseProcedureEndpoint,
@@ -94,7 +95,9 @@ import {
     DeleteLifeStyleitems,
     healthInsurerEndpoint,
     updateHealthInsurerEndpoint,
-    UpdateLifeStyleItems
+    UpdateLifeStyleItems,
+    verifyOtpEndpoint,
+    resetPasswordEndpoint
 } from '../const/suitesEndpoints';
 import { createDocumentLink, documentById, documentData, documentUpload } from '../const/documentGenerationEndpoints';
 
@@ -117,7 +120,22 @@ export const logout = async (userId, pushToken) => suitesAxiosInstance
     .then(handleResponse)
     .catch(handleError);
 
-// ################ Users Endpoint
+export const forgotPassword = async (email) => suitesAxiosInstance
+    .post(forgotPasswordEndpoint, {email})
+    .then(handleResponse)
+    .catch(handleError);
+
+export const verifyOtp = async (id, code) => suitesAxiosInstance
+    .post(verifyOtpEndpoint(id), {code})
+    .then(handleResponse)
+    .catch(handleError);
+
+    export const resetPassword = async (id, data) => suitesAxiosInstance
+    .post(resetPasswordEndpoint(id), data)
+    .then(handleResponse)
+    .catch(handleError);
+
+    // ################ Users Endpoint
 export const getUsersCall = async (query, page, max) => suitesAxiosInstance
     .get(users, { params: { query, page, max } })
     .then(handleResponse)
