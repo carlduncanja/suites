@@ -24,7 +24,7 @@ function SearchWithInput(props){
       }
 
     return (
-       props.open && <div className="popup">
+       <div className="popup">
             <Row>
                 <input
                     type="text"

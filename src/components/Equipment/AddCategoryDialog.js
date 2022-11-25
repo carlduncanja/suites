@@ -60,6 +60,7 @@ function AddCategoryDialog({ navigation, route }) {
 
     // ######### STATE
     const [selectedIndex, setSelectedTabIndex] = useState(0);
+    const [isOpen, setIsOpen] = useState(false);
 
     const [fields, setFields] = useState({
         equipmentName: '',
@@ -239,11 +240,15 @@ function AddCategoryDialog({ navigation, route }) {
                         value={fields['categoryType']}
                         onClear={() => onFieldChange('categoryType')('')}
                         hasError={errorFields['categoryType']}
-                        onClick={()=> <SearchWithInput data = {categorySearchResults} open ={true} />}
+                        //onClick={()=> <SearchWithInput data = {categorySearchResults} open ={true} />}
+                        onFocus={setIsOpen(!isOpen)}
                         errorMessage="category field must be filled."
                     />
                 </FieldContainer>
             </Row>
+            {
+                isOpen && <SearchWithInput data={categorySearchResults}/>
+            }
 
         </>
     );
