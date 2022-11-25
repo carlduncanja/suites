@@ -35,15 +35,21 @@ function SearchWithInput(props){
                     value={searchInput} 
                 />
             </Row>
+            <div style={styles.menu}>
 
-            {searchResults.map((res)=> {
-                <li>
-                    {res}
-                </li>
-            })}
+                {searchResults.map((res)=> {
+                    <li>
+                         <Item
+                            hasCheckBox={true}
+                            itemView={{res}}
+                        />
+                        
+                    </li>
+                })}
 
+            </div>
             <div style = {styles.footer}>
-
+                
             </div>
         
         </div>
@@ -55,9 +61,18 @@ const styles = StyleSheet.create({
     container: {
       border: 0,
       borderColor: CCD6E0,
+      position: "relative",
+      width: 268,
+      height: 177
+
     },
     footer: {
         color: CCD6E0,
+    },
+    menu: {
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "space-between",
     }
     // bigBlue: {
     //   color: 'blue',
