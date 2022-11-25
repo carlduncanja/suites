@@ -74,8 +74,10 @@ const TextInputContainer = styled.View`
 const Input = styled.TextInput`
   flex: 1;
   width: 85%;
-  padding-left: ${({theme}) => theme.space['--space-10']};
-  padding-right: ${({theme}) => theme.space['--space-32']};
+  padding-left: ${({theme, alignText}) => alignText === 'left' ? theme.space['--space-10'] : 0};
+  padding-right: ${({theme, alignText}) => alignText === 'left' ?  theme.space['--space-32']: 0};
+  text-align: ${({alignText}) => alignText};
+
 `;
 
 
@@ -111,10 +113,13 @@ function InputField2({
                          Icon,
                          IconRight,
                          maxLength,
-                         inputHeight
+                         inputHeight,
+                         alignText = 'left',
+                         clearButton = true,
+                         inputRef,
                      }) {
     const theme = useTheme();
-    const inputRef = useRef();
+    if(!inputRef) inputRef = useRef();
 
     return (
         <InputContainerComponent>
@@ -145,7 +150,7 @@ function InputField2({
                         theme={theme}
                         onChangeText={onChangeText}
                         value={value}
-
+                        alignText={alignText}
                         editable={enabled}
                         keyboardType={keyboardType}
                         placeholder={placeholder}
@@ -166,7 +171,7 @@ function InputField2({
                     }
 
                     {
-                        !!value && enabled &&
+                        !!value && enabled && clearButton  &&
                         <IconContainer>
                             <IconButton
                                 Icon={<ClearIcon/>}

@@ -4,6 +4,7 @@ export const logoutEndpoint = '/auth/logout';
 export const registrationEndpoint = '/auth/register';
 export const guestLoginEndpoint = '/auth/login/guest';
 export const forgotPasswordEndpoint = '/auth/forgot-password';
+export const verifyOtpEndpoint = id => `auth/verify/${id}`;
 
 // ##### Users
 export const users = '/users';

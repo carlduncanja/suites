@@ -21,46 +21,18 @@ import {
     ButtonText
 } from './ForgotPasswordPage';
 // login page at the startup
-function VerificationSentPage({ navigation }) {
+function VerificationSentPage({ navigation, route }) {
     const theme = useTheme();
+    const  { userId } = route.params;
     
     const goToLogin = () => {
         navigation.navigate('login')
     };
 
-    const handleSendCode = () => {
-        setLoading(true);
-        forgotPassword(fields.email)
-            .then(_ => {
-                console.log('success');
-            })
-            .catch(error => {
-                console.log(error);
-                setError('An error occured whilst trying to send verification code.');
-            }).finally(_ => {
-                setLoading(false);
-            })
-    }
-
-    const validate = () => {
-        console.log('test')
-        let message = ''
-        let isValid = true;
-        const { email } = fields;
-
-        if (!email) {
-            message = 'Please provide an email.'
-            isValid = false;
-        }
-        if (!isValidEmail(email) && email) {
-            message = 'The email provided is invalid.';
-            isValid = false;
-        }
-
-        message && setError(message)
-
-        if (isValid) handleSendCode();
-    }
+    const goToVerifyCode = () => {
+        // console.log(userId)
+        navigation.navigate('verify-code', {userId})
+    };
 
     return (
         <PageWrapper theme={theme}>
@@ -82,21 +54,7 @@ function VerificationSentPage({ navigation }) {
                                 <FormBodyText>
                                     A verification code was sent to the email address provided
                                 </FormBodyText>
-                                {/* <LabelWrapper>
-                                    <InputLabel>Email</InputLabel>
-                                    <InputField2
-                                        placeholder='Your email'
-                                        onChangeText={value => onFieldChange('email')(value)}
-                                        onClear={onFieldChange('email')}
-                                        value={fields.email}
-                                        autoCapitalize={'none'}
-                                        keyboardType="email-address"
-                                        borderColor={'--color-gray-300'}
-                                        inputHeight={48} />
-                                   {error ?  <Text style={[styles.errorText]}>{error}</Text> : null } 
-                                </LabelWrapper> */}
-
-                                <TouchableOpacity style={[styles.button]} onPress={validate}>
+                                <TouchableOpacity style={[styles.button]} onPress={goToVerifyCode}>
                                     <ButtonText theme={theme} >Continue</ButtonText>
                                 </TouchableOpacity>
                                 <View style={{ justifyContent: 'center' }} >

@@ -94,7 +94,8 @@ import {
     DeleteLifeStyleitems,
     healthInsurerEndpoint,
     updateHealthInsurerEndpoint,
-    UpdateLifeStyleItems
+    UpdateLifeStyleItems,
+    verifyOtpEndpoint
 } from '../const/suitesEndpoints';
 import { createDocumentLink, documentById, documentData, documentUpload } from '../const/documentGenerationEndpoints';
 
@@ -122,7 +123,12 @@ export const forgotPassword = async (email) => suitesAxiosInstance
     .then(handleResponse)
     .catch(handleError);
 
-// ################ Users Endpoint
+export const verifyOtp = async (id, code) => suitesAxiosInstance
+    .post(verifyOtpEndpoint(id), {newotp: code})
+    .then(handleResponse)
+    .catch(handleError);
+
+    // ################ Users Endpoint
 export const getUsersCall = async (query, page, max) => suitesAxiosInstance
     .get(users, { params: { query, page, max } })
     .then(handleResponse)

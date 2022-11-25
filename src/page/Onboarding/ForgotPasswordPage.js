@@ -41,12 +41,14 @@ function ForgotPasswordPage({ navigation }) {
 
     const handleSendCode = () => {
         setLoading(true);
+        setError('');
         forgotPassword(fields.email)
-        .then(_ => {
-            navigation.navigate('verification-sent')
+        .then(data => {
+            navigation.navigate('verification-sent', {userId: data.userId})
         })
         .catch(error => {
             const {status} = error.response
+            !status && setError("An error has occured");
             status === 404 ? setError('This email address could not be located.') : setError('An error occured whilst trying to send verification code.');
         }).finally(_ => {
             setLoading(false);
