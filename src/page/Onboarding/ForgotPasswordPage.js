@@ -44,7 +44,7 @@ function ForgotPasswordPage({ navigation }) {
         setError('');
         forgotPassword(fields.email)
         .then(data => {
-            navigation.navigate('verification-sent', {userId: data.userId})
+            navigation.navigate('verification-sent', {userId: data.userId, email: fields.email})
         })
         .catch(error => {
             const {status} = error.response
@@ -162,7 +162,7 @@ export const FormContainer = styled.View`
   width: 459px;
   height: 85%;
   align-items: center;
-//   background-color: red;
+  justify-content: center;
 `;
 
 export const FormContentWrapper = styled.View`

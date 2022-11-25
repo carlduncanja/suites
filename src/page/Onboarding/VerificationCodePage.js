@@ -4,7 +4,8 @@ import {
     View,
     Text,
     StyleSheet,
-    TouchableOpacity
+    TouchableOpacity,
+    ActivityIndicator
 } from 'react-native';
 import { connect } from 'react-redux';
 import styled, { css } from '@emotion/native';
@@ -13,7 +14,7 @@ import Logo from '../../../assets/svg/logo';
 import { signIn } from '../../redux/actions/authActions';
 import { useTheme } from "emotion-theming";
 import { isValidEmail } from '../../utils/formatter';
-import { verifyOtp } from '../../api/network';
+import { verifyOtp, forgotPassword } from '../../api/network';
 import {
     PageWrapper,
     PageContainer, FormWrapper, FormContainer,
@@ -25,7 +26,7 @@ import InputField2 from '../../components/common/Input Fields/InputField2';
 // login page at the startup
 function VerificationCodePage({ navigation, route }) {
 
-    const { userId } = route.params;
+    const { userId, email } = route.params;
     const theme = useTheme();
     const [error, setError] = useState('');
     const [isLoading, setLoading] = useState(false);
@@ -124,6 +125,22 @@ function VerificationCodePage({ navigation, route }) {
             })
     }
 
+    const handleResendCode = () => {
+        setLoading(true);
+        setError('');
+        forgotPassword(email)
+            .then(data => {
+                navigation.navigate('verification-sent', { userId: data.userId, email })
+            })
+            .catch(error => {
+                const { status } = error.response
+                !status && setError("An error has occured");
+                status === 404 ? setError('This email address could not be located.') : setError('An error occured whilst trying to send verification code.');
+            }).finally(_ => {
+                setLoading(false);
+            })
+    }
+
     return (
         <PageWrapper theme={theme}>
 
@@ -131,9 +148,9 @@ function VerificationCodePage({ navigation, route }) {
             <PageWrapper theme={theme}>
                 <PageContainer>
                     <FormWrapper theme={theme}>
-                        <FormContainer theme={theme} style={{ marginTop: 150 }}>
+                        <FormContainer theme={theme} >
 
-                            <LogoWrapper theme={theme} style={{ marginBottom: 60 }}>
+                            <LogoWrapper theme={theme} >
                                 <LogoContainer theme={theme}>
                                     <Logo />
                                 </LogoContainer>
@@ -255,16 +272,23 @@ function VerificationCodePage({ navigation, route }) {
                                     {error ? <Text style={[styles.errorText]}>{error}</Text> : null}
                                 </ErrorWrapper>
 
-                                <TouchableOpacity style={[styles.button]} onPress={handleSendCode} disabled={code.length < 6}>
-                                    <ButtonText theme={theme} >Verify</ButtonText>
+                                <TouchableOpacity style={[styles.button]} onPress={handleSendCode}>
+                                    {isLoading ? (
+                                        <ActivityIndicator style={{ paddingTop: 10 }} size="small" color="#FFFFFF" />
+                                    ) :
+                                        (<ButtonText theme={theme} >Verify</ButtonText>)
+                                    }
                                 </TouchableOpacity>
+                                <View style={{ justifyContent: 'center', marginTop: 15, display: 'flex', flexDirection: 'row' }} >
+                                    <Text style={[styles.resendLabel]}>Didnt receive a verification code?  </Text>
+                                    <Text style={[styles.resendLabel, { color: '#104587', fontWeight: '700', textDecorationLine: 'underline' }]} onPress={handleResendCode}>Resend Code</Text>
+                                </View>
                                 <View style={{ justifyContent: 'center' }} >
                                     <BackToLogin onPress={goToLogin}>Back to Login</BackToLogin>
                                 </View>
                             </FormContentWrapper>
                         </FormContainer>
                     </FormWrapper>
-
                 </PageContainer>
             </PageWrapper>
 
@@ -282,7 +306,6 @@ export const ErrorWrapper = styled.View`
 dipslay: flex;
   height: 20px;
   width: 100%;
-  margin-bottom: ${({ theme }) => theme.space['--space-32']};
 `;
 export const InputWrapper = styled.View`
   display: flex;
@@ -313,6 +336,13 @@ const styles = StyleSheet.create({
     errorText: {
         color: '#c53030',
         fontSize: 13
+    },
+    resendLabel: {
+        fontSize: 16,
+        fontWeight: 'normal',
+        fontStyle: 'normal',
+        lineHeight: 16,
+        color: '#6E7B87'
     }
 });
 

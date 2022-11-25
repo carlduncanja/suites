@@ -23,15 +23,14 @@ import {
 // login page at the startup
 function VerificationSentPage({ navigation, route }) {
     const theme = useTheme();
-    const  { userId } = route.params;
+    const  { userId, email } = route.params;
     
     const goToLogin = () => {
         navigation.navigate('login')
     };
 
     const goToVerifyCode = () => {
-        // console.log(userId)
-        navigation.navigate('verify-code', {userId})
+        navigation.navigate('verify-code', {userId, email})
     };
 
     return (
