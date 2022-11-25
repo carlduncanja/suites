@@ -1,17 +1,14 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
     View,
     StyleSheet,
     TouchableOpacity
 } from 'react-native';
 import { connect } from 'react-redux';
-import styled, { css } from '@emotion/native';
 import LoginBackground from '../../components/Onboarding/LoginBackground';
 import Mail from '../../../assets/svg/mail';
 import { signIn } from '../../redux/actions/authActions';
 import { useTheme } from "emotion-theming";
-import { isValidEmail } from '../../utils/formatter';
-import { forgotPassword } from '../../api/network';
 import {
     PageWrapper,
     PageContainer, FormWrapper, FormContainer,

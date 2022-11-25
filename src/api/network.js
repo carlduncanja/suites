@@ -125,7 +125,7 @@ export const forgotPassword = async (email) => suitesAxiosInstance
     .catch(handleError);
 
 export const verifyOtp = async (id, code) => suitesAxiosInstance
-    .post(verifyOtpEndpoint(id), {newotp: code})
+    .post(verifyOtpEndpoint(id), {code})
     .then(handleResponse)
     .catch(handleError);
 

@@ -5,6 +5,7 @@ import {
     StyleSheet,
     TouchableOpacity
 } from 'react-native';
+import styled from '@emotion/native';
 import { connect } from 'react-redux';
 import LoginBackground from '../../components/Onboarding/LoginBackground';
 import Logo from '../../../assets/svg/logo';
@@ -104,9 +105,9 @@ function NewPasswordPage({ navigation, route }) {
 
                             <FormContentWrapper>
                                 <FormHeaderText>Set New Password</FormHeaderText>
-                                <FormBodyText >
+                                <TextHeader  >
                                     Enter your new password below.
-                                </FormBodyText>
+                                </TextHeader>
                                 <LabelWrapper style={{ marginBottom: 0, marginTop: 0 }}>
                                     <InputLabel>Password</InputLabel>
                                     <InputField2
@@ -152,6 +153,13 @@ function NewPasswordPage({ navigation, route }) {
         </PageWrapper>
     );
 }
+
+export const TextHeader = styled.Text(({ theme }) => ({
+    ...theme.font['--text-base-regular'],
+    color: theme.colors['--color-gray-600'],
+    marginTop: 16,
+    marginBottom: 32,
+}))
 
 const styles = StyleSheet.create({
     button: {
