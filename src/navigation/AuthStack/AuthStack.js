@@ -6,6 +6,7 @@ import SignUpPage from "../../page/Onboarding/SignupPage";
 import ForgotPasswordPage from "../../page/Onboarding/ForgotPasswordPage";
 import VerificationSentPage from "../../page/Onboarding/VerificationSentPage";
 import VerificationCodePage from "../../page/Onboarding/VerificationCodePage";
+import NewPasswordPage from "../../page/Onboarding/NewPasswordPage";
 
 const Stack = createStackNavigator();
 
@@ -16,6 +17,7 @@ const AuthStack = () => <Stack.Navigator>
     <Stack.Screen name='forgot' component={ForgotPasswordPage} options={{headerShown: false}}/>
     <Stack.Screen name='verification-sent' component={VerificationSentPage} options={{headerShown: false}}/>
     <Stack.Screen name='verify-code' component={VerificationCodePage} options={{headerShown: false}}/>
+    <Stack.Screen name='new-password' component={NewPasswordPage} options={{headerShown: false}}/>
 </Stack.Navigator>
 
 

@@ -115,7 +115,7 @@ function VerificationCodePage({ navigation, route }) {
         setLoading(true);
         verifyOtp(userId, code)
             .then(_ => {
-                console.log('success');
+                navigation.navigate('new-password');
             })
             .catch(error => {
                 console.log(error);

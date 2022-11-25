@@ -40,7 +40,7 @@ function VerificationSentPage({ navigation, route }) {
             <PageWrapper theme={theme}>
                 <PageContainer>
                     <FormWrapper theme={theme}>
-                        <FormContainer theme={theme} style={{marginTop: 150}}>
+                        <FormContainer theme={theme}>
 
                             <LogoWrapper theme={theme} style={{marginBottom: 60}}>
                                 <LogoContainer theme={theme}>
