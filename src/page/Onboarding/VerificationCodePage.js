@@ -1,4 +1,3 @@
-// VerificationCodePage.js
 import React, { useState, useRef } from 'react';
 import {
     View,
@@ -13,7 +12,6 @@ import LoginBackground from '../../components/Onboarding/LoginBackground';
 import Logo from '../../../assets/svg/logo';
 import { signIn } from '../../redux/actions/authActions';
 import { useTheme } from "emotion-theming";
-import { isValidEmail } from '../../utils/formatter';
 import { verifyOtp, forgotPassword } from '../../api/network';
 import {
     PageWrapper,
@@ -23,7 +21,7 @@ import {
     InputLabel, ButtonText
 } from './ForgotPasswordPage';
 import InputField2 from '../../components/common/Input Fields/InputField2';
-// login page at the startup
+
 function VerificationCodePage({ navigation, route }) {
 
     const { userId, email } = route.params;

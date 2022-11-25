@@ -1,36 +1,30 @@
-import React, { useState } from 'react';
+
+import React from 'react';
 import {
-    View,
     StyleSheet,
     TouchableOpacity
 } from 'react-native';
 import { connect } from 'react-redux';
-import styled, { css } from '@emotion/native';
 import LoginBackground from '../../components/Onboarding/LoginBackground';
-import Mail from '../../../assets/svg/mail';
+import CheckedCircle from '../../../assets/svg/checkedCircle';
+import CloudError from '../../../assets/svg/cloudError';
 import { signIn } from '../../redux/actions/authActions';
 import { useTheme } from "emotion-theming";
-import { isValidEmail } from '../../utils/formatter';
-import { forgotPassword } from '../../api/network';
 import {
     PageWrapper,
     PageContainer, FormWrapper, FormContainer,
-    FormContentWrapper, LogoWrapper, LogoContainer,
-    FormHeaderText, FormBodyText, BackToLogin,
+    FormContentWrapper, LogoWrapper, LogoContainer, FormBodyText, 
     ButtonText
 } from './ForgotPasswordPage';
 
-function VerificationSentPage({ navigation, route }) {
+function ConfirmationPage({ navigation, route }) {
     const theme = useTheme();
-    const  { userId, email } = route.params;
+    const  { state } = route.params;
     
     const goToLogin = () => {
         navigation.navigate('login')
     };
 
-    const goToVerifyCode = () => {
-        navigation.navigate('verify-code', {userId, email})
-    };
 
     return (
         <PageWrapper theme={theme}>
@@ -41,23 +35,25 @@ function VerificationSentPage({ navigation, route }) {
                     <FormWrapper theme={theme}>
                         <FormContainer theme={theme}>
 
-                            <LogoWrapper theme={theme} style={{marginBottom: 60}}>
+                            <LogoWrapper theme={theme}>
                                 <LogoContainer theme={theme}>
-                                    <Mail />
+                                   {state ? <CheckedCircle/> :  <CloudError />}
                                 </LogoContainer>
                             </LogoWrapper>
 
                             <FormContentWrapper>
-                                <FormHeaderText>Verification Sent</FormHeaderText>
                                 <FormBodyText>
-                                    A verification code was sent to the email address provided
+                                    {
+                                        state ?
+                                        'You have successfully reset your password. To return to the login page, tap the button below.'
+                                        :
+                                        'An error occured while trying to reset your password, please try again later.'
+
+                                    }    
                                 </FormBodyText>
-                                <TouchableOpacity style={[styles.button]} onPress={goToVerifyCode}>
-                                    <ButtonText theme={theme} >Continue</ButtonText>
+                                <TouchableOpacity style={[styles.button]} onPress={goToLogin}>
+                                    <ButtonText theme={theme} >Back to Login</ButtonText>
                                 </TouchableOpacity>
-                                <View style={{ justifyContent: 'center' }} >
-                                    <BackToLogin onPress={goToLogin}>Back to Login</BackToLogin>
-                                </View>
                             </FormContentWrapper>
                         </FormContainer>
                     </FormWrapper>
@@ -84,11 +80,11 @@ const styles = StyleSheet.create({
     }
 });
 
-VerificationSentPage.propTypes = {};
-VerificationSentPage.defaultProps = {};
+ConfirmationPage.propTypes = {};
+ConfirmationPage.defaultProps = {};
 
 const mapStateToProps = state => ({ expoPushToken: state.auth.expoPushToken });
 
 const mapDispatcherToProps = { signIn, };
 
-export default connect(mapStateToProps, mapDispatcherToProps)(VerificationSentPage);
+export default connect(mapStateToProps, mapDispatcherToProps)(ConfirmationPage);

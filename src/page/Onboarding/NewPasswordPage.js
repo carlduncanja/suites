@@ -1,4 +1,3 @@
-// NewPasswordPage.js
 import React, { useState } from 'react';
 import {
     View,
@@ -7,13 +6,11 @@ import {
     TouchableOpacity
 } from 'react-native';
 import { connect } from 'react-redux';
-import styled, { css } from '@emotion/native';
 import LoginBackground from '../../components/Onboarding/LoginBackground';
 import Logo from '../../../assets/svg/logo';
 import { signIn } from '../../redux/actions/authActions';
 import { useTheme } from "emotion-theming";
-import { isValidEmail } from '../../utils/formatter';
-import { forgotPassword, resetPassword } from '../../api/network';
+import {  resetPassword } from '../../api/network';
 import {
     PageWrapper,
     PageContainer, FormWrapper, FormContainer,
@@ -22,9 +19,7 @@ import {
     ButtonText, LabelWrapper, InputLabel
 } from './ForgotPasswordPage';
 import InputField2 from '../../components/common/Input Fields/InputField2';
-import { startCase } from 'lodash';
 
-// login page at the startup
 function NewPasswordPage({ navigation, route }) {
     const theme = useTheme();
     const [errors, setErrors] = useState({});
@@ -33,10 +28,6 @@ function NewPasswordPage({ navigation, route }) {
 
     const goToLogin = () => {
         navigation.navigate('login')
-    };
-
-    const goToVerifyCode = () => {
-        // navigation.navigate('verify-code', {userId, email})
     };
 
     const onFieldChange = fieldName => value => {
@@ -88,10 +79,11 @@ function NewPasswordPage({ navigation, route }) {
     const handleSetNewPassword = () => {
         resetPassword(userId, {password: fields.password, confirm_password: fields.confirmPassword})
         .then(_ => {
-            console.log('success');
+            navigation.navigate('confirmation', {state: true})
         })
         .catch(error => {
-            console.log(error)
+            console.log(error);
+            navigation.navigate('confirmation', {state: false})
         })
     }
 

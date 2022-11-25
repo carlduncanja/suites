@@ -1,4 +1,3 @@
-// ForgotPasswordPage.js
 import React, { useState } from 'react';
 import {
     View,
@@ -16,7 +15,6 @@ import InputField2 from '../../components/common/Input Fields/InputField2';
 import { isValidEmail } from '../../utils/formatter';
 import { forgotPassword } from '../../api/network';
 
-// login page at the startup
 function ForgotPasswordPage({ navigation }) {
     const theme = useTheme();
 
