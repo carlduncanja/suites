@@ -33,14 +33,14 @@ import {
 import {
     getPurchaseOrders,
     createInvoiceViaOrders,
-    updatePurchaseOrderStatus, removePurchaseOrderCall,
+    updatePurchaseOrderStatus, removePurchaseOrderCall, createAlert, getRolesCall,
 } from "../../api/network";
 import _ from "lodash";
 
 import {withModal, useModal} from "react-native-modalfy";
 import {formatDate, transformToSentence, transformToTitleCase} from '../../utils/formatter';
 import OrderItemPage from "./OrderItemPage";
-import {LONG_PRESS_TIMER, PURCHASE_ORDER_STATUSES} from "../../const";
+import {LONG_PRESS_TIMER, PURCHASE_ORDER_STATUSES, ORDER_TYPES, ROLES} from "../../const";
 import EditIcon from "../../../assets/svg/editIcon";
 import {addNotification} from "../../redux/actions/NotificationActions";
 import RightBorderDataItem from "../../components/common/List/RightBorderDataItem";
@@ -406,17 +406,30 @@ const Orders = (props) => {
         const purchaseOrder = purchaseOrders.find((item) => item._id === orderId) || {};
         const {status} = purchaseOrder;
 
-        const isAcceptDisabled = status !== PURCHASE_ORDER_STATUSES.DRAFTED;
-        const acceptPurchaseOrder = (
+        const isRequestDisabled = status !== PURCHASE_ORDER_STATUSES.PENDING;
+        const requestApproval = (
             <ActionItem
-                title={"Accept Purchase Order"}
+                title={"Request Approval"}
                 icon={<AddIcon
-                    strokeColor={isAcceptDisabled ? theme.colors['--color-gray-600'] : undefined}
+                    strokeColor={isRequestDisabled ? theme.colors['--color-gray-600'] : undefined}
                 />}
-                disabled={isAcceptDisabled}
-                touchable={!isAcceptDisabled}
+                disabled={isRequestDisabled}
+                touchable={!isRequestDisabled}
+                onPress={() =>  handleRequestApproval(purchaseOrder) }
+            />
+        )
+
+        const isApprovedDisabled = status !== PURCHASE_ORDER_STATUSES.PENDING;
+        const approveOrder = (
+            <ActionItem
+                title={"Approve"}
+                icon={<AddIcon
+                    strokeColor={isApprovedDisabled ? theme.colors['--color-gray-600'] : undefined}
+                />}
+                disabled={isApprovedDisabled}
+                touchable={!isApprovedDisabled}
                 onPress={() =>
-                    updateStatus(orderId, PURCHASE_ORDER_STATUSES.ACCEPTED)
+                    updateStatus(orderId, PURCHASE_ORDER_STATUSES.APPROVED)
                 }
             />
         )
@@ -449,7 +462,7 @@ const Orders = (props) => {
             />
         )
 
-        actions.push(acceptPurchaseOrder, receivedPurchaseOrder, invoicePurchaseOrder)
+        actions.push(requestApproval, approveOrder, receivedPurchaseOrder, invoicePurchaseOrder)
 
 
         return (
@@ -513,6 +526,30 @@ const Orders = (props) => {
                 setFetchingData(false)
             });
     };
+
+    const handleRequestApproval = (purchaseOrder) => {
+        let roles = [];
+        getRolesCall().then((data) => {
+            roles.push(data.find(x => x.name == "Admin")._id)
+        })
+
+        createAlert({title: 'Approval Request', message:`Order ${purchaseOrder.purchaseOrderNumber} requires approval`, roles})
+        .then(_ => {
+            showSuccessModal()
+        })
+        .catch((error) => {
+            console.log("Error whilst requesting approval", error)
+            errorScreen()
+        });
+    }
+
+    const getRoles = () => {
+        getRolesCall()
+            .then(data => setRoles(data))
+            .catch(error => {
+                console.log("failed to get user role")
+            })
+    }
 
     // ############# Prepare list data
 

@@ -860,6 +860,11 @@ export const getAlerts = async (status, max, page, query, from, to) => suitesAxi
     .then(handleResponse)
     .catch(handleError);
 
+export const createAlert = async (data) => suitesAxiosInstance
+    .post(alertsEndpoint, data)
+    .then(handleResponse)
+    .catch(handleError);
+
 export const closeAlert = async id => suitesAxiosInstance
     .put(closeAlertEndpoint(id))
     .then(handleResponse)
