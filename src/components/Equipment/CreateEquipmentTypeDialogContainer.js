@@ -164,10 +164,9 @@ const CreateEquipmentTypeDialogContainer = ({
         const categoryIds = [];
         checkCategories.map((name) => {
             const value = categories.find(item => item.name === name);
-            // categoryIds.push(value._id);
-            console.log(value)
+            categoryIds.push(value._id);
         })
-        onFieldChange('category')(categoryIds)
+        onFieldChange('categories')(categoryIds)
     }
 
     const getDialogContent = () => (
@@ -216,7 +215,6 @@ const CreateEquipmentTypeDialogContainer = ({
     );
 
     const createEquipmentTypeCall = () => {
-        console.log(fields);
         createEquipmentType(fields)
             .then(data => {
                 //addEquipment(data);
