@@ -111,7 +111,6 @@ const AddEquipmentPage = ({ navigation, route, modal }) => {
             ...updateFields,
             [fieldName]: value
         })
-        console.log(equipmentData);
     }
 
     const onLocationUpdate = (value) => {
