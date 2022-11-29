@@ -46,9 +46,6 @@ const EditableEquipmentGroupTab = ({ onFieldChange, fields, handlePopovers, popo
     //Description
     const [descriptionValue, setDescriptionValue] = useState('');
 
-    // fields.categories = equipmentGroup.categories.map(x =>  x.name);
-    console.log("FIELDS", fields.categories);
-
     const values = 
     useEffect(() => {
         fetchCategories();
@@ -58,7 +55,7 @@ const EditableEquipmentGroupTab = ({ onFieldChange, fields, handlePopovers, popo
         getCategories("equipment", 1000, categorySearchValue)
             .then(data => {
                 setCategorySearchResult(data.data.map(item => { return item.name }));
-                categories.length == 0 && setCategories(data.data);
+                categories.length == 0 && setCategories(data.data)
             })
             .catch(error => {
                 console.log('Unable to retrieve iventory category items: ', error);
@@ -111,10 +108,8 @@ const EditableEquipmentGroupTab = ({ onFieldChange, fields, handlePopovers, popo
         const categoryIds = [];
         checkCategories.map((name) => {
             const value = categories.find(item => item.name === name);
-            categoryIds.push(value._id);
-            // console.log("VALUE", value._id)
+            value && categoryIds.push(value._id);
         })
-        // console.log(categoryIds);
         onFieldChange('categories')(categoryIds)
     }
     let catPop = popoverList.filter(item => item.name === 'category')

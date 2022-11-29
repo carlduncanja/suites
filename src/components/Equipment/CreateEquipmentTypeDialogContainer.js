@@ -164,7 +164,7 @@ const CreateEquipmentTypeDialogContainer = ({
         const categoryIds = [];
         checkCategories.map((name) => {
             const value = categories.find(item => item.name === name);
-            categoryIds.push(value._id);
+            value && categoryIds.push(value._id);
         })
         onFieldChange('categories')(categoryIds)
     }

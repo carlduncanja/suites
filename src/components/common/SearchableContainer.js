@@ -51,7 +51,6 @@ const SearchableContainer = ({ options, onCheckboxPress, checkedList, searchText
                                 paddingLeft={'0px'}
                                 paddingRight={'8px'}
                                 paddingTop={'2px'}
-                                paddingBottom={'0px'}
                             />
                             <Text style={{ color: "#323843", fontSize: 14, paddingLeft: 0, marginBottom: 15 }}>{option}</Text>
                         </View>
