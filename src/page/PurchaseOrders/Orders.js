@@ -49,7 +49,7 @@ import WasteIcon from "../../../assets/svg/wasteIcon";
 
 const listHeaders = [
     {
-        name: "Purchase Orders",
+        name: "Order ID",
         alignment: "flex-start",
         flex: 1.5,
     },
@@ -59,7 +59,7 @@ const listHeaders = [
         flex: 1,
     },
     {
-        name: "Delivery Date",
+        name: "Type",
         alignment: "flex-start",
         flex: 1.5,
     },
@@ -345,6 +345,7 @@ const Orders = (props) => {
             status = "",
             deliveryDate,
             supplier = {},
+            type,
         } = item;
         const {name = ""} = supplier;
         const statusColor =
@@ -362,7 +363,7 @@ const Orders = (props) => {
             <>
                 <RightBorderDataItem text={purchaseOrderNumber} fontStyle="--text-sm-medium" flex={1.5}/>
                 <DataItem text={transformToTitleCase(status, '_')} fontStyle="--text-sm-medium" flex={1} color={statusColor}/>
-                <DataItem text={deliveryDate} fontStyle="--text-sm-medium" flex={1.5}/>
+                <DataItem text={transformToTitleCase(type)} fontStyle="--text-sm-medium" flex={1.5}/>
                 <DataItem text={name} fontStyle="--text-sm-medium" flex={1.5} color="--color-blue-600"/>
             </>
         );
@@ -529,7 +530,7 @@ const Orders = (props) => {
                 placeholderText={"Search by Purchase Order or Supplier"}
                 changeText={onSearchInputChange}
                 inputText={searchValue}
-                routeName={"Purchase Orders"}
+                routeName={"Orders"}
                 listData={ordersToDisplay}
                 listHeaders={listHeaders}
                 itemsSelected={selectedOrders}
