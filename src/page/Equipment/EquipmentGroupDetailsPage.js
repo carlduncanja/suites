@@ -31,6 +31,7 @@ function EquipmentGroupDetailsPage(props) {
 
     useEffect(() => {
         fetchEquipmentGroup(_id)
+       
     }, []);
 
     useEffect(() => {
@@ -49,8 +50,8 @@ function EquipmentGroupDetailsPage(props) {
         setPageLoading(true)
         getEquipmentTypeById(id)
             .then(data => {
-                console.log("Dta: ", data);
                 setSelectedEquipment(data)
+                setFields({...fields, categories: data.categories})
             })
             .catch(error => {
                 console.log("Failed to get procedure", error)
@@ -188,8 +189,6 @@ function EquipmentGroupDetailsPage(props) {
                 )
             }).finally(_ => {
             })
-
-
     }
 
     // ##### Event Handlers

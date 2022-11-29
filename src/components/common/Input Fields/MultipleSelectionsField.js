@@ -59,7 +59,7 @@ function MultipleSelectionsField({
     hasError = false
 }) {
 
-    console.log("Category options: ", options)
+    // console.log("Category options: ", options)
 
     const theme = useTheme();
 
@@ -67,8 +67,7 @@ function MultipleSelectionsField({
     const [checkedList, setCheckedList] = useState(value)
     const [isDisplay, setIsDisplay] = useState(false)
 
-    const onCheckboxPress = (item) => () => {
-        console.log("Item: ", item)
+    const onCheckboxPress = (item) => () => { 
         let updatedList = [...checkedList]
         if (checkedList.includes(item)) {
             updatedList = updatedList.filter(filterItem => filterItem !== item)

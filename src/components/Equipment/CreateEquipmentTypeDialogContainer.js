@@ -9,12 +9,13 @@ import InputField2 from '../common/Input Fields/InputField2';
 
 import { formatDate } from '../../utils/formatter';
 
-import { createEquipmentType, getEquipmentTypes } from '../../api/network';
+import { createEquipmentType, getEquipmentTypes, getCategories, addCategory } from '../../api/network';
 import { addEquipmentType } from '../../redux/actions/equipmentTypesActions';
 import ConfirmationComponent from '../ConfirmationComponent';
 import OverlayDialogContent from '../common/Dialog/OverlayContent';
 import Row from '../common/Row';
 import FieldContainer from '../common/FieldContainerComponent';
+import MultipleSelectionsField from '../common/Input Fields/MultipleSelectionsField';
 
 /**
  * Component to handle the create storage process.
@@ -41,6 +42,11 @@ const CreateEquipmentTypeDialogContainer = ({
         equipmentTypes,
     ]);
 
+    // Category Search
+    const [categories, setCategories] = useState([])
+    const [categorySearchValue, setCategorySearchValue] = useState();
+    const [categorySearchResults, setCategorySearchResult] = useState([]);
+
     const [fields, setFields] = useState({
         name: '',
         unitPrice: '',
@@ -59,6 +65,10 @@ const CreateEquipmentTypeDialogContainer = ({
     };
 
     const [unitPriceText, setUnitPriceText] = useState(fields.unitPrice);
+
+    useEffect(() => {
+        fetchCategories();
+    }, [categorySearchValue])
 
     const handleCloseDialog = () => {
         onCancel();
@@ -97,6 +107,69 @@ const CreateEquipmentTypeDialogContainer = ({
         setUnitPriceText(price);
     };
 
+    const fetchCategories = () => {
+        getCategories("equipment", 1000, categorySearchValue)
+            .then(data => {
+                setCategorySearchResult(data.data.map(item => { return item.name }));
+                categories.length == 0 && setCategories(data.data);
+            })
+            .catch(error => {
+                console.log('Unable to retrieve iventory category items: ', error);
+            });
+    }
+
+    const createCategory = (name) => {
+        if(!name) return;
+        addCategory({ name: name, type: "equipment" })
+            .then(_ => {
+                setCategories([]);
+                fetchCategories();
+                modal.openModal('ConfirmationModal', {
+                    content: <ConfirmationComponent
+                        isEditUpdate={false}
+                        isError={false}
+                        onCancel={() => {
+                            modal.closeModals('ConfirmationModal');
+                        }}
+                        onAction={() => {
+                            modal.closeModals('ConfirmationModal');
+                        }}
+                    />,
+                    onClose: () => {
+                        modal.closeModals('ConfirmationModal');
+                    },
+                });
+            })
+            .catch(error => {
+                modal.openModal('ConfirmationModal', {
+                    content: <ConfirmationComponent
+                        isEditUpdate={false}
+                        isError={true}
+                        onCancel={() => {
+                            modal.closeModals('ConfirmationModal');
+                        }}
+                        onAction={() => {
+                            modal.closeModals('ConfirmationModal');
+                        }}
+                    />,
+                    onClose: () => {
+                        modal.closeModals('ConfirmationModal');
+                    },
+                });
+                console.log(error);
+            })
+    }
+
+    const handleCategorySelected = (checkCategories) => {
+        const categoryIds = [];
+        checkCategories.map((name) => {
+            const value = categories.find(item => item.name === name);
+            // categoryIds.push(value._id);
+            console.log(value)
+        })
+        onFieldChange('category')(categoryIds)
+    }
+
     const getDialogContent = () => (
         <>
             <Row>
@@ -110,6 +183,21 @@ const CreateEquipmentTypeDialogContainer = ({
                         errorMessage="Name must be filled."
                     />
                 </FieldContainer>
+                <FieldContainer>
+                    <MultipleSelectionsField
+                        label={"Category"}
+                        onOptionsSelected={(value) => handleCategorySelected(value)}
+                        options={categorySearchResults}
+                        createNew={() => createCategory(categorySearchValue)}
+                        searchText={categorySearchValue}
+                        onSearchChangeText={(value) => setCategorySearchValue(value)}
+                        onClear={() => { setCategorySearchValue('') }}
+                        handlePopovers={() => { }}
+                        isPopoverOpen={true}
+                    />
+                </FieldContainer>
+            </Row>
+            <Row>
                 <FieldContainer>
                     <InputField2
                         label="Unit Price"
@@ -126,42 +214,9 @@ const CreateEquipmentTypeDialogContainer = ({
             </Row>
         </>
     );
-        
-    // {
-    //     return (
-    //         <View style={styles.sectionContainer}>
-    //             <View style={styles.row}>
-    //                 <View style={styles.inputWrapper}>
-    //                     <InputField2
-    //                         label={'Group Name'}
-    //                         onChangeText={onFieldChange('name')}
-    //                         value={fields.name}
-    //                         onClear={() => onFieldChange('name')('')}
-    //                         hasError={errorFields.name}
-    //                         errorMessage="Name must be filled."
-    //                         labelWidth = {98}
-    //                     />
-    //                 </View>
-
-    //                 <View style={styles.inputWrapper}>
-    //                     <InputField2
-    //                         label={'Unit Price'}
-    //                         onChangeText={value => {
-    //                             handleUnitPrice(value);
-    //                         }}
-    //                         value={unitPriceText}
-    //                         keyboardType={'number-pad'}
-    //                         onClear={() => handleUnitPrice('')}
-    //                         hasError={errorFields.unitPrice}
-    //                         errorMessage="Price must be provided."
-    //                     />
-    //                 </View>
-    //             </View>
-    //         </View>
-    //     );
-    // };
 
     const createEquipmentTypeCall = () => {
+        console.log(fields);
         createEquipmentType(fields)
             .then(data => {
                 //addEquipment(data);
@@ -279,7 +334,7 @@ const styles = StyleSheet.create({
         marginBottom: 20,
     },
     inputField: {
-    // flex: 1,
+        // flex: 1,
         width: 64,
         borderWidth: 1,
         flexDirection: 'row',
@@ -289,9 +344,9 @@ const styles = StyleSheet.create({
         height: 32,
     },
     inputWrapper: {
-    // flex: 1,
+        // flex: 1,
         width: 260,
         flexDirection: 'row',
-    // backgroundColor: 'blue'
+        // backgroundColor: 'blue'
     },
 });
