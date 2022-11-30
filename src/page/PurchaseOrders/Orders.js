@@ -101,13 +101,14 @@ const Orders = (props) => {
     const [selectedOrders, setSelectedOrders] = useState([]);
 
     const [pageSettingState, setPageSettingState] = useState({});
-
+    const [adminId, setAdminId] = useState('');
 
     // ############# Lifecycle methods
 
     useEffect(() => {
         if (!purchaseOrders.length) fetchOrdersData(currentPagePosition);
         setTotalPages(Math.ceil(purchaseOrders.length / recordsPerPage));
+        fetchRole();
     }, []);
 
     useEffect(() => {
@@ -139,6 +140,16 @@ const Orders = (props) => {
     const onSearchInputChange = (input) => {
         setSearchValue(input);
     };
+
+    const fetchRole = () => {
+        getRolesCall()
+        .then((data) => {
+            setAdminId(data.find(x => x.name == "Admin")._id)
+        })
+        .catch(error => {
+            console.log("Error occured whilst fetching admin Id", error)
+        })
+    }
 
     const handleDataRefresh = () => {
         fetchOrdersData();
@@ -528,12 +539,7 @@ const Orders = (props) => {
     };
 
     const handleRequestApproval = (purchaseOrder) => {
-        let roles = [];
-        getRolesCall().then((data) => {
-            roles.push(data.find(x => x.name == "Admin")._id)
-        })
-
-        createAlert({title: 'Approval Request', message:`Order ${purchaseOrder.purchaseOrderNumber} requires approval`, roles})
+        createAlert({title: 'Approval Request', message:`Order ${purchaseOrder.purchaseOrderNumber} requires approval`, roles: [adminId]})
         .then(_ => {
             showSuccessModal()
         })
