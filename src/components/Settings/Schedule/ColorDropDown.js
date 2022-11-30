@@ -111,7 +111,6 @@ function ColorDropDown({
     let comparisonColor = item.color
 
     const renderOptions = ({ item }) => {
-        //console.log("we got the data",items)
         let backgroundColor = colorRender(item.color)
         let textColor = item.color
         return (<OptionContainer onPress={() => {
