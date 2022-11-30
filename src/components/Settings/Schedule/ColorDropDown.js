@@ -1,5 +1,5 @@
 import React, { useState, useEffect, } from 'react';
-import { View, Text, StyleSheet, Touchable } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import styled, { css } from '@emotion/native';
 import { useTheme } from 'emotion-theming';
 
@@ -20,18 +20,15 @@ import CollapsedIcon from "../../../../assets/svg/closeArrow";
 import { PageContext } from '../../../contexts/PageContext';
 import Header from '../../common/Table/Header';
 import { useModal } from 'react-native-modalfy';
-import { FlatList, TouchableOpacity } from 'react-native-gesture-handler';
-
-
+import { FlatList } from 'react-native-gesture-handler';
+import WhiteTickIcon from '../../../../assets/svg/whiteTickIcon';
+import LineDivider from '../../common/LineDivider';
 
 
 const OptionContainer = styled.TouchableOpacity`
-  width: 100%;
-  height: 40px;
-  padding-left: 4px;
-  padding-right: 4px;
-  background-color: "#FFFFF"
-  justify-content: center;
+  height: 32px;
+  padding-right: 12px;
+  
 `;
 
 
@@ -39,11 +36,15 @@ function ColorDropDown({
     isEditMode,
     item,
     zIndecator,
-    onUpdate = () => { }
+    selectedId,
+    FlatListActivator,
+    onUpdate = () => { },
+    onSelect = () => { }
+
 }) {
-   
-    const [dropDownActivated, setDropDownActivated] = useState(false)
-    const [activateFlatList, setActivateFlatList] = useState(false)
+
+    const [dropDownActivated, setDropDownActivated] = useState(selectedId === item._id ? true : false)
+    const [activateFlatList, setActivateFlatList] = useState(selectedId === item._id ? true : false)
 
     const colors = [
         { color: 'red' },
@@ -75,13 +76,13 @@ function ColorDropDown({
                 backgroundColor = "#38A169";
                 break
             case 'indigo':
-                backgroundColor="#3949AB"
-                break 
+                backgroundColor = "#3949AB"
+                break
             case 'orange':
-                backgroundColor="#FB8C00"
+                backgroundColor = "#FB8C00"
                 break
             case 'teal':
-                backgroundColor="#00897B"
+                backgroundColor = "#00897B"
                 break
             default:
                 backgroundColor = "#757575";
@@ -90,32 +91,61 @@ function ColorDropDown({
         return backgroundColor
     }
 
+    const renderOption = (id, currentSelected) => {
+        let option = ''
+
+        if (id > currentSelected) {
+            option = true
+        }
+        else {
+            option = false;
+        }
+
+        return option
+    }
+
+
 
     let backgroundColor = colorRender(item.color)
+    let styleRender = renderOption(item._id, selectedId)
+    let comparisonColor = item.color
 
     const renderOptions = ({ item }) => {
+        //console.log("we got the data",items)
         let backgroundColor = colorRender(item.color)
         let textColor = item.color
-        return (<OptionContainer >
-            <TouchableOpacity onPress={() => {
-                onUpdate(textColor)
-            }}>
-                <View style={[styles.box, { backgroundColor: backgroundColor, width: 120, height: 16 }]}></View>
-            </TouchableOpacity>
+        return (<OptionContainer onPress={() => {
+            onUpdate(textColor)
+        }}>
+
+            <View style={[styles.box, { backgroundColor: backgroundColor, width: 64, height: 32, justifyContent: "center", borderRadius: 4, alignItems: 'center' }]}>
+
+                {textColor === comparisonColor ?
+                    <View style={styles.tickContianier}>
+                        <WhiteTickIcon></WhiteTickIcon>
+                    </View>
+                    :
+                    null
+                }
+            </View>
+
         </OptionContainer>)
     }
 
+
     return (
         <>
-            <View>
+            <View >
 
-                <View>
-                    <View style={styles.itemContianer}>
+                <View style={[styles.itemContianer, {
+                }]}>
 
-                        <DataItem flex={2} align="flex-start" text={item?.name} color="--color-blue-600" fontStyle="--text-base-medium" />
-
+                    <Text style={styles.appiontmentTypeTittle}>{item?.name}</Text>
+                    {dropDownActivated ?
+                        null
+                        :
                         <View style={[styles.container, { justifyContent: isEditMode ? "space-between" : "center" }]}>
-                            <View style={[styles.box, { backgroundColor: backgroundColor, width: isEditMode ? 94 : 120, height: 16 }]}></View>
+                            <View style={[styles.box, { backgroundColor: backgroundColor, width: isEditMode ? 90 : 120, height: 16 }]}></View>
 
                             {isEditMode ?
 
@@ -123,6 +153,7 @@ function ColorDropDown({
                                     <TouchableOpacity onPress={() => {
                                         setDropDownActivated(!dropDownActivated)
                                         setActivateFlatList(!activateFlatList)
+                                        onSelect(item._id)
                                     }}>
                                         {dropDownActivated ? <CollapsedIcon /> : <DropDownIcon />}
                                     </TouchableOpacity>
@@ -131,79 +162,116 @@ function ColorDropDown({
                             }
 
                         </View>
-                    </View>
-                    
-                </View>
-                {activateFlatList ?
-                        <View style={styles.dropDown}>
-                            <View style={[styles.dropDownStyle,{zIndex:zIndecator}]}>
-                                <FlatList
-                                    keyExtractor={(item, index) => `${index}`}
-                                    data={colors}
-                                    renderItem={renderOptions}
-                                    style={{ backgroundColor: '#FFFFFF' }}
-                                />
-                            </View>
-                        </View>
-                        :
-                        null
                     }
+
+                </View>
+
             </View>
+            {activateFlatList  && isEditMode?
+                <View style={styles.dropDown}>
+                    <View style={styles.dividerContainer}>
+                        <View style={{ width: '94%',borderBottomColor:"#E3E8EF", borderBottomWidth:1,  }} >
+                        </View>
+                        <TouchableOpacity style={styles.dividerButton} 
+                        onPress={()=>{
+                            onSelect('')
+                        }}
+                        >
+                            <CollapsedIcon />
+                        </TouchableOpacity>
+                    </View>
+
+                    <DataItem align="flex-start" text={`Select a color to represent a ${item?.name} from below`} color="--color-gray-500" fontStyle="--text-base-medium" />
+                    <FlatList
+                        keyExtractor={(item, index) => `${index}`}
+                        data={colors}
+                        horizontal={true}
+                        renderItem={renderOptions}
+                        style={styles.dropDownStyle}
+                    />
+                </View>
+
+                :
+                null
+            }
+
         </>)
 
 
 }
 export default ColorDropDown
 const styles = StyleSheet.create({
+
     itemContianer: {
         flexDirection: 'row',
         flex: 2,
         marginBottom: 24,
         justifyContent: "space-between",
-        zIndex:1,
-        position:"relative"
+        top: 10
+
+    },
+    appiontmentTypeTittle:{
+      color:'#3182CE',
+      fontSize:16,
 
     },
     container: {
-        //flex: 1,
         borderColor: "#E3E8EF",
         borderWidth: 1,
         width: 134,
         height: 32,
-        //justifyContent: "space-between",
         flexDirection: "row",
-        position:"relative"
-
     },
     box: {
         top: 8,
         bottom: 8,
         right: 4,
         left: 4,
-        position:"relative"
+        position: "relative"
     },
     iconContianer: {
         justifyContent: "center",
         paddingRight: 8,
-        zIndex: 1,
-         
     },
     dropDownStyle: {
-        borderColor: "#E3E8EF",
-        borderWidth: 1,
-        flexDirection: "row",
-        justifyContent: "center",
-        position: "relative",
-        width: 134,
+        marginBottom: 24,
+        width: '100%',
         backgroundColor: "#FFFFFF",
-        display:"block"
-        
+        flex: 1,
     },
     dropDown: {
-        flexDirection: 'row-reverse',
-        position: "relative",
-        display:"block",
+        borderBottomColor: "#E3E8EF",
+        borderBottomWidth: 1,
+        marginBottom: 24,
+        marginTop:-30,
+        height: 150
+    },
+    tickContianier: {
+        borderColor: "#FFFFFF",
+        width: "80%",
+        height: '80%',
+        borderRadius: 4,
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderWidth: 2
+    },
+    dividerContainer: {
+        flexDirection: 'row',
         
+    },
+    dividerButton:{
+        height:32,
+        width:35.25,
+        borderTopColor:"#E3E8EF",
+        borderLeftColor:"#E3E8EF",
+        borderTopWidth:1,
+        borderLeftWidth:1,
+        justifyContent:'center',
+        alignItems:"center"
     }
 
 })
+
+
+//line 133
+//                    width: item._id > selectedId && selectedId !== '' ? 324 : "100%",

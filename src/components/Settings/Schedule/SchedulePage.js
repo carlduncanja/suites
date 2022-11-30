@@ -43,6 +43,8 @@ function SchedulePage({ navigation, route }) {
 
     const [pageState, setPageState] = useState({});
     const [appiontmentType, setAppiontmentTypes] = useState([])
+    const [selectedId, setSelectedID] = useState('')
+    const [reRenderer, setReRender] = useState(false)
 
     const { isEditMode = false } = pageState;
 
@@ -88,6 +90,7 @@ function SchedulePage({ navigation, route }) {
                 setTimeout(() => {
                     modal.closeModals('ActionContainerModal');
                 }, 200)
+                fetchAppiontmentTypes()
                 console.log('failed to delete these item(s)', error)
             })
 
@@ -111,21 +114,42 @@ function SchedulePage({ navigation, route }) {
         );
     };
 
-
+    const FlatLIstActivator = (id, index) => {
+        let option = ''
+        //console.log(id ,index)
+        if (selectedId !== '' && id > index) {
+            option = true
+        }
+        else {
+            option = false
+        }
+        //console.log(option)
+        return option
+    }
 
     const renderItem = item => {
         let zIndecator = appiontmentType.length - parseInt(item._id)
+        let flatListActivator = FlatLIstActivator(item._id, selectedId)
         //console.log(zIndecator)
         return (
-            <View >
-                <ColorDropDown 
-                isEditMode={isEditMode} 
-                item={item} 
-                zIndecator={zIndecator}
-                onUpdate={(color) => {
-                    updateItem(item._id, color) 
+            <View style={{ flex: 1 }}>
+                <ColorDropDown
+                    FlatListActivator={flatListActivator}
+                    isEditMode={isEditMode}
+                    item={item}
+                    zIndecator={zIndecator}
+                    onUpdate={(color) => {
+                        updateItem(item._id, color)
+                        setSelectedID('')
+                    }}
+                    onSelect={(id) => {
 
-                }} />
+                        setReRender(!reRenderer)
+                        setSelectedID(id)
+                    }}
+                    selectedId={selectedId}
+                />
+
             </View>
         )
     }
@@ -154,6 +178,7 @@ function SchedulePage({ navigation, route }) {
                     isCheckbox={false}
                     data={appiontmentType}
                     listItemFormat={renderItem}
+                    extraData={reRenderer}
                 />
 
                 <Footer
