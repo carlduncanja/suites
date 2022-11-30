@@ -33,23 +33,24 @@ import {
 import {
     getPurchaseOrders,
     createInvoiceViaOrders,
-    updatePurchaseOrderStatus, removePurchaseOrderCall,
+    updatePurchaseOrderStatus, removePurchaseOrderCall, createAlert, getRolesCall,
 } from "../../api/network";
 import _ from "lodash";
 
 import {withModal, useModal} from "react-native-modalfy";
 import {formatDate, transformToSentence, transformToTitleCase} from '../../utils/formatter';
 import OrderItemPage from "./OrderItemPage";
-import {LONG_PRESS_TIMER, PURCHASE_ORDER_STATUSES} from "../../const";
+import {LONG_PRESS_TIMER, PURCHASE_ORDER_STATUSES, ORDER_TYPES, ROLES} from "../../const";
 import EditIcon from "../../../assets/svg/editIcon";
 import {addNotification} from "../../redux/actions/NotificationActions";
 import RightBorderDataItem from "../../components/common/List/RightBorderDataItem";
 import LongPressWithFeedback from "../../components/common/LongPressWithFeedback";
 import WasteIcon from "../../../assets/svg/wasteIcon";
+import ExportIcon from "../../../assets/svg/exportIcon";
 
 const listHeaders = [
     {
-        name: "Purchase Orders",
+        name: "Order ID",
         alignment: "flex-start",
         flex: 1.5,
     },
@@ -59,7 +60,7 @@ const listHeaders = [
         flex: 1,
     },
     {
-        name: "Delivery Date",
+        name: "Type",
         alignment: "flex-start",
         flex: 1.5,
     },
@@ -101,13 +102,14 @@ const Orders = (props) => {
     const [selectedOrders, setSelectedOrders] = useState([]);
 
     const [pageSettingState, setPageSettingState] = useState({});
-
+    const [adminId, setAdminId] = useState('');
 
     // ############# Lifecycle methods
 
     useEffect(() => {
         if (!purchaseOrders.length) fetchOrdersData(currentPagePosition);
         setTotalPages(Math.ceil(purchaseOrders.length / recordsPerPage));
+        fetchRole();
     }, []);
 
     useEffect(() => {
@@ -139,6 +141,16 @@ const Orders = (props) => {
     const onSearchInputChange = (input) => {
         setSearchValue(input);
     };
+
+    const fetchRole = () => {
+        getRolesCall()
+        .then((data) => {
+            setAdminId(data.find(x => x.name == "Admin")._id)
+        })
+        .catch(error => {
+            console.log("Error occured whilst fetching admin Id", error)
+        })
+    }
 
     const handleDataRefresh = () => {
         fetchOrdersData();
@@ -345,6 +357,7 @@ const Orders = (props) => {
             status = "",
             deliveryDate,
             supplier = {},
+            type,
         } = item;
         const {name = ""} = supplier;
         const statusColor =
@@ -362,7 +375,7 @@ const Orders = (props) => {
             <>
                 <RightBorderDataItem text={purchaseOrderNumber} fontStyle="--text-sm-medium" flex={1.5}/>
                 <DataItem text={transformToTitleCase(status, '_')} fontStyle="--text-sm-medium" flex={1} color={statusColor}/>
-                <DataItem text={deliveryDate} fontStyle="--text-sm-medium" flex={1.5}/>
+                <DataItem text={transformToTitleCase(type, '_')} fontStyle="--text-sm-medium" flex={1.5}/>
                 <DataItem text={name} fontStyle="--text-sm-medium" flex={1.5} color="--color-blue-600"/>
             </>
         );
@@ -403,52 +416,65 @@ const Orders = (props) => {
 
         const orderId = isOneSelected ? selectedOrders[0] : '';
         const purchaseOrder = purchaseOrders.find((item) => item._id === orderId) || {};
-        const {status} = purchaseOrder;
+        const {status, type} = purchaseOrder;
 
-        const isAcceptDisabled = status !== PURCHASE_ORDER_STATUSES.DRAFTED;
-        const acceptPurchaseOrder = (
+        const isRequestDisabled = status !== PURCHASE_ORDER_STATUSES.PENDING;
+        const requestApproval = (
             <ActionItem
-                title={"Accept Purchase Order"}
+                title={"Request Approval"}
                 icon={<AddIcon
-                    strokeColor={isAcceptDisabled ? theme.colors['--color-gray-600'] : undefined}
+                    strokeColor={isRequestDisabled ? theme.colors['--color-gray-600'] : undefined}
                 />}
-                disabled={isAcceptDisabled}
-                touchable={!isAcceptDisabled}
+                disabled={isRequestDisabled}
+                touchable={!isRequestDisabled}
+                onPress={() =>  handleRequestApproval(purchaseOrder) }
+            />
+        )
+
+        const isApprovedDisabled = status !== PURCHASE_ORDER_STATUSES.PENDING;
+        const approveOrder = (
+            <ActionItem
+                title={"Approve"}
+                icon={<AddIcon
+                    strokeColor={isApprovedDisabled ? theme.colors['--color-gray-600'] : undefined}
+                />}
+                disabled={isApprovedDisabled}
+                touchable={!isApprovedDisabled}
                 onPress={() =>
-                    updateStatus(orderId, PURCHASE_ORDER_STATUSES.ACCEPTED)
+                    updateStatus(orderId, PURCHASE_ORDER_STATUSES.APPROVED)
                 }
             />
         )
 
-        const isInvoiceDisabled = status !== PURCHASE_ORDER_STATUSES.ORDER_RECEIVED;
-        const invoicePurchaseOrder = (
+        const isSendToSupplierDisabled = (status, type) !== (PURCHASE_ORDER_STATUSES.APPROVED && ORDER_TYPES.PURCHASE_ORDER);
+        const sendToSupplier = (
             <ActionItem
-                title={"Create Invoice"}
-                icon={<AddIcon
-                    strokeColor={isInvoiceDisabled ? theme.colors['--color-gray-600'] : undefined}
+                title={"Send to Supplier"}
+                icon={<ExportIcon
+                    strokeColor={isSendToSupplierDisabled ? theme.colors['--color-gray-600'] : undefined}
                 />}
-                touchable={!isInvoiceDisabled}
-                disabled={isInvoiceDisabled}
-                onPress={() => onCreateInvoice(orderId)}
+                touchable={!isSendToSupplierDisabled}
+                disabled={isSendToSupplierDisabled}
+                //To be implemented
+                onPress={() => console.log("Not yet implemented")}
             />
         )
 
-        const isReceivedDisabled = status !== PURCHASE_ORDER_STATUSES.ACCEPTED;
-        const receivedPurchaseOrder = (
+        const isQuotationDisabled = status !== PURCHASE_ORDER_STATUSES.APPROVED;
+        const requestQuotation = (
             <ActionItem
-                title={"Purchase Order Received"}
+                title={"Request Quotation"}
                 icon={<EditIcon
-                    strokeColor={isReceivedDisabled ? theme.colors['--color-gray-600'] : undefined}
+                    strokeColor={isQuotationDisabled ? theme.colors['--color-gray-600'] : undefined}
                 />}
-                disabled={isReceivedDisabled}
-                touchable={!isReceivedDisabled}
-                onPress={() =>
-                    updateStatus(orderId, PURCHASE_ORDER_STATUSES.ORDER_RECEIVED)
-                }
+                disabled={isQuotationDisabled}
+                touchable={!isQuotationDisabled}
+                //To be implemented
+                onPress={() => console.log("Not yet implemented")}
             />
         )
 
-        actions.push(acceptPurchaseOrder, receivedPurchaseOrder, invoicePurchaseOrder)
+        actions.push(requestApproval, approveOrder, requestQuotation, sendToSupplier)
 
 
         return (
@@ -513,6 +539,25 @@ const Orders = (props) => {
             });
     };
 
+    const handleRequestApproval = (purchaseOrder) => {
+        createAlert({title: 'Approval Request', message:`Order ${purchaseOrder.purchaseOrderNumber} requires approval`, roles: [adminId]})
+        .then(_ => {
+            showSuccessModal()
+        })
+        .catch((error) => {
+            console.log("Error whilst requesting approval", error)
+            errorScreen()
+        });
+    }
+
+    const getRoles = () => {
+        getRolesCall()
+            .then(data => setRoles(data))
+            .catch(error => {
+                console.log("failed to get user role")
+            })
+    }
+
     // ############# Prepare list data
 
     let ordersToDisplay = [...purchaseOrders];
@@ -526,10 +571,10 @@ const Orders = (props) => {
             <NavPage
                 isFetchingData={isFetchingData}
                 onRefresh={handleDataRefresh}
-                placeholderText={"Search by Purchase Order or Supplier"}
+                placeholderText={"Search by any heading or entry below"}
                 changeText={onSearchInputChange}
                 inputText={searchValue}
-                routeName={"Purchase Orders"}
+                routeName={"Orders"}
                 listData={ordersToDisplay}
                 listHeaders={listHeaders}
                 itemsSelected={selectedOrders}
@@ -549,38 +594,6 @@ const Orders = (props) => {
             />
 
         </PageSettingsContext.Provider>
-
-        // <View style={{ flex: 1 }}>
-        //   <Page
-        //     isFetchingData={isFetchingData}
-        //     onRefresh={handleDataRefresh}
-        //     placeholderText={"Search by Purchase Order"}
-        //     changeText={onSearchInputChange}
-        //     inputText={searchValue}
-        //     routeName={"Purchase Orders"}
-        //     listData={ordersToDisplay}
-        //     listHeaders={listHeaders}
-        //     itemsSelected={selectedOrders}
-        //     onSelectAll={handleOnSelectAll}
-        //     listItemFormat={renderOrderFn}
-        //   />
-
-        //   <View style={styles.footer}>
-        //     <View style={{ alignSelf: "center", marginRight: 10 }}>
-        //       <RoundedPaginator
-        //         totalPages={totalPages}
-        //         currentPage={currentPagePosition}
-        //         goToNextPage={goToNextPage}
-        //         goToPreviousPage={goToPreviousPage}
-        //       />
-        //     </View>
-
-        //     <FloatingActionButton
-        //       isDisabled={isFloatingActionDisabled}
-        //       toggleActionButton={toggleActionButton}
-        //     />
-        //   </View>
-        // </View>
     );
 };
 
