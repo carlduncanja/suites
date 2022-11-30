@@ -676,8 +676,8 @@ export const createEquipmentType = async equipmentTypeToCreate => suitesAxiosIns
 
 // ################# Categories Endpoint
 
-export const getCategories = async (type, max) => suitesAxiosInstance
-    .get(categoriesEndpoint, { params: { type, max } })
+export const getCategories = async (type, max, query) => suitesAxiosInstance
+    .get(categoriesEndpoint, { params: { type, max, query } })
     .then(handleResponse)
     .catch(handleError);
 
