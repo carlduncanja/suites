@@ -18,11 +18,11 @@ import { useTheme } from 'emotion-theming';
  * @constructor
  */
 
-const FrameCardWrapper = styled.View`
+export const FrameCardWrapper = styled.View`
     width: 100%;
     margin-bottom : ${ ({theme}) => theme.space['--space-24']};
 `;
-const FrameCardContainer = styled.View`
+export const FrameCardContainer = styled.View`
     width: 100%;
 `;
 

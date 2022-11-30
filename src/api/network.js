@@ -42,6 +42,7 @@ import {
     storageLocationEndpoint,
     categoriesEndpoint,
     loginEndpoint,
+    forgotPasswordEndpoint,
     appointmentsEndpoint,
     appointmentEndpoint,
     appointmentTypeEndPiont,
@@ -72,6 +73,7 @@ import {
     roles,
     role,
     patientEndpoint,
+    allPatientsEndpoint,
     alertsEndpoint,
     closeAlertEndpoint,
     configEndpoint,
@@ -93,7 +95,11 @@ import {
     lifestylesEndpiont,
     ItemsLifeStyleEndpiont,
     DeleteLifeStyleitems,
-    UpdateLifeStyleItems
+    healthInsurerEndpoint,
+    updateHealthInsurerEndpoint,
+    UpdateLifeStyleItems,
+    verifyOtpEndpoint,
+    resetPasswordEndpoint
 } from '../const/suitesEndpoints';
 import { createDocumentLink, documentById, documentData, documentUpload } from '../const/documentGenerationEndpoints';
 
@@ -116,7 +122,22 @@ export const logout = async (userId, pushToken) => suitesAxiosInstance
     .then(handleResponse)
     .catch(handleError);
 
-// ################ Users Endpoint
+export const forgotPassword = async (email) => suitesAxiosInstance
+    .post(forgotPasswordEndpoint, {email})
+    .then(handleResponse)
+    .catch(handleError);
+
+export const verifyOtp = async (id, code) => suitesAxiosInstance
+    .post(verifyOtpEndpoint(id), {code})
+    .then(handleResponse)
+    .catch(handleError);
+
+    export const resetPassword = async (id, data) => suitesAxiosInstance
+    .post(resetPasswordEndpoint(id), data)
+    .then(handleResponse)
+    .catch(handleError);
+
+    // ################ Users Endpoint
 export const getUsersCall = async (query, page, max) => suitesAxiosInstance
     .get(users, { params: { query, page, max } })
     .then(handleResponse)
@@ -527,7 +548,7 @@ export const updateCaseProcedureAppointmentCall = async (caseId, caseProcedureId
 
 // ################# Procedures Endpoints
 export const getProcedures = async (query, max, page) => suitesAxiosInstance
-    .get(proceduresEndpoint, { params: { query, max, page } })
+    .get(proceduresEndpoint, (query, max, page))
     .then(handleResponse)
     .catch(handleError);
 
@@ -671,8 +692,8 @@ export const createEquipmentType = async equipmentTypeToCreate => suitesAxiosIns
 
 // ################# Categories Endpoint
 
-export const getCategories = async (type, max) => suitesAxiosInstance
-    .get(categoriesEndpoint, { params: { type, max } })
+export const getCategories = async (type, max, query) => suitesAxiosInstance
+    .get(categoriesEndpoint, { params: { type, max, query } })
     .then(handleResponse)
     .catch(handleError);
 
@@ -826,6 +847,11 @@ export const updatePatient = async (id, data) => suitesAxiosInstance
     .then(handleResponse)
     .catch(handleError);
 
+export const getPatients = async (query, max, page) => suitesAxiosInstance
+    .get(allPatientsEndpoint,  (query, max, page))
+    .then(handleResponse)
+    .catch(handleError)
+
 // ################# Document Generation Endpoints
 export const generateDocumentLink = async data => documentGenerationInstance.post(createDocumentLink, data)
     .then(handleResponse)
@@ -912,9 +938,34 @@ export const deleteLifeStyleItems = async (ids) => suitesAxiosInstance
     .then(handleResponse)
     .catch(handleError)
 
+        
 export const updateLifeStyleItems = async (id, data) => suitesAxiosInstance
     .put(UpdateLifeStyleItems(id), data)
     .then(handleResponse)
     .catch(handleError)
 
 
+// ################# HEALTH INSURER ENDPOINTS 
+
+export const getHealthInsurers = async () => suitesAxiosInstance
+    .get(healthInsurerEndpoint)
+    .then(handleResponse)
+    .catch(handleError)
+
+export const createHealthInsurer = async (data) => suitesAxiosInstance
+    .post(healthInsurerEndpoint, data)
+    .then(handleResponse)
+    .catch(handleError)
+
+export const deleteHealthInsurer = async (data) => suitesAxiosInstance
+    .put(healthInsurerEndpoint, data)
+    .then(handleResponse)
+    .catch(handleError)
+
+export const updateHealthInsurer = async (id, data) => suitesAxiosInstance
+    .put(updateHealthInsurerEndpoint(id), data)
+    .then(handleResponse)
+    .catch(handleError)
+
+
+    

@@ -320,7 +320,6 @@ const Equipment = props => {
     const fetchEquipmentData = pagePosition => {
         const currentPosition = pagePosition || 1;
         setCurrentPagePosition(currentPosition);
-
         setFetchingData(true);
         getEquipmentTypes(searchValue, recordsPerPage, currentPosition)
             .then(equipmentTypesInfo => {
@@ -342,7 +341,6 @@ const Equipment = props => {
                     setNextDisabled(true);
                     setPreviousDisabled(true);
                 }
-
                 setEquipmentTypes(data);
                 data.length === 0 ? setTotalPages(1) : setTotalPages(pages);
             })

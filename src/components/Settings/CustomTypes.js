@@ -71,8 +71,9 @@ const CustomTypes = ({ navigation }) => {
         navigation.navigate(item.page, { item });
     };
 
-    const renderCustomType = (item) => (
+    const renderCustomType = (item, index) => (
         <ListItem
+            key={index}
             hasCheckBox={false}
             onItemPress={() => onItemPress(item)}
             itemView={customType(item.title)}
@@ -82,8 +83,8 @@ const CustomTypes = ({ navigation }) => {
 
     return (
         <>
-            {CUSTOM_TYPES.map(type => (
-                renderCustomType(type)
+            {CUSTOM_TYPES.map((type, index) => (
+                renderCustomType(type, index)
             ))}
         </>
     );

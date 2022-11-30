@@ -3,6 +3,9 @@ export const loginEndpoint = '/auth/login';
 export const logoutEndpoint = '/auth/logout';
 export const registrationEndpoint = '/auth/register';
 export const guestLoginEndpoint = '/auth/login/guest';
+export const forgotPasswordEndpoint = '/auth/forgot-password';
+export const verifyOtpEndpoint = id => `auth/verify/${id}`;
+export const resetPasswordEndpoint = id => `auth/reset-password/${id}`;
 
 // ##### Users
 export const users = '/users';
@@ -117,6 +120,7 @@ export const updateCategoryEndpoint = id => `/categories/${id}`;
 
 // ##### PATIENTS
 export const patientEndpoint = id => `/patients/${id}`;
+export const allPatientsEndpoint = '/patients'
 
 // ##### ALERTS
 export const alertsEndpoint = '/alerts';
@@ -139,3 +143,8 @@ export const lifestylesEndpiont = '/lifestyle_types'
 export const ItemsLifeStyleEndpiont = (id) => `/lifestyle_types/${id}/items`
 export const DeleteLifeStyleitems = `/lifestyle_types/delete/items`
 export const UpdateLifeStyleItems = (id) => `/lifestyle_types/items/${id}`
+
+// #### HEALTH INSURERS
+export const healthInsurerEndpoint = '/health_insurer'
+export const updateHealthInsurerEndpoint = id => `/health_insurer/${id}`
+
