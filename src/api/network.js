@@ -532,7 +532,7 @@ export const updateCaseProcedureAppointmentCall = async (caseId, caseProcedureId
 
 // ################# Procedures Endpoints
 export const getProcedures = async (query, max, page) => suitesAxiosInstance
-    .get(proceduresEndpoint, (query, max, page))
+    .get(proceduresEndpoint, ({params: { query, max, page } }))
     .then(handleResponse)
     .catch(handleError);
 
@@ -832,7 +832,7 @@ export const updatePatient = async (id, data) => suitesAxiosInstance
     .catch(handleError);
 
 export const getPatients = async (query, max, page) => suitesAxiosInstance
-    .get(allPatientsEndpoint,  (query, max, page))
+    .get(allPatientsEndpoint,  ({params: { query, max, page } }))
     .then(handleResponse)
     .catch(handleError)
 

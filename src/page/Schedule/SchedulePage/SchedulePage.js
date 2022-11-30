@@ -224,7 +224,7 @@ const SchedulePage = props => {
         modal.openModal('BottomSheetModal', {
             content: <NewProcedureOverlayContainer passedDate={selectedDay}/>,
             initialSnap: 2,
-            snapPoints: [600, 500, 0]
+            snapPoints: [680, 500, 0]
         });
     };
 
