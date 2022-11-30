@@ -46,6 +46,7 @@ import {addNotification} from "../../redux/actions/NotificationActions";
 import RightBorderDataItem from "../../components/common/List/RightBorderDataItem";
 import LongPressWithFeedback from "../../components/common/LongPressWithFeedback";
 import WasteIcon from "../../../assets/svg/wasteIcon";
+import ExportIcon from "../../../assets/svg/exportIcon";
 
 const listHeaders = [
     {
@@ -374,7 +375,7 @@ const Orders = (props) => {
             <>
                 <RightBorderDataItem text={purchaseOrderNumber} fontStyle="--text-sm-medium" flex={1.5}/>
                 <DataItem text={transformToTitleCase(status, '_')} fontStyle="--text-sm-medium" flex={1} color={statusColor}/>
-                <DataItem text={transformToTitleCase(type)} fontStyle="--text-sm-medium" flex={1.5}/>
+                <DataItem text={transformToTitleCase(type, '_')} fontStyle="--text-sm-medium" flex={1.5}/>
                 <DataItem text={name} fontStyle="--text-sm-medium" flex={1.5} color="--color-blue-600"/>
             </>
         );
@@ -415,7 +416,7 @@ const Orders = (props) => {
 
         const orderId = isOneSelected ? selectedOrders[0] : '';
         const purchaseOrder = purchaseOrders.find((item) => item._id === orderId) || {};
-        const {status} = purchaseOrder;
+        const {status, type} = purchaseOrder;
 
         const isRequestDisabled = status !== PURCHASE_ORDER_STATUSES.PENDING;
         const requestApproval = (
@@ -445,35 +446,35 @@ const Orders = (props) => {
             />
         )
 
-        const isInvoiceDisabled = status !== PURCHASE_ORDER_STATUSES.ORDER_RECEIVED;
-        const invoicePurchaseOrder = (
+        const isSendToSupplierDisabled = (status, type) !== (PURCHASE_ORDER_STATUSES.APPROVED && ORDER_TYPES.PURCHASE_ORDER);
+        const sendToSupplier = (
             <ActionItem
-                title={"Create Invoice"}
-                icon={<AddIcon
-                    strokeColor={isInvoiceDisabled ? theme.colors['--color-gray-600'] : undefined}
+                title={"Send to Supplier"}
+                icon={<ExportIcon
+                    strokeColor={isSendToSupplierDisabled ? theme.colors['--color-gray-600'] : undefined}
                 />}
-                touchable={!isInvoiceDisabled}
-                disabled={isInvoiceDisabled}
-                onPress={() => onCreateInvoice(orderId)}
+                touchable={!isSendToSupplierDisabled}
+                disabled={isSendToSupplierDisabled}
+                //To be implemented
+                onPress={() => console.log("Not yet implemented")}
             />
         )
 
-        const isReceivedDisabled = status !== PURCHASE_ORDER_STATUSES.ACCEPTED;
-        const receivedPurchaseOrder = (
+        const isQuotationDisabled = status !== PURCHASE_ORDER_STATUSES.APPROVED;
+        const requestQuotation = (
             <ActionItem
-                title={"Purchase Order Received"}
+                title={"Request Quotation"}
                 icon={<EditIcon
-                    strokeColor={isReceivedDisabled ? theme.colors['--color-gray-600'] : undefined}
+                    strokeColor={isQuotationDisabled ? theme.colors['--color-gray-600'] : undefined}
                 />}
-                disabled={isReceivedDisabled}
-                touchable={!isReceivedDisabled}
-                onPress={() =>
-                    updateStatus(orderId, PURCHASE_ORDER_STATUSES.ORDER_RECEIVED)
-                }
+                disabled={isQuotationDisabled}
+                touchable={!isQuotationDisabled}
+                //To be implemented
+                onPress={() => console.log("Not yet implemented")}
             />
         )
 
-        actions.push(requestApproval, approveOrder, receivedPurchaseOrder, invoicePurchaseOrder)
+        actions.push(requestApproval, approveOrder, requestQuotation, sendToSupplier)
 
 
         return (
@@ -570,7 +571,7 @@ const Orders = (props) => {
             <NavPage
                 isFetchingData={isFetchingData}
                 onRefresh={handleDataRefresh}
-                placeholderText={"Search by Purchase Order or Supplier"}
+                placeholderText={"Search by any heading or entry below"}
                 changeText={onSearchInputChange}
                 inputText={searchValue}
                 routeName={"Orders"}
@@ -593,38 +594,6 @@ const Orders = (props) => {
             />
 
         </PageSettingsContext.Provider>
-
-        // <View style={{ flex: 1 }}>
-        //   <Page
-        //     isFetchingData={isFetchingData}
-        //     onRefresh={handleDataRefresh}
-        //     placeholderText={"Search by Purchase Order"}
-        //     changeText={onSearchInputChange}
-        //     inputText={searchValue}
-        //     routeName={"Purchase Orders"}
-        //     listData={ordersToDisplay}
-        //     listHeaders={listHeaders}
-        //     itemsSelected={selectedOrders}
-        //     onSelectAll={handleOnSelectAll}
-        //     listItemFormat={renderOrderFn}
-        //   />
-
-        //   <View style={styles.footer}>
-        //     <View style={{ alignSelf: "center", marginRight: 10 }}>
-        //       <RoundedPaginator
-        //         totalPages={totalPages}
-        //         currentPage={currentPagePosition}
-        //         goToNextPage={goToNextPage}
-        //         goToPreviousPage={goToPreviousPage}
-        //       />
-        //     </View>
-
-        //     <FloatingActionButton
-        //       isDisabled={isFloatingActionDisabled}
-        //       toggleActionButton={toggleActionButton}
-        //     />
-        //   </View>
-        // </View>
     );
 };
 
