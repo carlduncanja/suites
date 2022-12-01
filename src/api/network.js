@@ -45,6 +45,8 @@ import {
     forgotPasswordEndpoint,
     appointmentsEndpoint,
     appointmentEndpoint,
+    appointmentTypeEndPiont,
+    updateAppiontmentTypeEndpiont,
     validateCaseProcedureEndpoint,
     suggestedStartTimeEndpoint,
     updateQuotationStatusEndpoint,
@@ -243,6 +245,20 @@ export const searchSchedule = async query => {
         .then(handleResponse)
         .catch(handleError);
 };
+
+// ###### Appiontment Types 
+
+export const getAppointmentTypes = async () => suitesAxiosInstance
+    .get(appointmentTypeEndPiont)
+    .then(handleResponse)
+    .catch(handleError)
+
+export const updateAppointmentTypes = async (id, data) => suitesAxiosInstance
+    .put(updateAppiontmentTypeEndpiont(id), data)
+    .then(handleResponse)
+    .catch(handleError)
+
+
 
 // ################# Theatres Endpoints
 export const getTheatres = async (query, max, page, isRecovery) => suitesAxiosInstance
