@@ -123,7 +123,7 @@ function ColorDropDown({
                 <View style={[styles.itemContianer, {
                 }]}>
 
-                    <Text style={styles.appiontmentTypeTittle}>{item?.name}</Text>
+                    <Text style={styles.appointmentTypeTittle}>{item?.name}</Text>
                     {dropDownActivated ?
                         null
                         :
@@ -193,7 +193,7 @@ const styles = StyleSheet.create({
         top: 10
 
     },
-    appiontmentTypeTittle:{
+    appointmentTypeTittle:{
       color:'#3182CE',
       fontSize:16,
 
