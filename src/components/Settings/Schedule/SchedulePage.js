@@ -63,7 +63,6 @@ function SchedulePage({ navigation, route }) {
     }
 
     const updateItem = (itemId, data) => {
-        console.log(itemId, data)
         updateAppointmentTypes(itemId, { color: data })
             .then(data => {
                 modal.openModal(
