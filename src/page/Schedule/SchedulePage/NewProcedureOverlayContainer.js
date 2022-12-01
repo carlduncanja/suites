@@ -474,6 +474,7 @@ function NewProcedureOverlayContainer({ appointment = {}, editMode = false, pass
         getProcedures(searchProcedureValue, 5)
             .then((procedureInfo) => {
                 const { data = [], pages } = procedureInfo;
+
                 setSearchProcedureResult(data || []);
             })
             .catch((error) => {
@@ -1175,13 +1176,8 @@ function NewProcedureOverlayContainer({ appointment = {}, editMode = false, pass
 
                         </View>
                     </View>
-
-                </View>
-
-                <Space />
-
-                <View style={styles.staffContainer}>
-                    <View style={[styles.row, { zIndex: 7 }]}>
+                    <View style={{height: 20, width: '120%', backgroundColor: 'white',}}></View>
+                    <View style={[styles.row, { zIndex: 7, marginTop: 20 }]}>
                         <View style={styles.staffField}>
                             <SearchableOptionsField
                                 emptyAfterSubmit={findStaffByTag("Nurse").length < 1 && attemptedSubmit ? true : false}
@@ -1229,6 +1225,7 @@ function NewProcedureOverlayContainer({ appointment = {}, editMode = false, pass
                         </View>
                     </View>
                 </View>
+
 
 
             </View>
