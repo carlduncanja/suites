@@ -1,28 +1,12 @@
 import React, { useState, useEffect, } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import styled, { css } from '@emotion/native';
-import { useTheme } from 'emotion-theming';
-
-import { getAppiontmentTypes, updateAppiontmentTypes } from '../../../api/network';
-
-import DetailsPage from '../../common/DetailsPage/DetailsPage';
-import TabsContainer from '../../common/Tabs/TabsContainerComponent';
-import Table from '../../common/Table/Table';
-import Item from '../../common/Table/Item';
-import Footer from '../../common/Page/Footer';
 import DataItem from '../../common/List/DataItem';
-import InputUnitFields from '../../common/Input Fields/InputUnitFields';
-import ContentDataItem from '../../common/List/ContentDataItem';
-import ConfirmationComponent from '../../ConfirmationComponent';
-import ConfirmationCheckBoxComponent from '../../ConfirmationCheckBoxComponent'
 import DropDownIcon from "../../../../assets/svg/dropDown";
 import CollapsedIcon from "../../../../assets/svg/closeArrow";
-import { PageContext } from '../../../contexts/PageContext';
-import Header from '../../common/Table/Header';
-import { useModal } from 'react-native-modalfy';
 import { FlatList } from 'react-native-gesture-handler';
 import WhiteTickIcon from '../../../../assets/svg/whiteTickIcon';
-import LineDivider from '../../common/LineDivider';
+
 
 
 const OptionContainer = styled.TouchableOpacity`

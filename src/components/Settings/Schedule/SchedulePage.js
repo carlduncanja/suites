@@ -92,9 +92,6 @@ function SchedulePage({ navigation, route }) {
                 fetchAppiontmentTypes()
                 console.log('failed to delete these item(s)', error)
             })
-
-
-
     }
 
     const openErrorConfirmation = () => {
@@ -127,7 +124,7 @@ function SchedulePage({ navigation, route }) {
     const renderItem = item => {
         let zIndecator = appiontmentType.length - parseInt(item._id)
         let flatListActivator = FlatLIstActivator(item._id, selectedId)
-        
+
         return (
             <View style={{ flex: 1 }}>
                 <ColorDropDown
