@@ -56,7 +56,6 @@ function SchedulePage({ navigation, route }) {
         getAppiontmentTypes()
             .then(data => {
                 setAppiontmentTypes(data)
-                console.log(appiontmentType)
             })
             .catch(error => {
                 console.log('failed to get appiont ment types', error)
@@ -116,21 +115,19 @@ function SchedulePage({ navigation, route }) {
 
     const FlatLIstActivator = (id, index) => {
         let option = ''
-        //console.log(id ,index)
         if (selectedId !== '' && id > index) {
             option = true
         }
         else {
             option = false
         }
-        //console.log(option)
         return option
     }
 
     const renderItem = item => {
         let zIndecator = appiontmentType.length - parseInt(item._id)
         let flatListActivator = FlatLIstActivator(item._id, selectedId)
-        //console.log(zIndecator)
+        
         return (
             <View style={{ flex: 1 }}>
                 <ColorDropDown
