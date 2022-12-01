@@ -88,7 +88,7 @@ function SchedulePage({ navigation, route }) {
                 openErrorConfirmation();
                 setTimeout(() => {
                     modal.closeModals('ActionContainerModal');
-                }, 200)
+                },200)
                 fetchAppiontmentTypes()
                 console.log('failed to delete these item(s)', error)
             })
