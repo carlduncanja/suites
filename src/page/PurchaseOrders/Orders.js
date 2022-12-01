@@ -1,5 +1,5 @@
-import React, {useEffect, useState} from "react";
-import {View, Text, StyleSheet, Alert} from "react-native";
+import React, { useEffect, useState } from "react";
+import { View, Text, StyleSheet, Alert } from "react-native";
 
 import Page from "../../components/common/Page/Page";
 import ListItem from "../../components/common/List/ListItem";
@@ -15,8 +15,8 @@ import ConfirmationComponent from '../../components/ConfirmationComponent';
 import { PageSettingsContext } from '../../contexts/PageSettingsContext';
 
 
-import styled, {css} from '@emotion/native';
-import {useTheme} from 'emotion-theming';
+import styled, { css } from '@emotion/native';
+import { useTheme } from 'emotion-theming';
 
 import {
     useNextPaginator,
@@ -25,7 +25,7 @@ import {
     selectAll, handleUnauthorizedError,
 } from '../../helpers/caseFilesHelpers';
 
-import {connect} from "react-redux";
+import { connect } from "react-redux";
 import {
     setPurchaseOrders,
     updatePurchaseOrder,
@@ -33,16 +33,16 @@ import {
 import {
     getPurchaseOrders,
     createInvoiceViaOrders,
-    updatePurchaseOrderStatus, removePurchaseOrderCall, createAlert, getRolesCall,
+    updatePurchaseOrderStatus, removePurchaseOrderCall, createAlert, getRolesCall, requestQuotation,
 } from "../../api/network";
 import _ from "lodash";
 
-import {withModal, useModal} from "react-native-modalfy";
-import {formatDate, transformToSentence, transformToTitleCase} from '../../utils/formatter';
+import { withModal, useModal } from "react-native-modalfy";
+import { formatDate, transformToSentence, transformToTitleCase } from '../../utils/formatter';
 import OrderItemPage from "./OrderItemPage";
-import {LONG_PRESS_TIMER, PURCHASE_ORDER_STATUSES, ORDER_TYPES, ROLES} from "../../const";
+import { LONG_PRESS_TIMER, PURCHASE_ORDER_STATUSES, ORDER_TYPES, ROLES } from "../../const";
 import EditIcon from "../../../assets/svg/editIcon";
-import {addNotification} from "../../redux/actions/NotificationActions";
+import { addNotification } from "../../redux/actions/NotificationActions";
 import RightBorderDataItem from "../../components/common/List/RightBorderDataItem";
 import LongPressWithFeedback from "../../components/common/LongPressWithFeedback";
 import WasteIcon from "../../../assets/svg/wasteIcon";
@@ -144,12 +144,12 @@ const Orders = (props) => {
 
     const fetchRole = () => {
         getRolesCall()
-        .then((data) => {
-            setAdminId(data.find(x => x.name == "Admin")._id)
-        })
-        .catch(error => {
-            console.log("Error occured whilst fetching admin Id", error)
-        })
+            .then((data) => {
+                setAdminId(data.find(x => x.name == "Admin")._id)
+            })
+            .catch(error => {
+                console.log("Error occured whilst fetching admin Id", error)
+            })
     }
 
     const handleDataRefresh = () => {
@@ -180,7 +180,7 @@ const Orders = (props) => {
     }
 
     const handleOnCheckBoxPress = (item) => () => {
-        const {_id} = item;
+        const { _id } = item;
         let updatedOrders = checkboxItemPress(_id, selectedOrders);
 
         setSelectedOrders(updatedOrders);
@@ -203,7 +203,7 @@ const Orders = (props) => {
 
     const goToNextPage = () => {
         if (currentPagePosition < totalPages) {
-            let {currentPage, currentListMin, currentListMax} = useNextPaginator(
+            let { currentPage, currentListMin, currentListMax } = useNextPaginator(
                 currentPagePosition,
                 recordsPerPage,
                 currentPageListMin,
@@ -219,7 +219,7 @@ const Orders = (props) => {
     const goToPreviousPage = () => {
         if (currentPagePosition === 1) return;
 
-        let {currentPage, currentListMin, currentListMax} = usePreviousPaginator(
+        let { currentPage, currentListMin, currentListMax } = usePreviousPaginator(
             currentPagePosition,
             recordsPerPage,
             currentPageListMin,
@@ -300,7 +300,7 @@ const Orders = (props) => {
         getPurchaseOrders(searchValue, recordsPerPage, currentPosition)
             .then((ordersInfo) => {
 
-                const {data = [], pages = 0} = ordersInfo;
+                const { data = [], pages = 0 } = ordersInfo;
 
                 if (pages === 1) {
                     setPreviousDisabled(true);
@@ -327,7 +327,7 @@ const Orders = (props) => {
                 console.log("failed to get orders", error);
 
                 handleUnauthorizedError(error?.response?.status, setPurchaseOrders);
-                setPageSettingState({...pageSettingState, isDisabled: true});
+                setPageSettingState({ ...pageSettingState, isDisabled: true });
 
                 setTotalPages(1);
                 setPreviousDisabled(true);
@@ -359,24 +359,24 @@ const Orders = (props) => {
             supplier = {},
             type,
         } = item;
-        const {name = ""} = supplier;
+        const { name = "" } = supplier;
         const statusColor =
             status === "Incomplete"
                 ? "--color-purple-600"
                 : status === "Request Sent"
-                ? "--color-teal-600"
-                : status === "Payment Due"
-                    ? "--color-red-700"
-                    : "--color-gray-700";
+                    ? "--color-teal-600"
+                    : status === "Payment Due"
+                        ? "--color-red-700"
+                        : "--color-gray-700";
 
         deliveryDate = deliveryDate ? formatDate(deliveryDate, "DD/MM/YYYY") : "n/a";
 
         return (
             <>
-                <RightBorderDataItem text={purchaseOrderNumber} fontStyle="--text-sm-medium" flex={1.5}/>
-                <DataItem text={transformToTitleCase(status, '_')} fontStyle="--text-sm-medium" flex={1} color={statusColor}/>
-                <DataItem text={transformToTitleCase(type, '_')} fontStyle="--text-sm-medium" flex={1.5}/>
-                <DataItem text={name} fontStyle="--text-sm-medium" flex={1.5} color="--color-blue-600"/>
+                <RightBorderDataItem text={purchaseOrderNumber} fontStyle="--text-sm-medium" flex={1.5} />
+                <DataItem text={transformToTitleCase(status, '_')} fontStyle="--text-sm-medium" flex={1} color={statusColor} />
+                <DataItem text={transformToTitleCase(type, '_')} fontStyle="--text-sm-medium" flex={1.5} />
+                <DataItem text={name} fontStyle="--text-sm-medium" flex={1.5} color="--color-blue-600" />
             </>
         );
     };
@@ -416,9 +416,9 @@ const Orders = (props) => {
 
         const orderId = isOneSelected ? selectedOrders[0] : '';
         const purchaseOrder = purchaseOrders.find((item) => item._id === orderId) || {};
-        const {status, type} = purchaseOrder;
-
-        const isRequestDisabled = status !== PURCHASE_ORDER_STATUSES.PENDING;
+        const { status, type } = purchaseOrder;
+        let isRequestDisabled = true;
+        if (status === PURCHASE_ORDER_STATUSES.PENDING || status === PURCHASE_ORDER_STATUSES.QUOTATION_REQUESTED) isRequestDisabled = false;
         const requestApproval = (
             <ActionItem
                 title={"Request Approval"}
@@ -427,7 +427,7 @@ const Orders = (props) => {
                 />}
                 disabled={isRequestDisabled}
                 touchable={!isRequestDisabled}
-                onPress={() =>  handleRequestApproval(purchaseOrder) }
+                onPress={() => handleRequestApproval(purchaseOrder, status === PURCHASE_ORDER_STATUSES.QUOTATION_REQUESTED && PURCHASE_ORDER_STATUSES.PENDING)}
             />
         )
 
@@ -459,8 +459,8 @@ const Orders = (props) => {
                 onPress={() => console.log("Not yet implemented")}
             />
         )
-
-        const isQuotationDisabled = status !== PURCHASE_ORDER_STATUSES.APPROVED;
+        let isQuotationDisabled = true;
+        if (status === PURCHASE_ORDER_STATUSES.APPROVED || status === PURCHASE_ORDER_STATUSES.QUOTATION_REQUESTED) isQuotationDisabled = false;
         const requestQuotation = (
             <ActionItem
                 title={"Request Quotation"}
@@ -470,7 +470,7 @@ const Orders = (props) => {
                 disabled={isQuotationDisabled}
                 touchable={!isQuotationDisabled}
                 //To be implemented
-                onPress={() => console.log("Not yet implemented")}
+                onPress={() => showConfirmation('By requesting a quotation, a requisition with the items and quanities needed will be sent to the supplier. You may view the document under the requisition tab.', 'quotation', purchaseOrder)}
             />
         )
 
@@ -478,7 +478,7 @@ const Orders = (props) => {
 
 
         return (
-            <ActionContainer floatingActions={actions} title={"ORDERS ACTIONS"}/>
+            <ActionContainer floatingActions={actions} title={"ORDERS ACTIONS"} />
         );
     };
 
@@ -489,7 +489,7 @@ const Orders = (props) => {
         createInvoiceViaOrders(purchaseOrderId)
             .then((data) => {
                 console.log("Invoice Record:", data);
-                updatePurchaseOrder(purchaseOrderId, {status: "billed"});
+                updatePurchaseOrder(purchaseOrderId, { status: "billed" });
                 modal.closeAllModals();
                 addNotification(
                     "Inventory Items have been added to the system.",
@@ -527,7 +527,7 @@ const Orders = (props) => {
         updatePurchaseOrderStatus(purchaseOrderId, status)
             .then((data) => {
                 console.log("Purchase Order Record:", data);
-                updatePurchaseOrder(purchaseOrderId, {status});
+                updatePurchaseOrder(purchaseOrderId, { status });
                 showSuccessModal()
             })
             .catch((error) => {
@@ -539,23 +539,63 @@ const Orders = (props) => {
             });
     };
 
-    const handleRequestApproval = (purchaseOrder) => {
-        createAlert({title: 'Approval Request', message:`Order ${purchaseOrder.purchaseOrderNumber} requires approval`, roles: [adminId]})
+    const handleRequestQuotation = (purchaseOrder) => {
+        modal.closeAllModals();
+        const { _id, supplier } = purchaseOrder
+        setFetchingData(true)
+        requestQuotation(_id, { email: supplier.email })
         .then(_ => {
-            showSuccessModal()
+            showSuccessModal();
+            handleDataRefresh();
         })
         .catch((error) => {
-            console.log("Error whilst requesting approval", error)
-            errorScreen()
-        });
+            console.log("An error has occured", error);
+            errorScreen();
+        })
+        .finally(_ => {
+            setFetchingData(false)
+        })
+        
     }
 
-    const getRoles = () => {
-        getRolesCall()
-            .then(data => setRoles(data))
-            .catch(error => {
-                console.log("failed to get user role")
+    const handleRequestApproval = (purchaseOrder, status) => {
+        createAlert({ title: 'Approval Request', message: `Order ${purchaseOrder.purchaseOrderNumber} requires approval`, roles: [adminId] })
+            .then(_ => {
+                status && updateStatus(purchaseOrder._id, status);
+                handleDataRefresh();
+                showSuccessModal()
             })
+            .catch((error) => {
+                console.log("Error whilst requesting approval", error)
+                errorScreen()
+            });
+    }
+
+    const showConfirmation = (message, type, purchaseOrder) => {
+        modal.openModal('ConfirmationModal', {
+            content: (
+                <ConfirmationComponent
+                    isWarning={true}
+                    onCancel={() => {
+                        modal.closeModals('ConfirmationModal');
+                    }}
+                    onAction={() => {
+                        switch (type) {
+                            case 'quotation':
+                                handleRequestQuotation(purchaseOrder)
+                                break;
+                            default: break;
+                        }
+                        modal.closeModals('ConfirmationModal');
+                    }}
+                    message={message}
+                    secondaryMessage={"Do you wish to continue?"}
+                />
+            ),
+            onClose: () => {
+                modal.closeModals('ConfirmationModal');
+            },
+        });
     }
 
     // ############# Prepare list data
