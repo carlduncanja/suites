@@ -248,12 +248,12 @@ export const searchSchedule = async query => {
 
 // ###### Appiontment Types 
 
-export const getAppiontmentTypes = async () => suitesAxiosInstance
+export const getAppointmentTypes = async () => suitesAxiosInstance
     .get(appointmentTypeEndPiont)
     .then(handleResponse)
     .catch(handleError)
 
-export const updateAppiontmentTypes = async (id, data) => suitesAxiosInstance
+export const updateAppointmentTypes = async (id, data) => suitesAxiosInstance
     .put(updateAppiontmentTypeEndpiont(id), data)
     .then(handleResponse)
     .catch(handleError)

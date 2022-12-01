@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, Touchable } from 'react-native';
 import styled, { css } from '@emotion/native';
 import { useTheme } from 'emotion-theming';
 
-import { getAppiontmentTypes, updateAppiontmentTypes } from '../../../api/network';
+import { getAppointmentTypes, updateAppointmentTypes } from '../../../api/network';
 
 import DetailsPage from '../../common/DetailsPage/DetailsPage';
 import TabsContainer from '../../common/Tabs/TabsContainerComponent';
@@ -42,29 +42,29 @@ function SchedulePage({ navigation, route }) {
     const currentTabs = ['Detsils'];
 
     const [pageState, setPageState] = useState({});
-    const [appiontmentType, setAppiontmentTypes] = useState([])
+    const [appointmentType, setAppointmentTypes] = useState([])
     const [selectedId, setSelectedID] = useState('')
     const [reRenderer, setReRender] = useState(false)
 
     const { isEditMode = false } = pageState;
 
     useEffect(() => {
-        fetchAppiontmentTypes()
+        fetchAppointmentTypes()
     }, [])
 
-    const fetchAppiontmentTypes = () => {
-        getAppiontmentTypes()
+    const fetchAppointmentTypes = () => {
+        getAppointmentTypes()
             .then(data => {
-                setAppiontmentTypes(data)
+                setAppointmentTypes(data)
             })
             .catch(error => {
-                console.log('failed to get appiont ment types', error)
+                console.log('failed to get appointment types', error)
             })
     }
 
     const updateItem = (itemId, data) => {
         console.log(itemId, data)
-        updateAppiontmentTypes(itemId, { color: data })
+        updateAppointmentTypes(itemId, { color: data })
             .then(data => {
                 modal.openModal(
                     'ConfirmationModal', {
@@ -74,12 +74,12 @@ function SchedulePage({ navigation, route }) {
                         onAction={() => {
                             modal.closeModals('ConfirmationModal');
 
-                            fetchAppiontmentTypes()
+                            fetchAppointmentTypes()
                         }}
                     />,
                     onClose: () => {
                         modal.closeModal('ConfirmationModal')
-                        fetchAppiontmentTypes()
+                        fetchAppointmentTypes()
                     }
                 }
                 );
@@ -89,7 +89,7 @@ function SchedulePage({ navigation, route }) {
                 setTimeout(() => {
                     modal.closeModals('ActionContainerModal');
                 },200)
-                fetchAppiontmentTypes()
+                fetchAppointmentTypes()
                 console.log('failed to delete these item(s)', error)
             })
     }
@@ -122,7 +122,7 @@ function SchedulePage({ navigation, route }) {
     }
 
     const renderItem = item => {
-        let zIndecator = appiontmentType.length - parseInt(item._id)
+        let zIndecator = appointmentType.length - parseInt(item._id)
         let flatListActivator = FlatLIstActivator(item._id, selectedId)
 
         return (
@@ -170,7 +170,7 @@ function SchedulePage({ navigation, route }) {
                 <Table
                     headers={headers}
                     isCheckbox={false}
-                    data={appiontmentType}
+                    data={appointmentType}
                     listItemFormat={renderItem}
                     extraData={reRenderer}
                 />
