@@ -38,8 +38,6 @@ function PageHeader({
 
     const {isEditMode, isReview, locked, editMsg, editDisabled} = pageState;
 
-    console.log('page state', pageState);
-
     const buttonProps = !isEditMode ?
         {
             backgroundColor: theme.colors['--accent-button'],

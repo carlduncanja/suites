@@ -67,6 +67,7 @@ function Table({
     // const itemSelected = isCheckbox ? itemSelected : [];
 
     const isIndeterminate = itemSelected?.length > 0 && itemSelected?.length !== data?.length;
+
     return (
         <ListWrapper>
             <ListContainer>

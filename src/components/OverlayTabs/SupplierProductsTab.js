@@ -110,8 +110,6 @@ function SupplierProductsTab({
     const [cartItems, setCartItems] = useState([]);
     const { pageState } = useContext(PageContext);
 
-    console.log("Products: ", products);
-
     // ######## CONST
 
     // ######## LIFECYCLE METHODS
@@ -202,6 +200,7 @@ function SupplierProductsTab({
     };
 
     const onListFooterPress = data => {
+        // here
         setLoading(true);
         const { purchaseOrders = [], deliveryDate = '' } = data;
         addCartItem(purchaseOrders);
@@ -211,7 +210,6 @@ function SupplierProductsTab({
     };
 
     const onCompleteOrder = data => {
-        // console.log("Oder data: ", data);
         const { purchaseOrders = [], deliveryDate = '', repeating, repeatingType } = data;
         const orderToCreate = {
             deliveryDate,
@@ -220,8 +218,10 @@ function SupplierProductsTab({
             repeating,
             repeatingType
         };
-
-        console.log('Order: ', orderToCreate);
+        const payload = {
+            deliveryDate: deliveryDate,
+            
+        }
 
         createPurchaseOrder(orderToCreate)
             .then(_ => {
