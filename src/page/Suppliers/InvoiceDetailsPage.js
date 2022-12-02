@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
-import styled, {css} from '@emotion/native';
-import {useTheme} from 'emotion-theming';
-import {PageContext} from '../../contexts/PageContext';
+import styled, { css } from '@emotion/native';
+import { useTheme } from 'emotion-theming';
+import { PageContext } from '../../contexts/PageContext';
 import Record from '../../components/common/Information Record/Record';
 import Footer from '../../components/common/Page/Footer';
 import ImageUpload from '../../../assets/svg/imageUpload';
@@ -14,42 +14,43 @@ import { getFiletData, getDocumentById } from '../../api/network';
 import LoadingIndicator from '../../components/common/LoadingIndicator';
 import { View } from 'react-native';
 import { Image } from 'react-native';
-import * as FileSystem from 'expo-file-system';
-
-
+import PDFReader from 'rn-pdf-reader-js'
+import ImgToBase64 from 'react-native-image-base64';
 const InvoiceDetailsPage = ({
-    onImageUpload = () => {},
-    removeInvoice = () => {},
-    openFullView = () => {},
+    onImageUpload = () => { },
+    removeInvoice = () => { },
+    openFullView = () => { },
     isImageUploading = false,
     isImageUpdating = false,
-    canUpdateDoc=false,
+    canUpdateDoc = false,
     invoiceImage,
     canPreview = true,
     purchaseOrderNumber = '',
-    invoice = {}
+    invoice = {},
+    frameName,
 }) => {
     const theme = useTheme();
-    const {pageState, setPageState} = useContext(PageContext);
-    const {isEditMode} = pageState;
+    const { pageState, setPageState } = useContext(PageContext);
+    const { isEditMode } = pageState;
 
     const [isPageLoading, setIsPageLoading] = useState(false);
     const [documentImageData, setDocumentImageData] = useState();
     const [uri, setUri] = useState('');
     const [canDocumentPreview, setCanDocumentPreview] = useState(canPreview);
-
+    const [isPdf, setPdf] = useState();
+    
     const getDocumentData = async () => {
         setIsPageLoading(true);
         getFiletData(invoice?.documentId)
             .then(res => {
-                console.log('Res: ', res);
+                // console.log('Res: ', res);
                 setDocumentImageData(res.data);
                 if (res?.data?.metadata?.extension === 'pdf' || res?.data?.metadata?.extension === 'PDF') {
                     setCanDocumentPreview(false);
+                    setPdf(true);
                 } else {
                     setCanDocumentPreview(true);
                 }
-
             })
             .catch(err => {
                 console.log('Retrieve Document error: ', err);
@@ -90,7 +91,7 @@ const InvoiceDetailsPage = ({
             onPress={() => onImageUpload()}
         >
             {
-                isImageUploading ? <ImageUploading/> : <ImageUpload strokeColor={isEditMode ? theme.colors['--color-blue-600'] : theme.colors['--color-gray-600'] }/>
+                isImageUploading ? <ImageUploading /> : <ImageUpload strokeColor={isEditMode ? theme.colors['--color-blue-600'] : theme.colors['--color-gray-600']} />
             }
             <PageText
                 textColor={isEditMode ? '--color-blue-600' : '--color-gray-600'}
@@ -110,7 +111,7 @@ const InvoiceDetailsPage = ({
         </InvoiceUploadContainer>
     );
 
-    const imageName = documentImageData ? documentImageData?.metadata?.originalname || '' : invoiceImage?.name || '';
+    // const imageName = documentImageData ? documentImageData?.metadata?.originalname || '' : invoiceImage?.name || '';
 
     const removeImage = () => {
         if (invoice?.documentId) {
@@ -120,26 +121,27 @@ const InvoiceDetailsPage = ({
     }
 
     const content = () => {
-       if (!canDocumentPreview) {
-           return (
-            <RejectedPreviewContainer theme={theme}>
-                <PageText
-                    font="--text-lg-bold"
-                    textColor="--color-blue-600"
-                >
-                    Document/Image format cannot be previewed/viewed in full screen
-                </PageText>
-            </RejectedPreviewContainer>
-           )
-        } else if (documentImageData) {
+        if (!canDocumentPreview) {
             return (
-                <ViewImageContainer>
-                    <PreviewImage
-                        source={{uri: canUpdateDoc ? `` : uri}}
-                    />
-                </ViewImageContainer>
+                <RejectedPreviewContainer theme={theme}>
+                    <PageText
+                        font="--text-lg-bold"
+                        textColor="--color-blue-600"
+                    >
+                        Document/Image format cannot be previewed/viewed in full screen
+                    </PageText>
+                </RejectedPreviewContainer>
             )
-        } else {
+            } else if (documentImageData) {
+                return (
+                    <ViewImageContainer>
+                        <PreviewImage
+                            source={{uri: canUpdateDoc ? `` : uri}}
+                        />
+                    </ViewImageContainer>
+                )
+        }
+        else {
             return (
                 <UploadedImageContainer
                     activeOpacity={0.6}
@@ -161,68 +163,29 @@ const InvoiceDetailsPage = ({
                     theme={theme}
                     font="--text-sm-medium"
                     textColor="--color-blue-600"
-                >{canUpdateDoc ? '' : imageName}</PageText>
+                >{canUpdateDoc ? '' : frameName}</PageText>
                 {
                     isEditMode && (
                         <IconConatiner>
                             <IconButton
-                                Icon={<DeleteIcon/>}
-                                onPress={() => removeImage() }
+                                Icon={<DeleteIcon />}
+                                onPress={() => removeImage()}
                             />
                         </IconConatiner>
                     )
                 }
             </ImageTitleContainer>
             {
-                isImageUpdating ? <LoadingIndicator/> : content()
+                isImageUpdating ? <LoadingIndicator /> : content()
             }
-
-            {/* {
-                isImageUpdating ? <LoadingIndicator/> :
-                documentImageData ?
-                    <ViewImageContainer>
-                        <PreviewImage
-                            source={{uri: canUpdateDoc ? `` : uri}}
-                        />
-                    </ViewImageContainer>
-                    :
-                canPreview ?
-                    (
-                        <UploadedImageContainer
-                            activeOpacity={0.6}
-                            onPress={() => openFullView()}
-                        >
-                            <PreviewImage
-                                source={{ uri: invoiceImage?.uri }}
-                            />
-                        </UploadedImageContainer>
-                    ) :
-                    (
-                        <RejectedPreviewContainer theme={theme}>
-                            <PageText
-                                font="--text-lg-bold"
-                                textColor="--color-blue-600"
-                            >
-                                Document/Image format cannot be previewed/viewed in full screen
-                            </PageText>
-                        </RejectedPreviewContainer>
-                    )
-            } */}
-
         </ImageContainer>
     );
 
     return (
+        
         <PageWrapper>
-            <PurchaseOrderContainer theme={theme}>
-                <Record
-                    recordTitle="Purchase Order ID"
-                    recordValue={purchaseOrderNumber}
-                    valueColor="--color-blue-600"
-                />
-            </PurchaseOrderContainer>
             {
-                isPageLoading ? <LoadingIndicator/> : (
+                isPageLoading ? <LoadingIndicator /> : (
                     <InvoiceWrapper>
                         {
                             (invoiceImage || documentImageData) ? imageContent : uploadContent
@@ -230,10 +193,6 @@ const InvoiceDetailsPage = ({
                     </InvoiceWrapper>
                 )
             }
-            <Footer
-                hasActions={false}
-                hasPaginator={false}
-            />
         </PageWrapper>
     )
 }
@@ -245,8 +204,8 @@ const PageWrapper = styled.View`
 
 const PurchaseOrderContainer = styled.View`
     height: 100px;
-    border: ${({theme}) => `1px solid ${theme.colors['--color-gray-300']}`};
-    margin-bottom: ${({theme}) => theme.space['--space-40']};
+    border: ${({ theme }) => `1px solid ${theme.colors['--color-gray-300']}`};
+    margin-bottom: ${({ theme }) => theme.space['--space-40']};
     border-width: 0 0 1px;
 `;
 
@@ -257,9 +216,8 @@ const InvoiceWrapper = styled.View`
 const InvoiceUploadContainer = styled.TouchableOpacity`
     width: 100%;
     height: 258px;
-    border: ${({theme}) => `2.3px dashed ${theme.colors['--color-gray-200']}`};
-    background-color: ${({theme}) => theme.colors['--color-gray-100']};
-
+    border: ${({ theme }) => `2.3px dashed ${theme.colors['--color-gray-200']}`};
+    background-color: ${({ theme }) => theme.colors['--color-gray-100']};
     align-items: center;
     justify-content: center;
 `;
@@ -267,8 +225,8 @@ const InvoiceUploadContainer = styled.TouchableOpacity`
 const ImageContainer = styled.View`
     width: 100%;
     height: 356px;
-    border: ${({theme}) => `1px solid ${theme.colors['--color-gray-400']}`};
-    background-color: ${({theme}) => theme.colors['--color-gray-300']};
+    border: ${({ theme }) => `1px solid ${theme.colors['--color-gray-400']}`};
+    background-color: ${({ theme }) => theme.colors['--color-gray-300']};
     border-radius: 4px;
 `;
 
@@ -276,9 +234,9 @@ const ImageTitleContainer = styled.View`
     display: flex;
     justify-content: space-between;
     flex-direction: row;
-    background-color: ${({theme}) => theme.colors['--color-white']};
-    padding: ${({theme}) => theme.space['--space-12']};
-    border-color: ${({theme}) => theme.colors['--color-gray-400']};
+    background-color: ${({ theme }) => theme.colors['--color-white']};
+    padding: ${({ theme }) => theme.space['--space-12']};
+    border-color: ${({ theme }) => theme.colors['--color-gray-400']};
     border-style: solid;
     border-width: 0 0 1px;
     border-top-left-radius: 4px;
@@ -311,7 +269,7 @@ const PreviewImage = styled.Image`
 const RejectedPreviewContainer = styled.View`
     flex: 1;
     align-items: center;
-    margin: ${({theme}) => theme.space['--space-40']}; 
+    margin: ${({ theme }) => theme.space['--space-40']}; 
     margin-top: 120px;
     margin-bottom: 0;
     text-align: center;
@@ -323,7 +281,7 @@ const IconConatiner = styled.View`
     justify-content: flex-end;
 `;
 
-const PageText = styled.Text(({ theme, textColor = '--color-gray-600', font = '--confirm-title'}) => ({
+const PageText = styled.Text(({ theme, textColor = '--color-gray-600', font = '--confirm-title' }) => ({
     ...theme.font[font],
     color: theme.colors[textColor],
     paddingTop: 2,
