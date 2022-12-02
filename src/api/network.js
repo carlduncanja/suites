@@ -99,7 +99,8 @@ import {
     updateHealthInsurerEndpoint,
     UpdateLifeStyleItems,
     verifyOtpEndpoint,
-    resetPasswordEndpoint
+    resetPasswordEndpoint,
+    requestQuotationEndpoint
 } from '../const/suitesEndpoints';
 import { createDocumentLink, documentById, documentData, documentUpload } from '../const/documentGenerationEndpoints';
 
@@ -838,6 +839,11 @@ export const updateInvoiceDocument = async (purchaseOrderId, data) => suitesAxio
 
 export const generatePurchaseOrderInvoice = async (purchaseOrderId, status) => suitesAxiosInstance
     .put(purchaseOrderInvoice(purchaseOrderId), status)
+    .then(handleResponse)
+    .catch(handleError);
+
+export const requestQuotation = async (purchaseOrderId, email) => suitesAxiosInstance
+    .post(requestQuotationEndpoint(purchaseOrderId), email)
     .then(handleResponse)
     .catch(handleError);
 
