@@ -16,14 +16,17 @@ import {generateDocumentLink, uploadDocument, updateInvoiceDocument, updatePurch
 import LoadingIndicator from '../../components/common/LoadingIndicator';
 import axios from 'axios';
 import FrameCard from '../common/Frames/FrameCards/FrameCard';
-const RowWrapper = styled.View`
-    flex-direction: row;
-    justify-content: space-between;
-    margin-top: ${({ theme }) => theme.space['--space-20']};
-    margin-bottom: ${({ theme }) => theme.space['--space-20']};
-    z-index: ${({ zIndex }) => zIndex};
-`
+import { ScrollView } from 'react-native-gesture-handler';
 
+const PageWrapper = styled.View`
+width: 100%;
+height: 100%;
+`;
+const ContentWrapper = styled.View`
+width: 100%;
+height: 200px;
+margin-bottom: 200px;
+`;
 
 
 const RequisitionTab = ({ order = {}, selectedSupplierName = 'Test', updateSuppliers  }) => {
@@ -254,11 +257,12 @@ const RequisitionTab = ({ order = {}, selectedSupplierName = 'Test', updateSuppl
     };
 
     return (
-        <>
+        <ScrollView>
+        <PageWrapper>
                     {
 
                         isUploadingDoc ? <LoadingIndicator/> : (
-                            <RowWrapper>
+                            <ContentWrapper>
                             <InvoiceDetailsPage
                                 onImageUpload={onImageUpload}
                                 removeInvoice={removeInvoice}
@@ -273,12 +277,12 @@ const RequisitionTab = ({ order = {}, selectedSupplierName = 'Test', updateSuppl
                                 frameName={"Requisition"}
                                 invoice = {{documentId: order.requisitionDocId }}
                             />
-                            </RowWrapper> 
+                             </ContentWrapper> 
                         )
                     }
 
                 
-                            <RowWrapper>
+                            <ContentWrapper>
                             <InvoiceDetailsPage
                                 onImageUpload={onImageUpload}
                                 removeInvoice={removeInvoice}
@@ -290,13 +294,15 @@ const RequisitionTab = ({ order = {}, selectedSupplierName = 'Test', updateSuppl
                                 // invoice={invoiceObj}
                                 canUpdateDoc={canUpdateDoc}
                                 frameName={"Quotation"}
-                               
+                                frameText={"Add the quotation recieved from the supplier for the requisition above."}
+                                frameSecondaryText={"Add quotation"}
                             />
-                            </RowWrapper> 
+                            </ContentWrapper> 
                         
                    
                             
-        </>
+        </PageWrapper>
+        </ScrollView>
     );
 };
 

@@ -28,6 +28,8 @@ const InvoiceDetailsPage = ({
     purchaseOrderNumber = '',
     invoice = {},
     frameName,
+    frameText = "Click to upload",
+    frameSecondaryText
 }) => {
     const theme = useTheme();
     const { pageState, setPageState } = useContext(PageContext);
@@ -84,7 +86,25 @@ const InvoiceDetailsPage = ({
     }, [invoiceImage])
 
     const uploadContent = (
-        <InvoiceUploadContainer
+        <ImageContainer>
+        <ImageTitleContainer theme={theme}>
+                <PageText
+                    theme={theme}
+                    font="--text-sm-medium"
+                    textColor="--color-blue-600"
+                >{canUpdateDoc ? '' : frameName}</PageText>
+                {
+                    isEditMode && (
+                        <IconConatiner>
+                            <IconButton
+                                Icon={<DeleteIcon />}
+                                onPress={() => removeImage()}
+                            />
+                        </IconConatiner>
+                    )
+                }
+            </ImageTitleContainer>
+            <InvoiceUploadContainer
             theme={theme}
             activeOpacity={0.7}
             disabled={!isEditMode}
@@ -99,8 +119,15 @@ const InvoiceDetailsPage = ({
                 style={css`padding-top: 10px;`}
             >
                 {
-                    isImageUploading ? 'Please wait...' : 'Click to Upload Invoice'
+                    isImageUploading ? 'Please wait...' : frameText
                 }
+            </PageText>
+            <PageText
+                textColor="--color-blue-600"
+                font="--text-sm-regular"
+                style={css`padding-top: 10px;`}
+            >
+                {frameSecondaryText}
             </PageText>
             <PageText
                 textColor="--color-gray-500"
@@ -109,6 +136,8 @@ const InvoiceDetailsPage = ({
                 Supports JPG, PNG PDF
             </PageText>
         </InvoiceUploadContainer>
+        </ImageContainer>
+        
     );
 
     // const imageName = documentImageData ? documentImageData?.metadata?.originalname || '' : invoiceImage?.name || '';
@@ -215,8 +244,7 @@ const InvoiceWrapper = styled.View`
 
 const InvoiceUploadContainer = styled.TouchableOpacity`
     width: 100%;
-    height: 258px;
-    border: ${({ theme }) => `2.3px dashed ${theme.colors['--color-gray-200']}`};
+    height: 310px;
     background-color: ${({ theme }) => theme.colors['--color-gray-100']};
     align-items: center;
     justify-content: center;
