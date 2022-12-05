@@ -36,12 +36,13 @@ function InventoryGroupGeneral({
     const baseStateRef = useRef();
 
     const { description = "", name = "" } = inventoryGroup;
-    const categories = inventoryGroup?.categories || []
+    //const categories = inventoryGroup?.categories || []
     const theme = useTheme();
     const modal = useModal();
     const { pageState, setPageState } = useContext(PageContext);
     const { isEditMode } = pageState;
 
+    const [categories, setCategories] = useState([])
     const [categorySearchValue, setCategorySearchValue] = useState();
     const [categorySearchResults, setCategorySearchResult] = useState([]);
     const [initialCategories, setInitialCategpries] = useState(categories.map(category => category._id))
@@ -60,39 +61,17 @@ function InventoryGroupGeneral({
     }, []);
 
     useEffect(() => {
-        if (!categorySearchValue) {
-            // empty search values and cancel any out going request.
-            setCategorySearchResult([]);
-            if (categorySearchQuery.cancel) categorySearchQuery.cancel();
-            return;
-        }
-
-        // wait 300ms before search. cancel any prev request before executing current.
-        const search = _.debounce(fetchCategories, 300);
-
-        setCategorySearchQuery(prevSearch => {
-            if (prevSearch && prevSearch.cancel) {
-                prevSearch.cancel();
-            }
-            return search;
-        });
-
-        search()
+        fetchCategories();
     }, [categorySearchValue]);
 
     const fetchCategories = () => {
-        getCategories(categorySearchValue, 5)
-            .then((categoryData = []) => {
-
-                // console.log("Data: ", data)
-
-                setCategorySearchResult(categoryData || []);
-
-            })
+        getCategories("inventory", 1000, categorySearchValue)
+        .then(data => {
+            setCategorySearchResult(data.data.map(item => { return item.name }));
+            categories.length == 0 && setCategories(data.data)
+        })
             .catch(error => {
-                // TODO handle error
-                console.log("failed to get Suppliers", error);
-                setCategorySearchResult([]);
+                console.log('Unable to retrieve iventory category items: ', error);
             });
     };
 
@@ -114,6 +93,55 @@ function InventoryGroupGeneral({
         console.log("Updated categores: ", updatedCategories);
         handleCategories(updatedCategories);
     };
+    const createCategory = (name) => {
+        if (!name) return;
+        addCategory({ name: name, type: "inventory" })
+            .then(_ => {
+                setCategories([]);
+                fetchCategories();
+                modal.openModal('ConfirmationModal', {
+                    content: <ConfirmationComponent
+                        isEditUpdate={false}
+                        isError={false}
+                        onCancel={() => {
+                            modal.closeModals('ConfirmationModal');
+                        }}
+                        onAction={() => {
+                            modal.closeModals('ConfirmationModal');
+                        }}
+                    />,
+                    onClose: () => {
+                        modal.closeModals('ConfirmationModal');
+                    },
+                });
+            })
+            .catch(error => {
+                modal.openModal('ConfirmationModal', {
+                    content: <ConfirmationComponent
+                        isEditUpdate={false}
+                        isError={true}
+                        onCancel={() => {
+                            modal.closeModals('ConfirmationModal');
+                        }}
+                        onAction={() => {
+                            modal.closeModals('ConfirmationModal');
+                        }}
+                    />,
+                    onClose: () => {
+                        modal.closeModals('ConfirmationModal');
+                    },
+                });
+                console.log(error);
+            })
+    }
+    const handleCategorySelected = (checkCategories) => {
+        const categoryIds = [];
+        checkCategories.map((name) => {
+            const value = categories.find(item => item.name === name);
+            value && categoryIds.push(value._id);
+        })
+        onFieldChange('categories')(categoryIds)
+    }
 
     return (
         <>
@@ -146,12 +174,26 @@ function InventoryGroupGeneral({
             </Row>
 
             <Row>
-
+                {isEditMode ? 
+                    <MultipleSelectionsField
+                    label={"Category"}
+                    value={fields['categories'].map(x=> x.name)}
+                    onOptionsSelected={(value) => handleCategorySelected(value)}
+                    options={categorySearchResults}
+                    createNew={() => createCategory(categorySearchValue)}
+                    searchText={categorySearchValue}
+                    onSearchChangeText={(value) => setCategorySearchValue(value)}
+                    onClear={() => { setCategorySearchValue('') }}
+                    handlePopovers={() => { }}
+                    isPopoverOpen={true}
+                /> :
                 <Record
                         recordTitle="Categories"
                         recordValue={categories.map(x => x.name).join(', ')}
                         flex={0.8}
                     />
+                }
+                
             </Row>
 
             <Footer
