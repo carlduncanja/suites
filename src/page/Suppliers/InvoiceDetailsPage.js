@@ -14,8 +14,7 @@ import { getFiletData, getDocumentById } from '../../api/network';
 import LoadingIndicator from '../../components/common/LoadingIndicator';
 import { View } from 'react-native';
 import { Image } from 'react-native';
-import PDFReader from 'rn-pdf-reader-js'
-import ImgToBase64 from 'react-native-image-base64';
+
 const InvoiceDetailsPage = ({
     onImageUpload = () => { },
     removeInvoice = () => { },

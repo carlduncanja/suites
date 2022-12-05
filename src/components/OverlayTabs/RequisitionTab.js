@@ -178,9 +178,8 @@ const RequisitionTab = ({ order = {}, selectedSupplierName = 'Test', updateSuppl
 
     const onImageUpload = async () => {
         setIsImageUploading(true);
-        DocumentPicker.getDocumentAsync({})
+        DocumentPicker.getDocumentAsync()
             .then(result => {
-                console.log("test")
                 const testUri = (result.uri).match(/[^.]*$/g)[0] || '';
                 const acceptedFormats = (testUri === 'jpg') || (testUri === 'JPG') || (testUri === 'png') || (testUri === 'PNG') || (testUri === 'pdf') || (testUri === 'PDF');
                 // const rejectedPreviewFormats = (testUri === 'pdf') || (testUri === 'PDF');
