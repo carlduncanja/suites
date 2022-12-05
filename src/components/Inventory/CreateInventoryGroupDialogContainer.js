@@ -15,7 +15,7 @@ import CreatePreviousDoneFooter from '../common/DetailsPage/CreatePreviousDoneFo
 import { addCategory } from '../../api/network'
 import { connect } from "react-redux";
 import ArrowRightIcon from "../../../assets/svg/arrowRightIcon";
-import { createInventoryGroup, getInventories, getCategories, getSuppliers, } from "../../api/network";
+import { createInventoryGroup, getCategories, addCategory, } from "../../api/network";
 import { addInventory } from "../../redux/actions/InventorActions";
 import { MenuOptions, MenuOption } from 'react-native-popup-menu';
 import TextArea from '../common/Input Fields/TextArea';
@@ -27,7 +27,7 @@ import _ from "lodash";
 import styled, { css } from '@emotion/native';
 import { useTheme } from 'emotion-theming';
 import OverlayDialogContent from '../common/Dialog/OverlayContent';
-import MultipleSelectionsField from '../common/Input Fields/MultipleSelectionsField';
+
 
 /**
  * Component to handle the create storage process.
@@ -103,34 +103,14 @@ function CreateInventoryGroupDialogContainer({ navigation, route }) {
     const [categories, setCategories] = useState([])
     const [categorySearchValue, setCategorySearchValue] = useState();
     const [categorySearchResults, setCategorySearchResult] = useState([]);
-    const [categorySearchQuery, setCategorySearchQuery] = useState({});
-
+    
 
     // ######### LIFECYCLE FUNCTIONS
 
     // Handle category search
     useEffect(() => {
-
-        if (!categorySearchValue) {
-            // empty search values and cancel any out going request.
-            fetchCategory()
-            if (categorySearchQuery.cancel) categorySearchQuery.cancel();
-            return;
-        }
-
-        // wait 300ms before search. cancel any prev request before executing current.
-
-        const search = _.debounce(fetchCategory, 300);
-
-        setCategorySearchQuery(prevSearch => {
-            if (prevSearch && prevSearch.cancel) {
-                prevSearch.cancel();
-            }
-            return search;
-        });
-
-        search()
-    }, [categorySearchValue]);
+        fetchCategories();
+    }, [categorySearchValue])
 
 
     const fetchCategory = () => {
@@ -429,22 +409,6 @@ function CreateInventoryGroupDialogContainer({ navigation, route }) {
                         onClear={() => onFieldChange('levels')('')}
     
                     />
-                </FieldContainer>
-            </Row>
-
-            <Row>
-                <FieldContainer>
-                    {/*<MultipleSelectionsField*/}
-                    {/*    label={"Category"}*/}
-                    {/*    onOptionsSelected={(value) => onFieldChange('category')(value)}*/}
-                    {/*    options={categorySearchResults}*/}
-                    {/*    createNew={createCateory}*/}
-                    {/*    searchText={categorySearchValue}*/}
-                    {/*    onSearchChangeText={(value) => setCategorySearchValue(value)}*/}
-                    {/*    onClear={() => { setCategorySearchValue('') }}*/}
-                    {/*    handlePopovers={(value) => handlePopovers(value)('category')}*/}
-                    {/*    isPopoverOpen={categorySearchQuery}*/}
-                    {/*/>*/}
                 </FieldContainer>
             </Row>
 
