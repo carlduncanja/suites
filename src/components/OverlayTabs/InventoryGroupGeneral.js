@@ -35,7 +35,8 @@ function InventoryGroupGeneral({
 
     const baseStateRef = useRef();
 
-    const { description = "", categories = [], name = "" } = inventoryGroup;
+    const { description = "", name = "" } = inventoryGroup;
+    const categories = inventoryGroup?.categories || []
     const theme = useTheme();
     const modal = useModal();
     const { pageState, setPageState } = useContext(PageContext);
@@ -146,25 +147,11 @@ function InventoryGroupGeneral({
 
             <Row>
 
-                <ListTextRecord
-                    recordTitle="Category"
-                    titleStyle={'--text-xs-medium'}
-                    values={initialCategories}
-                    editMode={isEditMode}
-                    text={categorySearchValue}
-                    oneOptionsSelected={(item) => { onCategorySelect(item); }}
-                    onChangeText={value => { setCategorySearchValue(value) }}
-                    onClear={() => {
-                        setCategorySearchValue('');
-                    }}
-                    onSelectShownIten={onSelectShownItem}
-                    selectedItems={groupCategories}
-                    options={categorySearchResults}
-                    handlePopovers={() => { }}
-                    isPopoverOpen={categorySearchQuery}
-                    maxNumItemsShown={4}
-
-                />
+                <Record
+                        recordTitle="Categories"
+                        recordValue={categories.map(x => x.name).join(', ')}
+                        flex={0.8}
+                    />
             </Row>
 
             <Footer

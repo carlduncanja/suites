@@ -15,7 +15,7 @@ import CreatePreviousDoneFooter from '../common/DetailsPage/CreatePreviousDoneFo
 import { addCategory } from '../../api/network'
 import { connect } from "react-redux";
 import ArrowRightIcon from "../../../assets/svg/arrowRightIcon";
-import { createInventoryGroup, getCategories, addCategory, } from "../../api/network";
+import { createInventoryGroup, getCategories} from "../../api/network";
 import { addInventory } from "../../redux/actions/InventorActions";
 import { MenuOptions, MenuOption } from 'react-native-popup-menu';
 import TextArea from '../common/Input Fields/TextArea';
