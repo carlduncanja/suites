@@ -27,6 +27,7 @@ import _ from "lodash";
 import styled, { css } from '@emotion/native';
 import { useTheme } from 'emotion-theming';
 import OverlayDialogContent from '../common/Dialog/OverlayContent';
+import MultipleSelectionsField from '../common/Input Fields/MultipleSelectionsField';
 
 /**
  * Component to handle the create storage process.
@@ -99,6 +100,7 @@ function CreateInventoryGroupDialogContainer({ navigation, route }) {
     ])
 
     // Category Search
+    const [categories, setCategories] = useState([])
     const [categorySearchValue, setCategorySearchValue] = useState();
     const [categorySearchResults, setCategorySearchResult] = useState([]);
     const [categorySearchQuery, setCategorySearchQuery] = useState({});
@@ -141,6 +143,67 @@ function CreateInventoryGroupDialogContainer({ navigation, route }) {
                 setCategorySearchResult([])
             })
 
+    }
+    const fetchCategories = () => {
+        getCategories("inventory", 1000, categorySearchValue)
+            .then(data => {
+                setCategorySearchResult(data.data.map(item => { return item.name }));
+                categories.length == 0 && setCategories(data.data);
+            })
+            .catch(error => {
+                console.log('Unable to retrieve iventory category items: ', error);
+            });
+    }
+
+    const createCategory = (name) => {
+        if(!name) return;
+        addCategory({ name: name, type: "inventory" })
+            .then(_ => {
+                setCategories([]);
+                fetchCategories();
+                modal.openModal('ConfirmationModal', {
+                    content: <ConfirmationComponent
+                        isEditUpdate={false}
+                        isError={false}
+                        onCancel={() => {
+                            modal.closeModals('ConfirmationModal');
+                        }}
+                        onAction={() => {
+                            modal.closeModals('ConfirmationModal');
+                        }}
+                    />,
+                    onClose: () => {
+                        modal.closeModals('ConfirmationModal');
+                    },
+                });
+            })
+            .catch(error => {
+                modal.openModal('ConfirmationModal', {
+                    content: <ConfirmationComponent
+                        isEditUpdate={false}
+                        isError={true}
+                        onCancel={() => {
+                            modal.closeModals('ConfirmationModal');
+                        }}
+                        onAction={() => {
+                            modal.closeModals('ConfirmationModal');
+                        }}
+                    />,
+                    onClose: () => {
+                        modal.closeModals('ConfirmationModal');
+                    },
+                });
+                console.log(error);
+            })
+    }
+
+    const handleCategorySelected = (checkCategories) => {
+        const categoryIds = [];
+        checkCategories.map((name) => {
+            const value = categories.find(item => item.name === name);
+            value && categoryIds.push(value._id);
+        })
+        onFieldChange('categories')(categoryIds)
     }
 
     // ######### EVENT HANDLERS
@@ -346,11 +409,16 @@ function CreateInventoryGroupDialogContainer({ navigation, route }) {
             </Row>
             <Row>
                 <FieldContainer>
-                    <InputField2
+                <MultipleSelectionsField
                         label={"Category"}
-                        onChangeText={onFieldChange('')}
-                        value={fields['']}
-                        onClear={() => onFieldChange('')('')}
+                        onOptionsSelected={(value) => handleCategorySelected(value)}
+                        options={categorySearchResults}
+                        createNew={() => createCategory(categorySearchValue)}
+                        searchText={categorySearchValue}
+                        onSearchChangeText={(value) => setCategorySearchValue(value)}
+                        onClear={() => { setCategorySearchValue('') }}
+                        handlePopovers={() => { }}
+                        isPopoverOpen={true}
                     />
                 </FieldContainer>
                 <FieldContainer>
