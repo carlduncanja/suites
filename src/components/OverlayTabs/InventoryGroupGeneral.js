@@ -17,7 +17,7 @@ import Footer from '../common/Page/Footer';
 import { useModal } from 'react-native-modalfy';
 import MultipleSearchableOptionsField from '../common/Input Fields/MultipleSearchableOptionsField';
 import _ from "lodash";
-
+import MultipleSelectionsField from '../common/Input Fields/MultipleSelectionsField';
 const FieldWrapper = styled.View`
     flex: 0.5;
     margin-bottom : ${({ isEditMode }) => isEditMode ? `32px` : 0};
@@ -177,7 +177,7 @@ function InventoryGroupGeneral({
                 {isEditMode ? 
                     <MultipleSelectionsField
                     label={"Category"}
-                    value={fields['categories'].map(x=> x.name)}
+                    value={categories.map(x=> x.name)}
                     onOptionsSelected={(value) => handleCategorySelected(value)}
                     options={categorySearchResults}
                     createNew={() => createCategory(categorySearchValue)}
