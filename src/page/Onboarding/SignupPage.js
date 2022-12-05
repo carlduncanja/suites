@@ -204,7 +204,6 @@ function SignupPage({navigation, signIn, expoPushToken}) {
         registrationCall({...fields, role: GUEST_ROLE_ID, pushToken: expoPushToken})
             .then(async data => {
                 // save auth data
-                console.log(data);
                 const {token = null} = data;
                 try {
                     await AsyncStorage.setItem('userToken', token);

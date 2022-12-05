@@ -196,7 +196,6 @@ function NewProcedureOverlayContainer({ appointment = {}, editMode = false, pass
 
         await getCaseFileByPatientId(patientID)
             .then(data => {
-                console.log("we got data thou", data)
                 setPatientCase(data)
             })
             .catch(err => {
