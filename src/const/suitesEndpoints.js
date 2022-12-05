@@ -87,6 +87,7 @@ export const updateQuotationStatusEndpoint = (caseId, quotationId) => `/cases/${
 export const caseProcedureAppointmentEndpoint = (caseId, procedureAppointmentId) => `/cases/${caseId}/procedures/${procedureAppointmentId}`;
 export const caseProcedureAppointmentsEndpoint = caseId => `/cases/${caseId}/procedures/`;
 export const caseStaffEndpoint = caseId => `/cases/staff/${caseId}`;
+export const casePatientEndpoint = patientId => `/cases/patient/${patientId}`
 
 // ##### STORAGE
 export const storageLocationsEndpoint = '/storage-locations';
