@@ -42,7 +42,7 @@ function InventoryGroupGeneral({
     const { pageState, setPageState } = useContext(PageContext);
     const { isEditMode } = pageState;
 
-    const [categories, setCategories] = useState([])
+    const [categories, setCategories] = useState(inventoryGroup?.categories || [])
     const [categorySearchValue, setCategorySearchValue] = useState();
     const [categorySearchResults, setCategorySearchResult] = useState([]);
     const [initialCategories, setInitialCategpries] = useState(categories.map(category => category._id))
@@ -177,7 +177,7 @@ function InventoryGroupGeneral({
                 {isEditMode ? 
                     <MultipleSelectionsField
                     label={"Category"}
-                    value={categories.map(x=> x.name)}
+                    value={fields['categories'].map(x=> x.name)}
                     onOptionsSelected={(value) => handleCategorySelected(value)}
                     options={categorySearchResults}
                     createNew={() => createCategory(categorySearchValue)}
