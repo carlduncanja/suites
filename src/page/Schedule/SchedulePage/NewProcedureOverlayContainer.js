@@ -59,7 +59,7 @@ function NewProcedureOverlayContainer({ appointment = {}, editMode = false, pass
     const [attemptedSubmit, setAttemptedSubmit] = useState(false);
     const [allowedToSubmit, setAllowedToSubmit] = useState(false)
     const [errors, setErrors] = useState(false)
-   
+    const [patientCase, setPatientCase] = useState([])
 
     const RowWrapper = styled.View`
     flex-direction: row;
@@ -170,6 +170,8 @@ function NewProcedureOverlayContainer({ appointment = {}, editMode = false, pass
 
         if (validateAllFields) {
             setAllowedToSubmit(true)
+            submitProcedure()
+
         }
 
     }
@@ -190,16 +192,37 @@ function NewProcedureOverlayContainer({ appointment = {}, editMode = false, pass
             )
     }
 
-   
-        
+    const getCaseData = async (patientID) => {
 
-    useEffect(() => {
+        await getCaseFileByPatientId(patientID)
+            .then(data => {
+                console.log("we got data thou", data)
+                setPatientCase(data)
+            })
+            .catch(err => {
+                console.log(err)
+                hanadleErrorModal()
+            })
+
+
+    }
+
+    const addProcedure = async (caseFileData) => {
+        let patientId = patientValue._id
+        let procedure = caseFileData.caseProcedures[0]
+        let caseId=patientCase[0]._id
+        addProcedureAppointment(caseId,procedure)
+    }
+
+
+
+    const submitProcedure = async () => {
 
 
         if (allowedToSubmit) {
 
             const nameToken = patientValue === undefined ? fields.firstName.split(" ") : patientValue.name.split(" ");
-
+           
             // size 1 ? firstname
             if (nameToken.length === 1) {
                 patientFields.firstName = nameToken[0];
@@ -312,17 +335,7 @@ function NewProcedureOverlayContainer({ appointment = {}, editMode = false, pass
                         })
                 }
                 else {
-                    let patientId = patientValue._id
-                    let procedure = caseFileData.caseProcedures[0]
-                    let caseData = []
-                    const  caseDataGrabber= async () =>{ 
-                         console.log("we are being called")
-                         caseData = await  getCaseFileByPatientId(patientId)
-                    }
-                    caseDataGrabber()
-                    //const  {_id = '' } = caseData[0]
-                    //addProcedureAppointment(caseID,procedure) 
-                    console.log("the next move made", caseData)
+                    addProcedure(caseFileData)
                 }
 
 
@@ -380,7 +393,7 @@ function NewProcedureOverlayContainer({ appointment = {}, editMode = false, pass
 
 
         }
-    }, [allowedToSubmit])
+    }
 
 
     const hanadleErrorModal = () => {
@@ -438,6 +451,10 @@ function NewProcedureOverlayContainer({ appointment = {}, editMode = false, pass
         setSearchPatientValue('')
         setSearchPatientResult([]);
         setSearchPatientQuery(undefined);
+        value ? getCaseData(value._id) : null
+
+
+
 
     };
 
