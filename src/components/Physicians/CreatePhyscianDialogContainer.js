@@ -39,6 +39,8 @@ const CreatePhysicianDialogContainer = ({
         // address:[]
     });
 
+    console.log('mooo');
+    console.log(fields);
     const [errorFields, setErrorFields] = useState({});
 
     const onFieldChange = fieldName => value => {
@@ -111,29 +113,6 @@ const CreatePhysicianDialogContainer = ({
         }
         console.info('Success:', updatedFields);
         createPhysicianCall(updatedFields);
-
-        // let isFirstError = errorFields['firstName']
-        // let isSurnameError = errorFields['surname']
-        // let isTrnError = errorFields['trn']
-        // let isGenderError = errorFields['gender']
-
-        // fields['firstName'] === '' || null ? isFirstError = true : isFirstError = false
-        // fields['surname'] === '' || null ? isSurnameError = true : isSurnameError = false
-        // fields['trn'] === '' || null ? isTrnError = true : isTrnError = false
-        // fields['gender'] === '' || null ? isGenderError = true : isGenderError = false
-
-        // setErrorFields({
-        //     ...errorFields,
-        //     firstName: isFirstError,
-        //     surname : isSurnameError,
-        //     trn : isTrnError,
-        //     gender : isGenderError
-        // })
-
-        // if(isFirstError === false && isSurnameError === false && isTrnError === false && isGenderError === false){
-        //     console.log("Success: ",updatedFields)
-        //     // createPhysicianCall(updatedFields)
-        // }
     };
 
     const getDialogContent = tab => {

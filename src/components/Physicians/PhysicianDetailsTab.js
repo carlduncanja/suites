@@ -85,6 +85,7 @@ const PhysiciansDetailsTab = ({ onFieldChange, fields, errorFields }) =>{
                         errorMessage = "Please provide contact."
                     />
                 </View>
+                
 
             </View>
 
@@ -97,45 +98,17 @@ const PhysiciansDetailsTab = ({ onFieldChange, fields, errorFields }) =>{
             {/*/>*/}
 
             <View style={styles.row}>
-
-
-
-                {/*<View style={styles.inputWrapper}>*/}
-                    {/*<DateInputField*/}
-                    {/*    label={"Date of Birth"}*/}
-                    {/*    value={fields['dob']}*/}
-                    {/*    onClear={() => onFieldChange('dob')('')}*/}
-                    {/*    keyboardType="number-pad"*/}
-                    {/*    mode={'date'}*/}
-                    {/*    format={"YYYY-MM-DD"}*/}
-                    {/*    placeholder="YYYY/MM/DD"*/}
-                    {/*    hasError={errorFields['dob']}*/}
-                    {/*    errorMessage={errorFields['dob']}*/}
-                    {/*    onDateChange={handleDateValidation}*/}
-                    {/*    maxDate = {new Date(moment().subtract(1, 'days'))}*/}
-                    {/*/>*/}
-                {/*</View>*/}
-
+                <View style={styles.inputWrapper}>
+                    <InputField2
+                        label={"Category"}
+                        onChangeText={onFieldChange('phone')}
+                        value={fields['phone']}
+                        onClear={() => onFieldChange('phone')('')}
+                        hasError = {errorFields['phone']}
+                        errorMessage = "Please provide contact."
+                    />
+                </View>
             </View>
-
-            {/*<View style={styles.row}>*/}
-
-            {/*    <View style={styles.inputWrapper}>*/}
-            {/*        <OptionsField*/}
-            {/*            label={"Gender"}*/}
-            {/*            text={fields['gender']}*/}
-            {/*            oneOptionsSelected={onFieldChange('gender')}*/}
-            {/*            menuOption={<MenuOptions>*/}
-            {/*                <MenuOption value={'Male'} text='Male'/>*/}
-            {/*                <MenuOption value={'Female'} text='Female'/>*/}
-            {/*            </MenuOptions>}*/}
-            {/*            hasError = {errorFields['gender']}*/}
-            {/*            // errorMessage = "Select a gender from list."*/}
-            {/*        />*/}
-            {/*    </View>*/}
-
-            {/*</View>*/}
-
         </View>
     )
 }
