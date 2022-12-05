@@ -169,7 +169,7 @@ function NewProcedureOverlayContainer({ appointment = {}, editMode = false, pass
         setAttemptedSubmit(true);
 
         if (validateAllFields) {
-            setAllowedToSubmit(true)
+            //setAllowedToSubmit(true)
             submitProcedure()
 
         }
@@ -218,8 +218,6 @@ function NewProcedureOverlayContainer({ appointment = {}, editMode = false, pass
 
     const submitProcedure = async () => {
 
-
-        if (allowedToSubmit) {
 
             const nameToken = patientValue === undefined ? fields.firstName.split(" ") : patientValue.name.split(" ");
            
@@ -392,7 +390,7 @@ function NewProcedureOverlayContainer({ appointment = {}, editMode = false, pass
 
 
 
-        }
+        
     }
 
 
