@@ -39,8 +39,6 @@ const CreatePhysicianDialogContainer = ({
         // address:[]
     });
 
-    console.log('mooo');
-    console.log(fields);
     const [errorFields, setErrorFields] = useState({});
 
     const onFieldChange = fieldName => value => {
@@ -111,7 +109,7 @@ const CreatePhysicianDialogContainer = ({
         if (!isValid) {
             return;
         }
-        console.info('Success:', updatedFields);
+
         createPhysicianCall(updatedFields);
     };
 
@@ -221,5 +219,6 @@ const styles = StyleSheet.create({
         width: 636,
         flexDirection: 'column',
         backgroundColor: 'white',
+        height: 250
     },
 });
