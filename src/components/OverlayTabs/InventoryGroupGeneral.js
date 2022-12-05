@@ -10,7 +10,7 @@ import InputField2 from '../common/Input Fields/InputField2';
 import styled, { css } from '@emotion/native';
 import { useTheme } from 'emotion-theming';
 import { PageContext } from '../../contexts/PageContext';
-import { updateInventoryGroupById, getCategories } from '../../api/network';
+import { updateInventoryGroupById, getCategories, addCategory } from '../../api/network';
 import TextArea from '../common/Input Fields/TextArea';
 import ConfirmationComponent from '../ConfirmationComponent';
 import Footer from '../common/Page/Footer';

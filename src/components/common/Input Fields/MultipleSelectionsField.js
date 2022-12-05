@@ -56,7 +56,8 @@ function MultipleSelectionsField({
     onClear,
     handlePopovers,
     isPopoverOpen,
-    hasError = false
+    hasError = false,
+    height
 }) {
 
     // console.log("Category options: ", options)
@@ -67,7 +68,7 @@ function MultipleSelectionsField({
     const [checkedList, setCheckedList] = useState(value)
     const [isDisplay, setIsDisplay] = useState(false)
 
-    const onCheckboxPress = (item) => () => { 
+    const onCheckboxPress = (item) => () => {
         let updatedList = [...checkedList]
         if (checkedList.includes(item)) {
             updatedList = updatedList.filter(filterItem => filterItem !== item)
@@ -129,7 +130,7 @@ function MultipleSelectionsField({
                                     paddingLeft: 4
                                 }}>
                                     +{checkedList.length - 1} more
-                            </Text>
+                                </Text>
                             }
 
                             <View style={{ flex: 1, justifyContent: "flex-end", alignItems: "flex-end" }}>
@@ -148,7 +149,7 @@ function MultipleSelectionsField({
 
                 {isDisplay && isPopoverOpen &&
 
-                    <View style={styles.menuOptionsContainer}>
+                    <View style={[styles.menuOptionsContainer, {height: height} ]}>
 
                         <SearchableContainer
                             options={options}
@@ -160,16 +161,20 @@ function MultipleSelectionsField({
                         />
 
 
-
-                        <View style={styles.footer}>
-                            <TouchableOpacity onPress={() => { createNew() }} style={{ flexDirection: "row", justifyContent: "space-evenly", }}>
-                                <AddIcon />
-                                <Text style={{ paddingLeft: 10 }}>Create New</Text>
-                            </TouchableOpacity>
-                            <View>
-                                <Text style={{ color: '#4299E1', fontSize: 12 }}>"{searchText}"</Text>
+                        {
+                            !options.length && (
+                            <View style={styles.footer}>
+                                <TouchableOpacity onPress={() => { createNew() }} style={{ flexDirection: "row", justifyContent: "space-evenly", }}>
+                                    <AddIcon />
+                                    <Text style={{ paddingLeft: 10 }}>Create New</Text>
+                                </TouchableOpacity>
+                                <View>
+                                    <Text style={{ color: '#4299E1', fontSize: 12 }}>"{searchText}"</Text>
+                                </View>
                             </View>
-                        </View>
+                            )
+                        }
+
                     </View>
 
                 }
@@ -234,7 +239,7 @@ const styles = StyleSheet.create({
         paddingTop: 8,
         paddingBottom: 2,
         width: '100%',
-        height: 150,
+        // height: 130,
         maxHeight: 300,
         borderRadius: 8,
         // border: 1px solid #CCD6E0;
