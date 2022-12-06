@@ -93,14 +93,6 @@ function MultipleSelectionsField({
                 {
                     label && <InputLabelComponent label={label} />
                 }
-                {/* <Text style={[
-                    styles.textLabel, {
-                        marginRight: label ? 20 : 0
-                    }
-                ]}>
-                    {label}
-                </Text>
-                */}
 
                 <TextInputWrapper>
                     <TextInputContainer theme={theme} hasError={hasError} backgroundColor={disabled ? "--color-gray-200" : null}>
@@ -160,21 +152,18 @@ function MultipleSelectionsField({
                             onClear={onClear}
                         />
 
-
-                        {
-                            !options.length && (
+                        {options.length < 1? (
                             <View style={styles.footer}>
-                                <TouchableOpacity onPress={() => { createNew() }} style={{ flexDirection: "row", justifyContent: "space-evenly", }}>
-                                    <AddIcon />
-                                    <Text style={{ paddingLeft: 10 }}>Create New</Text>
-                                </TouchableOpacity>
-                                <View>
-                                    <Text style={{ color: '#4299E1', fontSize: 12 }}>"{searchText}"</Text>
-                                </View>
+                            <TouchableOpacity onPress={() => { createNew() }} style={{ flexDirection: "row", justifyContent: "space-evenly", }}>
+                                <AddIcon />
+                                <Text style={{ paddingLeft: 10 }}>Create New</Text>
+                            </TouchableOpacity>
+                            <View>
+                                <Text style={{ color: '#4299E1', fontSize: 12 }}>"{searchText}"</Text>
                             </View>
-                            )
-                        }
-
+                        </View>
+                        ) : <></>}
+                        
                     </View>
 
                 }
@@ -239,8 +228,7 @@ const styles = StyleSheet.create({
         paddingTop: 8,
         paddingBottom: 2,
         width: '100%',
-        // height: 130,
-        maxHeight: 300,
+        maxHeight: 150,
         borderRadius: 8,
         // border: 1px solid #CCD6E0;
         borderWidth: 1,

@@ -27,13 +27,14 @@ const SearchableContainer = ({ options, onCheckboxPress, checkedList, searchText
                     onChangeText={(text) => onSearchChangeText(text)}
                     keyboardType={"default"}
                 />
-                <View style={{ alignItems: 'center', paddingLeft: 5, paddingRight: 5 }}>
+                {searchText !== '' ? (
+                    <View style={{ alignItems: 'center', paddingLeft: 5, paddingRight: 5 }}>
                     <IconButton
                         Icon={<ClearIcon />}
                         onPress={() => { onClear() }}
                     />
                 </View>
-
+                ) : <></>}
             </View>
 
 
