@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import styled, { css } from '@emotion/native';
+import { TouchableOpacity } from 'react-native';
 import { useTheme } from 'emotion-theming';
 import { PageContext } from '../../contexts/PageContext';
 import Record from '../../components/common/Information Record/Record';
@@ -12,9 +13,9 @@ import IconButton from '../../components/common/Buttons/IconButton';
 import { useSafeArea } from 'react-native-safe-area-context';
 import { getFiletData, getDocumentById } from '../../api/network';
 import LoadingIndicator from '../../components/common/LoadingIndicator';
-import { View } from 'react-native';
-import { Image } from 'react-native';
-
+import * as FileSystem from 'expo-file-system';
+import PDFReader from 'rn-pdf-reader-js'
+import _ from 'lodash';
 const InvoiceDetailsPage = ({
     onImageUpload = () => { },
     removeInvoice = () => { },
@@ -25,7 +26,7 @@ const InvoiceDetailsPage = ({
     invoiceImage,
     canPreview = true,
     purchaseOrderNumber = '',
-    invoice = {},
+    documentId,
     frameName,
     frameText = "Click to upload",
     frameSecondaryText
@@ -38,55 +39,51 @@ const InvoiceDetailsPage = ({
     const [documentImageData, setDocumentImageData] = useState();
     const [uri, setUri] = useState('');
     const [canDocumentPreview, setCanDocumentPreview] = useState(canPreview);
-    const [isPdf, setPdf] = useState();
-    
+    const [isPdf, setPdf] = useState(false);
+
+    useEffect(() => {
+        if (documentId) {
+            getDocumentData(documentId)
+        }
+    }, []);
+
     const getDocumentData = async () => {
         setIsPageLoading(true);
-        getFiletData(invoice?.documentId)
-            .then(res => {
-                // console.log('Res: ', res);
+        getFiletData(documentId)
+            .then(async (res) => {
                 setDocumentImageData(res.data);
+                setCanDocumentPreview(true);
                 if (res?.data?.metadata?.extension === 'pdf' || res?.data?.metadata?.extension === 'PDF') {
-                    setCanDocumentPreview(false);
-                    setPdf(true);
+                    setPdf(true)
+                    let image;
+                    try {
+                        const { uri } = await FileSystem.downloadAsync(
+                            `https://influx.smssoftwarestudio.com/insight/document-management-service/api/documents/${documentId}`,
+                            `${FileSystem.cacheDirectory}quotationRequest`
+                        );
+
+                        image = await FileSystem.readAsStringAsync(uri, {
+                            encoding: 'base64',
+                        });
+                        setUri(`data:application/pdf;base64,${image}`);
+                    } catch (err) {
+                        console.log("An error occured whilst converting to base 64", err);
+                    }
                 } else {
-                    setCanDocumentPreview(true);
+                    setUri(`https://influx.smssoftwarestudio.com/insight/document-management-service/api/documents/${documentId}`);
                 }
             })
             .catch(err => {
-                console.log('Retrieve Document error: ', err);
+                setCanDocumentPreview(false);
+                console.log("An error occured whilst getting document data", err);
             })
             .finally(_ => setIsPageLoading(false))
     }
 
-    useEffect(() => {
-        if (invoice?.documentId) {
-            getDocumentData(invoice?.documentId)
-        }
-    }, []);
-
-    useEffect(() => {
-        if (invoice?.documentId) {
-            setUri(`https://influx.smssoftwarestudio.com/insight/document-management-service/api/documents/${invoice?.documentId}`);
-            getDocumentData();
-        }
-    }, [invoice?.documentId])
-
-    useEffect(() => {
-        if (invoiceImage) {
-            const testUri = (invoiceImage.uri).match(/[^.]*$/g)[0] || '';
-            const rejectedPreviewFormats = (testUri === 'pdf') || (testUri === 'PDF');
-            if (rejectedPreviewFormats) {
-                setCanDocumentPreview(false);
-            } else {
-                setCanDocumentPreview(true);
-            }
-        }
-    }, [invoiceImage])
 
     const uploadContent = (
         <ImageContainer>
-        <ImageTitleContainer theme={theme}>
+            <ImageTitleContainer theme={theme}>
                 <PageText
                     theme={theme}
                     font="--text-sm-medium"
@@ -104,45 +101,43 @@ const InvoiceDetailsPage = ({
                 }
             </ImageTitleContainer>
             <InvoiceUploadContainer
-            theme={theme}
-            activeOpacity={0.7}
-            disabled={!isEditMode}
-            onPress={() => onImageUpload()}
-        >
-            {
-                isImageUploading ? <ImageUploading /> : <ImageUpload strokeColor={isEditMode ? theme.colors['--color-blue-600'] : theme.colors['--color-gray-600']} />
-            }
-            <PageText
-                textColor={isEditMode ? '--color-blue-600' : '--color-gray-600'}
-                font="--text-sm-regular"
-                style={css`padding-top: 10px;`}
+                theme={theme}
+                activeOpacity={0.7}
+                disabled={!isEditMode}
+                onPress={() => onImageUpload()}
             >
                 {
-                    isImageUploading ? 'Please wait...' : frameText
+                    isImageUploading ? <ImageUploading /> : <ImageUpload strokeColor={isEditMode ? theme.colors['--color-blue-600'] : theme.colors['--color-gray-600']} />
                 }
-            </PageText>
-            <PageText
-                textColor="--color-blue-600"
-                font="--text-sm-regular"
-                style={css`padding-top: 10px;`}
-            >
-                {frameSecondaryText}
-            </PageText>
-            <PageText
-                textColor="--color-gray-500"
-                font="--cart-text"
-            >
-                Supports JPG, PNG PDF
-            </PageText>
-        </InvoiceUploadContainer>
+                <PageText
+                    textColor={isEditMode ? '--color-blue-600' : '--color-gray-600'}
+                    font="--text-sm-regular"
+                    style={css`padding-top: 10px;`}
+                >
+                    {
+                        isImageUploading ? 'Please wait...' : frameText
+                    }
+                </PageText>
+                <PageText
+                    textColor="--color-blue-600"
+                    font="--text-sm-regular"
+                    style={css`padding-top: 10px;`}
+                >
+                    {frameSecondaryText}
+                </PageText>
+                <PageText
+                    textColor="--color-gray-500"
+                    font="--cart-text"
+                >
+                    Supports JPG, PNG & PDF
+                </PageText>
+            </InvoiceUploadContainer>
         </ImageContainer>
-        
+
     );
 
-    // const imageName = documentImageData ? documentImageData?.metadata?.originalname || '' : invoiceImage?.name || '';
-
     const removeImage = () => {
-        if (invoice?.documentId) {
+        if (documentId) {
             setDocumentImageData();
         }
         removeInvoice();
@@ -156,27 +151,39 @@ const InvoiceDetailsPage = ({
                         font="--text-lg-bold"
                         textColor="--color-blue-600"
                     >
-                        Document/Image format cannot be previewed/viewed in full screen
+                        Document/Image cannot be previewed/viewed in full screen
                     </PageText>
                 </RejectedPreviewContainer>
             )
-            } else if (documentImageData) {
-                return (
-                    <ViewImageContainer>
-                        <PreviewImage
-                            source={{uri: canUpdateDoc ? `` : uri}}
-                        />
-                    </ViewImageContainer>
-                )
+        } else if (documentImageData && isPdf && uri) {
+            return (
+                <ContentContainer onPress={() => openFullView(true, uri)}>
+                    <PDFReader
+                        source={{
+                            base64: uri
+                        }}
+                    />
+                    </ContentContainer>
+
+            )
+        }
+        else if (documentImageData) {
+            return (
+                <ViewImageContainer>
+                    <PreviewImage
+                        source={{ uri: canUpdateDoc ? `` : uri }}
+                    />
+                </ViewImageContainer>
+            )
         }
         else {
             return (
                 <UploadedImageContainer
                     activeOpacity={0.6}
-                    onPress={() => openFullView()}
+                    onPress={() => openFullView(true, uri)}
                 >
                     <PreviewImage
-                        source={{ uri: invoiceImage?.uri }}
+                        source={{ uri: uri }}
                     />
                 </UploadedImageContainer>
 
@@ -197,7 +204,7 @@ const InvoiceDetailsPage = ({
                         <IconConatiner>
                             <IconButton
                                 Icon={<DeleteIcon />}
-                                onPress={() => removeImage()}
+                                onPress={() => openFullView(true, uri)}
                             />
                         </IconConatiner>
                     )
@@ -210,7 +217,7 @@ const InvoiceDetailsPage = ({
     );
 
     return (
-        
+
         <PageWrapper>
             {
                 isPageLoading ? <LoadingIndicator /> : (
@@ -251,10 +258,17 @@ const InvoiceUploadContainer = styled.TouchableOpacity`
 
 const ImageContainer = styled.View`
     width: 100%;
-    height: 356px;
+    height: 600px;
     border: ${({ theme }) => `1px solid ${theme.colors['--color-gray-400']}`};
     background-color: ${({ theme }) => theme.colors['--color-gray-300']};
     border-radius: 4px;
+`;
+
+const ContentContainer = styled.TouchableOpacity`
+    width: 100%;
+    height: 92.5%;
+    margin: 0px;
+    padding: 0px;
 `;
 
 const ImageTitleContainer = styled.View`
