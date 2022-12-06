@@ -281,10 +281,10 @@ const OrderItemTab = ({
 
     const handleRemoveItem = () => {
         let updatedOrders = orders;
-        selectedItems.map(item => {
-            updatedOrders = updatedOrders.filter(order => order?._id !== item);
-        });
-        onRemoveProductItems(updatedOrders);
+        // selectedItems.map(item => {
+        //     updatedOrders = updatedOrders.filter(order => order?._id !== item);
+        // });
+        onRemoveProductItems(selectedItems);
     };
 
     const handleConfirmDelivery = () => {
