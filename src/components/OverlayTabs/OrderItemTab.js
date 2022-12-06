@@ -288,6 +288,11 @@ const OrderItemTab = ({
     };
 
     const handleConfirmDelivery = () => {
+       console.log(selectedItems);
+    //    let updatedOrders = orders;
+    //     selectedItems.map(item => {
+    //         updatedOrders = updatedOrders.filter(order => order?._id == item);
+    //     });
         onConfirmDelivery(selectedItems);
     }
 
