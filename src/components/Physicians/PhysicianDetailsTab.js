@@ -52,8 +52,6 @@ const PhysiciansDetailsTab = ({ onFieldChange, fields, errorFields }) =>{
             value && categoryIds.push(value._id);
         });
 
-        console.log('ribbed')
-        console.log(categoryIds);
         onFieldChange('categories')(categoryIds);
     }
     
