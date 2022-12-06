@@ -36,7 +36,7 @@ function InventoryGroupGeneral({
     const baseStateRef = useRef();
 
     const { description = "", name = "" } = inventoryGroup;
-    const categoriesList = inventoryGroup?.categories || []
+    //const categoriesList = inventoryGroup?.categories || []
     const theme = useTheme();
     const modal = useModal();
     const { pageState, setPageState } = useContext(PageContext);
@@ -45,8 +45,8 @@ function InventoryGroupGeneral({
     const [categories, setCategories] = useState()
     const [categorySearchValue, setCategorySearchValue] = useState();
     const [categorySearchResults, setCategorySearchResult] = useState([]);
-    const [initialCategories, setInitialCategpries] = useState(categories.map(category => category._id))
-    const [categorySearchQuery, setCategorySearchQuery] = useState({});
+    //const [initialCategories, setInitialCategpries] = useState(categories.map(category => category._id))
+    //const [categorySearchQuery, setCategorySearchQuery] = useState({});
 
 
     useEffect(() => {
