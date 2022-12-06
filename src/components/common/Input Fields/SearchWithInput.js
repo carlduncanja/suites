@@ -1,11 +1,6 @@
 import React, { useState } from "react";
 import Row from "../Row";
 import { StyleSheet, Text, View } from 'react-native';
-import MultipleSelectionsField from "./MultipleSelectionsField";
-import InputField2 from "../common/Input Fields/InputField2";
-import FieldContainer from "../FieldContainerComponent";
-import Search from "../Search";
-import Footer from "../Page/Footer";
 
 function SearchWithInput(props){
 
@@ -60,14 +55,14 @@ function SearchWithInput(props){
 const styles = StyleSheet.create({
     container: {
       border: 0,
-      borderColor: CCD6E0,
+      borderColor: '#CCD6E0',
       position: "relative",
       width: 268,
       height: 177
 
     },
     footer: {
-        color: CCD6E0,
+        color: '#CCD6E0',
     },
     menu: {
         flexDirection: "row",

@@ -781,9 +781,12 @@ export const updatePurchaseOrderDetails = async (purchaseOrderId, data) => suite
     .then(handleResponse)
     .catch(handleError);
 
-export const confirmDelivery = async (purchaseOrderId, data) => suitesAxiosInstance.put(confirmDeliveryEndpoint(purchaseOrderId), data)
-    .then(handleResponse)
-    .catch(handleError);
+export const confirmDelivery = async (data, purchaseOrderId) => {
+    const url = confirmDeliveryEndpoint(purchaseOrderId);
+    suitesAxiosInstance.put(url, {items: data})
+        .then(handleResponse)
+        .catch(handleError)
+} 
 
 export const removePurchaseOrders = async data => suitesAxiosInstance
     .delete(purchaseOrdersEndpoint, { data })
