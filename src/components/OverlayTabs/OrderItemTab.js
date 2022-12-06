@@ -216,6 +216,17 @@ const OrderItemTab = ({
             />
         );
 
+        const cofirmDelivery = (
+            <ActionItem
+                title="Confirm Delivery"
+                icon={<AddIcon strokeColor={isEditMode ? theme.colors['--color-green-700'] : theme.colors['--color-gray-600']}/>}
+                onPress={handleConfirmDelivery}
+                disabled={!isEditMode}
+                touchable={!!isEditMode}
+            />
+
+        );
+
         const deleteItem = (
             <LongPressWithFeedback
                 pressTimer={LONG_PRESS_TIMER.MEDIUM}
@@ -237,6 +248,7 @@ const OrderItemTab = ({
             floatingActions={[
                 deleteItem,
                 addItem,
+                cofirmDelivery
             ]}
             title="ORDERS ACTIONS"
         />;
@@ -271,6 +283,10 @@ const OrderItemTab = ({
         });
         onRemoveProductItems(updatedOrders);
     };
+
+    const handleConfirmDelivery = () => {
+       console.log(selectedItems);
+    }
 
     const onChangeText = value => setSearchValue(value);
 
