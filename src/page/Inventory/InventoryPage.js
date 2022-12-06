@@ -9,7 +9,7 @@ import InventoryGroupGeneral from '../../components/OverlayTabs/InventoryGroupGe
 import ConfirmationComponent from '../../components/ConfirmationComponent';
 
 function InventoryPage({ route, navigation }) {
-    const { data = {} } = route.params;
+    
     const {
         name = '',
         _id = '',
@@ -51,7 +51,7 @@ function InventoryPage({ route, navigation }) {
 
                 console.log('group received is', groupData)
                 setSelectedInventory(groupData);
-                setFields({...fields, categories: groupData?.categories})
+                setFields({...fields, categories: groupData?.categories || []})
                 // console.log("Fetch data: ", data)
             })
             .catch(error => {
