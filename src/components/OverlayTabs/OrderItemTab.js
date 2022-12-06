@@ -281,19 +281,19 @@ const OrderItemTab = ({
 
     const handleRemoveItem = () => {
         let updatedOrders = orders;
-        // selectedItems.map(item => {
-        //     updatedOrders = updatedOrders.filter(order => order?._id !== item);
-        // });
-        onRemoveProductItems(selectedItems);
+        selectedItems.map(item => {
+            updatedOrders = updatedOrders.filter(order => order?._id !== item);
+        });
+        onRemoveProductItems(updatedOrders);
     };
 
     const handleConfirmDelivery = () => {
        console.log(selectedItems);
-       let updatedOrders = orders;
-        selectedItems.map(item => {
-            updatedOrders = updatedOrders.filter(order => order?._id == item);
-        });
-        onConfirmDelivery(updatedOrders);
+    //    let updatedOrders = orders;
+    //     selectedItems.map(item => {
+    //         updatedOrders = updatedOrders.filter(order => order?._id == item);
+    //     });
+        onConfirmDelivery(selectedItems);
     }
 
     const onChangeText = value => setSearchValue(value);
