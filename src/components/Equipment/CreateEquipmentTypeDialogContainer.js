@@ -193,6 +193,7 @@ const CreateEquipmentTypeDialogContainer = ({
                         onClear={() => { setCategorySearchValue('') }}
                         handlePopovers={() => { }}
                         isPopoverOpen={true}
+                        height={125}
                     />
                 </FieldContainer>
             </Row>
