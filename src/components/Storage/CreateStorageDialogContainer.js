@@ -6,7 +6,7 @@ import { useModal } from "react-native-modalfy";
 import DialogTabs from "../common/Dialog/DialogTabs";
 import InputUnitFields from "../common/Input Fields/InputUnitFields";
 import InputField2 from "../common/Input Fields/InputField2";
-import { createStorageLocation, getTheatres } from "../../api/network";
+import { addCategory, createStorageLocation, getCategories, getTheatres } from "../../api/network";
 // import NumberInputField from "../common/Input Fields/NumberInputField";
 
 import { addStorageLocation } from "../../redux/actions/storageActions";
@@ -20,7 +20,7 @@ import styled, { css } from '@emotion/native';
 import { useTheme } from 'emotion-theming';
 import OverlayDialogContent from '../common/Dialog/OverlayContent';
 import ConfirmationComponent from '../ConfirmationComponent';
-
+import MultipleSelectionsField from '../common/Input Fields/MultipleSelectionsField';
 /**
  * Component to handle the create storage process.
  *
@@ -59,15 +59,14 @@ function CreateStorageDialogContainer({ onCancel, onCreated, addStorageLocation 
     ])
     const [isPopoverOpen, setIsPopoverOpen] = useState(true)
 
-    // useEffect(() => {
-    // }, []);
-
     const [theatresSearchValue, setTheatreSearchValue] = useState();
     const [theatreSearchResults, setTheatreSearchResult] = useState([]);
     const [searchQuery, setSearchQuery] = useState({});
 
-
-    // ######
+    // Category Search
+    const [categories, setCategories] = useState([])
+    const [categorySearchValue, setCategorySearchValue] = useState();
+    const [categorySearchResults, setCategorySearchResult] = useState([]);
 
     // Handle theatres search
     useEffect(() => {
@@ -78,8 +77,6 @@ function CreateStorageDialogContainer({ onCancel, onCreated, addStorageLocation 
             if (searchQuery.cancel) searchQuery.cancel();
             return;
         }
-
-        // wait 300ms before search. cancel any prev request before executing current.
 
         const search = _.debounce(fetchTheatres, 300);
 
@@ -232,13 +229,79 @@ function CreateStorageDialogContainer({ onCancel, onCreated, addStorageLocation 
                 })
 
                 console.log("failed to create storage location", error)
-                // Alert.alert("Failed", `Failed to create new storage location ${fields['name']}.`)
             })
             .finally(_ => {
             });
     };
 
-    let assignedPop = popoverList.filter(item => item.name === 'assigned')
+    const handleCategorySelected = (checkCategories) => {
+        const categoryIds = [];
+
+        checkCategories.map((name) => {
+            const value = categories.find(item => item.name === name);
+            value && categoryIds.push(value._id);
+        });
+
+        onFieldChange('categories')(categoryIds);
+    }
+
+    const fetchCategories = () => {
+        getCategories("storage", 1000, categorySearchValue)
+            .then(data => {
+                setCategorySearchResult(data.data.map(item => { return item.name }));
+                categories.length == 0 && setCategories(data.data);
+            })
+            .catch(error => {
+                console.log('Unable to retrieve storage category items: ', error);
+            });
+    }
+
+    useEffect(() => {
+        fetchCategories();
+    }, [categorySearchValue, categories]);
+
+    const createCategory = (name) => {
+        if(!name) return;
+        addCategory({ name: name, type: "storage" })
+            .then(_ => {
+                setCategories([]);
+                setCategorySearchValue('');
+                fetchCategories();
+                modal.openModal('ConfirmationModal', {
+                    content: <ConfirmationComponent
+                        isEditUpdate={false}
+                        isError={false}
+                        onCancel={() => {
+                            modal.closeModals('ConfirmationModal');
+                        }}
+                        onAction={() => {
+                            modal.closeModals('ConfirmationModal');
+                        }}
+                    />,
+                    onClose: () => {
+                        modal.closeModals('ConfirmationModal');
+                    },
+                });
+            })
+            .catch(error => {
+                modal.openModal('ConfirmationModal', {
+                    content: <ConfirmationComponent
+                        isEditUpdate={false}
+                        isError={true}
+                        onCancel={() => {
+                            modal.closeModals('ConfirmationModal');
+                        }}
+                        onAction={() => {
+                            modal.closeModals('ConfirmationModal');
+                        }}
+                    />,
+                    onClose: () => {
+                        modal.closeModals('ConfirmationModal');
+                    },
+                });
+                console.log(error);
+            })
+    };
 
     return (
         <OverlayDialog
@@ -246,15 +309,28 @@ function CreateStorageDialogContainer({ onCancel, onCreated, addStorageLocation 
             onPositiveButtonPress={onPositiveClick}
             onClose={handleCloseDialog}
             positiveText={"DONE"}
-        // handlePopovers = {handlePopovers}
         >
-
-            <>
+            <View>
                 <DialogTabs
                     tabs={dialogTabs}
                     tab={selectedIndex}
                 />
                 <DialogContent theme={theme}>
+                    <View style={styles.rightRow}>
+                        <FieldContainer>
+                            <MultipleSelectionsField
+                                label={"Category"}
+                                onOptionsSelected={(value) => handleCategorySelected(value)}
+                                options={categorySearchResults}
+                                createNew={() => createCategory(categorySearchValue)}
+                                searchText={categorySearchValue}
+                                onSearchChangeText={(value) => setCategorySearchValue(value)}
+                                onClear={() => { setCategorySearchValue('') }}
+                                handlePopovers={() => {}}
+                                isPopoverOpen={true}
+                            />
+                        </FieldContainer>
+                    </View>
                     <Row>
                         <FieldContainer>
                             <InputField2
@@ -282,63 +358,7 @@ function CreateStorageDialogContainer({ onCancel, onCreated, addStorageLocation 
                         </FieldContainer>
                     </Row>
                 </DialogContent>
-
-                {/* <TouchableOpacity
-                    onPress = {()=>handlePopovers(false)()}
-                    activeOpacity = {1}
-                >
-
-                    <View style={styles.sectionContainer}>
-                        <View style={styles.row}>
-                            <View style={styles.inputWrapper}>
-                                <InputField2 label={"Location Name"}
-                                    onChangeText={onFieldChange('name')}
-                                    value={fields['name']}
-                                    onClear={() => onFieldChange('name')('')}
-                                />
-                            </View>
-
-                            <View style={styles.inputWrapper}>
-                                <InputField2
-                                    label={"Capacity"}
-                                    onChangeText={(value) => {
-                                        if (/^\d+$/g.test(value) || !value) {
-                                            onFieldChange('capacity')(value)
-                                        }
-                                    }}
-                                    value={fields['capacity']}
-                                    keyboardType={'number-pad'}
-                                    onClear={() => onFieldChange('name')('')}
-                                />
-                            </View>
-                        </View>
-
-                        <View style={styles.row}>
-                            <View style={styles.inputWrapper}>
-                                <SearchableOptionsField
-                                    label={"Assigned"}
-                                    text={theatresSearchValue}
-                                    oneOptionsSelected={(item) => {
-                                        onFieldChange('theatre')(item._id)
-                                    }}
-                                    onChangeText={value => setTheatreSearchValue(value)}
-                                    onClear={() => {
-                                        onFieldChange('theatre')('');
-                                        setTheatreSearchValue('');
-                                    }}
-                                    options={theatreSearchResults}
-                                    handlePopovers = {(value)=>handlePopovers(value)('assigned')}
-                                    isPopoverOpen = {assignedPop[0].status}
-                                />
-                            </View>
-                            {/* <View style={styles.inputWrapper}/> 
-                        </View>
-                    </View>
-
-                </TouchableOpacity>
- */}
-            </>
-
+            </View>
 
         </OverlayDialog>
     );
@@ -365,6 +385,15 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         marginBottom: 20
     },
+    rightRow: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        marginBottom: 40,
+        display: 'flex',
+        marginLeft: 'auto',
+        zIndex: 10
+
+    },
     inputWrapper: {
         // flex: 1,
         width: 260,
@@ -372,6 +401,8 @@ const styles = StyleSheet.create({
         // backgroundColor: 'blue'
     }
 });
+
+
 
 const mapDispatcherToProps = {
     addStorageLocation
