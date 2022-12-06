@@ -35,7 +35,8 @@ function PhysicianPage({route, navigation}) {
         emails,
         address,
         phones,
-        emergencyContact
+        emergencyContact,
+        field
     } = physician;
     // ##### States
 
@@ -58,7 +59,8 @@ function PhysicianPage({route, navigation}) {
         emails,
         address,
         phones,
-        emergencyContact
+        emergencyContact,
+        field
     });
 
     // ##### Lifecycle Methods
@@ -169,7 +171,7 @@ function PhysicianPage({route, navigation}) {
                             onAction={() => {
                                 modal.closeAllModals();
                             }}
-                            message="Changes were successful my boy."//general message you can send to be displayed
+                            message="Changes were successful"//general message you can send to be displayed
                             action="Yes"
                         />
                     ),
