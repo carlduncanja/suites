@@ -234,14 +234,6 @@ const InvoiceDetailsPage = ({
 
 const PageWrapper = styled.View`
     margin: 0;
-    height: 100%;
-`;
-
-const PurchaseOrderContainer = styled.View`
-    height: 100px;
-    border: ${({ theme }) => `1px solid ${theme.colors['--color-gray-300']}`};
-    margin-bottom: ${({ theme }) => theme.space['--space-40']};
-    border-width: 0 0 1px;
 `;
 
 const InvoiceWrapper = styled.View`
@@ -254,6 +246,7 @@ const InvoiceUploadContainer = styled.TouchableOpacity`
     background-color: ${({ theme }) => theme.colors['--color-gray-100']};
     align-items: center;
     justify-content: center;
+    height: 92.5%;
 `;
 
 const ImageContainer = styled.View`

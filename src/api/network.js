@@ -69,6 +69,7 @@ import {
     updateEquipmentEndpoint,
     purchaseOrdersArchiveEndpoint,
     updatePurchaseOrderDetailsEndpoint,
+    addDocumentEndpoint,
     user,
     roles,
     role,
@@ -846,6 +847,11 @@ export const requestQuotation = async (purchaseOrderId, email) => suitesAxiosIns
     .post(requestQuotationEndpoint(purchaseOrderId), email)
     .then(handleResponse)
     .catch(handleError);
+
+export const addDocumentToOrder = async (orderId, data) => suitesAxiosInstance
+    .put(addDocumentEndpoint(orderId), data)
+    .then(handleResponse)
+    .catch(handleError)
 
 // ################# Patients Endpoints
 export const updatePatient = async (id, data) => suitesAxiosInstance

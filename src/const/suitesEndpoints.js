@@ -114,6 +114,7 @@ export const updatePurchaseOrderDetailsEndpoint = id => `/purchase_orders/${id}`
 export const updatePurchaseOrderDocument = id => `/purchase_orders/${id}/document`;
 export const purchaseOrderInvoice = id => `/purchase_orders/${id}/generate-invoice`;
 export const requestQuotationEndpoint = id => `/purchase_orders/request_quotation/${id}`;
+export const addDocumentEndpoint = id => `/purchase_orders/${id}/document`;
 
 // ##### CATEGORIES
 export const categoriesEndpoint = '/categories/';
