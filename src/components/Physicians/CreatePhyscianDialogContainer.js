@@ -109,31 +109,8 @@ const CreatePhysicianDialogContainer = ({
         if (!isValid) {
             return;
         }
-        console.info('Success:', updatedFields);
+
         createPhysicianCall(updatedFields);
-
-        // let isFirstError = errorFields['firstName']
-        // let isSurnameError = errorFields['surname']
-        // let isTrnError = errorFields['trn']
-        // let isGenderError = errorFields['gender']
-
-        // fields['firstName'] === '' || null ? isFirstError = true : isFirstError = false
-        // fields['surname'] === '' || null ? isSurnameError = true : isSurnameError = false
-        // fields['trn'] === '' || null ? isTrnError = true : isTrnError = false
-        // fields['gender'] === '' || null ? isGenderError = true : isGenderError = false
-
-        // setErrorFields({
-        //     ...errorFields,
-        //     firstName: isFirstError,
-        //     surname : isSurnameError,
-        //     trn : isTrnError,
-        //     gender : isGenderError
-        // })
-
-        // if(isFirstError === false && isSurnameError === false && isTrnError === false && isGenderError === false){
-        //     console.log("Success: ",updatedFields)
-        //     // createPhysicianCall(updatedFields)
-        // }
     };
 
     const getDialogContent = tab => {
@@ -242,5 +219,6 @@ const styles = StyleSheet.create({
         width: 636,
         flexDirection: 'column',
         backgroundColor: 'white',
+        height: 250
     },
 });

@@ -30,14 +30,14 @@ const ContentContainer = styled.View`
 
 `;
 
-const RowWrapper = styled.View`
+export const RowWrapper = styled.View`
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     margin-bottom : ${ ({theme}) => theme.space['--space-16']};
 `
 
-const FieldContainer = styled.View` 
+export const FieldContainer = styled.View` 
     flex : 1;
     margin-right: ${({theme}) => theme.space['--space-16']};
 `

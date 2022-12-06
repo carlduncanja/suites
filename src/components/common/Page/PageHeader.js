@@ -38,8 +38,6 @@ function PageHeader({
 
     const {isEditMode, isReview, locked, editMsg, editDisabled} = pageState;
 
-    console.log('page state', pageState);
-
     const buttonProps = !isEditMode ?
         {
             backgroundColor: theme.colors['--accent-button'],
@@ -136,19 +134,20 @@ function PageHeader({
 
                                     return lastItem
                                         ? <HeaderText
+                                            key={index}
                                             theme={theme}
                                             numberOfLines={1}
                                             ellipsizeMode='tail'
                                             >{item}</HeaderText>
                                         : (
-                                            <>
+                                            <React.Fragment key={index}>
                                                 <SpecialText
                                                     theme={theme}
                                                 > {item}</SpecialText>
                                                 <View style={{marginLeft: 15, marginRight: 10}}>
                                                     {separator}
                                                 </View>
-                                            </>
+                                            </React.Fragment>
                                         );
                                 })
                             }

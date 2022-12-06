@@ -5,12 +5,16 @@ import ShoppingTag from '../../../assets/svg/ShoppingTag';
 import LabBottle from '../../../assets/svg/LabBottle';
 const CUSTOM_TYPES = [
     {
+        title: "Case Files",
+        page: 'CaseFilesPage'
+    },
+    {
         title: 'Appointment Buffer-time',
         page: 'AppointmentsPage',
     },
     {
         title: 'Storage',
-        page: 'InventoryPage',
+        page: 'CategoryPage',
         categoryType: 'storage',
         categoryTitle: 'Storage',
         frameTitle: "Categories",
@@ -21,7 +25,7 @@ const CUSTOM_TYPES = [
     },
     {
         title: 'Inventory',
-        page: 'InventoryPage',
+        page: 'CategoryPage',
         categoryType: 'inventory',
         categoryTitle: 'Inventory',
         frameTitle: "Categories",
@@ -31,8 +35,12 @@ const CUSTOM_TYPES = [
         frameIcon: ShoppingTag
     },
     {
+        title: "Schedule",
+        page: "SchedulePage"
+    },
+    {
         title: 'Medical Staff',
-        page: 'InventoryPage',
+        page: 'CategoryPage',
         categoryType: 'staff',
         categoryTitle: 'Staff',
         frameTitle: "Physicians",
@@ -40,29 +48,43 @@ const CUSTOM_TYPES = [
         titleBackgroundColor: '#FAF5FF',
         frameBorderColor: '#D6BCFA',
         frameIcon: LabBottle
+    },
+    {
+        title: 'Equipment',
+        page: 'CategoryPage',
+        categoryType: 'equipment',
+        categoryTitle: 'Equipment',
+        frameTitle: "Categories",
+        frameColor: '#718096',
+        titleBackgroundColor: '#EEF2F6',
+        frameBorderColor: '#CCD6E0',
+        frameIcon: ShoppingTag
     }
 ];
 
-const CustomTypes = ({navigation}) => {
+const CustomTypes = ({ navigation }) => {
     const customType = title => (
-        <DataItem color="--color-gray-700" fontStyle="--text-sm-medium" flex={1} text={title}/>
+        <DataItem color="--color-gray-700" fontStyle="--text-sm-medium" flex={1} text={title} />
     );
 
     const onItemPress = (item) => {
         navigation.navigate(item.page, { item });
     };
 
-    const renderCustomType = (item) => (
+    const renderCustomType = (item, index) => (
         <ListItem
+            key={index}
             hasCheckBox={false}
             onItemPress={() => onItemPress(item)}
             itemView={customType(item.title)}
         />
     );
+
+
     return (
         <>
-            { CUSTOM_TYPES.map(type => (
-                renderCustomType(type)
+            {CUSTOM_TYPES.map((type, index) => (
+                renderCustomType(type, index)
             ))}
         </>
     );

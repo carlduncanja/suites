@@ -40,10 +40,11 @@ const LabelWrapper = styled.View(({theme, label}) => ({
     marginRight: label ? 20 : 0
 }));
 
-const TextInputWrapper = styled.View`
-  flex: 1;
-  height: 32px;
-`;
+const TextInputWrapper = styled.View(({inputHeight}) => ({
+    flex: 1,
+    height: inputHeight ? inputHeight : 32
+}));
+
 const TextInputContainer = styled.View`
   position: relative;
   height: 100%;
@@ -73,8 +74,10 @@ const TextInputContainer = styled.View`
 const Input = styled.TextInput`
   flex: 1;
   width: 85%;
-  padding-left: ${({theme}) => theme.space['--space-10']};
-  padding-right: ${({theme}) => theme.space['--space-32']};
+  padding-left: ${({theme, alignText}) => alignText === 'left' ? theme.space['--space-10'] : 0};
+  padding-right: ${({theme, alignText}) => alignText === 'left' ?  theme.space['--space-32']: 0};
+  text-align: ${({alignText}) => alignText};
+
 `;
 
 
@@ -87,6 +90,7 @@ const IconContainer = styled.View`
 function InputField2({
                          label,
                          labelWidth,
+                         labelFont,
                          secureTextEntry = false,
                          onChangeText = () => {
                          },
@@ -108,10 +112,14 @@ function InputField2({
                          hasBorder = true,
                          Icon,
                          IconRight,
-                         maxLength
+                         maxLength,
+                         inputHeight,
+                         alignText = 'left',
+                         clearButton = true,
+                         inputRef,
                      }) {
     const theme = useTheme();
-    const inputRef = useRef();
+    if(!inputRef) inputRef = useRef();
 
     return (
         <InputContainerComponent>
@@ -120,11 +128,11 @@ function InputField2({
             {
                 label &&
                 <LabelWrapper>
-                    <InputLabelComponent label={label} width={labelWidth}/>
+                    <InputLabelComponent label={label} width={labelWidth} labelFont={labelFont}/>
                 </LabelWrapper>
             }
 
-            <TextInputWrapper>
+            <TextInputWrapper inputHeight={inputHeight}>
                 <TextInputContainer
                     backgroundColor={backgroundColor}
                     enabled={enabled}
@@ -133,6 +141,7 @@ function InputField2({
                     hasBorder={hasBorder}
                     hasIcon={!!Icon}
                     hasIconRight={!!IconRight}
+                    hasError={hasError}
                 >
 
                     {Icon}
@@ -141,7 +150,7 @@ function InputField2({
                         theme={theme}
                         onChangeText={onChangeText}
                         value={value}
-
+                        alignText={alignText}
                         editable={enabled}
                         keyboardType={keyboardType}
                         placeholder={placeholder}
@@ -162,7 +171,7 @@ function InputField2({
                     }
 
                     {
-                        !!value && enabled &&
+                        !!value && enabled && clearButton  &&
                         <IconContainer>
                             <IconButton
                                 Icon={<ClearIcon/>}

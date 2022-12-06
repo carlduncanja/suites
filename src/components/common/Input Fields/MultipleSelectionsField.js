@@ -59,7 +59,7 @@ function MultipleSelectionsField({
     hasError = false
 }) {
 
-    console.log("Category options: ", options)
+    // console.log("Category options: ", options)
 
     const theme = useTheme();
 
@@ -67,8 +67,7 @@ function MultipleSelectionsField({
     const [checkedList, setCheckedList] = useState(value)
     const [isDisplay, setIsDisplay] = useState(false)
 
-    const onCheckboxPress = (item) => () => {
-        console.log("Item: ", item)
+    const onCheckboxPress = (item) => () => { 
         let updatedList = [...checkedList]
         if (checkedList.includes(item)) {
             updatedList = updatedList.filter(filterItem => filterItem !== item)
@@ -93,14 +92,6 @@ function MultipleSelectionsField({
                 {
                     label && <InputLabelComponent label={label} />
                 }
-                {/* <Text style={[
-                    styles.textLabel, {
-                        marginRight: label ? 20 : 0
-                    }
-                ]}>
-                    {label}
-                </Text>
-                */}
 
                 <TextInputWrapper>
                     <TextInputContainer theme={theme} hasError={hasError} backgroundColor={disabled ? "--color-gray-200" : null}>
@@ -160,9 +151,8 @@ function MultipleSelectionsField({
                             onClear={onClear}
                         />
 
-
-
-                        <View style={styles.footer}>
+                        {options.length < 1? (
+                            <View style={styles.footer}>
                             <TouchableOpacity onPress={() => { createNew() }} style={{ flexDirection: "row", justifyContent: "space-evenly", }}>
                                 <AddIcon />
                                 <Text style={{ paddingLeft: 10 }}>Create New</Text>
@@ -171,6 +161,8 @@ function MultipleSelectionsField({
                                 <Text style={{ color: '#4299E1', fontSize: 12 }}>"{searchText}"</Text>
                             </View>
                         </View>
+                        ) : <></>}
+                        
                     </View>
 
                 }
@@ -235,8 +227,7 @@ const styles = StyleSheet.create({
         paddingTop: 8,
         paddingBottom: 2,
         width: '100%',
-        height: 150,
-        maxHeight: 300,
+        maxHeight: 150,
         borderRadius: 8,
         // border: 1px solid #CCD6E0;
         borderWidth: 1,

@@ -20,10 +20,10 @@ const indeterminateSvg = (
 );
 
 const CheckboxWrapper = styled.TouchableOpacity`
-    padding-left: ${ ({theme}) => theme.space['--space-16']};
-    padding-right: ${ ({theme}) => theme.space['--space-16']};
-    padding-top: ${ ({theme}) => theme.space['--space-18']};
-    padding-bottom: ${ ({theme}) => theme.space['--space-18']};
+    padding-left: ${ ({theme, paddingLeft}) => paddingLeft ? paddingLeft : theme.space['--space-16']};
+    padding-right: ${ ({theme, paddingRight}) => paddingRight ? paddingRight : theme.space['--space-16']};
+    padding-top: ${ ({theme, paddingTop}) => paddingTop ? paddingTop : theme.space['--space-18']};
+    padding-bottom: ${ ({theme, paddingBottom}) => paddingBottom ? paddingBottom : theme.space['--space-18']};
     justify-content: center;
     align-items: center;
 
@@ -39,12 +39,15 @@ const CheckboxContainer = styled.View`
     justify-content: center;
 `;
 
-function CheckBoxComponent({isCheck, isIndeterminate, onPress}) {
+function CheckBoxComponent({isCheck, isIndeterminate, onPress, paddingLeft, paddingRight, paddingTop}) {
     const theme = useTheme();
      
     return (
 
-        <CheckboxWrapper onPress={onPress} activeOpacity={0.8} theme={theme}>
+        <CheckboxWrapper onPress={onPress} activeOpacity={0.8} theme={theme}
+        paddingLeft={paddingLeft}
+        paddingRight={paddingRight}
+        paddingTop={paddingTop}>
             <CheckboxContainer theme={theme}>
                 {
                     isIndeterminate

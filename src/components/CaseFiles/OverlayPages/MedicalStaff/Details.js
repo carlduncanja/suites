@@ -34,7 +34,8 @@ const Details = ({ tabDetails,
     const nursesIds = nurses.map(nurses => {
         const { _id = "" } = nurses
         return _id
-    })
+    }) 
+    
     return (
         <ScrollView>
 
