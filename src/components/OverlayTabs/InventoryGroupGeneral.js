@@ -62,7 +62,7 @@ function InventoryGroupGeneral({
 
     useEffect(() => {
         fetchCategories();
-    }, [categorySearchValue]);
+    }, [categorySearchValue, categories]);
 
     const fetchCategories = () => {
         getCategories("inventory", 1000, categorySearchValue)
@@ -98,6 +98,7 @@ function InventoryGroupGeneral({
         addCategory({ name: name, type: "inventory" })
             .then(_ => {
                 setCategories([]);
+                setCategorySearchValue('');
                 fetchCategories();
                 modal.openModal('ConfirmationModal', {
                     content: <ConfirmationComponent
