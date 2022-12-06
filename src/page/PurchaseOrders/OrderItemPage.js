@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { View, ActivityIndicator, StyleSheet, Text, TouchableOpacity, Alert } from 'react-native';
-import { getPurchaseOrderById, updatePurchaseOrder, updatePurchaseOrderDetails, updateInvoiceDocumnet, updatePurchaseOrderStatus, generatePurchaseOrderInvoice } from '../../api/network';
+import { getPurchaseOrderById, updatePurchaseOrder, updatePurchaseOrderDetails, updateInvoiceDocumnet, updatePurchaseOrderStatus, generatePurchaseOrderInvoice, confirmDelivery } from '../../api/network';
 import OrderDetailsTab from '../../components/OverlayTabs/OrderDetailsTab';
 import OrderItemTab from '../../components/OverlayTabs/OrderItemTab';
 import SupplierDetailsTab from '../../components/OverlayTabs/SupplierDetailsTab';
@@ -200,6 +200,32 @@ function OrderItemPage({ route, navigation }) {
             })
     };
 
+    const onConfirmDelivery = (data) => {
+        console.log('confirm delivery');
+        modal.openModal('ConfirmationModal',
+            {
+                content: <ConfirmationComponent
+                    isError={false}
+                    isEditUpdate={true}
+                    onAction={() => {
+                        modal.closeModals('ConfirmationModal');
+                        confirmDelivery(data, _id)
+                    }}
+
+                    onCancel={() => {
+                        modal.closeModals('ConfirmationModal')
+
+                    }}
+                    message="Do you want to confirm delivery for these item(s)?"
+
+                />
+                ,
+                onClose: () => {
+                    modal.closeModals('ConfirmationModal')
+                }
+            })
+    };
+
     // ##### Helper functions
 
     const setPageLoading = (value) => {
@@ -275,6 +301,7 @@ function OrderItemPage({ route, navigation }) {
                     supplierId={supplier?._id}
                     onAddProductItems={onAddProductItems}
                     onRemoveProductItems={onRemoveProductItems}
+                    onConfirmDelivery = {onConfirmDelivery}
                 />;
             case 'Suppliers':
                 return <SupplierDetailsTab supplierId={supplier?._id} order={selectedOrder} onUpdated={fetchOrder} />;

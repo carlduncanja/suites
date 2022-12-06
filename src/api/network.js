@@ -87,7 +87,8 @@ import {
     purchaseOrderInvoice, inventoryGroupsBulkUpload, proceduresUploadEndpoint, deleteCaseFileEndpoint, deleteCaseFilesEndpiont,
     invoicesEndpoint, invoiceEndpoint, updateInvoiceDetailsEndpoint,
     emailEndpoint,
-    updateCategoryEndpoint
+    updateCategoryEndpoint,
+    confirmDeliveryEndpoint
 } from '../const/suitesEndpoints';
 import { createDocumentLink, documentById, documentData, documentUpload } from '../const/documentGenerationEndpoints';
 
@@ -777,6 +778,10 @@ export const updatePurchaseOrder = async (purchaseOrderId, data) => suitesAxiosI
     .catch(handleError);
 
 export const updatePurchaseOrderDetails = async (purchaseOrderId, data) => suitesAxiosInstance.put(updatePurchaseOrderDetailsEndpoint(purchaseOrderId), data)
+    .then(handleResponse)
+    .catch(handleError);
+
+export const confirmDelivery = async (purchaseOrderId, data) => suitesAxiosInstance.put(confirmDeliveryEndpoint(purchaseOrderId), data)
     .then(handleResponse)
     .catch(handleError);
 

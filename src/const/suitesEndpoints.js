@@ -106,6 +106,7 @@ export const updatePurchaseOrderEndpoint = id => `/purchase_orders/${id}/orders`
 export const updatePurchaseOrderDetailsEndpoint = id => `/purchase_orders/${id}`;
 export const updatePurchaseOrderDocument = id => `/purchase_orders/${id}/document`;
 export const purchaseOrderInvoice = id => `/purchase_orders/${id}/generate-invoice`;
+export const confirmDeliveryEndpoint = id => `/purchase_orders/${id}/delivery`;
 
 // ##### CATEGORIES
 export const categoriesEndpoint = '/categories/';
