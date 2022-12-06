@@ -20,8 +20,6 @@ import ConfirmationComponent from '../ConfirmationComponent';
 
 function PhysicianPage({route, navigation}) {
     const {physician, isOpenEditable, reloadPhysicians} = route.params;
-    console.log('ramus');
-    console.log(route.params);
     const currentTabs = ['Details', 'Case Files', 'Custom Procedures', 'Schedule'];
     const modal = useModal();
     const {

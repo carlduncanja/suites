@@ -63,7 +63,6 @@ function LoginPage({ navigation, signIn, expoPushToken }) {
         login(fields.email, fields.password, expoPushToken)
             .then(async data => {
                 // save auth data
-                console.log(data);
                 const { token = null } = data;
                 try {
                     await AsyncStorage.setItem('userToken', token);
@@ -112,7 +111,6 @@ function LoginPage({ navigation, signIn, expoPushToken }) {
         login("howard.edwards@smsja.net", "password1", expoPushToken)
             .then(async data => {
                 // save auth data
-                console.log(data);
                 const { token = null } = data;
                 try {
                     await AsyncStorage.setItem('userToken', token);

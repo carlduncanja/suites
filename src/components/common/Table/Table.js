@@ -42,11 +42,12 @@ function Table({
     },
     headers = [],
     isCheckbox = true,
-    toggleHeaderCheckbox = () => {
-    },
+    toggleHeaderCheckbox = () => {},
+    extraData=false,
     itemSelected = [],
     hasBanner = false,
     bannerText = '',
+    
     keyExtractor = (item) => ((item?.id || "") || (item?._id || "")) + new Date().getTime()
 }) {
     // const {
@@ -67,6 +68,7 @@ function Table({
     // const itemSelected = isCheckbox ? itemSelected : [];
 
     const isIndeterminate = itemSelected?.length > 0 && itemSelected?.length !== data?.length;
+
     return (
         <ListWrapper>
             <ListContainer>
@@ -91,6 +93,7 @@ function Table({
                     keyExtractor={keyExtractor}
                     contentContainerStyle={{ paddingBottom: 100 }}
                     keyboardShouldPersistTaps={'always'}
+                    extraData={extraData}
                 />
             </ListContainer>
         </ListWrapper>

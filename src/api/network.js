@@ -45,6 +45,8 @@ import {
     forgotPasswordEndpoint,
     appointmentsEndpoint,
     appointmentEndpoint,
+    appointmentTypeEndPiont,
+    updateAppiontmentTypeEndpiont,
     validateCaseProcedureEndpoint,
     suggestedStartTimeEndpoint,
     updateQuotationStatusEndpoint,
@@ -97,7 +99,8 @@ import {
     updateHealthInsurerEndpoint,
     UpdateLifeStyleItems,
     verifyOtpEndpoint,
-    resetPasswordEndpoint
+    resetPasswordEndpoint,
+    requestQuotationEndpoint
 } from '../const/suitesEndpoints';
 import { createDocumentLink, documentById, documentData, documentUpload } from '../const/documentGenerationEndpoints';
 
@@ -243,6 +246,20 @@ export const searchSchedule = async query => {
         .then(handleResponse)
         .catch(handleError);
 };
+
+// ###### Appiontment Types 
+
+export const getAppointmentTypes = async () => suitesAxiosInstance
+    .get(appointmentTypeEndPiont)
+    .then(handleResponse)
+    .catch(handleError)
+
+export const updateAppointmentTypes = async (id, data) => suitesAxiosInstance
+    .put(updateAppiontmentTypeEndpiont(id), data)
+    .then(handleResponse)
+    .catch(handleError)
+
+
 
 // ################# Theatres Endpoints
 export const getTheatres = async (query, max, page, isRecovery) => suitesAxiosInstance
@@ -822,6 +839,11 @@ export const updateInvoiceDocument = async (purchaseOrderId, data) => suitesAxio
 
 export const generatePurchaseOrderInvoice = async (purchaseOrderId, status) => suitesAxiosInstance
     .put(purchaseOrderInvoice(purchaseOrderId), status)
+    .then(handleResponse)
+    .catch(handleError);
+
+export const requestQuotation = async (purchaseOrderId, email) => suitesAxiosInstance
+    .post(requestQuotationEndpoint(purchaseOrderId), email)
     .then(handleResponse)
     .catch(handleError);
 
