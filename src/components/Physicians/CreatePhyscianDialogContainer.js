@@ -104,13 +104,14 @@ const CreatePhysicianDialogContainer = ({
             }]
             // trn : parseInt(fields['trn']) || ''
         };
-
+        console.log('wallet')
+        console.log(updatedFields);
         isValid = validatePhysician();
         if (!isValid) {
             return;
         }
 
-        createPhysicianCall(updatedFields);
+        // createPhysicianCall(updatedFields);
     };
 
     const getDialogContent = tab => {

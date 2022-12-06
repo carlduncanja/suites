@@ -46,13 +46,17 @@ const PhysiciansDetailsTab = ({ onFieldChange, fields, errorFields }) =>{
 
     const handleCategorySelected = (checkCategories) => {
         const categoryIds = [];
+
         checkCategories.map((name) => {
             const value = categories.find(item => item.name === name);
             value && categoryIds.push(value._id);
-        })
-        onFieldChange('categories')(categoryIds)
-    }
+        });
 
+        console.log('ribbed')
+        console.log(categoryIds);
+        onFieldChange('categories')(categoryIds);
+    }
+    
     const fetchCategories = () => {
         getCategories("physician", 1000, categorySearchValue)
             .then(data => {
@@ -66,13 +70,14 @@ const PhysiciansDetailsTab = ({ onFieldChange, fields, errorFields }) =>{
 
     useEffect(() => {
         fetchCategories();
-    }, [categorySearchValue]);
+    }, [categorySearchValue, categories]);
     
     const createCategory = (name) => {
         if(!name) return;
         addCategory({ name: name, type: "physician" })
             .then(_ => {
                 setCategories([]);
+                setCategorySearchValue('');
                 fetchCategories();
                 modal.openModal('ConfirmationModal', {
                     content: <ConfirmationComponent
@@ -110,6 +115,7 @@ const PhysiciansDetailsTab = ({ onFieldChange, fields, errorFields }) =>{
             })
     };
 
+    
     return (
         <View style={styles.sectionContainer}>
 
