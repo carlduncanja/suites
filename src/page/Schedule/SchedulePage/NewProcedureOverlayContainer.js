@@ -196,11 +196,12 @@ function NewProcedureOverlayContainer({ appointment = {}, editMode = false, pass
 
         await getCaseFileByPatientId(patientID)
             .then(data => {
+                
                 setPatientCase(data)
             })
             .catch(err => {
                 console.log(err)
-                hanadleErrorModal()
+                //hanadleErrorModal()
             })
 
 
