@@ -451,7 +451,6 @@ const Physicians = props => {
                             onCancel={() => setFloatingAction(false)}
                             onCreated={item => {
                                 handleOnItemPress(item, true);
-                                console.log(item)
                             }}
                         />,
                         onClose: () => setFloatingAction(false)

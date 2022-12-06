@@ -56,7 +56,7 @@ const PhysiciansDetailsTab = ({ onFieldChange, fields, errorFields }) =>{
     }
     
     const fetchCategories = () => {
-        getCategories("physician", 1000, categorySearchValue)
+        getCategories("staff", 1000, categorySearchValue)
             .then(data => {
                 setCategorySearchResult(data.data.map(item => { return item.name }));
                 categories.length == 0 && setCategories(data.data);
@@ -72,7 +72,7 @@ const PhysiciansDetailsTab = ({ onFieldChange, fields, errorFields }) =>{
     
     const createCategory = (name) => {
         if(!name) return;
-        addCategory({ name: name, type: "physician" })
+        addCategory({ name: name, type: "staff" })
             .then(_ => {
                 setCategories([]);
                 setCategorySearchValue('');
