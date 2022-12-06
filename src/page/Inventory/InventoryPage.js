@@ -139,7 +139,7 @@ function InventoryPage({ route, navigation }) {
             ...selectedInventory,
             description: fields.description,
             name: fields.name,
-            categories: [...groupCategories]
+            categories: fields.categories
         };
         updateInventoryGroupById(selectedInventory?._id, updatedGroup)
             .then(_ => {

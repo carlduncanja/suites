@@ -42,7 +42,7 @@ function InventoryGroupGeneral({
     const { pageState, setPageState } = useContext(PageContext);
     const { isEditMode } = pageState;
 
-    const [categories, setCategories] = useState()
+    const [categories, setCategories] = useState(inventoryGroup?.categories || [])
     const [categorySearchValue, setCategorySearchValue] = useState();
     const [categorySearchResults, setCategorySearchResult] = useState([]);
     //const [initialCategories, setInitialCategpries] = useState(categories.map(category => category._id))
