@@ -51,6 +51,7 @@ function InventoryPage({ route, navigation }) {
 
                 console.log('group received is', groupData)
                 setSelectedInventory(groupData);
+                setFields({...fields, categories: groupData.categories})
                 // console.log("Fetch data: ", data)
             })
             .catch(error => {

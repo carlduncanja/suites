@@ -36,13 +36,13 @@ function InventoryGroupGeneral({
     const baseStateRef = useRef();
 
     const { description = "", name = "" } = inventoryGroup;
-    //const categories = inventoryGroup?.categories || []
+    const categoriesList = inventoryGroup?.categories || []
     const theme = useTheme();
     const modal = useModal();
     const { pageState, setPageState } = useContext(PageContext);
     const { isEditMode } = pageState;
 
-    const [categories, setCategories] = useState(inventoryGroup?.categories || [])
+    const [categories, setCategories] = useState()
     const [categorySearchValue, setCategorySearchValue] = useState();
     const [categorySearchResults, setCategorySearchResult] = useState([]);
     const [initialCategories, setInitialCategpries] = useState(categories.map(category => category._id))
@@ -189,7 +189,7 @@ function InventoryGroupGeneral({
                 /> :
                 <Record
                         recordTitle="Categories"
-                        recordValue={categories.map(x => x.name).join(', ')}
+                        recordValue={categoriesList.map(x => x.name).join(', ')}
                         flex={0.8}
                     />
                 }
