@@ -189,7 +189,7 @@ function InventoryGroupGeneral({
                 /> :
                 <Record
                         recordTitle="Categories"
-                        recordValue={categoriesList.map(x => x.name).join(', ')}
+                        recordValue={fields['categories'].map(x => x.name).join(', ')}
                         flex={0.8}
                     />
                 }
