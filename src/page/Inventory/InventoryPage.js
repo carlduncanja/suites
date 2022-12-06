@@ -9,7 +9,7 @@ import InventoryGroupGeneral from '../../components/OverlayTabs/InventoryGroupGe
 import ConfirmationComponent from '../../components/ConfirmationComponent';
 
 function InventoryPage({ route, navigation }) {
-    
+    const { data = {} } = route.params;
     const {
         name = '',
         _id = '',
