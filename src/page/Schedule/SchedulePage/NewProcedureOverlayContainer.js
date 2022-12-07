@@ -468,6 +468,7 @@ function NewProcedureOverlayContainer({ appointment = {}, editMode = false, pass
             ...staffInfo,
             staff
         ])
+        
     }
 
 
