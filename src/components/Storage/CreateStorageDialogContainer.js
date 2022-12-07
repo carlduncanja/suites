@@ -303,12 +303,15 @@ function CreateStorageDialogContainer({ onCancel, onCreated, addStorageLocation 
             })
     };
 
+    const [isOpen, setIsOpen] = useState(false);
+
     return (
         <OverlayDialog
             title={"New Location"}
             onPositiveButtonPress={onPositiveClick}
             onClose={handleCloseDialog}
             positiveText={"DONE"}
+            isOpen={isOpen}
         >
             <View>
                 <DialogTabs
@@ -316,21 +319,7 @@ function CreateStorageDialogContainer({ onCancel, onCreated, addStorageLocation 
                     tab={selectedIndex}
                 />
                 <DialogContent theme={theme}>
-                    <View style={styles.rightRow}>
-                        <FieldContainer>
-                            <MultipleSelectionsField
-                                label={"Category"}
-                                onOptionsSelected={(value) => handleCategorySelected(value)}
-                                options={categorySearchResults}
-                                createNew={() => createCategory(categorySearchValue)}
-                                searchText={categorySearchValue}
-                                onSearchChangeText={(value) => setCategorySearchValue(value)}
-                                onClear={() => { setCategorySearchValue('') }}
-                                handlePopovers={() => {}}
-                                isPopoverOpen={true}
-                            />
-                        </FieldContainer>
-                    </View>
+                    
                     <Row>
                         <FieldContainer>
                             <InputField2
@@ -357,7 +346,27 @@ function CreateStorageDialogContainer({ onCancel, onCreated, addStorageLocation 
                             />
                         </FieldContainer>
                     </Row>
+                    <View style={{width: 10, height: 35}}>
+                    </View>
+                    <Row>
+                        <FieldContainer>
+                            <MultipleSelectionsField
+                                    setOpen={setIsOpen}
+                                    label={"Category"}
+                                    onOptionsSelected={(value) => handleCategorySelected(value)}
+                                    options={categorySearchResults}
+                                    createNew={() => createCategory(categorySearchValue)}
+                                    searchText={categorySearchValue}
+                                    onSearchChangeText={(value) => setCategorySearchValue(value)}
+                                    onClear={() => { setCategorySearchValue('') }}
+                                    handlePopovers={() => {}}
+                                    isPopoverOpen={true}
+                                />
+                        </FieldContainer>
+                    </Row>
                 </DialogContent>
+
+                
             </View>
 
         </OverlayDialog>

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import { View, StyleSheet, Text, TouchableOpacity } from "react-native";
 import ClearIcon from "../../../../assets/svg/clearIcon";
@@ -32,7 +32,8 @@ const OverlayDialogContainer = styled.View`
 
 
 const OverlayContentWrapper = styled.View`
-  zIndex: 9;
+  z-index: ${(props) => props.zIndex || 1};
+  position: relative;
   width : 100%;
 `;
 const OverlayContentContainer = styled.View`
@@ -48,11 +49,17 @@ function OverlayDialog(props) {
     onPositiveButtonPress = () => {}, 
     positiveText = "DONE",
     buttonIcon = <View />,
-    isButtonDisabled = false
-    // handlePopovers = () =>{}
+    isButtonDisabled = false,
+    // handlePopovers = () =>{},
+    isOpen = false
   } = props;
 
   const theme = useTheme();
+  const [zIndex, setZindex] = useState(isOpen ? 11 : 1);
+  
+  useEffect(() => {
+    setZindex(isOpen ? 11 : 1)
+  }, [isOpen])
 
   return (
     <OverlayDialogWrapper>
@@ -63,19 +70,18 @@ function OverlayDialog(props) {
           onClose = {onClose}
         />
 
-        
+        <OverlayContentWrapper zIndex={zIndex}>
+          <OverlayContentContainer theme = {theme}> 
+            {props.children}
+          </OverlayContentContainer>
+        </OverlayContentWrapper>
+
         <OverlayDialogFooter
           onPositiveButtonPress = {onPositiveButtonPress}
           positiveText = {positiveText}
           buttonIcon = {buttonIcon}
           isButtonDisabled={isButtonDisabled}
         />
-      
-        <OverlayContentWrapper>
-          <OverlayContentContainer theme = {theme}> 
-            {props.children}
-          </OverlayContentContainer>
-        </OverlayContentWrapper>
 
      
     
@@ -117,7 +123,8 @@ OverlayDialog.propTypes = {
   onClose: PropTypes.func,
   onPositiveButtonPress: PropTypes.func.isRequired,
   positiveText: PropTypes.string.isRequired,
-  isButtonDisabled: PropTypes.bool
+  isButtonDisabled: PropTypes.bool,
+  isOpen: PropTypes.bool
 };
 OverlayDialog.defaultProps = {};
 

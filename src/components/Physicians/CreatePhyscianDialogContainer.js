@@ -113,10 +113,13 @@ const CreatePhysicianDialogContainer = ({
         createPhysicianCall(updatedFields);
     };
 
+    const [aboveOpen, setAboveOpen] = useState(false);
+
     const getDialogContent = tab => {
         switch (tab) {
             case 'Details':
                 return <PhysicianDetailsTab
+                    setAboveOpen={setAboveOpen}
                     onFieldChange={onFieldChange}
                     fields={fields}
                     errorFields={errorFields}
@@ -190,6 +193,7 @@ const CreatePhysicianDialogContainer = ({
 
     return (
         <OverlayDialog
+            isOpen={aboveOpen}
             title="Add Physician"
             onPositiveButtonPress={onPositiveButtonPress}
             onClose={handleCloseDialog}
@@ -219,6 +223,6 @@ const styles = StyleSheet.create({
         width: 636,
         flexDirection: 'column',
         backgroundColor: 'white',
-        height: 250
+        height: 225
     },
 });
