@@ -1,30 +1,26 @@
 import React, { useContext, useEffect, useState } from 'react';
 import styled, { css } from '@emotion/native';
-import { TouchableOpacity } from 'react-native';
 import { useTheme } from 'emotion-theming';
 import { PageContext } from '../../contexts/PageContext';
-import Record from '../../components/common/Information Record/Record';
-import Footer from '../../components/common/Page/Footer';
 import ImageUpload from '../../../assets/svg/imageUpload';
 import ImageUploading from '../../../assets/svg/imageUploading';
 import DeleteIcon from '../../../assets/svg/wasteIcon';
-import TestImage from '../../../assets/test_image.png';
 import IconButton from '../../components/common/Buttons/IconButton';
-import { useSafeArea } from 'react-native-safe-area-context';
-import { getFiletData, getDocumentById } from '../../api/network';
+import { getFiletData } from '../../api/network';
 import LoadingIndicator from '../../components/common/LoadingIndicator';
 import PdfReader from 'rn-pdf-reader-js';
 import * as FileSystem from 'expo-file-system';
 
 
 const InvoiceDetailsPage = ({
-    onImageUpload = () => {},
-    removeInvoice = () => {},
-    openFullView = () => {},
+    onImageUpload = () => { },
+    removeDocument = () => { },
+    openFullView = () => { },
     isImageUploading = false,
     isImageUpdating = false,
     canUpdateDoc = false,
-    invoiceImage,
+    canDelete = false,
+    previewImage,
     canPreview = true,
     documentId,
     frameName,
@@ -35,7 +31,6 @@ const InvoiceDetailsPage = ({
     const { pageState, setPageState } = useContext(PageContext);
     const { isEditMode } = pageState;
 
-    const [isPageLoading, setIsPageLoading] = useState(false);
     const [documentImageData, setDocumentImageData] = useState();
     const [uri, setUri] = useState('');
     const [canDocumentPreview, setCanDocumentPreview] = useState(canPreview);
@@ -48,7 +43,6 @@ const InvoiceDetailsPage = ({
     }, []);
 
     const getDocumentData = async () => {
-        setIsPageLoading(true);
         getFiletData(documentId)
             .then(async (res) => {
                 setDocumentImageData(res.data);
@@ -77,7 +71,6 @@ const InvoiceDetailsPage = ({
                 setCanDocumentPreview(false);
                 console.log("An error occured whilst getting document data", err);
             })
-            .finally(_ => setIsPageLoading(false))
     }
 
 
@@ -88,7 +81,7 @@ const InvoiceDetailsPage = ({
                     theme={theme}
                     font="--text-sm-medium"
                     textColor="--color-blue-600"
-                >{canUpdateDoc ? '' : frameName}</PageText>
+                >{frameName}</PageText>
                 {
                     isEditMode && (
                         <IconConatiner>
@@ -137,10 +130,7 @@ const InvoiceDetailsPage = ({
     );
 
     const removeImage = () => {
-        if (documentId) {
-            setDocumentImageData();
-        }
-        removeInvoice();
+        removeDocument();
     }
 
     const content = () => {
@@ -155,7 +145,34 @@ const InvoiceDetailsPage = ({
                     </PageText>
                 </RejectedPreviewContainer>
             )
-        } else if (documentImageData && isPdf && uri) {
+        }
+        else if (previewImage) {
+            if (previewImage.mimeType === "application/pdf") {
+                return (
+
+                    <ContentContainer onPress={() => openFullView(true, previewImage.uri)}>
+                        <PdfReader
+                            source={{
+                                base64: previewImage.uri
+                            }}
+                        />
+                    </ContentContainer>
+                )
+            } else {
+                <UploadedImageContainer
+                    activeOpacity={0.6}
+                    onPress={() => openFullView(false, previewImage.uri)}
+                >
+                    <PreviewImage
+                        source={{ uri: previewImage.uri }}
+                    />
+                </UploadedImageContainer>
+            }
+
+
+
+        }
+        else if (documentImageData && isPdf && uri) {
             return (
                 <ContentContainer onPress={() => openFullView(true, uri)}>
                     <PdfReader
@@ -163,7 +180,7 @@ const InvoiceDetailsPage = ({
                             base64: uri
                         }}
                     />
-                    </ContentContainer>
+                </ContentContainer>
 
             )
         }
@@ -176,19 +193,7 @@ const InvoiceDetailsPage = ({
                 </ViewImageContainer>
             )
         }
-        else {
-            return (
-                <UploadedImageContainer
-                    activeOpacity={0.6}
-                    onPress={() => openFullView(true, uri)}
-                >
-                    <PreviewImage
-                        source={{ uri: uri }}
-                    />
-                </UploadedImageContainer>
 
-            )
-        }
     }
 
     const imageContent = (
@@ -200,11 +205,11 @@ const InvoiceDetailsPage = ({
                     textColor="--color-blue-600"
                 >{canUpdateDoc ? '' : frameName}</PageText>
                 {
-                    isEditMode && (
+                    (canDelete && isEditMode) && (
                         <IconConatiner>
                             <IconButton
                                 Icon={<DeleteIcon />}
-                                onPress={() => openFullView(true, uri)}
+                                onPress={() => removeImage()}
                             />
                         </IconConatiner>
                     )
@@ -219,11 +224,11 @@ const InvoiceDetailsPage = ({
     return (
 
         <PageWrapper>
-                    <InvoiceWrapper>
-                        {
-                            (invoiceImage || documentImageData) ? imageContent : uploadContent
-                        }
-                    </InvoiceWrapper>
+            <InvoiceWrapper>
+                {
+                    documentImageData && (!canUpdateDoc || previewImage) ? imageContent : uploadContent
+                }
+            </InvoiceWrapper>
         </PageWrapper>
     )
 }

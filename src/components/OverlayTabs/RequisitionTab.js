@@ -30,7 +30,7 @@ margin-bottom: 30px;
 
 const RequisitionTab = ({ order = {} }) => {
     const modal = useModal();
-    const [pageState, setPageState] = useState({});
+    const { pageState, setPageState } = useContext(PageContext);
     const [isImageUploading, setIsImageUploading] = useState(false);
     const [content, setContent] = useState();
     const [canPreview, setCanPreview] = useState(true);
@@ -74,21 +74,31 @@ const RequisitionTab = ({ order = {} }) => {
     const onImageUpload = async () => {
         setIsImageUploading(true);
         DocumentPicker.getDocumentAsync()
-            .then(result => {
-                const testUri = (result.uri).match(/[^.]*$/g)[0] || '';
-                const acceptedFormats = (testUri === 'jpg') || (testUri === 'JPG') || (testUri === 'png') || (testUri === 'PNG') || (testUri === 'pdf') || (testUri === 'PDF');
-                if (acceptedFormats) {
-                    if (result.type === 'success') {
-                        console.log('Invoice image: ', result);
+            .then(async (result) => {
+                if (result.type === "success") {
+                    const testUri = (result.uri).match(/[^.]*$/g)[0] || '';
+                    const acceptedFormats = (testUri === 'jpg') || (testUri === 'JPG') || (testUri === 'png') || (testUri === 'PNG') || (testUri === 'pdf') || (testUri === 'PDF');
+
+                    if (acceptedFormats) {
+                        if (result.mimeType === "application/pdf") {
+                            const document = await FileSystem.readAsStringAsync(result.uri, {
+                                encoding: 'base64',
+                            });
+                            setContent({ ...result, uri: `data:application/pdf;base64,${document}` })
+                        } else {
+                            setContent(result);
+                        }
                         setIsDocSelected(true);
                         setCanUpdateDoc(false);
-                        setContent(result);
                     }
-                } else {
-                    errorModal("Document format selected is not supported");
+                    else {
+                        errorModal("Document format selected is not supported");
+                    }
+
                 }
             })
-            .catch(_ => {
+            .catch(error => {
+                console.log(error);
                 errorModal();
             })
             .finally(_ => {
@@ -106,30 +116,27 @@ const RequisitionTab = ({ order = {} }) => {
         });
     };
 
-    const removeInvoice = () => {
+    const removeDocument = () => {
         modal.openModal('ConfirmationModal', {
             content: (
                 <ConfirmationComponent
-                    isError={false}//boolean to show whether an error icon or success icon
-                    isEditUpdate={true}
-                    onCancel={() => { modal.closeAllModals(); }}
-                    onAction={() => { modal.closeAllModals(); handleInvoiceUploadRemoval(); }}
-                    message="Do you wish to delete this item?"
+                    isWarning={true}
+                    onCancel={() => {
+                        modal.closeModals('ConfirmationModal');
+                    }}
+                    onAction={() => {
+                        modal.closeModals('ConfirmationModal');
+                        onImageUpload();
+                    }}
+                    message={`By removing this document, we'll request that you upload a new one.`}
+                    secondaryMessage={'Do you wish to continue?'}
+                    type={'binary'}
                 />
             ),
             onClose: () => {
                 console.log('Modal closed');
             },
         });
-    };
-
-    const handleInvoiceUploadRemoval = () => {
-        //  if (invoiceObj.documentId) {
-        //     setCanUpdateDoc(true);
-        //     onImageUpload();
-        // }
-        setQuotation();
-
     };
 
     const errorModal = (message) => {
@@ -176,12 +183,12 @@ const RequisitionTab = ({ order = {} }) => {
 
 
                 <InvoiceDetailsPage
-                    removeInvoice={removeInvoice}
                     openFullView={openFullView}
                     isImageUploading={isImageUploading}
                     isImageUpdating={isImageUpdating}
                     canPreview={canPreview}
                     canUpdateDoc={false}
+                    canDelete={false}
                     frameName={"Requisition"}
                     documentId={order.requisitionDocId}
                 />
@@ -190,12 +197,13 @@ const RequisitionTab = ({ order = {} }) => {
                     isUploadingDoc ? <LoadingIndicator /> : (
                         <InvoiceDetailsPage
                             onImageUpload={onImageUpload}
-                            removeInvoice={removeInvoice}
+                            removeDocument={removeDocument}
                             openFullView={openFullView}
                             isImageUploading={isImageUploading}
                             isImageUpdating={isImageUpdating}
-                            canUpdateDoc={canUpdateDoc}
+                            canUpdateDoc={isEditMode}
                             previewImage={content}
+                            canDelete={(order.quotationDocId || content) && true}
                             frameName={"Quotation"}
                             frameText={"Add the quotation recieved from the supplier for the requisition above."}
                             frameSecondaryText={"Add quotation"}
