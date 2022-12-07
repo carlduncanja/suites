@@ -145,6 +145,8 @@ function StorageDetailsTab({
             });
     };
 
+    console.log('momo');
+    console.log(fields)
     return (
         <>
             <Row>
@@ -170,6 +172,29 @@ function StorageDetailsTab({
                     onClearValue={() => onFieldChange('name')('')}
                     flex={0.5}
                 />
+            </Row>
+
+            <Row>
+                {isEditMode ? 
+                    <MultipleSelectionsField
+                    label={"Category"}
+                    value={"fields['categories'].map(x=> x.name)"}
+                    onOptionsSelected={(value) => console.log('value')}
+                    options={'categorySearchResults'}
+                    createNew={() => console.log('value')}
+                    searchText={'categorySearchValue'}
+                    onSearchChangeText={(value) => console.log('value')}
+                    onClear={() => { console.log('value')}}
+                    handlePopovers={() => { }}
+                    isPopoverOpen={true}
+                /> :
+                <Record
+                        recordTitle="Categories"
+                        recordValue={"fields['categories'].map(x => x.name).join(', ')"}
+                        flex={0.8}
+                    />
+                }
+                
             </Row>
 
             <Footer
