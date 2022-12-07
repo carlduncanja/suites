@@ -201,7 +201,6 @@ function OrderItemPage({ route, navigation }) {
     };
 
     const onConfirmDelivery = (data) => {
-        console.log('confirm delivery');
         modal.openModal('ConfirmationModal',
             {
                 content: <ConfirmationComponent
@@ -209,6 +208,7 @@ function OrderItemPage({ route, navigation }) {
                     isEditUpdate={true}
                     onAction={() => {
                         modal.closeModals('ConfirmationModal');
+                        
                         confirmDelivery(data, _id)
                     }}
 
