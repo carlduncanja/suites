@@ -14,7 +14,7 @@ import ConfirmationComponent from '../ConfirmationComponent';
 
 const EditablePhysiciansDetailsTab = ({ fields, onFieldChange }) => {
 
-    const modal = useModal();
+    const modal =  useModal();
 
     const [docterFeild, setDocterFeild] = useState('')
     const [docterFieldResult, setDocterFieldResult] = useState([])
