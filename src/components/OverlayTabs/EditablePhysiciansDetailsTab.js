@@ -19,7 +19,7 @@ const EditablePhysiciansDetailsTab = ({ fields, onFieldChange }) => {
     const [docterFeild, setDocterFeild] = useState('')
     const [docterFieldResult, setDocterFieldResult] = useState([])
     const [searchDocterFieldQuery, setSearchDocterFeildQuery] = useState({})
-
+    const [valueState, setValueState] = useState({ name: fields.field })
     const handlePhones = () => {
 
         let newPhoneArray = [...fields.phones];
@@ -67,7 +67,7 @@ const EditablePhysiciansDetailsTab = ({ fields, onFieldChange }) => {
             .then((categoriesData) => {
                 const { data = [], page } = categoriesData
                 const fulldata = data.map(cats => {
-                    const { _id = '', name = '', status = '' } = data
+                    const { _id = '', name = '', status = '' } = cats
                     return { _id: _id, name: name, status: status }
                 })
 
@@ -544,24 +544,27 @@ const EditablePhysiciansDetailsTab = ({ fields, onFieldChange }) => {
                         <Text style={styles.title}>Specialization</Text>
                     </View>
                     <SearchableOptionsField
-                        value={fields.field}
+                        value={valueState}
                         placeholder="Please Choose A Specialization"
                         onClear={() => {
                             setSearchDocterFeildQuery(" ")
                             onFieldChange('field')('')
+                            setValueState("")
                         }}
                         onChangeText={(value) => {
+                            //setValueState(value)
                             setDocterFeild(value)
                         }}
                         oneOptionsSelected={(value) => {
-                            onFieldChange('field')(value)
+                            onFieldChange('field')(value.name)
                         }}
                         options={docterFieldResult}
                         showActionButton={true}
                         updateDB={createCategory}
                         isPopoverOpen={searchDocterFieldQuery}
                         handlePatient={(value) => {
-                            onFieldChange('field')(value)
+                            setValueState(value)
+                            onFieldChange('field')(value.name)
                         }}
                         text={docterFeild}
                     />
