@@ -53,7 +53,12 @@ const OrderDetailsTab = ({
         configStatus = "",
         approvedBy = {},
         receivedBy = {},
-        requestedBy = {}
+        requestedBy = {},
+        supplier_tax = {},
+        shipping_cost = {},
+        payment_method = {},
+        notes = {},
+        
     } = order
 
     // console.log("Order: ",deliveryDate)
@@ -65,6 +70,10 @@ const OrderDetailsTab = ({
         description,
         deliveryDate,
         storageLocation,
+        notes,
+        supplier_tax,
+        shipping_cost,
+        payment_method
     });
     const [isUpdated, setUpdated] = useState(false)
     const [locationSearchText, setLocationSearchText] = useState('');
@@ -77,6 +86,10 @@ const OrderDetailsTab = ({
             description,
             deliveryDate,
             storageLocation,
+            notes,
+            supplier_tax,
+            shipping_cost,
+            payment_method
         }
         return () => {
             baseStateRef.current = {}
@@ -88,6 +101,10 @@ const OrderDetailsTab = ({
             description,
             deliveryDate,
             storageLocation,
+            notes,
+            supplier_tax,
+            shipping_cost,
+            payment_method
         })
     }, [order])
 
@@ -187,6 +204,10 @@ const OrderDetailsTab = ({
             deliveryDate: fields['deliveryDate'].toString(),
             description: fields['description'],
             storageLocation: fields.storageLocation._id,
+            notes :fields['notes'],
+            supplier_tax: fields['supplier_tax'],
+            shipping_cost: fields['shipping_cost'],
+            payment_method: fields['payment_method']
         }
         updatePurchaseOrderDetails(_id, updatedFields)
             .then(_ => {
@@ -363,6 +384,46 @@ const OrderDetailsTab = ({
                         valueColor="#38A169"
                     />
 
+                </Row>
+
+                <LineDividerContainer theme={theme}>
+                    <LineDivider />
+                </LineDividerContainer>
+
+                <Row>
+                    <Record
+                        recordTitle="Payment Method"
+                        recordValue={`${payment_method || '--'}`}
+                    />
+
+                    <Record
+                        recordTitle="Suppliers Tax"
+                        recordValue={`${supplier_tax || '--'}`}
+                    />
+
+                    <Record
+                        recordTitle="Shipping Cost"
+                        recordValue={formatAmount(shipping_cost) || '--'}
+                    />
+                </Row>
+
+                <LineDividerContainer theme={theme}>
+                    <LineDivider />
+                </LineDividerContainer>
+
+                <Row>
+                    <Record
+                        recordTitle="Notes"
+                        recordValue={fields['notes']}
+                        editMode={isEditMode}
+                        recordPlaceholder={'Edit to add key notes for this order'}
+                        editable={true}
+                        useTextArea={true}
+                        onRecordUpdate={onFieldChange('notes')}
+                        onClearValue={() => {
+                            onFieldChange('notes')('')
+                        }}
+                    />
                 </Row>
 
             </>
