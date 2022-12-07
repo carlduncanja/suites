@@ -54,10 +54,10 @@ const OrderDetailsTab = ({
         approvedBy = {},
         receivedBy = {},
         requestedBy = {},
-        supplier_tax = {},
-        shipping_cost = {},
-        payment_method = {},
-        notes = {},
+        supplier_tax = "",
+        shipping_cost = 0,
+        payment_method = "",
+        notes = "",
         
     } = order
 
