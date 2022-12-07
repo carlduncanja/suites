@@ -180,9 +180,28 @@ function PhysicianPage({route, navigation}) {
             })
             .catch(error => {
                 // todo handle error
+                errrorHandler()
                 console.log('failed to update physician', error);
             });
-    };
+    }; 
+
+    const  errrorHandler =()=>{
+        modal.openModal('ConfirmationModal', {
+            content: <ConfirmationComponent
+                isEditUpdate={false}
+                isError={true}
+                onCancel={() => {
+                    modal.closeModals('ConfirmationModal');
+                }}
+                onAction={() => {
+                    modal.closeModals('ConfirmationModal');
+                }}
+            />,
+            onClose: () => {
+                modal.closeModals('ConfirmationModal');
+            },
+        });
+    }
 
     const removeIds = array => {
         const updatedArray = array.map(obj => {
