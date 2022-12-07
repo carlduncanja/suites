@@ -28,6 +28,7 @@ import DataItem from '../common/List/DataItem';
 import {LONG_PRESS_TIMER} from '../../const';
 import ConfirmationComponent from '../ConfirmationComponent';
 import { transformToTitleCase } from '../../utils/formatter';
+
 const headers = [
     {
         name: 'Item Name',
@@ -87,6 +88,7 @@ const OrderItemTab = ({
 
     const [searchValue, setSearchValue] = useState('');
     const [selectedItems, setSelectedItems] = useState([]);
+    const [deliveryState, setDeliveryState] = useState(false);
 
     useEffect(() => {
         setTotalPages(Math.ceil(orders.length / recordsPerPage));
@@ -176,6 +178,7 @@ const OrderItemTab = ({
             <>
                 <DataItem text={name} flex={2} fontStyle="--text-base-medium" color="--color-blue-600"/>
                 <DataItem text={sku === '' ? 'n/a' : sku} align="center" flex={1} fontStyle="--text-base-medium" color="--color-gray-800"/>
+                {setDeliveryState = item.status ? true : false}
                 {
                     isEditMode ? (
                         <NumberChangeField
@@ -202,6 +205,7 @@ const OrderItemTab = ({
             onCheckBoxPress={handleOnCheckBoxPress(item)}
             onItemPress={() => {
             }}
+            isDisabled = {deliveryState}
             itemView={listItemFormat(item, index)}
         />
     );
