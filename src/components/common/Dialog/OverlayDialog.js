@@ -32,6 +32,7 @@ const OverlayDialogContainer = styled.View`
 
 
 const OverlayContentWrapper = styled.View`
+  zIndex: 9;
   width : 100%;
 `;
 const OverlayContentContainer = styled.View`
