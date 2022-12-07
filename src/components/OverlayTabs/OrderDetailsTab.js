@@ -394,16 +394,40 @@ const OrderDetailsTab = ({
                     <Record
                         recordTitle="Payment Method"
                         recordValue={`${payment_method || '--'}`}
+                        editMode={isEditMode}
+                        editable={true}
+                        onClearValue={() => {
+                            onFieldChange('payment_method')('')
+                        }}
+                        onRecordUpdate={() => {
+                            onFieldChange('payment_method')
+                        }}
                     />
 
                     <Record
                         recordTitle="Suppliers Tax"
                         recordValue={`${supplier_tax || '--'}`}
+                        editMode={isEditMode}
+                        editable={true}
+                        onClearValue={() => {
+                            onFieldChange('supplier_tax')('')
+                        }}
+                        onRecordUpdate={() => {
+                            onFieldChange('supplier_tax')
+                        }}
                     />
 
                     <Record
                         recordTitle="Shipping Cost"
                         recordValue={formatAmount(shipping_cost) || '--'}
+                        editMode={isEditMode}
+                        editable={true}
+                        onClearValue={() => {
+                            onFieldChange('shipping_cost')('')
+                        }}
+                        onRecordUpdate={() => {
+                            onFieldChange('shipping_cost')
+                        }}
                     />
                 </Row>
 
