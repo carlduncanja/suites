@@ -201,28 +201,31 @@ function OrderItemPage({ route, navigation }) {
     };
 
     const onConfirmDelivery = (data) => {
-        modal.openModal('ConfirmationModal',
-            {
-                content: <ConfirmationComponent
-                    isError={false}
-                    isEditUpdate={true}
-                    onAction={() => {
-                        modal.closeModals('ConfirmationModal');
-                        
-                        confirmDelivery(data, _id)
-                    }}
+        console.log('purchase order id here!!!!!!!!!!!')
+        console.log(_id)
+        confirmDelivery(data, _id)
+            .then(data => {
+                console.log('DB data: ', data)
+                modal.openModal(
+                    'ConfirmationModal',
+                    {
+                        content: <ConfirmationComponent
+                            isError={false}
+                            isEditUpdate={false}
+                            message={'Do you want to confirm delivery for these item(s)?'}
+                            onAction={() => {
+                                modal.closeModals('ConfirmationModal')
+                            }}
+                            onCancel={() => {
+                                modal.closeModals('ConfirmationModal')
 
-                    onCancel={() => {
-                        modal.closeModals('ConfirmationModal')
-
-                    }}
-                    message="Do you want to confirm delivery for these item(s)?"
-
-                />
-                ,
-                onClose: () => {
-                    modal.closeModals('ConfirmationModal')
-                }
+                            }}
+                        />
+                        ,
+                        onClose: () => {
+                            modal.closeModals('ConfirmationModal')
+                        }
+                    })
             })
             .catch(error => {
                 console.log('Failed to confirm delivery', error);
