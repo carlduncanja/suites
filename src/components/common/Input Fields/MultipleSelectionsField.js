@@ -57,7 +57,8 @@ function MultipleSelectionsField({
     handlePopovers,
     isPopoverOpen,
     hasError = false,
-    height
+    height,
+    setOpen = () => {}
 }) {
 
     // console.log("Category options: ", options)
@@ -83,7 +84,8 @@ function MultipleSelectionsField({
     }
 
     const toggleCheckBox = () => {
-        setIsDisplay(!isDisplay)
+        setIsDisplay(!isDisplay);
+        setOpen(!isDisplay);
     }
 
     return (

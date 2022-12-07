@@ -12,7 +12,7 @@ import ConfirmationComponent from "../ConfirmationComponent";
 
 
 
-const PhysiciansDetailsTab = ({ onFieldChange, fields, errorFields }) =>{
+const PhysiciansDetailsTab = ({ onFieldChange, fields, errorFields, setAboveOpen = () => {} }) =>{
     const modal = useModal();
     const templateText = {
         true: "Yes",
@@ -117,24 +117,6 @@ const PhysiciansDetailsTab = ({ onFieldChange, fields, errorFields }) =>{
     return (
         <View style={styles.sectionContainer}>
 
-            <View style={styles.rightRow}>
-
-                <View style={styles.inputWrapper}>
-                    <MultipleSelectionsField
-                        label={"Specialisation"}
-                        onOptionsSelected={(value) => handleCategorySelected(value)}
-                        options={categorySearchResults}
-                        createNew={() => createCategory(categorySearchValue)}
-                        searchText={categorySearchValue}
-                        onSearchChangeText={(value) => setCategorySearchValue(value)}
-                        onClear={() => { setCategorySearchValue('') }}
-                        handlePopovers={() => { }}
-                        isPopoverOpen={true}
-                    />
-                </View>
-
-            </View>
-
             <View style={styles.row}>
 
                 <View style={styles.inputWrapper}>
@@ -182,6 +164,24 @@ const PhysiciansDetailsTab = ({ onFieldChange, fields, errorFields }) =>{
                     />
                 </View>
                 
+            </View>
+
+            <View style={styles.row}>
+                <View style={styles.inputWrapper}>
+                    <MultipleSelectionsField
+                        setOpen={setAboveOpen}
+                        label={"Specialisation"}
+                        onOptionsSelected={(value) => handleCategorySelected(value)}
+                        options={categorySearchResults}
+                        createNew={() => createCategory(categorySearchValue)}
+                        searchText={categorySearchValue}
+                        onSearchChangeText={(value) => setCategorySearchValue(value)}
+                        onClear={() => { setCategorySearchValue('') }}
+                        handlePopovers={() => { }}
+                        isPopoverOpen={true}
+                    />
+                </View>
+
             </View>
         </View>
     )
