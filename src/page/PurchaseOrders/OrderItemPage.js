@@ -224,6 +224,36 @@ function OrderItemPage({ route, navigation }) {
                     modal.closeModals('ConfirmationModal')
                 }
             })
+            .catch(error => {
+                console.log('Failed to confirm delivery', error);
+                modal.openModal(
+                    'ConfirmationModal',
+                    {
+                        content: <ConfirmationComponent
+                            isError={true}
+                            isEditUpdate={false}
+                            onAction={() => {
+                                modal.closeModals('ConfirmationModal')
+                            }}
+
+                            onCancel={() => {
+                                setPageState({
+                                    ...pageState,
+                                    isEditMode: true
+                                });
+                                modal.closeModals('ConfirmationModal')
+
+                            }}
+                        />
+                        ,
+                        onClose: () => {
+                            modal.closeModals('ConfirmationModal')
+                        }
+                    })
+            })
+            .finally(_ => {
+                fetchOrder(_id);
+            })
     };
 
     // ##### Helper functions
