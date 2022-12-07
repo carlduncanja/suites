@@ -8348,10 +8348,10 @@
     "invariant" "2.2.0"
     "keymirror" "0.1.1"
 
-"react-native-webview@^11.25.0":
-  "integrity" "sha512-yq3con7vDQUQKAyl9a7pJaR3A1/cI0K2AeRhGugXfWQfdsne18pddJwQuOsc63khecipeCbB8pthCqw0UlsgVw=="
-  "resolved" "https://registry.npmjs.org/react-native-webview/-/react-native-webview-11.25.0.tgz"
-  "version" "11.25.0"
+"react-native-webview@11.18.1":
+  "integrity" "sha512-1VoVmkbsHJ44WA+frMhNfua64t0u2jq80h25sUWrKJRiYrO0XIsKBnJcqrzuOH1ZAT/zDHTqBB5OU+bxEHLJmQ=="
+  "resolved" "https://registry.npmjs.org/react-native-webview/-/react-native-webview-11.18.1.tgz"
+  "version" "11.18.1"
   dependencies:
     "escape-string-regexp" "2.0.0"
     "invariant" "2.2.4"

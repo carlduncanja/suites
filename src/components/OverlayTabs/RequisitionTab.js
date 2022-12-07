@@ -28,16 +28,11 @@ margin-bottom: 30px;
 `;
 
 
-const RequisitionTab = ({ order = {}, selectedSupplierName = 'Test', updateSuppliers }) => {
-    const navigation = useNavigation();
-    const theme = useTheme();
+const RequisitionTab = ({ order = {} }) => {
     const modal = useModal();
-    const tabs = ['Details'];
-    // const { invoiceItem = {}, selectedSupplierName = '', updateSuppliers } = route.params;
-    // const [invoiceObj, setInvoiceObj] = useState(invoiceItem?.invoice || {});
     const [pageState, setPageState] = useState({});
     const [isImageUploading, setIsImageUploading] = useState(false);
-    const [quotation, setQuotation] = useState();
+    const [content, setContent] = useState();
     const [canPreview, setCanPreview] = useState(true);
     const [isUploadingDoc, setIsUploadingDoc] = useState(false);
     const [isDocSelected, setIsDocSelected] = useState(false);
@@ -49,133 +44,29 @@ const RequisitionTab = ({ order = {}, selectedSupplierName = 'Test', updateSuppl
     useEffect(() => {
         if (!isEditMode && isDocSelected) {
             console.log('Document selected and "DONE" pressed, so upload can happen');
-            uploadImage(quotation);
+            uploadContent(content)
         }
     }, [isEditMode])
 
-    const fetchPurchaseOrder = () => {
-        // getPurchaseOrderById(invoiceItem?._id)
-        //     .then(res => {
-        //         const {invoice} = res;
-        //         // setInvoiceObj(invoice || {});
-        //     })
-        //     .catch(err => {
-        //         console.log('Unable to fetch purchase order')
-        //     })
-    }
-
-    useEffect(() => {
-        fetchPurchaseOrder();
-    }, []);
-
-    const handleDocument = (fetchFn, successMsg, errorMsg, docId, purchaseOrderId, finalFn = () => { }) => {
-        const docObj = {
-            documentId: docId
-        };
-
-        fetchFn(purchaseOrderId, docObj)
-            .then(res => {
-                modal.openModal('ConfirmationModal', {
-                    content: (
-                        <ConfirmationComponent
-                            isError={false}//boolean to show whether an error icon or success icon
-                            isEditUpdate={false}
-                            onCancel={() => { modal.closeAllModals(); }}
-                            onAction={() => { modal.closeAllModals(); }}
-                            message={successMsg}
-                        />
-                    ),
-                    onClose: () => {
-                        console.log('Modal closed');
-                    },
-                });
-            })
-            .catch(err => {
-                modal.openModal('ConfirmationModal', {
-                    content: (
-                        <ConfirmationComponent
-                            isError={true}//boolean to show whether an error icon or success icon
-                            isEditUpdate={false}
-                            onCancel={() => { modal.closeAllModals(); }}
-                            onAction={() => { modal.closeAllModals(); }}
-                            message={errorMsg}
-                        />
-                    ),
-                    onClose: () => {
-                        console.log('Modal closed');
-                    },
-                });
-            })
-            .finally(_ => { updateSuppliers(), finalFn() })
-    }
-
-    const updatePurchaseOrderWithDocument = (purchaseOrderId, docId) => {
-
-        handleDocument(
-            updateInvoiceDocument,
-            'Document added successfully',
-            "Document could not be added to order.",
-            docId,
-            purchaseOrderId
-        );
-    };
-
-    const updateDocumentId = (purchaseOrderId, docId) => {
-        setIsImageUpdating(true);
-        setTimeout(() => {
-            handleDocument(
-                updateInvoiceDocument,
-                "Document has been updated",
-                "Document could not be updated",
-                docId,
-                purchaseOrderId,
-                () => { fetchPurchaseOrder(); setQuotation(); setIsImageUpdating(false); }
-            );
-        }, 200)
-    }
 
     const uploadContent = async content => {
         const formData = new FormData();
-
         formData.append('file', content);
         setIsUploadingDoc(true);
         await uploadDocument(formData)
             .then(res => {
-                setQuotation(res);
-                addDocumentToOrder(order.id, { type: "quotation" })
+                addDocumentToOrder(order._id, { type: "quotation", documentId: res.id })
                     .then(_ => {
-                        modal.openModal('ConfirmationModal', {
-                            content: (
-                                <ConfirmationComponent
-                                    isError={false}
-                                    isEditUpdate={false}
-                                    onCancel={() => { modal.closeAllModals(); }}
-                                    onAction={() => { modal.closeAllModals(); }}
-                                    message={successMsg}
-                                />
-                            ),
-                            onClose: () => {
-                                console.log('Modal closed');
-                            },
-                        });
+                        order.quotationDocId = res.id;
+                        successModal("Completed Successfully!")
+                    })
+                    .catch(_ => {
+                        errorModal();
                     })
             })
             .catch(err => {
                 console.log('Upload File Error: ', err);
-                modal.openModal('ConfirmationModal', {
-                    content: (
-                        <ConfirmationComponent
-                            isError={true}//boolean to show whether an error icon or success icon
-                            isEditUpdate={false}
-                            onCancel={() => { modal.closeAllModals(); }}
-                            onAction={() => { modal.closeAllModals(); }}
-                            message="Document could not be uploaded"
-                        />
-                    ),
-                    onClose: () => {
-                        console.log('Modal closed');
-                    },
-                });
+                errorModal()
             })
             .finally(_ => setIsUploadingDoc(false));
     };
@@ -186,35 +77,19 @@ const RequisitionTab = ({ order = {}, selectedSupplierName = 'Test', updateSuppl
             .then(result => {
                 const testUri = (result.uri).match(/[^.]*$/g)[0] || '';
                 const acceptedFormats = (testUri === 'jpg') || (testUri === 'JPG') || (testUri === 'png') || (testUri === 'PNG') || (testUri === 'pdf') || (testUri === 'PDF');
-                // const rejectedPreviewFormats = (testUri === 'pdf') || (testUri === 'PDF');
                 if (acceptedFormats) {
-
                     if (result.type === 'success') {
                         console.log('Invoice image: ', result);
-                        setQuotation(result);
                         setIsDocSelected(true);
                         setCanUpdateDoc(false);
-                        uploadImage(result);
+                        setContent(result);
                     }
                 } else {
-                    modal.openModal('ConfirmationModal', {
-                        content: (
-                            <ConfirmationComponent
-                                isError={true}//boolean to show whether an error icon or success icon
-                                isEditUpdate={false}
-                                onCancel={() => { modal.closeAllModals(); }}
-                                onAction={() => { modal.closeAllModals(); }}
-                                message="Document format selected is not supported"
-                            />
-                        ),
-                        onClose: () => {
-                            console.log('Modal closed');
-                        },
-                    });
+                    errorModal("Document format selected is not supported");
                 }
             })
-            .catch(err => {
-                console.log('Document error: ', err);
+            .catch(_ => {
+                errorModal();
             })
             .finally(_ => {
                 setIsImageUploading(false);
@@ -257,42 +132,77 @@ const RequisitionTab = ({ order = {}, selectedSupplierName = 'Test', updateSuppl
 
     };
 
+    const errorModal = (message) => {
+        modal.openModal(
+            'ConfirmationModal',
+            {
+                content: <ConfirmationComponent
+                    isError={true}
+                    isEditUpdate={false}
+                    onCancel={() => modal.closeModals('ConfirmationModal')}
+                    message={message}
+                />,
+                onClose: () => {
+                    modal.closeModals('ConfirmationModal');
+                }
+            }
+        );
+    }
+
+    const successModal = (message) => {
+        modal.openModal(
+            'ConfirmationModal', {
+            content: <ConfirmationComponent
+                isError={false}
+                isEditUpdate={false}
+                onAction={() => {
+                    modal.closeModals('ConfirmationModal');
+                }}
+                onCancel={() => {
+                    modal.closeModals('ConfirmationModal');
+                }}
+                message={message}
+            />,
+            onClose: () => {
+                modal.closeModal('ConfirmationModal')
+            }
+        }
+        );
+    }
+
     return (
         <ScrollView>
             <PageWrapper>
-                {
-                    isUploadingDoc ? <LoadingIndicator /> : (
 
-                        <InvoiceDetailsPage
-                            onImageUpload={uploadContent}
-                            removeInvoice={removeInvoice}
-                            openFullView={openFullView}
-                            isImageUploading={isImageUploading}
-                            isImageUpdating={isImageUpdating}
-                            quotation={quotation}
-                            canPreview={canPreview}
-                            canUpdateDoc={canUpdateDoc}
-                            frameName={"Requisition"}
-                            documentId={order.requisitionDocId}
-                        />
 
-                    )
-                }
-                <Spacer />
                 <InvoiceDetailsPage
-                    onImageUpload={onImageUpload}
                     removeInvoice={removeInvoice}
                     openFullView={openFullView}
                     isImageUploading={isImageUploading}
                     isImageUpdating={isImageUpdating}
-                    // quotation={quotation}
-                    // purchaseOrderNumber={invoiceItem?.purchaseOrderNumber}
-                    // invoice={invoiceObj}
-                    canUpdateDoc={canUpdateDoc}
-                    frameName={"Quotation"}
-                    frameText={"Add the quotation recieved from the supplier for the requisition above."}
-                    frameSecondaryText={"Add quotation"}
+                    canPreview={canPreview}
+                    canUpdateDoc={false}
+                    frameName={"Requisition"}
+                    documentId={order.requisitionDocId}
                 />
+                <Spacer />
+                {
+                    isUploadingDoc ? <LoadingIndicator /> : (
+                        <InvoiceDetailsPage
+                            onImageUpload={onImageUpload}
+                            removeInvoice={removeInvoice}
+                            openFullView={openFullView}
+                            isImageUploading={isImageUploading}
+                            isImageUpdating={isImageUpdating}
+                            canUpdateDoc={canUpdateDoc}
+                            previewImage={content}
+                            frameName={"Quotation"}
+                            frameText={"Add the quotation recieved from the supplier for the requisition above."}
+                            frameSecondaryText={"Add quotation"}
+                            documentId={order.quotationDocId}
+                        />
+                    )
+                }
             </PageWrapper>
         </ScrollView>
     );

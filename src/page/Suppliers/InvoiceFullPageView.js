@@ -25,10 +25,9 @@ const PdfContainer = styled.View`
 
 const ImageContainer = styled.View`
     width: 100%;
-    height: 600px;
-    border: ${({ theme }) => `1px solid ${theme.colors['--color-gray-400']}`};
+    height: 100%;
     background-color: ${({ theme }) => theme.colors['--color-gray-300']};
-    border-radius: 4px;
+
 `;
 
 const FullImage = styled.Image`
@@ -49,27 +48,27 @@ const InvoiceFullPageView = ({ title = "", source = '', isPdf = false }) => {
             <TitleContainer>
                 <TitleText>{title}</TitleText>
             </TitleContainer>
-                {
-                    isPdf ?
-                        (
-                            <PdfContainer>
+            {
+                isPdf ?
+                    (
+                        <PdfContainer>
                             <PDFReader
                                 source={{
                                     base64: source
                                 }}
                             />
-                            </PdfContainer>
-                        ) :
-                        (
-                            <ImageContainer theme={theme}>
+                        </PdfContainer>
+                    ) :
+                    (
+                        <ImageContainer theme={theme}>
                             <FullImage
                                 resizeMode="contain"
                                 source={{ uri: source }}
                             />
-                                  </ImageContainer>
-                        )
-                }
-      
+                        </ImageContainer>
+                    )
+            }
+
         </PageViewWrapper>
     );
 };

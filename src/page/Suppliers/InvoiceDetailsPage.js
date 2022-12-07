@@ -13,19 +13,19 @@ import IconButton from '../../components/common/Buttons/IconButton';
 import { useSafeArea } from 'react-native-safe-area-context';
 import { getFiletData, getDocumentById } from '../../api/network';
 import LoadingIndicator from '../../components/common/LoadingIndicator';
+import PdfReader from 'rn-pdf-reader-js';
 import * as FileSystem from 'expo-file-system';
-import PDFReader from 'rn-pdf-reader-js'
-import _ from 'lodash';
+
+
 const InvoiceDetailsPage = ({
-    onImageUpload = () => { },
-    removeInvoice = () => { },
-    openFullView = () => { },
+    onImageUpload = () => {},
+    removeInvoice = () => {},
+    openFullView = () => {},
     isImageUploading = false,
     isImageUpdating = false,
     canUpdateDoc = false,
     invoiceImage,
     canPreview = true,
-    purchaseOrderNumber = '',
     documentId,
     frameName,
     frameText = "Click to upload",
@@ -158,7 +158,7 @@ const InvoiceDetailsPage = ({
         } else if (documentImageData && isPdf && uri) {
             return (
                 <ContentContainer onPress={() => openFullView(true, uri)}>
-                    <PDFReader
+                    <PdfReader
                         source={{
                             base64: uri
                         }}
@@ -169,7 +169,7 @@ const InvoiceDetailsPage = ({
         }
         else if (documentImageData) {
             return (
-                <ViewImageContainer>
+                <ViewImageContainer onPress={() => openFullView(false, uri)}>
                     <PreviewImage
                         source={{ uri: canUpdateDoc ? `` : uri }}
                     />
@@ -219,15 +219,11 @@ const InvoiceDetailsPage = ({
     return (
 
         <PageWrapper>
-            {
-                isPageLoading ? <LoadingIndicator /> : (
                     <InvoiceWrapper>
                         {
                             (invoiceImage || documentImageData) ? imageContent : uploadContent
                         }
                     </InvoiceWrapper>
-                )
-            }
         </PageWrapper>
     )
 }
@@ -277,7 +273,7 @@ const ImageTitleContainer = styled.View`
     border-top-right-radius: 4px;
 `;
 
-const ViewImageContainer = styled.View`
+const ViewImageContainer = styled.TouchableOpacity`
     display: flex;
     flex:1;
     align-items: center;
