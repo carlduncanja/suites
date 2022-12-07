@@ -1,15 +1,19 @@
-import React,{ useState } from "react";
+import React,{ useEffect, useState } from "react";
 import { View, Text, StyleSheet } from "react-native";
 import InputField2 from "../common/Input Fields/InputField2";
 import OptionsField from "../common/Input Fields/OptionsField";
 import { MenuOptions, MenuOption } from 'react-native-popup-menu';
 import DateInputField from "../common/Input Fields/DateInputField";
 import moment from 'moment';
+import MultipleSelectionsField from "../common/Input Fields/MultipleSelectionsField";
+import { addCategory, getCategories } from "../../api/network";
+import { useModal } from "react-native-modalfy";
+import ConfirmationComponent from "../ConfirmationComponent";
 
 
 
-const PhysiciansDetailsTab = ({ onFieldChange, fields, errorFields }) =>{
-
+const PhysiciansDetailsTab = ({ onFieldChange, fields, errorFields, setAboveOpen = () => {} }) =>{
+    const modal = useModal();
     const templateText = {
         true: "Yes",
         false: "No"
@@ -35,7 +39,81 @@ const PhysiciansDetailsTab = ({ onFieldChange, fields, errorFields }) =>{
         setTrnText(trnValue)
     }
 
+    // Category Search
+    const [categories, setCategories] = useState([])
+    const [categorySearchValue, setCategorySearchValue] = useState();
+    const [categorySearchResults, setCategorySearchResult] = useState([]);
 
+    const handleCategorySelected = (checkCategories) => {
+        const categoryIds = [];
+
+        checkCategories.map((name) => {
+            const value = categories.find(item => item.name === name);
+            value && categoryIds.push(value._id);
+        });
+
+        onFieldChange('categories')(categoryIds);
+    }
+    
+    const fetchCategories = () => {
+        getCategories("staff", 1000, categorySearchValue)
+            .then(data => {
+                setCategorySearchResult(data.data.map(item => { return item.name }));
+                categories.length == 0 && setCategories(data.data);
+            })
+            .catch(error => {
+                console.log('Unable to retrieve physician category items: ', error);
+            });
+    }
+
+    useEffect(() => {
+        fetchCategories();
+    }, [categorySearchValue, categories]);
+    
+    const createCategory = (name) => {
+        if(!name) return;
+        addCategory({ name: name, type: "staff" })
+            .then(_ => {
+                setCategories([]);
+                setCategorySearchValue('');
+                fetchCategories();
+                modal.openModal('ConfirmationModal', {
+                    content: <ConfirmationComponent
+                        isEditUpdate={false}
+                        isError={false}
+                        onCancel={() => {
+                            modal.closeModals('ConfirmationModal');
+                        }}
+                        onAction={() => {
+                            modal.closeModals('ConfirmationModal');
+                        }}
+                    />,
+                    onClose: () => {
+                        modal.closeModals('ConfirmationModal');
+                    },
+                });
+            })
+            .catch(error => {
+                modal.openModal('ConfirmationModal', {
+                    content: <ConfirmationComponent
+                        isEditUpdate={false}
+                        isError={true}
+                        onCancel={() => {
+                            modal.closeModals('ConfirmationModal');
+                        }}
+                        onAction={() => {
+                            modal.closeModals('ConfirmationModal');
+                        }}
+                    />,
+                    onClose: () => {
+                        modal.closeModals('ConfirmationModal');
+                    },
+                });
+                console.log(error);
+            })
+    };
+
+    
     return (
         <View style={styles.sectionContainer}>
 
@@ -85,57 +163,26 @@ const PhysiciansDetailsTab = ({ onFieldChange, fields, errorFields }) =>{
                         errorMessage = "Please provide contact."
                     />
                 </View>
-
+                
             </View>
-
-            {/*<View*/}
-            {/*    style={{*/}
-            {/*        height: 2,*/}
-            {/*        backgroundColor: '#CCD6E0',*/}
-            {/*        marginBottom: 20*/}
-            {/*    }}*/}
-            {/*/>*/}
 
             <View style={styles.row}>
-
-
-
-                {/*<View style={styles.inputWrapper}>*/}
-                    {/*<DateInputField*/}
-                    {/*    label={"Date of Birth"}*/}
-                    {/*    value={fields['dob']}*/}
-                    {/*    onClear={() => onFieldChange('dob')('')}*/}
-                    {/*    keyboardType="number-pad"*/}
-                    {/*    mode={'date'}*/}
-                    {/*    format={"YYYY-MM-DD"}*/}
-                    {/*    placeholder="YYYY/MM/DD"*/}
-                    {/*    hasError={errorFields['dob']}*/}
-                    {/*    errorMessage={errorFields['dob']}*/}
-                    {/*    onDateChange={handleDateValidation}*/}
-                    {/*    maxDate = {new Date(moment().subtract(1, 'days'))}*/}
-                    {/*/>*/}
-                {/*</View>*/}
+                <View style={styles.inputWrapper}>
+                    <MultipleSelectionsField
+                        setOpen={setAboveOpen}
+                        label={"Specialisation"}
+                        onOptionsSelected={(value) => handleCategorySelected(value)}
+                        options={categorySearchResults}
+                        createNew={() => createCategory(categorySearchValue)}
+                        searchText={categorySearchValue}
+                        onSearchChangeText={(value) => setCategorySearchValue(value)}
+                        onClear={() => { setCategorySearchValue('') }}
+                        handlePopovers={() => { }}
+                        isPopoverOpen={true}
+                    />
+                </View>
 
             </View>
-
-            {/*<View style={styles.row}>*/}
-
-            {/*    <View style={styles.inputWrapper}>*/}
-            {/*        <OptionsField*/}
-            {/*            label={"Gender"}*/}
-            {/*            text={fields['gender']}*/}
-            {/*            oneOptionsSelected={onFieldChange('gender')}*/}
-            {/*            menuOption={<MenuOptions>*/}
-            {/*                <MenuOption value={'Male'} text='Male'/>*/}
-            {/*                <MenuOption value={'Female'} text='Female'/>*/}
-            {/*            </MenuOptions>}*/}
-            {/*            hasError = {errorFields['gender']}*/}
-            {/*            // errorMessage = "Select a gender from list."*/}
-            {/*        />*/}
-            {/*    </View>*/}
-
-            {/*</View>*/}
-
         </View>
     )
 }
@@ -156,6 +203,15 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         marginBottom: 20,
+    },
+    rightRow: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        marginBottom: 20,
+        display: 'flex',
+        marginLeft: 'auto',
+        zIndex: 10
+
     },
     inputWrapper: {
         width: 260,

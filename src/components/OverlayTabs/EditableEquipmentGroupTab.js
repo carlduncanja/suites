@@ -178,6 +178,7 @@ const EditableEquipmentGroupTab = ({ onFieldChange, fields, handlePopovers, popo
                                 onClear={() => { setCategorySearchValue('') }}
                                 handlePopovers={() => { }}
                                 isPopoverOpen={true}
+                                height={250}
                             />
                         </Row>
                     </>
