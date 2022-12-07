@@ -204,7 +204,7 @@ const OrderDetailsTab = ({
             deliveryDate: fields['deliveryDate'].toString(),
             description: fields['description'],
             storageLocation: fields.storageLocation._id,
-            notes :fields['notes'],
+            notes: fields['notes'],
             supplier_tax: fields['supplier_tax'],
             shipping_cost: fields['shipping_cost'],
             payment_method: fields['payment_method']
@@ -396,12 +396,11 @@ const OrderDetailsTab = ({
                         recordValue={`${payment_method || '--'}`}
                         editMode={isEditMode}
                         editable={true}
+                        useTextArea={true}
                         onClearValue={() => {
                             onFieldChange('payment_method')('')
                         }}
-                        onRecordUpdate={() => {
-                            onFieldChange('payment_method')
-                        }}
+                        onRecordUpdate={onFieldChange('payment_method')}
                     />
 
                     <Record
@@ -409,25 +408,23 @@ const OrderDetailsTab = ({
                         recordValue={`${supplier_tax || '--'}`}
                         editMode={isEditMode}
                         editable={true}
+                        useTextArea={true}
                         onClearValue={() => {
                             onFieldChange('supplier_tax')('')
                         }}
-                        onRecordUpdate={() => {
-                            onFieldChange('supplier_tax')
-                        }}
+                        onRecordUpdate={onFieldChange('supplier_tax')}
                     />
 
                     <Record
                         recordTitle="Shipping Cost"
-                        recordValue={formatAmount(shipping_cost) || '---'}
+                        recordValue={fields['shipping_cost'] || '--'}
                         editMode={isEditMode}
                         editable={true}
+                        useTextArea={true}
                         onClearValue={() => {
                             onFieldChange('shipping_cost')('')
                         }}
-                        onRecordUpdate={() => {
-                            onFieldChange('shipping_cost')
-                        }}
+                        onRecordUpdate={onFieldChange('shipping_cost')}
                     />
                 </Row>
 
