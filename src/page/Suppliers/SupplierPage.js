@@ -202,7 +202,6 @@ function SupplierPage({route, navigation, updateSupplierAction}) {
 
     // const supplierDetails = { supplier, status: '' }
     const getTabContent = selectedTab => {
-        console.log("Page State: ", pageState.isLoading);
         switch (selectedTab) {
             case 'Details':
                 return <SupplierDetailsTab

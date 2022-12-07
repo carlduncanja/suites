@@ -42,8 +42,11 @@ import {
     storageLocationEndpoint,
     categoriesEndpoint,
     loginEndpoint,
+    forgotPasswordEndpoint,
     appointmentsEndpoint,
     appointmentEndpoint,
+    appointmentTypeEndPiont,
+    updateAppiontmentTypeEndpiont,
     validateCaseProcedureEndpoint,
     suggestedStartTimeEndpoint,
     updateQuotationStatusEndpoint,
@@ -70,6 +73,7 @@ import {
     roles,
     role,
     patientEndpoint,
+    allPatientsEndpoint,
     alertsEndpoint,
     closeAlertEndpoint,
     configEndpoint,
@@ -88,7 +92,16 @@ import {
     invoicesEndpoint, invoiceEndpoint, updateInvoiceDetailsEndpoint,
     emailEndpoint,
     updateCategoryEndpoint,
-    confirmDeliveryEndpoint
+    confirmDeliveryEndpoint,
+    lifestylesEndpiont,
+    ItemsLifeStyleEndpiont,
+    DeleteLifeStyleitems,
+    healthInsurerEndpoint,
+    updateHealthInsurerEndpoint,
+    UpdateLifeStyleItems,
+    verifyOtpEndpoint,
+    resetPasswordEndpoint,
+    requestQuotationEndpoint
 } from '../const/suitesEndpoints';
 import { createDocumentLink, documentById, documentData, documentUpload } from '../const/documentGenerationEndpoints';
 
@@ -111,7 +124,22 @@ export const logout = async (userId, pushToken) => suitesAxiosInstance
     .then(handleResponse)
     .catch(handleError);
 
-// ################ Users Endpoint
+export const forgotPassword = async (email) => suitesAxiosInstance
+    .post(forgotPasswordEndpoint, {email})
+    .then(handleResponse)
+    .catch(handleError);
+
+export const verifyOtp = async (id, code) => suitesAxiosInstance
+    .post(verifyOtpEndpoint(id), {code})
+    .then(handleResponse)
+    .catch(handleError);
+
+    export const resetPassword = async (id, data) => suitesAxiosInstance
+    .post(resetPasswordEndpoint(id), data)
+    .then(handleResponse)
+    .catch(handleError);
+
+    // ################ Users Endpoint
 export const getUsersCall = async (query, page, max) => suitesAxiosInstance
     .get(users, { params: { query, page, max } })
     .then(handleResponse)
@@ -219,6 +247,20 @@ export const searchSchedule = async query => {
         .then(handleResponse)
         .catch(handleError);
 };
+
+// ###### Appiontment Types 
+
+export const getAppointmentTypes = async () => suitesAxiosInstance
+    .get(appointmentTypeEndPiont)
+    .then(handleResponse)
+    .catch(handleError)
+
+export const updateAppointmentTypes = async (id, data) => suitesAxiosInstance
+    .put(updateAppiontmentTypeEndpiont(id), data)
+    .then(handleResponse)
+    .catch(handleError)
+
+
 
 // ################# Theatres Endpoints
 export const getTheatres = async (query, max, page, isRecovery) => suitesAxiosInstance
@@ -377,7 +419,7 @@ export const deleteCaseStaff = async (caseId, data) => suitesAxiosInstance
     .catch(handleError);
 
 export const addCaseStaff = async (caseId, data) => suitesAxiosInstance
-    .post(caseStaffEndpoint(caseId),  data )
+    .post(caseStaffEndpoint(caseId), data)
     .then(handleResponse)
     .catch(handleError);
 
@@ -508,7 +550,7 @@ export const updateCaseProcedureAppointmentCall = async (caseId, caseProcedureId
 
 // ################# Procedures Endpoints
 export const getProcedures = async (query, max, page) => suitesAxiosInstance
-    .get(proceduresEndpoint, { params: { query, max, page } })
+    .get(proceduresEndpoint, ({params: { query, max, page } }))
     .then(handleResponse)
     .catch(handleError);
 
@@ -652,8 +694,8 @@ export const createEquipmentType = async equipmentTypeToCreate => suitesAxiosIns
 
 // ################# Categories Endpoint
 
-export const getCategories = async (type, max) => suitesAxiosInstance
-    .get(categoriesEndpoint, { params: { type, max } })
+export const getCategories = async (type, max, query) => suitesAxiosInstance
+    .get(categoriesEndpoint, { params: { type, max, query } })
     .then(handleResponse)
     .catch(handleError);
 
@@ -663,12 +705,12 @@ export const addCategory = async (data) => suitesAxiosInstance
     .catch(handleError);
 
 export const deleteCategory = async (data) => suitesAxiosInstance
-    .delete(categoriesEndpoint,{ data: { ids: data } })
+    .delete(categoriesEndpoint, { data: { ids: data } })
     .then(handleResponse)
     .catch(handleError);
 
 export const updateCategory = async (id, data) => suitesAxiosInstance
-    .put(updateCategoryEndpoint(id), data )
+    .put(updateCategoryEndpoint(id), data)
     .then(handleResponse)
     .catch(handleError);
 
@@ -805,11 +847,21 @@ export const generatePurchaseOrderInvoice = async (purchaseOrderId, status) => s
     .then(handleResponse)
     .catch(handleError);
 
+export const requestQuotation = async (purchaseOrderId, email) => suitesAxiosInstance
+    .post(requestQuotationEndpoint(purchaseOrderId), email)
+    .then(handleResponse)
+    .catch(handleError);
+
 // ################# Patients Endpoints
 export const updatePatient = async (id, data) => suitesAxiosInstance
     .put(patientEndpoint(id), data)
     .then(handleResponse)
     .catch(handleError);
+
+export const getPatients = async (query, max, page) => suitesAxiosInstance
+    .get(allPatientsEndpoint,  ({params: { query, max, page } }))
+    .then(handleResponse)
+    .catch(handleError)
 
 // ################# Document Generation Endpoints
 export const generateDocumentLink = async data => documentGenerationInstance.post(createDocumentLink, data)
@@ -832,6 +884,11 @@ export const getDocumentById = async id => documentManagementInstance.get(docume
 
 export const getAlerts = async (status, max, page, query, from, to) => suitesAxiosInstance
     .get(alertsEndpoint, { params: { status, max, page, query, from, to } })
+    .then(handleResponse)
+    .catch(handleError);
+
+export const createAlert = async (data) => suitesAxiosInstance
+    .post(alertsEndpoint, data)
     .then(handleResponse)
     .catch(handleError);
 
@@ -881,8 +938,50 @@ export const sendEmail = async (body) => suitesAxiosInstance
     .catch(handleError);
 
 
+// ################# LIFESTYLES ENDPOINTS 
+export const getLifeStyles = async () => suitesAxiosInstance
+    .get(lifestylesEndpiont)
+    .then(handleResponse)
+    .catch(handleError)
+
+export const addLifeStyleItems = async (id, data) => suitesAxiosInstance
+    .post(ItemsLifeStyleEndpiont(id), data)
+    .then(handleResponse)
+    .catch(handleError)
+
+export const deleteLifeStyleItems = async (ids) => suitesAxiosInstance
+    .delete(DeleteLifeStyleitems, { data: { ids } })
+    .then(handleResponse)
+    .catch(handleError)
+
+        
+export const updateLifeStyleItems = async (id, data) => suitesAxiosInstance
+    .put(UpdateLifeStyleItems(id), data)
+    .then(handleResponse)
+    .catch(handleError)
 
 
+// ################# HEALTH INSURER ENDPOINTS 
+
+export const getHealthInsurers = async () => suitesAxiosInstance
+    .get(healthInsurerEndpoint)
+    .then(handleResponse)
+    .catch(handleError)
+
+export const createHealthInsurer = async (data) => suitesAxiosInstance
+    .post(healthInsurerEndpoint, data)
+    .then(handleResponse)
+    .catch(handleError)
+
+export const deleteHealthInsurer = async (data) => suitesAxiosInstance
+    .put(healthInsurerEndpoint, data)
+    .then(handleResponse)
+    .catch(handleError)
+
+export const updateHealthInsurer = async (id, data) => suitesAxiosInstance
+    .put(updateHealthInsurerEndpoint(id), data)
+    .then(handleResponse)
+    .catch(handleError)
 
 
-
+    

@@ -27,7 +27,7 @@ import Search from '../common/Search';
 import DataItem from '../common/List/DataItem';
 import {LONG_PRESS_TIMER} from '../../const';
 import ConfirmationComponent from '../ConfirmationComponent';
-
+import { transformToTitleCase } from '../../utils/formatter';
 const headers = [
     {
         name: 'Item Name',
@@ -188,7 +188,7 @@ const OrderItemTab = ({
                     ) : <DataItem text={amount} align="center" flex={1} fontStyle="--text-base-medium" color="--color-gray-800"/>
 
                 }
-                <DataItem text={unit} align="center" flex={1} fontStyle="--text-base-medium" color="--color-gray-800"/>
+                <DataItem text={transformToTitleCase(item.unit)} align="center" flex={1} fontStyle="--text-base-medium" color="--color-gray-800"/>
                 <DataItem text={`$ ${currencyFormatter(unitPrice)}`} align="flex-end" flex={1} fontStyle="--text-base-medium" color="--color-gray-800"/>
 
             </>

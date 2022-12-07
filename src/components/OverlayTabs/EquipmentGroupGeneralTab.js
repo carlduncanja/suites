@@ -78,14 +78,6 @@ function EquipmentGroupGeneralTab({ equipmentGroup = {}, equipments = [], suppli
     let equipmentToDisplay = [...equipments]
     let supplierToDisplay = [...suppliers]
 
-    console.log('categories', categories);
-
-    const getCategories = () => {
-        categories.map(item => {
-            return item._id
-        })
-    }
-
 
     const getFabActions = () => {
         const editGroup = (
@@ -158,6 +150,13 @@ function EquipmentGroupGeneralTab({ equipmentGroup = {}, equipments = [], suppli
                     />
                 </Row>
             </View>
+            <Row>
+                <Record
+                    recordTitle="Categories"
+                    recordValue={categories.map(x => x.name).join(', ')}
+                    flex={0.8}
+                />
+            </Row>
             <Row>
                 <Record
                     recordTitle="Supplier"

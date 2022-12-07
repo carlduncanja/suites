@@ -3,6 +3,9 @@ export const loginEndpoint = '/auth/login';
 export const logoutEndpoint = '/auth/logout';
 export const registrationEndpoint = '/auth/register';
 export const guestLoginEndpoint = '/auth/login/guest';
+export const forgotPasswordEndpoint = '/auth/forgot-password';
+export const verifyOtpEndpoint = id => `auth/verify/${id}`;
+export const resetPasswordEndpoint = id => `auth/reset-password/${id}`;
 
 // ##### Users
 export const users = '/users';
@@ -14,7 +17,11 @@ export const role = roleId => `/users/roles/${roleId}`;
 
 // ##### Appointments
 export const appointmentsEndpoint = '/appointments/';
-export const appointmentEndpoint = id => `/appointments/${id}`;
+export const appointmentEndpoint = id => `/appointments/${id}`; 
+
+// #### Appiontment Type
+export const appointmentTypeEndPiont = `/appointment-types` 
+export const updateAppiontmentTypeEndpiont = id => `/appointment-types/${id}`
 
 // ##### Theatre
 export const theatresEndpoint = '/theatres';
@@ -106,6 +113,7 @@ export const updatePurchaseOrderEndpoint = id => `/purchase_orders/${id}/orders`
 export const updatePurchaseOrderDetailsEndpoint = id => `/purchase_orders/${id}`;
 export const updatePurchaseOrderDocument = id => `/purchase_orders/${id}/document`;
 export const purchaseOrderInvoice = id => `/purchase_orders/${id}/generate-invoice`;
+export const requestQuotationEndpoint = id => `/purchase_orders/request_quotation/${id}`;
 export const confirmDeliveryEndpoint = id => `/purchase_orders/${id}/delivery`;
 
 // ##### CATEGORIES
@@ -114,6 +122,7 @@ export const updateCategoryEndpoint = id => `/categories/${id}`;
 
 // ##### PATIENTS
 export const patientEndpoint = id => `/patients/${id}`;
+export const allPatientsEndpoint = '/patients'
 
 // ##### ALERTS
 export const alertsEndpoint = '/alerts';
@@ -124,9 +133,20 @@ export const configEndpoint = '/configurations';
 export const updateBufferEndpoint = '/configurations/buffer';
 
 // #### INVOICES
-export const invoicesEndpoint =  '/invoices';   
-export const invoiceEndpoint = id =>`/invoices/${id}`; 
-export const updateInvoiceDetailsEndpoint= id => `/invoices/${id}`
+export const invoicesEndpoint = '/invoices';
+export const invoiceEndpoint = id => `/invoices/${id}`;
+export const updateInvoiceDetailsEndpoint = id => `/invoices/${id}`
 
 // #### EMAIL
-export const emailEndpoint =  '/email/send';   
+export const emailEndpoint = '/email/send';
+
+// #### LIFESTYLES
+export const lifestylesEndpiont = '/lifestyle_types'
+export const ItemsLifeStyleEndpiont = (id) => `/lifestyle_types/${id}/items`
+export const DeleteLifeStyleitems = `/lifestyle_types/delete/items`
+export const UpdateLifeStyleItems = (id) => `/lifestyle_types/items/${id}`
+
+// #### HEALTH INSURERS
+export const healthInsurerEndpoint = '/health_insurer'
+export const updateHealthInsurerEndpoint = id => `/health_insurer/${id}`
+
