@@ -56,7 +56,8 @@ function MultipleSelectionsField({
     onClear,
     handlePopovers,
     isPopoverOpen,
-    hasError = false
+    hasError = false,
+    height
 }) {
 
     // console.log("Category options: ", options)
@@ -67,7 +68,7 @@ function MultipleSelectionsField({
     const [checkedList, setCheckedList] = useState(value)
     const [isDisplay, setIsDisplay] = useState(false)
 
-    const onCheckboxPress = (item) => () => { 
+    const onCheckboxPress = (item) => () => {
         let updatedList = [...checkedList]
         if (checkedList.includes(item)) {
             updatedList = updatedList.filter(filterItem => filterItem !== item)
@@ -121,7 +122,7 @@ function MultipleSelectionsField({
                                     paddingLeft: 4
                                 }}>
                                     +{checkedList.length - 1} more
-                            </Text>
+                                </Text>
                             }
 
                             <View style={{ flex: 1, justifyContent: "flex-end", alignItems: "flex-end" }}>
@@ -140,7 +141,7 @@ function MultipleSelectionsField({
 
                 {isDisplay && isPopoverOpen &&
 
-                    <View style={styles.menuOptionsContainer}>
+                    <View style={[styles.menuOptionsContainer, {height: height} ]}>
 
                         <SearchableContainer
                             options={options}
