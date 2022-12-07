@@ -57,7 +57,7 @@ const OrderDetailsTab = ({
         supplier_tax = "",
         shipping_cost = 0,
         payment_method = "",
-        notes = "",
+        notes = "", 
         
     } = order
 
@@ -419,7 +419,7 @@ const OrderDetailsTab = ({
 
                     <Record
                         recordTitle="Shipping Cost"
-                        recordValue={formatAmount(shipping_cost) || '--'}
+                        recordValue={formatAmount(shipping_cost) || '---'}
                         editMode={isEditMode}
                         editable={true}
                         onClearValue={() => {
