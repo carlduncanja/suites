@@ -36,6 +36,11 @@ const headers = [
         flex: 2,
     },
     {
+        name: 'Status',
+        alignment: 'center',
+        flex: 1,
+    },
+    {
         name: 'SKU',
         alignment: 'center',
         flex: 1,
@@ -172,11 +177,12 @@ const OrderItemTab = ({
 
     const listItemFormat = (item, index) => {
         const {amount = 0, productId = {}} = item;
-        const {name = '', sku = '', unitPrice = 0, unit = ''} = productId || {};
+        const {name = '', status = '', sku = '', unitPrice = 0, unit = ''} = productId || {};
 
         return (
             <>
                 <DataItem text={name} flex={2} fontStyle="--text-base-medium" color="--color-blue-600"/>
+                <DataItem text={status === '' ? 'pending' : status} align="center" flex={1} fontStyle="--text-base-medium" color="--color-gray-800"/>
                 <DataItem text={sku === '' ? 'n/a' : sku} align="center" flex={1} fontStyle="--text-base-medium" color="--color-gray-800"/>
                 {
                     isEditMode ? (
