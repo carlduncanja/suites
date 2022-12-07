@@ -7,12 +7,18 @@ import SearchableOptionsField from '../common/Input Fields/SearchableOptionsFiel
 import DateInputField from '../common/Input Fields/DateInputField';
 import OptionsField from '../common/Input Fields/OptionsField';
 import Button from '../common/Buttons/Button';
-import { getCategories } from '../../api/network'
+import { getCategories, addCategory } from '../../api/network'
+import { useModal } from "react-native-modalfy";
 import { formatDate, transformToSentence, calcAge, isValidEmail, handleNumberValidation } from '../../utils/formatter';
+import ConfirmationComponent from '../ConfirmationComponent';
 
 const EditablePhysiciansDetailsTab = ({ fields, onFieldChange }) => {
 
-    const [docterFeild, setDocterFeild] = useState(fields.field)
+    const modal = useModal();
+
+    const [docterFeild, setDocterFeild] = useState('')
+    const [docterFieldResult, setDocterFieldResult] = useState([])
+    const [searchDocterFieldQuery, setSearchDocterFeildQuery] = useState({})
 
     const handlePhones = () => {
 
@@ -50,6 +56,72 @@ const EditablePhysiciansDetailsTab = ({ fields, onFieldChange }) => {
         }
 
         return newPhoneArray;
+    };
+
+    useEffect(() => {
+        fetchCategories();
+    }, [docterFeild])
+
+    const fetchCategories = () => {
+        getCategories("staff", 1000, docterFeild)
+            .then((categoriesData) => {
+                const { data = [], page } = categoriesData
+                const fulldata = data.map(cats => {
+                    const { _id = '', name = '', status = '' } = data
+                    return { _id: _id, name: name, status: status }
+                })
+
+                setDocterFieldResult(fulldata || []);
+                //categories.length == 0 && setCategories(data.data);
+                console.log(docterFieldResult)
+            })
+            .catch(error => {
+                console.log('Unable to retrieve physician category items: ', error);
+            });
+    }
+    const createCategory = (name) => {
+        //console.log("the name out put", name)
+
+        if (!name) return;
+        addCategory({ name: name, type: "staff" })
+            .then(_ => {
+                setDocterFeild("");
+                onFieldChange('field')('')
+                fetchCategories();
+                modal.openModal('ConfirmationModal', {
+                    content: <ConfirmationComponent
+                        isEditUpdate={false}
+                        isError={false}
+                        onCancel={() => {
+                            modal.closeModals('ConfirmationModal');
+                        }}
+                        onAction={() => {
+                            modal.closeModals('ConfirmationModal');
+                        }}
+                    />,
+                    onClose: () => {
+                        modal.closeModals('ConfirmationModal');
+                    },
+                });
+            })
+            .catch(error => {
+                modal.openModal('ConfirmationModal', {
+                    content: <ConfirmationComponent
+                        isEditUpdate={false}
+                        isError={true}
+                        onCancel={() => {
+                            modal.closeModals('ConfirmationModal');
+                        }}
+                        onAction={() => {
+                            modal.closeModals('ConfirmationModal');
+                        }}
+                    />,
+                    onClose: () => {
+                        modal.closeModals('ConfirmationModal');
+                    },
+                });
+                console.log(error);
+            })
     };
 
     const handleEmails = () => {
@@ -467,26 +539,33 @@ const EditablePhysiciansDetailsTab = ({ fields, onFieldChange }) => {
                     </View>
                 </View>
 
-                <View style={[styles.fieldWrapper, { zIndex: 10 }]}>
+                <View style={styles.fieldWrapper}>
                     <View style={{ marginBottom: 5 }}>
                         <Text style={styles.title}>Specialization</Text>
                     </View>
+                    <SearchableOptionsField
+                        value={fields.field}
+                        placeholder="Please Choose A Specialization"
+                        onClear={() => {
+                            setSearchDocterFeildQuery(" ")
+                            onFieldChange('field')('')
+                        }}
+                        onChangeText={(value) => {
+                            setDocterFeild(value)
+                        }}
+                        oneOptionsSelected={(value) => {
+                            onFieldChange('field')(value)
+                        }}
+                        options={docterFieldResult}
+                        showActionButton={true}
+                        updateDB={createCategory}
+                        isPopoverOpen={searchDocterFieldQuery}
+                        handlePatient={(value) => {
+                            onFieldChange('field')(value)
+                        }}
+                        text={docterFeild}
+                    />
 
-                    <View style={styles.inputWrapper}>
-                        <SearchableOptionsField
-                            value={fields.field}
-                            placeholder="Please Choose A Specialization"
-                            onClear={() => { onFieldChange('field')('') }}
-                            onChangeText={(value) => {
-                                
-                            }}
-                            oneOptionsSelected={(value)=>{
-                                onFieldChange('feild')(value)
-                            }}
-                            showActionButton={true}
-
-                        />
-                    </View>
                 </View>
 
                 <View style={styles.fieldWrapper} />
