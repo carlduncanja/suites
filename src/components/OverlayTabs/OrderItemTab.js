@@ -178,7 +178,6 @@ const OrderItemTab = ({
             <>
                 <DataItem text={name} flex={2} fontStyle="--text-base-medium" color="--color-blue-600"/>
                 <DataItem text={sku === '' ? 'n/a' : sku} align="center" flex={1} fontStyle="--text-base-medium" color="--color-gray-800"/>
-                {setDeliveryState = item.status ? true : false}
                 {
                     isEditMode ? (
                         <NumberChangeField
@@ -191,7 +190,7 @@ const OrderItemTab = ({
                     ) : <DataItem text={amount} align="center" flex={1} fontStyle="--text-base-medium" color="--color-gray-800"/>
 
                 }
-                <DataItem text={transformToTitleCase(item.unit)} align="center" flex={1} fontStyle="--text-base-medium" color="--color-gray-800"/>
+                <DataItem text={ item.unit &&transformToTitleCase(item.unit)} align="center" flex={1} fontStyle="--text-base-medium" color="--color-gray-800"/>
                 <DataItem text={`$ ${currencyFormatter(unitPrice)}`} align="flex-end" flex={1} fontStyle="--text-base-medium" color="--color-gray-800"/>
 
             </>
@@ -205,7 +204,7 @@ const OrderItemTab = ({
             onCheckBoxPress={handleOnCheckBoxPress(item)}
             onItemPress={() => {
             }}
-            isDisabled = {deliveryState}
+            isDisabled = {item.status} 
             itemView={listItemFormat(item, index)}
         />
     );

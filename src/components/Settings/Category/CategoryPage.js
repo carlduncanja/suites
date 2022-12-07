@@ -172,11 +172,7 @@ function CategoryPage({navigation, route}) {
                     titleBackgroundColor={item.titleBackgroundColor}
                     frameBorderColor={item.frameBorderColor}
                     frameTitle={item.frameTitle}
-<<<<<<< HEAD
-                    cardInformation={inventoryItems}
-=======
                     cardInformation={categoryItems}
->>>>>>> e1d6437913fc0c0ebedd82a57fe53251887e9974
                     icon={item.frameIcon}
                     isEditMode={isEditMode}
                     normalInput={true}
