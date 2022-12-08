@@ -2,21 +2,17 @@ import React, { useState, useEffect, useContext } from 'react';
 import styled, { css } from '@emotion/native';
 import * as DocumentPicker from 'expo-document-picker';
 import * as FileSystem from 'expo-file-system';
-import { useTheme } from 'emotion-theming';
-import { useNavigation } from '@react-navigation/native';
 import { useModal } from 'react-native-modalfy';
-import { Image, View } from 'react-native';
 import { PageContext } from '../../contexts/PageContext';
-import DetailsPage from '../../components/common/DetailsPage/DetailsPage';
-import TabsContainer from '../../components/common/Tabs/TabsContainerComponent';
 import InvoiceFullPageView from '../../page/Suppliers/InvoiceFullPageView';
 import InvoiceDetailsPage from '../../page/Suppliers/InvoiceDetailsPage';
 import ConfirmationComponent from '../../components/ConfirmationComponent';
-import { generateDocumentLink, uploadDocument, updateInvoiceDocument, updatePurchaseOrderDetails, getPurchaseOrderById, addDocumentToOrder } from '../../api/network';
+import { uploadDocument, addDocumentToOrder } from '../../api/network';
 import LoadingIndicator from '../../components/common/LoadingIndicator';
 import axios from 'axios';
 import FrameCard from '../common/Frames/FrameCards/FrameCard';
 import { ScrollView } from 'react-native-gesture-handler';
+import { ORDER_TYPES } from '../../const';
 
 const PageWrapper = styled.View`
 width: 100%;
@@ -28,7 +24,7 @@ margin-bottom: 30px;
 `;
 
 
-const RequisitionTab = ({ order = {}, onUpdate }) => {
+const RequisitionTab = ({ order = {}, onUpdate, type }) => {
     const modal = useModal();
     const { pageState, setPageState } = useContext(PageContext);
     const [isImageUploading, setIsImageUploading] = useState(false);
@@ -55,7 +51,7 @@ const RequisitionTab = ({ order = {}, onUpdate }) => {
         setIsUploadingDoc(true);
         await uploadDocument(formData)
             .then(res => {
-                addDocumentToOrder(order._id, { type: "quotation", documentId: res.id })
+                addDocumentToOrder(order._id, { type : type === ORDER_TYPES.REQUISITION ? "quotation" : "invoice", documentId: res.id })
                     .then(_ => {
                         successModal("Completed Successfully!")
                     })
@@ -219,14 +215,13 @@ const RequisitionTab = ({ order = {}, onUpdate }) => {
                     canPreview={canPreview}
                     canUpdateDoc={false}
                     canDelete={false}
-                    frameName={"Requisition"}
-                    documentId={order.requisitionDocId}
+                    frameName={type === ORDER_TYPES.REQUISITION ? "Requisition" : "Purchase Order"}
+                    documentId={type === ORDER_TYPES.REQUISITION ? order.requisitionDocId : order.purchaseOrderDocId}
                     handleDocumentLoaded={handleDocumentLoaded}
                 />
                 <Spacer />
                 {
                     isUploadingDoc ? <LoadingIndicator /> :
-                        // canPreview ?
                             (
                                 <InvoiceDetailsPage
                                     onImageUpload={onImageUpload}
@@ -237,13 +232,12 @@ const RequisitionTab = ({ order = {}, onUpdate }) => {
                                     canUpdateDoc={isEditMode}
                                     previewImage={content}
                                     canDelete={false}
-                                    frameName={"Quotation"}
-                                    frameText={"Add the quotation recieved from the supplier for the requisition above."}
-                                    frameSecondaryText={"Add quotation"}
-                                    documentId={canPreview && order.quotationDocId}
+                                    frameName={type === ORDER_TYPES.REQUISITION ? "Quotation" : "Invoice"}
+                                    frameText={`Add the ${type === ORDER_TYPES.REQUISITION ? "quotation" : "invoice"} recieved from the supplier for the ${type === ORDER_TYPES.REQUISITION ? "requisition" : "purchase order"} above.`}
+                                    frameSecondaryText={`Add ${type === ORDER_TYPES.REQUISITION ? "quotation" : "invoice"}`}
+                                    documentId={canPreview && (type === ORDER_TYPES.REQUISITION ? order.quotationDocId : order.invoiceDocId)}
                                 />
                             )
-                            // : <></>
                 }
             </PageWrapper>
         </ScrollView>

@@ -58,13 +58,13 @@ const InvoiceDetailsPage = ({
                     try {
                         const { uri } = await FileSystem.downloadAsync(
                             `https://influx.smssoftwarestudio.com/insight/document-management-service/api/documents/${documentId}`,
-                            `${FileSystem.cacheDirectory}${frameName}`
+                            `${FileSystem.cacheDirectory}${frameName.replace(/\s/g, '')}`
                         );
 
                         image = await FileSystem.readAsStringAsync(uri, {
                             encoding: 'base64',
                         });
-                        await FileSystem.deleteAsync(`${FileSystem.cacheDirectory}${frameName}`);
+                        await FileSystem.deleteAsync(`${FileSystem.cacheDirectory}${frameName.replace(/\s/g, '')}`);
                         resolve(`data:application/pdf;base64,${image}`);
                     } catch (err) {
                         console.log("An error occured whilst converting to base 64", err);
@@ -198,7 +198,7 @@ const InvoiceDetailsPage = ({
                         textColor="--color-blue-600"
                         paddingTop={150}
                     >
-                        {!documentId || isFetching ? (<LoadingIndicator/>) :"Document not available" }
+                        {"Document not available" }
                     </PageText>
                 </RejectedPreviewContainer>
             )
