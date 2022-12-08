@@ -176,13 +176,13 @@ const OrderItemTab = ({
     };
 
     const listItemFormat = (item, index) => {
-        const {amount = 0, productId = {}} = item;
-        const {name = '', status = '', sku = '', unitPrice = 0, unit = ''} = productId || {};
+        const {amount = 0, productId = {}, status} = item;
+        const {name = '', sku = '', unitPrice = 0, unit = ''} = productId || {};
 
         return (
             <>
                 <DataItem text={name} flex={2} fontStyle="--text-base-medium" color="--color-blue-600"/>
-                <DataItem text={status === '' ? 'pending' : status} align="center" flex={1} fontStyle="--text-base-medium" color="--color-gray-800"/>
+                <DataItem text={status ? transformToTitleCase(status) : 'Pending'} align="center" flex={1} fontStyle="--text-base-medium" color="--color-gray-800"/>
                 <DataItem text={sku === '' ? 'n/a' : sku} align="center" flex={1} fontStyle="--text-base-medium" color="--color-gray-800"/>
                 {
                     isEditMode ? (
@@ -297,8 +297,8 @@ const OrderItemTab = ({
     };
 
     const handleConfirmDelivery = () => {
-       console.log(selectedItems);
         onConfirmDelivery(selectedItems);
+        setSelectedItems([]);
     }
 
     const onChangeText = value => setSearchValue(value);
