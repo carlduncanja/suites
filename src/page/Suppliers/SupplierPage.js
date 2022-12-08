@@ -219,7 +219,7 @@ function SupplierPage({route, navigation, updateSupplierAction}) {
                             onProductsCreated={() => fetchSupplier(_id)}
                             onRefresh={() => fetchSupplier(_id)}
                             supplierId={_id}
-                            onRefresh={() => { console.log("Refreshing"); setPageLoading(true); fetchSupplier(_id); }}
+                            //onRefresh={() => { console.log("Refreshing"); setPageLoading(true); fetchSupplier(_id); }}
                         />
                     );
             case 'Purchase Orders':
