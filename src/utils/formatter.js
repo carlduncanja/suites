@@ -85,3 +85,8 @@ export const mergeObjectArraysByKey = (arrOld = [], arrNew = [], key = '') => {
     });
     return arrOld;
 };
+
+export const formatToCurrency = new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD'
+  });

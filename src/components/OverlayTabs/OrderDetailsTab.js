@@ -3,7 +3,7 @@ import { View, Text, StyleSheet } from "react-native";
 import Record from "../common/Information Record/Record";
 import Row from "../common/Row";
 import ResponsiveRecord from "../common/Information Record/ResponsiveRecord";
-import { formatDate } from "../../utils/formatter";
+import { formatDate, formatToCurrency, handleNumberValidation } from "../../utils/formatter";
 import { formatAmount } from "../../helpers/caseFilesHelpers";
 import { transformToSentence } from "../../hooks/useTextEditHook";
 import DateInputField from '../common/Input Fields/DateInputField';
@@ -54,7 +54,7 @@ const OrderDetailsTab = ({
         approvedBy = {},
         receivedBy = {},
         requestedBy = {},
-        supplier_tax = "",
+        supplier_tax = 0,
         shipping_cost = 0,
         payment_method = "",
         notes = "", 
@@ -147,10 +147,21 @@ const OrderDetailsTab = ({
         setUpdated(false);
     };
 
+    function formatNumberField(value) {
+        return value.toString().replace(/\D/g,'') || 0;
+    }
+
     const onFieldChange = (fieldName) => (value) => {
+        const formattedValue = formatNumberField(value);
+
+        let finalValue = value;
+        if (fieldName === 'supplier_tax' || fieldName === 'shipping_cost') {
+            finalValue = formattedValue;
+        }
+
         setFields({
             ...fields,
-            [fieldName]: value
+            [fieldName]: finalValue
         });
         setUpdated(true);
     };
@@ -393,7 +404,8 @@ const OrderDetailsTab = ({
                 <Row>
                     <Record
                         recordTitle="Payment Method"
-                        recordValue={`${payment_method || '--'}`}
+                        recordValue={fields['payment_method']}
+                        recordPlaceholder={'Edit to add key notes for this order'}
                         editMode={isEditMode}
                         editable={true}
                         useTextArea={true}
@@ -405,7 +417,8 @@ const OrderDetailsTab = ({
 
                     <Record
                         recordTitle="Suppliers Tax"
-                        recordValue={`${supplier_tax || '--'}`}
+                        recordValue={isEditMode ? fields['supplier_tax'] : `${fields['supplier_tax']}%`}
+                        recordPlaceholder={'Edit to add key notes for this order'}
                         editMode={isEditMode}
                         editable={true}
                         useTextArea={true}
@@ -417,7 +430,8 @@ const OrderDetailsTab = ({
 
                     <Record
                         recordTitle="Shipping Cost"
-                        recordValue={fields['shipping_cost'] || '--'}
+                        recordValue={isEditMode ? fields['shipping_cost'] : formatToCurrency.format(fields['shipping_cost'])}
+                        recordPlaceholder={'--'}
                         editMode={isEditMode}
                         editable={true}
                         useTextArea={true}
