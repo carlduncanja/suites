@@ -177,7 +177,7 @@ function InventoryGroupGeneral({
             <Row>
                 {isEditMode ? 
                     <MultipleSelectionsField
-                    label={"Category"}
+                    label={"Categories"}
                     value={fields['categories'].map(x=> x.name)}
                     onOptionsSelected={(value) => handleCategorySelected(value)}
                     options={categorySearchResults}

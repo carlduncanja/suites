@@ -37,9 +37,9 @@ export const formatDate = (date, format = 'MMM D, YYYY') => (date ? moment(date)
     .format(format) : '');
 
 export const transformToSentence = word => {
-    const newWord = word.replace(/([A-Z])/g, ' $1');
-    return newWord.charAt(0)
-        .toUpperCase() + newWord.slice(1);
+    const newWord = word?.replace(/([A-Z])/g, ' $1');
+    return newWord?.charAt(0)
+        .toUpperCase() + newWord?.slice(1);
 };
 
 export const transformToTitleCase = (string, splitCharacter = ' ') => {

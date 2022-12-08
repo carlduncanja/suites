@@ -307,22 +307,6 @@ const EditablePhysiciansDetailsTab = ({ fields, onFieldChange }) => {
             if (value === '') {
                 updatedObj = { ...emergencyContacts[objIndex], relation: '' };
             } else {
-                // console.log("Value: ", value.trim())
-                // let splitValue = value.trim().split(' ')
-
-                // if (/\((\w)*\)/g.test(value)){
-                //     console.log("Length 1")
-                //     name = ""
-                //     relation = value.replace(/[()]/g, "")
-                // }else if(/\w*\s*\((\w)*\)/g.test(value.trim()) && splitValue.length === 2){
-                //     console.log("Length 2")
-                //     name = splitValue[0]
-                //     relation = splitValue[1].replace(/[()]/g, "")
-                // }else {
-                //     name = splitValue[0].contact(' ', splitValue[1])
-                //     relation = splitValue[2].replace(/[()]/g, "")
-                // }
-
                 updatedObj = { ...emergencyContacts[objIndex], relation: value.trim() };
             }
 
@@ -552,7 +536,6 @@ const EditablePhysiciansDetailsTab = ({ fields, onFieldChange }) => {
                             setValueState("")
                         }}
                         onChangeText={(value) => {
-                            //setValueState(value)
                             setDocterFeild(value)
                         }}
                         oneOptionsSelected={(value) => {

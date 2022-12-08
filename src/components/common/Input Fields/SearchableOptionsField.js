@@ -72,6 +72,7 @@ const Input = styled.TextInput`
 
 const SuggestionsContainer = styled.View`
   width: 100%;
+  width: ${props => props.isMedium ? "250px" : "100%"};
   max-height: 300px;
   position: absolute;
   top: 5px;
@@ -191,7 +192,9 @@ function SearchableOptionsField({
                                     handlePatient = () => {},
                                     updateDB = () => {},
                                     inputIndex = '',
-                                    emptyAfterSubmit=false
+                                    emptyAfterSubmit=false,
+                                    isMedium=false,
+                                    setIsOpen = () => {}
                                 }) {
     const textInputRef = useRef();
 
@@ -199,7 +202,7 @@ function SearchableOptionsField({
 
     const [selectedValue, setSelectedValue] = useState(value);
     const [optionsSate, setOptionsState] = useState(options);
-
+    
     useEffect(() => {
         if (shouldShowValue) setSelectedValue(value);
     }, [value]);
@@ -210,6 +213,7 @@ function SearchableOptionsField({
 
     const onOptionPress = option => {
         if (shouldShowValue) setSelectedValue(option);
+        
         oneOptionsSelected(option);
         setOptionsState([])
     };
@@ -248,6 +252,15 @@ function SearchableOptionsField({
         currentErrorHandling = emptyAfterSubmit ? theme.colors['--color-red-600'] : theme.colors['--color-gray-300']
     }
 
+    useEffect(() => {
+        if((!selectedValue && !!text && isPopoverOpen) === false) {
+            setIsOpen(false)
+        }
+        else {
+            setIsOpen(true)
+        }
+    }, [selectedValue, text, isPopoverOpen])
+    
     return (
         <InputContainerComponent>
             {
@@ -318,7 +331,7 @@ function SearchableOptionsField({
                         (!selectedValue && !!text && isPopoverOpen) &&
                         (
                             <MultipleShadowsContainer shadows={shadows}>
-                                <SuggestionsContainer theme={theme}>
+                                <SuggestionsContainer isMedium={isMedium} theme={theme}>
                                     {
                                         optionsSate.length === 0 ? (
                                             <NoSuggestionsContainer theme={theme}>
