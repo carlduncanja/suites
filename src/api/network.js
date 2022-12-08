@@ -100,6 +100,7 @@ import {
     UpdateLifeStyleItems,
     verifyOtpEndpoint,
     resetPasswordEndpoint,
+    casePatientEndpoint,
     requestQuotationEndpoint
 } from '../const/suitesEndpoints';
 import { createDocumentLink, documentById, documentData, documentUpload } from '../const/documentGenerationEndpoints';
@@ -124,21 +125,21 @@ export const logout = async (userId, pushToken) => suitesAxiosInstance
     .catch(handleError);
 
 export const forgotPassword = async (email) => suitesAxiosInstance
-    .post(forgotPasswordEndpoint, {email})
+    .post(forgotPasswordEndpoint, { email })
     .then(handleResponse)
     .catch(handleError);
 
 export const verifyOtp = async (id, code) => suitesAxiosInstance
-    .post(verifyOtpEndpoint(id), {code})
+    .post(verifyOtpEndpoint(id), { code })
     .then(handleResponse)
     .catch(handleError);
 
-    export const resetPassword = async (id, data) => suitesAxiosInstance
+export const resetPassword = async (id, data) => suitesAxiosInstance
     .post(resetPasswordEndpoint(id), data)
     .then(handleResponse)
     .catch(handleError);
 
-    // ################ Users Endpoint
+// ################ Users Endpoint
 export const getUsersCall = async (query, page, max) => suitesAxiosInstance
     .get(users, { params: { query, page, max } })
     .then(handleResponse)
@@ -392,6 +393,11 @@ export const getCaseFileById = async id => suitesAxiosInstance
     .then(handleResponse)
     .catch(handleError);
 
+export const getCaseFileByPatientId = async id => suitesAxiosInstance
+    .get(casePatientEndpoint(id))
+    .then(handleResponse)
+    .catch(handleError)
+
 export const updateCaseFile = async (id, caseId) => suitesAxiosInstance
     .put(caseFileEndpoint(id), caseId)
     .then(handleResponse)
@@ -549,7 +555,7 @@ export const updateCaseProcedureAppointmentCall = async (caseId, caseProcedureId
 
 // ################# Procedures Endpoints
 export const getProcedures = async (query, max, page) => suitesAxiosInstance
-    .get(proceduresEndpoint, ({params: { query, max, page } }))
+    .get(proceduresEndpoint, ({ params: { query, max, page } }))
     .then(handleResponse)
     .catch(handleError);
 
@@ -854,7 +860,7 @@ export const updatePatient = async (id, data) => suitesAxiosInstance
     .catch(handleError);
 
 export const getPatients = async (query, max, page) => suitesAxiosInstance
-    .get(allPatientsEndpoint,  ({params: { query, max, page } }))
+    .get(allPatientsEndpoint, ({ params: { query, max, page } }))
     .then(handleResponse)
     .catch(handleError)
 
@@ -949,7 +955,7 @@ export const deleteLifeStyleItems = async (ids) => suitesAxiosInstance
     .then(handleResponse)
     .catch(handleError)
 
-        
+
 export const updateLifeStyleItems = async (id, data) => suitesAxiosInstance
     .put(UpdateLifeStyleItems(id), data)
     .then(handleResponse)
@@ -979,4 +985,3 @@ export const updateHealthInsurer = async (id, data) => suitesAxiosInstance
     .catch(handleError)
 
 
-    
