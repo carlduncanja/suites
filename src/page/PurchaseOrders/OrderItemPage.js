@@ -10,6 +10,7 @@ import TabsContainer from '../../components/common/Tabs/TabsContainerComponent';
 import ConfirmationComponent from '../../components/ConfirmationComponent';
 import { useModal } from 'react-native-modalfy';
 import { ORDER_TYPES, PURCHASE_ORDER_STATUSES } from '../../const';
+import RequisitionTab from '../../components/OverlayTabs/RequisitionTab';
 
 function OrderItemPage({ route, navigation }) {
 
@@ -18,7 +19,7 @@ function OrderItemPage({ route, navigation }) {
     const modal = useModal();
 
 
-    const currentTabs = ['Details', 'Items', 'Suppliers'];
+    const currentTabs = ['Details', 'Items', 'Suppliers', 'Requisition'];
     const { _id, supplier = {}, purchaseOrderNumber, deliveryDate = '', description = '' } = order;
     const { name = '' } = supplier
 
@@ -316,6 +317,8 @@ function OrderItemPage({ route, navigation }) {
                 />;
             case 'Suppliers':
                 return <SupplierDetailsTab supplierId={supplier?._id} order={selectedOrder} onUpdated={fetchOrder} />;
+            case 'Requisition':
+                return <RequisitionTab order={selectedOrder} onUpdate={() => fetchOrder(_id)} />;
             default:
                 return <View />;
         }

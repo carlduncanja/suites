@@ -87,6 +87,7 @@ export const updateQuotationStatusEndpoint = (caseId, quotationId) => `/cases/${
 export const caseProcedureAppointmentEndpoint = (caseId, procedureAppointmentId) => `/cases/${caseId}/procedures/${procedureAppointmentId}`;
 export const caseProcedureAppointmentsEndpoint = caseId => `/cases/${caseId}/procedures/`;
 export const caseStaffEndpoint = caseId => `/cases/staff/${caseId}`;
+export const casePatientEndpoint = patientId => `/cases/patient/${patientId}`
 
 // ##### STORAGE
 export const storageLocationsEndpoint = '/storage-locations';
@@ -115,6 +116,7 @@ export const updatePurchaseOrderDocument = id => `/purchase_orders/${id}/documen
 export const purchaseOrderInvoice = id => `/purchase_orders/${id}/generate-invoice`;
 export const confirmDeliveryEndpoint = id => `/purchase_orders/${id}/delivery`;
 export const requestQuotationEndpoint = id => `/purchase_orders/request_quotation/${id}`;
+export const addDocumentEndpoint = id => `/purchase_orders/${id}/document`;
 
 // ##### CATEGORIES
 export const categoriesEndpoint = '/categories/';
