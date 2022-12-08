@@ -57,7 +57,6 @@ const RequisitionTab = ({ order = {}, onUpdate }) => {
             .then(res => {
                 addDocumentToOrder(order._id, { type: "quotation", documentId: res.id })
                     .then(_ => {
-                        // order.quotationDocId = res.id;
                         successModal("Completed Successfully!")
                     })
                     .catch(_ => {
