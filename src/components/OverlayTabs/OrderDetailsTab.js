@@ -421,7 +421,6 @@ const OrderDetailsTab = ({
                         recordPlaceholder={'Edit to add key notes for this order'}
                         editMode={isEditMode}
                         editable={true}
-                        useTextArea={true}
                         onClearValue={() => {
                             onFieldChange('supplier_tax')('')
                         }}
@@ -434,7 +433,6 @@ const OrderDetailsTab = ({
                         recordPlaceholder={'--'}
                         editMode={isEditMode}
                         editable={true}
-                        useTextArea={true}
                         onClearValue={() => {
                             onFieldChange('shipping_cost')('')
                         }}
@@ -453,7 +451,6 @@ const OrderDetailsTab = ({
                         editMode={isEditMode}
                         recordPlaceholder={'Edit to add key notes for this order'}
                         editable={true}
-                        useTextArea={true}
                         onRecordUpdate={onFieldChange('notes')}
                         onClearValue={() => {
                             onFieldChange('notes')('')
