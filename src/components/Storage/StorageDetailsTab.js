@@ -7,29 +7,35 @@ import {formatDate} from '../../utils/formatter';
 import InputField2 from '../common/Input Fields/InputField2';
 import TextArea from '../common/Input Fields/TextArea';
 import SearchableOptionsField from '../common/Input Fields/SearchableOptionsField';
-import {updateStorageLocationCall} from '../../api/network';
+import {addCategory, getCategories, updateStorageLocationCall} from '../../api/network';
 import ConfirmationComponent from '../ConfirmationComponent';
 import {PageContext} from '../../contexts/PageContext';
 import Row from '../common/Row';
 import FieldContainer from '../common/FieldContainerComponent';
 import Record from '../common/Information Record/Record';
 import Footer from '../common/Page/Footer';
+import MultipleSelectionsField from '../common/Input Fields/MultipleSelectionsField';
 
 function StorageDetailsTab({
     storageLocationId,
     name = '--',
     description = '',
+    storageCategories = [],
     onUpdated = () => {
     },
 }) {
     const baseStateRef = useRef();
+    const [categories, setCategories] = useState(storageCategories || [])
+    const [categorySearchValue, setCategorySearchValue] = useState();
+    const [categorySearchResults, setCategorySearchResult] = useState([]);
     const modal = useModal();
     const {pageState, setPageState} = useContext(PageContext);
     const {isEditMode} = pageState;
 
     const [fields, setFields] = useState({
         description,
-        name
+        name,
+        categories
     });
 
     const [isLoading, setLoading] = useState(false);
@@ -46,6 +52,7 @@ function StorageDetailsTab({
     useEffect(() => {
         baseStateRef.current = {
             description,
+            categories,
             name
         };
         return () => {
@@ -61,7 +68,7 @@ function StorageDetailsTab({
                         error={false}//boolean to show whether an error icon or success icon
                         isEditUpdate={true}
                         onCancel={() => {
-                            // resetState()
+                            resetState()
                             setPageState({
                                 ...pageState,
                                 isEditMode: true
@@ -91,8 +98,6 @@ function StorageDetailsTab({
     const updateStorageLocation = () => {
         const data = {...fields};
 
-        console.log('params', storageLocationId, data);
-
         setLoading(true);
         updateStorageLocationCall(storageLocationId, data)
             .then(_ => {
@@ -106,6 +111,7 @@ function StorageDetailsTab({
                                 modal.closeAllModals();
                             }}
                             onAction={() => {
+                                setCategories(data.categories);
                                 modal.closeAllModals();
                             }}
                             message="Changes were successful."//general message you can send to be displayed
@@ -122,7 +128,7 @@ function StorageDetailsTab({
                 modal.openModal('ConfirmationModal', {
                     content: (
                         <ConfirmationComponent
-                            error={true}//boolean to show whether an error icon or success icon
+                            isError={true}//boolean to show whether an error icon or success icon
                             isEditUpdate={false}
                             onCancel={() => {
                                 modal.closeAllModals();
@@ -136,7 +142,7 @@ function StorageDetailsTab({
                         />
                     ),
                     onClose: () => {
-                        console.log('Modal closed');
+                        modal.closeAllModals();
                     },
                 });
             })
@@ -144,7 +150,96 @@ function StorageDetailsTab({
                 setLoading(false);
             });
     };
+    const [allCategories, setAllCategories] = useState([]);
+    const fetchCategories = () => {
+        getCategories("storage", 1000, categorySearchValue)
+        .then(data => {
+            let clone = [...categories];
+            const container = [];
+            data.data.filter(item => {
+                clone.map((res, index) => {
+                    if (item._id === res) {
+                        container.push({_id: res, name: item.name})
+                    }
+                })
+            })
 
+            setAllCategories(data.data)
+
+            setCategorySearchResult(data.data.map(item => { return item.name }));
+        })
+            .catch(error => {
+                console.log('Unable to retrieve iventory category items: ', error);
+            });
+    };
+
+    useEffect(() => {
+        fetchCategories();
+    }, [categorySearchValue, categories]);
+   
+
+    const createCategory = (name) => {
+        if (!name) return;
+        addCategory({ name: name, type: "storage" })
+            .then(_ => {
+                setCategories([]);
+                setCategorySearchValue('');
+                fetchCategories();
+                modal.openModal('ConfirmationModal', {
+                    content: <ConfirmationComponent
+                        isEditUpdate={false}
+                        isError={false}
+                        onCancel={() => {
+                            modal.closeModals('ConfirmationModal');
+                        }}
+                        onAction={() => {
+                            modal.closeModals('ConfirmationModal');
+                        }}
+                    />,
+                    onClose: () => {
+                        modal.closeModals('ConfirmationModal');
+                    },
+                });
+            })
+            .catch(error => {
+                modal.openModal('ConfirmationModal', {
+                    content: <ConfirmationComponent
+                        isEditUpdate={false}
+                        isError={true}
+                        onCancel={() => {
+                            modal.closeModals('ConfirmationModal');
+                        }}
+                        onAction={() => {
+                            modal.closeModals('ConfirmationModal');
+                        }}
+                    />,
+                    onClose: () => {
+                        modal.closeModals('ConfirmationModal');
+                    },
+                });
+                console.log(error);
+            })
+    }
+
+    const [nameContainer, setNameContainer] = useState([]);
+
+    const handleCategorySelected = (checkCategories) => {
+        let categoryIds = [];
+
+        checkCategories.map((name) => {
+            const value = allCategories.find(item => item.name === name);
+            
+            value && categoryIds.push(value._id);
+        })
+
+        if (checkCategories.length === 0)
+        {
+            categoryIds = []
+        }
+
+        onFieldChange('categories')(categoryIds)
+    }
+    
     return (
         <>
             <Row>
@@ -170,6 +265,29 @@ function StorageDetailsTab({
                     onClearValue={() => onFieldChange('name')('')}
                     flex={0.5}
                 />
+            </Row>
+
+            <Row>
+                {isEditMode ? 
+                    <MultipleSelectionsField
+                    label={"Categories"}
+                    value={categories.map(x=> x.name)}
+                    onOptionsSelected={(value) => handleCategorySelected(value)}
+                    options={categorySearchResults}
+                    createNew={() => createCategory(categorySearchValue)}
+                    searchText={categorySearchValue}
+                    onSearchChangeText={(value) => setCategorySearchValue(value)}
+                    onClear={() => { setCategorySearchValue('')}}
+                    handlePopovers={() => { }}
+                    isPopoverOpen={true}
+                /> :
+                <Record
+                        recordTitle="Categories"
+                        recordValue={categories.map(x => x.name).join(', ')}
+                        flex={0.8}
+                    />
+                }
+                
             </Row>
 
             <Footer

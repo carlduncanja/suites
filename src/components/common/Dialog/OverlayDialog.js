@@ -75,6 +75,8 @@ function OverlayDialog(props) {
             {props.children}
           </OverlayContentContainer>
         </OverlayContentWrapper>
+        <View style={{width: 100, height: 20}}>
+        </View>
 
         <OverlayDialogFooter
           onPositiveButtonPress = {onPositiveButtonPress}
