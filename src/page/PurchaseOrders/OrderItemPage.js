@@ -280,7 +280,7 @@ function OrderItemPage({ route, navigation }) {
             case 'Suppliers':
                 return <SupplierDetailsTab supplierId={supplier?._id} order={selectedOrder} onUpdated={fetchOrder} />;
             case 'Requisition':
-                return <RequisitionTab order={order} />;
+                return <RequisitionTab order={selectedOrder} onUpdate={() => fetchOrder(_id)} />;
             default:
                 return <View />;
         }

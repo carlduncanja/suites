@@ -28,12 +28,12 @@ margin-bottom: 30px;
 `;
 
 
-const RequisitionTab = ({ order = {} }) => {
+const RequisitionTab = ({ order = {}, onUpdate }) => {
     const modal = useModal();
     const { pageState, setPageState } = useContext(PageContext);
     const [isImageUploading, setIsImageUploading] = useState(false);
     const [content, setContent] = useState();
-    const [canPreview, setCanPreview] = useState(true);
+    const [canPreview, setCanPreview] = useState(false);
     const [isUploadingDoc, setIsUploadingDoc] = useState(false);
     const [isDocSelected, setIsDocSelected] = useState(false);
     const [canUpdateDoc, setCanUpdateDoc] = useState(false);
@@ -43,10 +43,10 @@ const RequisitionTab = ({ order = {} }) => {
 
     useEffect(() => {
         if (!isEditMode && isDocSelected) {
-            console.log('Document selected and "DONE" pressed, so upload can happen');
-            uploadContent(content)
+            confirmationComponent(content);
         }
     }, [isEditMode])
+
 
 
     const uploadContent = async content => {
@@ -57,18 +57,20 @@ const RequisitionTab = ({ order = {} }) => {
             .then(res => {
                 addDocumentToOrder(order._id, { type: "quotation", documentId: res.id })
                     .then(_ => {
-                        order.quotationDocId = res.id;
+                        // order.quotationDocId = res.id;
                         successModal("Completed Successfully!")
                     })
                     .catch(_ => {
                         errorModal();
                     })
             })
-            .catch(err => {
-                console.log('Upload File Error: ', err);
+            .catch(_ => {
                 errorModal()
             })
-            .finally(_ => setIsUploadingDoc(false));
+            .finally(_ => {
+                setIsUploadingDoc(false);
+                onUpdate();
+            });
     };
 
     const onImageUpload = async () => {
@@ -98,7 +100,6 @@ const RequisitionTab = ({ order = {} }) => {
                 }
             })
             .catch(error => {
-                console.log(error);
                 errorModal();
             })
             .finally(_ => {
@@ -106,10 +107,10 @@ const RequisitionTab = ({ order = {} }) => {
             });
     };
 
-    const openFullView = (isPdf, source) => {
+    const openFullView = (title, isPdf, source) => {
         modal.openModal('ReportPreviewModal', {
             content: <InvoiceFullPageView
-                title={'Requisition'}
+                title={title}
                 isPdf={isPdf}
                 source={source}
             />
@@ -177,6 +178,36 @@ const RequisitionTab = ({ order = {} }) => {
         );
     }
 
+    const confirmationComponent = (content) => {
+        modal.openModal(
+            'ConfirmationModal', {
+            content:
+                <ConfirmationComponent
+                    isError={false}
+                    isEditUpdate={true}
+                    onCancel={() => {
+                        setContent('');
+                        // resetState()
+                        setPageState({ ...pageState, isEditMode: false });
+                        modal.closeAllModals();
+                    }}
+                    onAction={() => {
+                        modal.closeAllModals();
+                        uploadContent(content);
+                    }}
+                    message="Do you want to save these changes?"
+                    action="Yes"
+                />
+        });
+
+
+
+    }
+
+    const handleDocumentLoaded = () => {
+        setCanPreview(true)
+    }
+
     return (
         <ScrollView>
             <PageWrapper>
@@ -191,25 +222,29 @@ const RequisitionTab = ({ order = {} }) => {
                     canDelete={false}
                     frameName={"Requisition"}
                     documentId={order.requisitionDocId}
+                    handleDocumentLoaded={handleDocumentLoaded}
                 />
                 <Spacer />
                 {
-                    isUploadingDoc ? <LoadingIndicator /> : (
-                        <InvoiceDetailsPage
-                            onImageUpload={onImageUpload}
-                            removeDocument={removeDocument}
-                            openFullView={openFullView}
-                            isImageUploading={isImageUploading}
-                            isImageUpdating={isImageUpdating}
-                            canUpdateDoc={isEditMode}
-                            previewImage={content}
-                            canDelete={(order.quotationDocId || content) && true}
-                            frameName={"Quotation"}
-                            frameText={"Add the quotation recieved from the supplier for the requisition above."}
-                            frameSecondaryText={"Add quotation"}
-                            documentId={order.quotationDocId}
-                        />
-                    )
+                    isUploadingDoc ? <LoadingIndicator /> :
+                        // canPreview ?
+                            (
+                                <InvoiceDetailsPage
+                                    onImageUpload={onImageUpload}
+                                    removeDocument={removeDocument}
+                                    openFullView={openFullView}
+                                    isImageUploading={isImageUploading}
+                                    isImageUpdating={isImageUpdating}
+                                    canUpdateDoc={isEditMode}
+                                    previewImage={content}
+                                    canDelete={false}
+                                    frameName={"Quotation"}
+                                    frameText={"Add the quotation recieved from the supplier for the requisition above."}
+                                    frameSecondaryText={"Add quotation"}
+                                    documentId={canPreview && order.quotationDocId}
+                                />
+                            )
+                            // : <></>
                 }
             </PageWrapper>
         </ScrollView>
