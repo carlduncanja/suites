@@ -29,7 +29,7 @@ const EditablePhysiciansDetailsTab = ({ fields, onFieldChange }) => {
         const workPhone = fields.phones.filter(phone => phone.type === 'work');
 
         if (cellPhone.length > 0) {
-            // newPhoneArray = newPhoneArray;
+           
         } else {
             newPhoneArray = [...newPhoneArray, {
                 type: 'cell',
@@ -72,20 +72,16 @@ const EditablePhysiciansDetailsTab = ({ fields, onFieldChange }) => {
                 })
 
                 setDocterFieldResult(fulldata || []);
-                //categories.length == 0 && setCategories(data.data);
-                console.log(docterFieldResult)
             })
             .catch(error => {
                 console.log('Unable to retrieve physician category items: ', error);
             });
     }
     const createCategory = (name) => {
-        //console.log("the name out put", name)
 
         if (!name) return;
         addCategory({ name: name, type: "staff" })
             .then(_ => {
-                setDocterFeild("");
                 onFieldChange('field')('')
                 fetchCategories();
                 modal.openModal('ConfirmationModal', {
