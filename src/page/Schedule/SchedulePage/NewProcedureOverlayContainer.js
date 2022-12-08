@@ -461,7 +461,7 @@ function NewProcedureOverlayContainer({ appointment = {}, editMode = false, pass
             _id: value?._id,
             name: value?.name,
             tag: value?.tag,
-            type: "Physician"
+             type: "Physician"
         }
 
         setStaffInfo([
