@@ -6,6 +6,7 @@ import AppointmentBufferPage from '../../components/Settings/AppointmentBuffer/A
 import CaseFilesPage from '../../components/Settings/CaseFiles/CaseFilesPage'
 import CategoryPage from '../../components/Settings/Category/CategoryPage';
 import SchedulePage from '../../components/Settings/Schedule/SchedulePage';
+import InventoryPage from '../../components/Settings/Category/CategoryPage';
 
 const Stack = createStackNavigator();
 

@@ -57,6 +57,7 @@ function Item({
                     <CheckBoxComponent
                         isCheck={isChecked}
                         onPress={onCheckBoxPress}
+                        isDisabled={isDisabled}
                     />
                 }
 

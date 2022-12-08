@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { View, ActivityIndicator, StyleSheet, Text, TouchableOpacity, Alert } from 'react-native';
-import { getPurchaseOrderById, updatePurchaseOrder, updatePurchaseOrderDetails, updateInvoiceDocumnet, updatePurchaseOrderStatus, generatePurchaseOrderInvoice } from '../../api/network';
+import { getPurchaseOrderById, updatePurchaseOrder, updatePurchaseOrderDetails, updateInvoiceDocumnet, updatePurchaseOrderStatus, generatePurchaseOrderInvoice, confirmDelivery } from '../../api/network';
 import OrderDetailsTab from '../../components/OverlayTabs/OrderDetailsTab';
 import OrderItemTab from '../../components/OverlayTabs/OrderItemTab';
 import SupplierDetailsTab from '../../components/OverlayTabs/SupplierDetailsTab';
@@ -9,6 +9,7 @@ import DetailsPage from '../../components/common/DetailsPage/DetailsPage';
 import TabsContainer from '../../components/common/Tabs/TabsContainerComponent';
 import ConfirmationComponent from '../../components/ConfirmationComponent';
 import { useModal } from 'react-native-modalfy';
+import { ORDER_TYPES, PURCHASE_ORDER_STATUSES } from '../../const';
 import RequisitionTab from '../../components/OverlayTabs/RequisitionTab';
 
 function OrderItemPage({ route, navigation }) {
@@ -19,7 +20,6 @@ function OrderItemPage({ route, navigation }) {
 
 
     const currentTabs = ['Details', 'Items', 'Suppliers', 'Requisition'];
-    // console.log("Order:", order);
     const { _id, supplier = {}, purchaseOrderNumber, deliveryDate = '', description = '' } = order;
     const { name = '' } = supplier
 
@@ -32,7 +32,6 @@ function OrderItemPage({ route, navigation }) {
     const [pageState, setPageState] = useState({});
 
     const [isUpdateDone, setIsUpdateDone] = useState(false);
-    const [isUpdateDetails, setIsUpdateDetails] = useState(false);
 
     const { isEditMode } = pageState;
 
@@ -95,7 +94,6 @@ function OrderItemPage({ route, navigation }) {
     const updatePurchaseOrderItems = (data, purchaseOrderId) => {
         updatePurchaseOrder(purchaseOrderId, data)
             .then(data => {
-                console.log('DB data: ', data)
                 modal.openModal(
                     'ConfirmationModal',
                     {
@@ -118,7 +116,6 @@ function OrderItemPage({ route, navigation }) {
                     })
             })
             .catch(error => {
-                console.log('Failed to update order', error);
                 modal.openModal(
                     'ConfirmationModal',
                     {
@@ -169,14 +166,12 @@ function OrderItemPage({ route, navigation }) {
             }
         })
         let itemsList = [...orderItems, ...updatedList]
-        // console.log("Items: ", itemsList)
         setOrderItems(itemsList)
         setIsUpdateDone(true)
 
     };
 
     const onRemoveProductItems = (data) => {
-        console.log('Current data list');
         modal.openModal('ConfirmationModal',
             {
                 content: <ConfirmationComponent
@@ -201,6 +196,56 @@ function OrderItemPage({ route, navigation }) {
             })
     };
 
+    const onConfirmDelivery = (data) => {
+        if(order.status !== PURCHASE_ORDER_STATUSES.APPROVED)
+        {
+            errorScreen("This order must be approved before confirming delivery.");
+            return;
+        }
+
+        if(order.type !== ORDER_TYPES.PURCHASE_ORDER)
+        {
+            errorScreen("Cannot confirm delivery for an order of type requisition");
+            return;
+        }
+
+        if(!order.storageLocation)
+        {
+            errorScreen("Please add a storage location on the details page before confirming delivery.");
+            return;
+        }
+
+        confirmDelivery(_id, {items: data})
+            .then(_ => {
+                modal.openModal(
+                    'ConfirmationModal',
+                    {
+                        content: <ConfirmationComponent
+                            isError={false}
+                            isEditUpdate={false}
+                            onAction={() => {
+                                modal.closeAllModals();
+                            }}
+                            message={"Item(s) have been added to storage."}
+                            onCancel={() => {
+                                modal.closeAllModals();
+
+                            }}
+                        />
+                        ,
+                        onClose: () => {
+                            modal.closeModals('ConfirmationModal')
+                        }
+                    })
+            })
+            .catch(error => {
+               errorScreen();
+            })
+            .finally(_ => {
+                fetchOrder(_id);
+            })
+    };
+
     // ##### Helper functions
 
     const setPageLoading = (value) => {
@@ -211,7 +256,7 @@ function OrderItemPage({ route, navigation }) {
         })
     }
 
-    const errorScreen = () => {
+    const errorScreen = (message) => {
         setTimeout(() => {
             modal
                 .openModal(
@@ -220,8 +265,10 @@ function OrderItemPage({ route, navigation }) {
                         content: <ConfirmationComponent
                             isEditUpdate={false}
                             isError={true}
-                            onCancel={onCancelErrorScreen}
-                            message="There was an issue performing this action."
+                            onCancel={() => {
+                                modal.closeModals('ConfirmationModal')
+                            }}
+                            message={message}
                         />
                         ,
                         onClose: () => {
@@ -231,19 +278,11 @@ function OrderItemPage({ route, navigation }) {
         }, 100);
     }
 
-    const onCancelErrorScreen = () => {
-        modal.closeAllModals();
-        setTimeout(() => {
-            BackTapped();
-        }, 200)
-    }
-
     const fetchOrder = async (id) => {
         setPageLoading(true);
         getPurchaseOrderById(id)
             .then(data => {
                 const { orders = [] } = data || {};
-                
                 setSelectedOrder(data)
                 setOrderItems(orders)
             })
@@ -265,8 +304,6 @@ function OrderItemPage({ route, navigation }) {
                 return <OrderDetailsTab
                     order={selectedOrder}
                     onUpdate={() => fetchOrder(_id)}
-                // fields={fields}
-                // onFieldChange={onFieldChange}
                 />;
             case 'Items':
                 return <OrderItemTab
@@ -276,6 +313,7 @@ function OrderItemPage({ route, navigation }) {
                     supplierId={supplier?._id}
                     onAddProductItems={onAddProductItems}
                     onRemoveProductItems={onRemoveProductItems}
+                    onConfirmDelivery = {onConfirmDelivery}
                 />;
             case 'Suppliers':
                 return <SupplierDetailsTab supplierId={supplier?._id} order={selectedOrder} onUpdated={fetchOrder} />;
