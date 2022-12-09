@@ -58,13 +58,13 @@ const InvoiceDetailsPage = ({
                     try {
                         const { uri } = await FileSystem.downloadAsync(
                             `https://influx.smssoftwarestudio.com/insight/document-management-service/api/documents/${documentId}`,
-                            `${FileSystem.cacheDirectory}${frameName}`
+                            `${FileSystem.cacheDirectory}${frameName.replace(/\s/g, '')}`
                         );
 
                         image = await FileSystem.readAsStringAsync(uri, {
                             encoding: 'base64',
                         });
-                        await FileSystem.deleteAsync(`${FileSystem.cacheDirectory}${frameName}`);
+                        await FileSystem.deleteAsync(`${FileSystem.cacheDirectory}${frameName.replace(/\s/g, '')}`);
                         resolve(`data:application/pdf;base64,${image}`);
                     } catch (err) {
                         console.log("An error occured whilst converting to base 64", err);
@@ -91,7 +91,7 @@ const InvoiceDetailsPage = ({
                     font="--text-sm-medium"
                     textColor="--color-blue-600"
                 >{frameName}</PageText>
-                {
+                {/* {
                     isEditMode && (
                         <IconConatiner>
                             <IconButton
@@ -100,7 +100,7 @@ const InvoiceDetailsPage = ({
                             />
                         </IconConatiner>
                     )
-                }
+                } */}
             </ImageTitleContainer>
             <InvoiceUploadContainer
                 theme={theme}
@@ -198,7 +198,7 @@ const InvoiceDetailsPage = ({
                         textColor="--color-blue-600"
                         paddingTop={150}
                     >
-                        {!documentId || isFetching ? (<LoadingIndicator/>) :"Document not available" }
+                        { isFetching ? <LoadingIndicator/> :  "Document not available"}
                     </PageText>
                 </RejectedPreviewContainer>
             )
@@ -214,7 +214,7 @@ const InvoiceDetailsPage = ({
                     font="--text-sm-medium"
                     textColor="--color-blue-600"
                 >{frameName}</PageText>
-                {
+                {/* {
                     (canDelete && isEditMode) && (
                         <IconConatiner>
                             <IconButton
@@ -223,7 +223,7 @@ const InvoiceDetailsPage = ({
                             />
                         </IconConatiner>
                     )
-                }
+                } */}
             </ImageTitleContainer>
             {
                 isImageUpdating ? <LoadingIndicator /> : content()

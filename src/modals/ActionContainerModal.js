@@ -28,8 +28,6 @@ const ActionContainerModal = (props) => {
         position : 'right'
     });
 
-    console.log(params);
-
     const {actions, onClose, position = 'right'} = getParams({
         actions: <View/>,
         onClose: emptyFn,

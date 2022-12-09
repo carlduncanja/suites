@@ -33,7 +33,7 @@ import {
 import {
     getPurchaseOrders,
     createInvoiceViaOrders,
-    updatePurchaseOrderStatus, removePurchaseOrderCall, createAlert, getRolesCall, requestQuotation,
+    updatePurchaseOrderStatus, removePurchaseOrderCall, createAlert, getRolesCall, requestQuotation, sendToSupplier,
 } from "../../api/network";
 import _ from "lodash";
 
@@ -425,7 +425,7 @@ const Orders = (props) => {
                 />}
                 disabled={isRequestDisabled}
                 touchable={!isRequestDisabled}
-                onPress={() => handleRequestApproval(purchaseOrder, status === PURCHASE_ORDER_STATUSES.QUOTATION_REQUESTED && PURCHASE_ORDER_STATUSES.PENDING)}
+                onPress={() => showConfirmation('Your request will be sent to the admin. Once approved you can send the Purchase Order to the supplier using the send to supplier option.', 'request_approval', purchaseOrder, status === PURCHASE_ORDER_STATUSES.QUOTATION_REQUESTED && PURCHASE_ORDER_STATUSES.PENDING)}
             />
         )
 
@@ -444,7 +444,8 @@ const Orders = (props) => {
             />
         )
 
-        const isSendToSupplierDisabled = (status, type) !== (PURCHASE_ORDER_STATUSES.APPROVED && ORDER_TYPES.PURCHASE_ORDER);
+        let isSendToSupplierDisabled = true;
+        if (status === PURCHASE_ORDER_STATUSES.APPROVED && type === ORDER_TYPES.PURCHASE_ORDER) isSendToSupplierDisabled = false;
         const sendToSupplier = (
             <ActionItem
                 title={"Send to Supplier"}
@@ -453,8 +454,7 @@ const Orders = (props) => {
                 />}
                 touchable={!isSendToSupplierDisabled}
                 disabled={isSendToSupplierDisabled}
-                //To be implemented
-                onPress={() => console.log("Not yet implemented")}
+                onPress={() => showConfirmation('A purchase order will be sent to the supplier via email. You may view a copy of it under invoice tab.', 'purchase_order', purchaseOrder)}
             />
         )
         let isQuotationDisabled = true;
@@ -467,7 +467,6 @@ const Orders = (props) => {
                 />}
                 disabled={isQuotationDisabled}
                 touchable={!isQuotationDisabled}
-                //To be implemented
                 onPress={() => showConfirmation('By requesting a quotation, a requisition with the items and quanities needed will be sent to the supplier. You may view the document under the requisition tab.', 'quotation', purchaseOrder)}
             />
         )
@@ -524,8 +523,8 @@ const Orders = (props) => {
         setFetchingData(true)
         updatePurchaseOrderStatus(purchaseOrderId, status)
             .then((data) => {
-                console.log("Purchase Order Record:", data);
                 updatePurchaseOrder(purchaseOrderId, { status });
+                handleDataRefresh();
                 showSuccessModal()
             })
             .catch((error) => {
@@ -556,11 +555,29 @@ const Orders = (props) => {
         
     }
 
+    const handleSendToSupplier = (purchaseOrder) => {
+        modal.closeAllModals();
+        const { _id, supplier } = purchaseOrder
+        setFetchingData(true)
+        sendToSupplier(_id, { email: supplier.email })
+        .then(_ => {
+            showSuccessModal();
+            handleDataRefresh();
+        })
+        .catch((error) => {
+            console.log("An error has occured", error);
+            errorScreen();
+        })
+        .finally(_ => {
+            setFetchingData(false)
+        })
+        
+    }
+
     const handleRequestApproval = (purchaseOrder, status) => {
         createAlert({ title: 'Approval Request', message: `Order ${purchaseOrder.purchaseOrderNumber} requires approval`, roles: [adminId] })
             .then(_ => {
                 status && updateStatus(purchaseOrder._id, status);
-                handleDataRefresh();
                 showSuccessModal()
             })
             .catch((error) => {
@@ -569,7 +586,7 @@ const Orders = (props) => {
             });
     }
 
-    const showConfirmation = (message, type, purchaseOrder) => {
+    const showConfirmation = (message, type, purchaseOrder, status) => {
         modal.openModal('ConfirmationModal', {
             content: (
                 <ConfirmationComponent
@@ -579,9 +596,14 @@ const Orders = (props) => {
                     }}
                     onAction={() => {
                         switch (type) {
+                            case 'request_approval':
+                                handleRequestApproval(purchaseOrder, status)
+                                break;
                             case 'quotation':
                                 handleRequestQuotation(purchaseOrder)
                                 break;
+                            case 'purchase_order':
+                                handleSendToSupplier(purchaseOrder)
                             default: break;
                         }
                         modal.closeModals('ConfirmationModal');

@@ -19,7 +19,7 @@ function OrderItemPage({ route, navigation }) {
     const modal = useModal();
 
 
-    const currentTabs = ['Details', 'Items', 'Suppliers', 'Requisition'];
+    const currentTabs = ['Details', 'Items', 'Suppliers', 'Requisition', 'Invoice'];
     const { _id, supplier = {}, purchaseOrderNumber, deliveryDate = '', description = '' } = order;
     const { name = '' } = supplier
 
@@ -30,7 +30,6 @@ function OrderItemPage({ route, navigation }) {
     const [selectedOrder, setSelectedOrder] = useState({});
     const [orderItems, setOrderItems] = useState([]);
     const [pageState, setPageState] = useState({});
-
     const [isUpdateDone, setIsUpdateDone] = useState(false);
 
     const { isEditMode } = pageState;
@@ -318,7 +317,9 @@ function OrderItemPage({ route, navigation }) {
             case 'Suppliers':
                 return <SupplierDetailsTab supplierId={supplier?._id} order={selectedOrder} onUpdated={fetchOrder} />;
             case 'Requisition':
-                return <RequisitionTab order={selectedOrder} onUpdate={() => fetchOrder(_id)} />;
+                return <RequisitionTab key={1} order={selectedOrder} onUpdate={() => fetchOrder(_id)} type={ORDER_TYPES.REQUISITION} />;
+            case 'Invoice':
+                return <RequisitionTab key={2} order={selectedOrder} onUpdate={() => fetchOrder(_id)} type={ORDER_TYPES.PURCHASE_ORDER}/>;
             default:
                 return <View />;
         }
