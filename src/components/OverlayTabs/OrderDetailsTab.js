@@ -212,7 +212,7 @@ const OrderDetailsTab = ({
             ...fields,
             deliveryDate: fields['deliveryDate'].toString(),
             description: fields['description'] ? fields['description'] : '',
-            storageLocation: fields.storageLocation._id,
+            storageLocation: fields.storageLocation && fields.storageLocation._id,
             notes: fields['notes'] ? fields['notes'] : '',
             supplier_tax: fields['supplier_tax'] ? fields['supplier_tax'] : 0,
             shipping_cost: fields['shipping_cost'] ? fields['shipping_cost'] : 0,
