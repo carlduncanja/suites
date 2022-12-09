@@ -208,8 +208,6 @@ function Storage(props) {
         getStorage(searchValue, recordsPerPage, currentPosition)
             .then(storageResult => {
                 const { data = [], pages = 0 } = storageResult;
-                console.log("Dta: ", data);
-
                 if (pages === 1) {
                     setPreviousDisabled(true);
                     setNextDisabled(true);

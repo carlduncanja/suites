@@ -25,8 +25,6 @@ function StoragePage({route, navigation}) {
     const [isFetching, setFetching] = useState(false);
     const [pageState, setPageState] = useState({});
 
-    console.log('Storarge: ', storageItem);
-
     // ##### Life cycle methods
 
     useEffect(() => {
@@ -81,9 +79,10 @@ function StoragePage({route, navigation}) {
             name: updates.name,
             description: updates.description
         });
+
         if (reloadStorageLocations) reloadStorageLocations();
     };
-
+    
     const getTabContent = selectedTab => {
         switch (selectedTab) {
             case 'Details':
@@ -91,6 +90,7 @@ function StoragePage({route, navigation}) {
                 const storageLocationDetails = {
                     description: storageItem.description,
                     name: storageItem.name,
+                    storageCategories: storageItem.categories
                 };
 
                 return <StorageDetailsTab

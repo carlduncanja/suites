@@ -154,7 +154,6 @@ function PhysicianPage({route, navigation}) {
         updatePhysician(_id, updatedFields)
             .then(data => {
                 fetchPhysician(_id);
-                console.log('Physician data from db: ', data);
 
                 if (reloadPhysicians) reloadPhysicians();
 
@@ -251,7 +250,6 @@ function PhysicianPage({route, navigation}) {
         setPageLoading(true);
         getPhysicianById(id)
             .then(data => {
-                console.log("Docter Data",data)
                 setSelectedPhysician(data);
 
                 const {firstName, surname} = data;
