@@ -425,7 +425,7 @@ const Orders = (props) => {
                 />}
                 disabled={isRequestDisabled}
                 touchable={!isRequestDisabled}
-                onPress={() => handleRequestApproval(purchaseOrder, status === PURCHASE_ORDER_STATUSES.QUOTATION_REQUESTED && PURCHASE_ORDER_STATUSES.PENDING)}
+                onPress={() => showConfirmation('Your request will be sent to the admin. Once approved you can send the Purchase Order to the supplier using the send to supplier option.', 'request_approval', purchaseOrder, status === PURCHASE_ORDER_STATUSES.QUOTATION_REQUESTED && PURCHASE_ORDER_STATUSES.PENDING)}
             />
         )
 
@@ -586,7 +586,7 @@ const Orders = (props) => {
             });
     }
 
-    const showConfirmation = (message, type, purchaseOrder) => {
+    const showConfirmation = (message, type, purchaseOrder, status) => {
         modal.openModal('ConfirmationModal', {
             content: (
                 <ConfirmationComponent
@@ -596,6 +596,9 @@ const Orders = (props) => {
                     }}
                     onAction={() => {
                         switch (type) {
+                            case 'request_approval':
+                                handleRequestApproval(purchaseOrder, status)
+                                break;
                             case 'quotation':
                                 handleRequestQuotation(purchaseOrder)
                                 break;
