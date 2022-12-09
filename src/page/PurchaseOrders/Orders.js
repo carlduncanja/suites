@@ -425,7 +425,7 @@ const Orders = (props) => {
                 />}
                 disabled={isRequestDisabled}
                 touchable={!isRequestDisabled}
-                onPress={() => showConfirmation('Your request will be sent to the admin. Once approved you can send the Purchase Order to the supplier using the send to supplier option.', 'request_approval', purchaseOrder, status === PURCHASE_ORDER_STATUSES.QUOTATION_REQUESTED && PURCHASE_ORDER_STATUSES.PENDING)}
+                onPress={() => showConfirmation('Your request will be sent to the admin. Once approved you can either request a quotation or send a purchase order', 'request_approval', purchaseOrder, status === PURCHASE_ORDER_STATUSES.QUOTATION_REQUESTED && PURCHASE_ORDER_STATUSES.PENDING)}
             />
         )
 
