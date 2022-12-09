@@ -198,7 +198,7 @@ const InvoiceDetailsPage = ({
                         textColor="--color-blue-600"
                         paddingTop={150}
                     >
-                        {"Document not available" }
+                        { isFetching ? <LoadingIndicator/> :  "Document not available"}
                     </PageText>
                 </RejectedPreviewContainer>
             )

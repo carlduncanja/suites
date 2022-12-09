@@ -182,7 +182,6 @@ const RequisitionTab = ({ order = {}, onUpdate, type }) => {
                     isEditUpdate={true}
                     onCancel={() => {
                         setContent('');
-                        // resetState()
                         setPageState({ ...pageState, isEditMode: false });
                         modal.closeAllModals();
                     }}
