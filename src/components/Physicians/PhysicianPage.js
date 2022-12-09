@@ -33,7 +33,8 @@ function PhysicianPage({route, navigation}) {
         emails,
         address,
         phones,
-        emergencyContact
+        emergencyContact,
+        field
     } = physician;
     // ##### States
 
@@ -56,7 +57,8 @@ function PhysicianPage({route, navigation}) {
         emails,
         address,
         phones,
-        emergencyContact
+        emergencyContact,
+        field
     });
 
     // ##### Lifecycle Methods
@@ -152,7 +154,6 @@ function PhysicianPage({route, navigation}) {
         updatePhysician(_id, updatedFields)
             .then(data => {
                 fetchPhysician(_id);
-                console.log('Physician data from db: ', data);
 
                 if (reloadPhysicians) reloadPhysicians();
 
@@ -167,7 +168,7 @@ function PhysicianPage({route, navigation}) {
                             onAction={() => {
                                 modal.closeAllModals();
                             }}
-                            message="Changes were successful my boy."//general message you can send to be displayed
+                            message="Changes were successful"//general message you can send to be displayed
                             action="Yes"
                         />
                     ),
@@ -178,9 +179,28 @@ function PhysicianPage({route, navigation}) {
             })
             .catch(error => {
                 // todo handle error
+                errrorHandler()
                 console.log('failed to update physician', error);
             });
-    };
+    }; 
+
+    const  errrorHandler =()=>{
+        modal.openModal('ConfirmationModal', {
+            content: <ConfirmationComponent
+                isEditUpdate={false}
+                isError={true}
+                onCancel={() => {
+                    modal.closeModals('ConfirmationModal');
+                }}
+                onAction={() => {
+                    modal.closeModals('ConfirmationModal');
+                }}
+            />,
+            onClose: () => {
+                modal.closeModals('ConfirmationModal');
+            },
+        });
+    }
 
     const removeIds = array => {
         const updatedArray = array.map(obj => {
@@ -230,7 +250,6 @@ function PhysicianPage({route, navigation}) {
         setPageLoading(true);
         getPhysicianById(id)
             .then(data => {
-                console.log("Docter Data",data)
                 setSelectedPhysician(data);
 
                 const {firstName, surname} = data;

@@ -1,15 +1,27 @@
-import React, {useState, useEffect} from 'react';
-import {View, Text, StyleSheet, ScrollView, KeyboardAvoidingView, TouchableOpacity} from 'react-native';
-import {MenuOptions, MenuOption} from 'react-native-popup-menu';
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, ScrollView, KeyboardAvoidingView, TouchableOpacity } from 'react-native';
+import { MenuOptions, MenuOption } from 'react-native-popup-menu';
 import moment from 'moment';
 import InputField2 from '../common/Input Fields/InputField2';
+import SearchableOptionsField from '../common/Input Fields/SearchableOptionsField';
 import DateInputField from '../common/Input Fields/DateInputField';
 import OptionsField from '../common/Input Fields/OptionsField';
 import Button from '../common/Buttons/Button';
-import {formatDate, transformToSentence, calcAge, isValidEmail, handleNumberValidation} from '../../utils/formatter';
+import { getCategories, addCategory } from '../../api/network'
+import { useModal } from "react-native-modalfy";
+import { formatDate, transformToSentence, calcAge, isValidEmail, handleNumberValidation } from '../../utils/formatter';
+import ConfirmationComponent from '../ConfirmationComponent';
 
-const EditablePhysiciansDetailsTab = ({fields, onFieldChange}) => {
+const EditablePhysiciansDetailsTab = ({ fields, onFieldChange }) => {
+
+    const modal =  useModal();
+
+    const [docterFeild, setDocterFeild] = useState('')
+    const [docterFieldResult, setDocterFieldResult] = useState([])
+    const [searchDocterFieldQuery, setSearchDocterFeildQuery] = useState({})
+    const [valueState, setValueState] = useState({ name: fields.field })
     const handlePhones = () => {
+
         let newPhoneArray = [...fields.phones];
 
         const cellPhone = fields.phones.filter(phone => phone.type === 'cell');
@@ -17,7 +29,7 @@ const EditablePhysiciansDetailsTab = ({fields, onFieldChange}) => {
         const workPhone = fields.phones.filter(phone => phone.type === 'work');
 
         if (cellPhone.length > 0) {
-            // newPhoneArray = newPhoneArray;
+           
         } else {
             newPhoneArray = [...newPhoneArray, {
                 type: 'cell',
@@ -44,6 +56,68 @@ const EditablePhysiciansDetailsTab = ({fields, onFieldChange}) => {
         }
 
         return newPhoneArray;
+    };
+
+    useEffect(() => {
+        fetchCategories();
+    }, [docterFeild])
+
+    const fetchCategories = () => {
+        getCategories("staff", 1000, docterFeild)
+            .then((categoriesData) => {
+                const { data = [], page } = categoriesData
+                const fulldata = data.map(cats => {
+                    const { _id = '', name = '', status = '' } = cats
+                    return { _id: _id, name: name, status: status }
+                })
+
+                setDocterFieldResult(fulldata || []);
+            })
+            .catch(error => {
+                console.log('Unable to retrieve physician category items: ', error);
+            });
+    }
+    const createCategory = (name) => {
+
+        if (!name) return;
+        addCategory({ name: name, type: "staff" })
+            .then(_ => {
+                onFieldChange('field')('')
+                fetchCategories();
+                modal.openModal('ConfirmationModal', {
+                    content: <ConfirmationComponent
+                        isEditUpdate={false}
+                        isError={false}
+                        onCancel={() => {
+                            modal.closeModals('ConfirmationModal');
+                        }}
+                        onAction={() => {
+                            modal.closeModals('ConfirmationModal');
+                        }}
+                    />,
+                    onClose: () => {
+                        modal.closeModals('ConfirmationModal');
+                    },
+                });
+            })
+            .catch(error => {
+                modal.openModal('ConfirmationModal', {
+                    content: <ConfirmationComponent
+                        isEditUpdate={false}
+                        isError={true}
+                        onCancel={() => {
+                            modal.closeModals('ConfirmationModal');
+                        }}
+                        onAction={() => {
+                            modal.closeModals('ConfirmationModal');
+                        }}
+                    />,
+                    onClose: () => {
+                        modal.closeModals('ConfirmationModal');
+                    },
+                });
+                console.log(error);
+            })
     };
 
     const handleEmails = () => {
@@ -135,7 +209,7 @@ const EditablePhysiciansDetailsTab = ({fields, onFieldChange}) => {
 
     const updatePhone = (newValue, phoneType) => {
         const objIndex = phoneValue.findIndex(obj => obj.type === phoneType);
-        const updatedObj = {...phoneValue[objIndex], phone: newValue};
+        const updatedObj = { ...phoneValue[objIndex], phone: newValue };
         const updatedPhones = [
             ...phoneValue.slice(0, objIndex),
             updatedObj,
@@ -147,7 +221,7 @@ const EditablePhysiciansDetailsTab = ({fields, onFieldChange}) => {
 
     const updateEmail = (newValue, emailType) => {
         const objIndex = emailValue.findIndex(obj => obj.type === emailType);
-        const updatedObj = {...emailValue[objIndex], email: newValue};
+        const updatedObj = { ...emailValue[objIndex], email: newValue };
         const updatedEmails = [
             ...emailValue.slice(0, objIndex),
             updatedObj,
@@ -156,6 +230,7 @@ const EditablePhysiciansDetailsTab = ({fields, onFieldChange}) => {
         setEmailValue(updatedEmails);
         return updatedEmails;
     };
+
 
     const divider = (
         <View style={{
@@ -195,9 +270,9 @@ const EditablePhysiciansDetailsTab = ({fields, onFieldChange}) => {
         const objIndex = addresses.findIndex(obj => obj._id === id);
         let updatedObj = {};
         if (key === 'line1') {
-            updatedObj = {...addresses[objIndex], line1: value};
+            updatedObj = { ...addresses[objIndex], line1: value };
         } else {
-            updatedObj = {...addresses[objIndex], line2: value};
+            updatedObj = { ...addresses[objIndex], line2: value };
         }
 
         const updatedAddress = [
@@ -216,7 +291,7 @@ const EditablePhysiciansDetailsTab = ({fields, onFieldChange}) => {
         let updatedContacts = [];
 
         if (key === 'name') {
-            updatedObj = {...emergencyContacts[objIndex], name: value};
+            updatedObj = { ...emergencyContacts[objIndex], name: value };
             updatedContacts = [
                 ...emergencyContacts.slice(0, objIndex),
                 updatedObj,
@@ -226,25 +301,9 @@ const EditablePhysiciansDetailsTab = ({fields, onFieldChange}) => {
             onFieldChange('emergencyContact')(updatedContacts);
         } else if (key === 'relation') {
             if (value === '') {
-                updatedObj = {...emergencyContacts[objIndex], relation: ''};
+                updatedObj = { ...emergencyContacts[objIndex], relation: '' };
             } else {
-                // console.log("Value: ", value.trim())
-                // let splitValue = value.trim().split(' ')
-
-                // if (/\((\w)*\)/g.test(value)){
-                //     console.log("Length 1")
-                //     name = ""
-                //     relation = value.replace(/[()]/g, "")
-                // }else if(/\w*\s*\((\w)*\)/g.test(value.trim()) && splitValue.length === 2){
-                //     console.log("Length 2")
-                //     name = splitValue[0]
-                //     relation = splitValue[1].replace(/[()]/g, "")
-                // }else {
-                //     name = splitValue[0].contact(' ', splitValue[1])
-                //     relation = splitValue[2].replace(/[()]/g, "")
-                // }
-
-                updatedObj = {...emergencyContacts[objIndex], relation: value.trim()};
+                updatedObj = { ...emergencyContacts[objIndex], relation: value.trim() };
             }
 
             updatedContacts = [
@@ -256,7 +315,7 @@ const EditablePhysiciansDetailsTab = ({fields, onFieldChange}) => {
             onFieldChange('emergencyContact')(updatedContacts);
         } else if (key === 'phone') {
             const formattedNumber = value.replace(/\s/g, '');
-            updatedObj = {...emergencyContacts[objIndex], phone: formatNumber(formattedNumber)};
+            updatedObj = { ...emergencyContacts[objIndex], phone: formatNumber(formattedNumber) };
 
             updatedContacts = [
                 ...emergencyContacts.slice(0, objIndex),
@@ -268,7 +327,7 @@ const EditablePhysiciansDetailsTab = ({fields, onFieldChange}) => {
                 onFieldChange('emergencyContact')(updatedContacts);
             }
         } else {
-            updatedObj = {...emergencyContacts[objIndex], email: value};
+            updatedObj = { ...emergencyContacts[objIndex], email: value };
 
             updatedContacts = [
                 ...emergencyContacts.slice(0, objIndex),
@@ -324,7 +383,7 @@ const EditablePhysiciansDetailsTab = ({fields, onFieldChange}) => {
             // setPopoverList(updatedPopovers)
         } else {
             const objIndex = popoverList.findIndex(obj => obj.name === popoverItem);
-            const updatedObj = {...popoverList[objIndex], status: popoverValue};
+            const updatedObj = { ...popoverList[objIndex], status: popoverValue };
             updatedPopovers = [
                 ...popoverList.slice(0, objIndex),
                 updatedObj,
@@ -342,7 +401,7 @@ const EditablePhysiciansDetailsTab = ({fields, onFieldChange}) => {
 
                 <View style={styles.fieldWrapper}>
 
-                    <View style={{marginBottom: 5,}}>
+                    <View style={{ marginBottom: 5, }}>
                         <Text style={styles.title}>First Name</Text>
                     </View>
 
@@ -357,7 +416,7 @@ const EditablePhysiciansDetailsTab = ({fields, onFieldChange}) => {
                 </View>
 
                 <View style={styles.fieldWrapper}>
-                    <View style={{flex: 1, marginBottom: 5}}>
+                    <View style={{ flex: 1, marginBottom: 5 }}>
                         <Text style={styles.title}>Middle Name</Text>
                     </View>
 
@@ -373,7 +432,7 @@ const EditablePhysiciansDetailsTab = ({fields, onFieldChange}) => {
                 </View>
 
                 <View style={styles.fieldWrapper}>
-                    <View style={{marginBottom: 5}}>
+                    <View style={{ marginBottom: 5 }}>
                         <Text style={styles.title}>Surname</Text>
                     </View>
 
@@ -393,7 +452,7 @@ const EditablePhysiciansDetailsTab = ({fields, onFieldChange}) => {
             <View style={styles.row}>
 
                 <View style={styles.fieldWrapper}>
-                    <View style={{marginBottom: 5}}>
+                    <View style={{ marginBottom: 5 }}>
                         <Text style={styles.title}>Age</Text>
                     </View>
                     <View style={styles.inputWrapper}>
@@ -402,7 +461,7 @@ const EditablePhysiciansDetailsTab = ({fields, onFieldChange}) => {
                 </View>
 
                 <View style={styles.fieldWrapper}>
-                    <View style={{marginBottom: 5}}>
+                    <View style={{ marginBottom: 5 }}>
                         <Text style={styles.title}>Gender</Text>
                     </View>
 
@@ -412,8 +471,8 @@ const EditablePhysiciansDetailsTab = ({fields, onFieldChange}) => {
                             oneOptionsSelected={onFieldChange('gender')}
                             menuOption={(
                                 <MenuOptions>
-                                    <MenuOption value="Male" text="Male"/>
-                                    <MenuOption value="Female" text="Female"/>
+                                    <MenuOption value="Male" text="Male" />
+                                    <MenuOption value="Female" text="Female" />
                                 </MenuOptions>
                             )}
                         />
@@ -421,7 +480,7 @@ const EditablePhysiciansDetailsTab = ({fields, onFieldChange}) => {
                 </View>
 
                 <View style={styles.fieldWrapper}>
-                    <View style={{marginBottom: 5}}>
+                    <View style={{ marginBottom: 5 }}>
                         <Text style={styles.title}>Date Of Birth</Text>
                     </View>
 
@@ -444,7 +503,7 @@ const EditablePhysiciansDetailsTab = ({fields, onFieldChange}) => {
             <View style={styles.row}>
 
                 <View style={styles.fieldWrapper}>
-                    <View style={{marginBottom: 5}}>
+                    <View style={{ marginBottom: 5 }}>
                         <Text style={styles.title}>TRN</Text>
                     </View>
 
@@ -461,20 +520,37 @@ const EditablePhysiciansDetailsTab = ({fields, onFieldChange}) => {
                 </View>
 
                 <View style={styles.fieldWrapper}>
-                    <View style={{marginBottom: 5}}>
-                        <Text style={styles.title}>Type</Text>
+                    <View style={{ marginBottom: 5 }}>
+                        <Text style={styles.title}>Specialization</Text>
                     </View>
+                    <SearchableOptionsField
+                        value={valueState}
+                        placeholder="Please Choose A Specialization"
+                        onClear={() => {
+                            setSearchDocterFeildQuery(" ")
+                            onFieldChange('field')('')
+                            setValueState("")
+                        }}
+                        onChangeText={(value) => {
+                            setDocterFeild(value)
+                        }}
+                        oneOptionsSelected={(value) => {
+                            onFieldChange('field')(value.name)
+                        }}
+                        options={docterFieldResult}
+                        showActionButton={true}
+                        updateDB={createCategory}
+                        isPopoverOpen={searchDocterFieldQuery}
+                        handlePatient={(value) => {
+                            setValueState(value)
+                            onFieldChange('field')(value.name)
+                        }}
+                        text={docterFeild}
+                    />
 
-                    <View style={styles.inputWrapper}>
-                        <InputField2
-                            onChangeText={onFieldChange('field')}
-                            value={fields.field}
-                            onClear={() => onFieldChange('field')('')}
-                        />
-                    </View>
                 </View>
 
-                <View style={styles.fieldWrapper}/>
+                <View style={styles.fieldWrapper} />
             </View>
         </>
     );
@@ -484,12 +560,12 @@ const EditablePhysiciansDetailsTab = ({fields, onFieldChange}) => {
 
             <View style={styles.row}>
                 {phoneValue.map((phone, index) => {
-                    const {type} = phone;
+                    const { type } = phone;
                     const number = phone.phone;
                     const title = type === 'cell' ? 'Cell Phone' : type === 'home' ? 'Home Phone' : type === 'work' ? 'Work Phone' : null;
                     return (
                         <View style={styles.fieldWrapper} key={index}>
-                            <View style={{marginBottom: 5}}>
+                            <View style={{ marginBottom: 5 }}>
                                 <Text style={styles.title}>{title}</Text>
                             </View>
 
@@ -509,12 +585,12 @@ const EditablePhysiciansDetailsTab = ({fields, onFieldChange}) => {
 
             <View style={styles.row}>
                 {emailValue.map((email, index) => {
-                    const {type} = email;
+                    const { type } = email;
                     const emailAddress = email.email;
                     const title = type === 'primary' ? 'Primary Email' : type === 'other' ? 'Alternate Email' : type === 'work' ? 'Work Email' : null;
                     return (
                         <View style={styles.fieldWrapper} key={index}>
-                            <View style={{marginBottom: 5}}>
+                            <View style={{ marginBottom: 5 }}>
                                 <Text style={styles.title}>{title}</Text>
                             </View>
 
@@ -534,10 +610,10 @@ const EditablePhysiciansDetailsTab = ({fields, onFieldChange}) => {
 
             <View style={{}}>
                 {addresses.map((addressObj, index) => (
-                    <View key={index} style={{flexDirection: 'row', flex: 1}}>
+                    <View key={index} style={{ flexDirection: 'row', flex: 1 }}>
 
-                        <View style={[{paddingRight: 35, width: '33%', marginBottom: 30}]}>
-                            <View style={{marginBottom: 5}}>
+                        <View style={[{ paddingRight: 35, width: '33%', marginBottom: 30 }]}>
+                            <View style={{ marginBottom: 5 }}>
                                 <Text style={styles.title}>Address 1</Text>
                             </View>
 
@@ -553,7 +629,7 @@ const EditablePhysiciansDetailsTab = ({fields, onFieldChange}) => {
                         </View>
 
                         <View style={styles.fieldWrapper}>
-                            <View style={{marginBottom: 5}}>
+                            <View style={{ marginBottom: 5 }}>
                                 <Text style={styles.title}>Address 2</Text>
                             </View>
 
@@ -581,9 +657,9 @@ const EditablePhysiciansDetailsTab = ({fields, onFieldChange}) => {
                 {emergencyContacts.map((contact, index) => {
                     const isOpen = popoverList.filter(item => item.name === `emergency${index + 1}`);
                     return (
-                        <View style={{width: '100%', zIndex: index === 1 ? -1 : 0}} key={index}>
+                        <View style={{ width: '100%', zIndex: index === 1 ? -1 : 0 }} key={index}>
 
-                            <View style={{marginBottom: 10}}>
+                            <View style={{ marginBottom: 10 }}>
                                 <Text>Emergency Contact {index + 1}</Text>
                             </View>
 
@@ -632,9 +708,9 @@ const EditablePhysiciansDetailsTab = ({fields, onFieldChange}) => {
  */}
                                 <View style={[styles.row]}>
 
-                                    <View style={{paddingRight: 35, flex: 1, marginBottom: 30, zIndex: -1}}>
-                                        <View style={{marginBottom: 5}}>
-                                            <Text style={[styles.title, {fontSize: 12}]}>Name</Text>
+                                    <View style={{ paddingRight: 35, flex: 1, marginBottom: 30, zIndex: -1 }}>
+                                        <View style={{ marginBottom: 5 }}>
+                                            <Text style={[styles.title, { fontSize: 12 }]}>Name</Text>
                                         </View>
 
                                         <View style={styles.inputWrapper}>
@@ -646,9 +722,9 @@ const EditablePhysiciansDetailsTab = ({fields, onFieldChange}) => {
                                         </View>
                                     </View>
 
-                                    <View style={{paddingRight: 35, flex: 1, marginBottom: 30, zIndex: -1}}>
-                                        <View style={{marginBottom: 5}}>
-                                            <Text style={[styles.title, {fontSize: 12}]}>Relation</Text>
+                                    <View style={{ paddingRight: 35, flex: 1, marginBottom: 30, zIndex: -1 }}>
+                                        <View style={{ marginBottom: 5 }}>
+                                            <Text style={[styles.title, { fontSize: 12 }]}>Relation</Text>
                                         </View>
 
                                         <View style={styles.inputWrapper}>
@@ -664,9 +740,9 @@ const EditablePhysiciansDetailsTab = ({fields, onFieldChange}) => {
 
                                 <View style={[styles.row]}>
 
-                                    <View style={{paddingRight: 35, flex: 1, marginBottom: 30, zIndex: -1}}>
-                                        <View style={{marginBottom: 5}}>
-                                            <Text style={[styles.title, {fontSize: 12}]}>Phone</Text>
+                                    <View style={{ paddingRight: 35, flex: 1, marginBottom: 30, zIndex: -1 }}>
+                                        <View style={{ marginBottom: 5 }}>
+                                            <Text style={[styles.title, { fontSize: 12 }]}>Phone</Text>
                                         </View>
 
                                         <View style={styles.inputWrapper}>
@@ -679,9 +755,9 @@ const EditablePhysiciansDetailsTab = ({fields, onFieldChange}) => {
                                         </View>
                                     </View>
 
-                                    <View style={{paddingRight: 35, flex: 1, marginBottom: 30, zIndex: -2}}>
-                                        <View style={{marginBottom: 5}}>
-                                            <Text style={[styles.title, {fontSize: 12}]}>Email</Text>
+                                    <View style={{ paddingRight: 35, flex: 1, marginBottom: 30, zIndex: -2 }}>
+                                        <View style={{ marginBottom: 5 }}>
+                                            <Text style={[styles.title, { fontSize: 12 }]}>Email</Text>
                                         </View>
 
                                         <View style={styles.inputWrapper}>
@@ -730,7 +806,7 @@ const EditablePhysiciansDetailsTab = ({fields, onFieldChange}) => {
 
     return (
         <KeyboardAvoidingView
-            style={{flex: 1}}
+            style={{ flex: 1 }}
             enabled
             keyboardVerticalOffset={300}
             behavior="padding"
@@ -738,7 +814,7 @@ const EditablePhysiciansDetailsTab = ({fields, onFieldChange}) => {
             <ScrollView
                 bounces={true}
                 // fadingEdgeLength = {100}
-                contentContainerStyle={{paddingBottom: 40}}
+                contentContainerStyle={{ paddingBottom: 40 }}
             >
                 <TouchableOpacity
                     activeOpacity={1}
@@ -764,12 +840,13 @@ export default EditablePhysiciansDetailsTab;
 
 const styles = StyleSheet.create({
     section: {},
-    row: {flexDirection: 'row'},
+    row: { flexDirection: 'row' },
     fieldWrapper: {
         flex: 1,
         marginRight: 35,
         marginBottom: 30,
         flexDirection: 'column',
+
     },
     inputWrapper: {
         // flex:1,

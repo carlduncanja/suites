@@ -525,6 +525,24 @@ const Equipment = props => {
         navigation.navigate('AssignEquipmentPage', {equipment, onCreated: handleDataRefresh});
     };
 
+    const openCreateGroupDialog = () => {
+        modal.closeAllModals();
+        //navigation.navigate('AddEquipmentCategory');
+        navigation.navigate('AddEquipmentCategory', {
+            screen: 'AddEquipmentCategory',
+            initial: false,
+            onCreated: () => {
+                onRefresh();
+                setFloatingAction(false);
+                navigation.goBack();
+            },
+            onCancel: () => {
+                setFloatingAction(false);
+                navigation.goBack();
+            },
+        });
+    }
+
     const getFabActions = () => {
         const isGroupDeleteDisabled = !selectedTypesIds.length;
 
@@ -617,6 +635,9 @@ const Equipment = props => {
                 }}
             />
         );
+    
+        const addCategory  = <ActionItem title="Create Item Group" icon={<AddIcon/>} onPress={openCreateGroupDialog}/>;
+
 
         return (
             <ActionContainer
@@ -626,6 +647,7 @@ const Equipment = props => {
                     assignEquipment,
                     createEquipmentType,
                     createEquipment,
+                    addCategory,
                 ]}
                 title="EQUIPMENT ACTIONS"
             />

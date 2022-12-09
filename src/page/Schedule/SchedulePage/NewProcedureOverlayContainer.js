@@ -4,7 +4,7 @@ import { MenuOptions, MenuOption } from 'react-native-popup-menu';
 import InputField2 from '../../../components/common/Input Fields/InputField2';
 import DateInputField from '../../../components/common/Input Fields/DateInputField';
 import OptionsField from '../../../components/common/Input Fields/OptionsField';
-import { getTheatres, createPhysician, createTheatre, createNewProcedure, updateCaseFile, updateAppointmentById, updatePatient as patientUpdater, getUsersCall } from '../../../api/network';
+import { getTheatres, createPhysician, createTheatre, createNewProcedure, updateCaseFile, updateAppointmentById, updatePatient as patientUpdater, getUsersCall, addProcedureAppointmentCall, getCaseFileByPatientId } from '../../../api/network';
 import styled, { css } from '@emotion/native';
 import { useTheme } from 'emotion-theming';
 import { createCaseFile } from '../../../api/network'
@@ -59,6 +59,7 @@ function NewProcedureOverlayContainer({ appointment = {}, editMode = false, pass
     const [attemptedSubmit, setAttemptedSubmit] = useState(false);
     const [allowedToSubmit, setAllowedToSubmit] = useState(false)
     const [errors, setErrors] = useState(false)
+    const [patientCase, setPatientCase] = useState([])
 
     const RowWrapper = styled.View`
     flex-direction: row;
@@ -168,22 +169,58 @@ function NewProcedureOverlayContainer({ appointment = {}, editMode = false, pass
         setAttemptedSubmit(true);
 
         if (validateAllFields) {
-            setAllowedToSubmit(true)
+            //setAllowedToSubmit(true)
+            submitProcedure()
+
         }
 
     }
     const errorStateSetter = () => {
         setErrors(true)
-    }  
+    }
+
+    const addProcedureAppointment = (caseId, procedureAppointment) => {
+        addProcedureAppointmentCall(caseId, procedureAppointment)
+            .then(data => {
+                handleConfirm()
+            })
+            .catch(
+                err => {
+                    console.log(err)
+                    hanadleErrorModal()
+                }
+            )
+    }
+
+    const getCaseData = async (patientID) => {
+
+        await getCaseFileByPatientId(patientID)
+            .then(data => {
+                
+                setPatientCase(data)
+            })
+            .catch(err => {
+                console.log(err)
+                //hanadleErrorModal()
+            })
+
+
+    }
+
+    const addProcedure = async (caseFileData) => {
+        let patientId = patientValue._id
+        let procedure = caseFileData.caseProcedures[0]
+        let caseId=patientCase[0]._id
+        addProcedureAppointment(caseId,procedure)
+    }
 
 
 
-    useEffect(() => {
+    const submitProcedure = async () => {
 
 
-        if (allowedToSubmit) {
-            const nameToken = patientValue === undefined ? fields.firstName.split(" ") : patientValue.name.split(" ") ;
-             
+            const nameToken = patientValue === undefined ? fields.firstName.split(" ") : patientValue.name.split(" ");
+           
             // size 1 ? firstname
             if (nameToken.length === 1) {
                 patientFields.firstName = nameToken[0];
@@ -281,17 +318,25 @@ function NewProcedureOverlayContainer({ appointment = {}, editMode = false, pass
 
             // adding procedure info
             if (!editMode) {
-                createCaseFile(caseFileData)
-                    .then(data => {
-                        addCaseFile(data);
-                        handleConfirm()
-                    })
-                    .catch(error => {
-                        hanadleErrorModal()
-                        console.log('failed to create case file', error.message);
-                        console.log('failed to create case file', error.response);
 
-                    })
+                if (patientValue.name === fields.firstName) {
+                    createCaseFile(caseFileData)
+                        .then(data => {
+                            addCaseFile(data);
+                            handleConfirm()
+                        })
+                        .catch(error => {
+                            hanadleErrorModal()
+                            console.log('failed to create case file', error.message);
+                            console.log('failed to create case file', error.response);
+
+                        })
+                }
+                else {
+                    addProcedure(caseFileData)
+                }
+
+
 
             }
 
@@ -345,8 +390,8 @@ function NewProcedureOverlayContainer({ appointment = {}, editMode = false, pass
 
 
 
-        }
-    }, [allowedToSubmit])
+        
+    }
 
 
     const hanadleErrorModal = () => {
@@ -393,17 +438,21 @@ function NewProcedureOverlayContainer({ appointment = {}, editMode = false, pass
     }
 
     const handlePatient = (value) => {
-       
+
         setPatient(value
             ? {
                 _id: value._id,
                 name: value.name,
             }
             : value);
-       
+
         setSearchPatientValue('')
         setSearchPatientResult([]);
-        setSearchPatientQuery(undefined); 
+        setSearchPatientQuery(undefined);
+        value ? getCaseData(value._id) : null
+
+
+
 
     };
 
@@ -412,13 +461,14 @@ function NewProcedureOverlayContainer({ appointment = {}, editMode = false, pass
             _id: value?._id,
             name: value?.name,
             tag: value?.tag,
-            type: "Physician"
+             type: "Physician"
         }
 
         setStaffInfo([
             ...staffInfo,
             staff
         ])
+        
     }
 
 
@@ -474,7 +524,6 @@ function NewProcedureOverlayContainer({ appointment = {}, editMode = false, pass
         getProcedures(searchProcedureValue, 5)
             .then((procedureInfo) => {
                 const { data = [], pages } = procedureInfo;
-
                 setSearchProcedureResult(data || []);
             })
             .catch((error) => {
@@ -912,7 +961,7 @@ function NewProcedureOverlayContainer({ appointment = {}, editMode = false, pass
                     <SearchableOptionsField
                         emptyAfterSubmit={attemptedSubmit && patientValue === undefined ? true : false}
                         updateDB={updatePatientDB}
-                        highlightOn={true}  
+                        highlightOn={true}
                         highlightColor="#F6F8F8"
                         title={"Patient"}
                         showActionButton={true}
@@ -1176,8 +1225,13 @@ function NewProcedureOverlayContainer({ appointment = {}, editMode = false, pass
 
                         </View>
                     </View>
-                    <View style={{height: 20, width: '120%', backgroundColor: 'white',}}></View>
-                    <View style={[styles.row, { zIndex: 7, marginTop: 20 }]}>
+
+                </View>
+
+                <Space />
+
+                <View style={styles.staffContainer}>
+                    <View style={[styles.row, { zIndex: 7 }]}>
                         <View style={styles.staffField}>
                             <SearchableOptionsField
                                 emptyAfterSubmit={findStaffByTag("Nurse").length < 1 && attemptedSubmit ? true : false}
@@ -1225,7 +1279,6 @@ function NewProcedureOverlayContainer({ appointment = {}, editMode = false, pass
                         </View>
                     </View>
                 </View>
-
 
 
             </View>

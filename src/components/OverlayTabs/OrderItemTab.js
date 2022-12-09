@@ -28,11 +28,17 @@ import DataItem from '../common/List/DataItem';
 import {LONG_PRESS_TIMER} from '../../const';
 import ConfirmationComponent from '../ConfirmationComponent';
 import { transformToTitleCase } from '../../utils/formatter';
+
 const headers = [
     {
         name: 'Item Name',
         alignment: 'flex-start',
         flex: 2,
+    },
+    {
+        name: 'Status',
+        alignment: 'center',
+        flex: 1,
     },
     {
         name: 'SKU',
@@ -66,6 +72,9 @@ const OrderItemTab = ({
     },
     onRemoveProductItems = () => {
     }, 
+    onConfirmDelivery = () => {
+
+    },
     handleGenerateInvoice = () => {}
 }) => {
     const modal = useModal();
@@ -84,6 +93,7 @@ const OrderItemTab = ({
 
     const [searchValue, setSearchValue] = useState('');
     const [selectedItems, setSelectedItems] = useState([]);
+    const [deliveryState, setDeliveryState] = useState(false);
 
     useEffect(() => {
         setTotalPages(Math.ceil(orders.length / recordsPerPage));
@@ -166,12 +176,13 @@ const OrderItemTab = ({
     };
 
     const listItemFormat = (item, index) => {
-        const {amount = 0, productId = {}} = item;
+        const {amount = 0, productId = {}, status} = item;
         const {name = '', sku = '', unitPrice = 0, unit = ''} = productId || {};
 
         return (
             <>
                 <DataItem text={name} flex={2} fontStyle="--text-base-medium" color="--color-blue-600"/>
+                <DataItem text={status ? transformToTitleCase(status) : 'Pending'} align="center" flex={1} fontStyle="--text-base-medium" color="--color-gray-800"/>
                 <DataItem text={sku === '' ? 'n/a' : sku} align="center" flex={1} fontStyle="--text-base-medium" color="--color-gray-800"/>
                 {
                     isEditMode ? (
@@ -185,7 +196,7 @@ const OrderItemTab = ({
                     ) : <DataItem text={amount} align="center" flex={1} fontStyle="--text-base-medium" color="--color-gray-800"/>
 
                 }
-                <DataItem text={transformToTitleCase(item.unit)} align="center" flex={1} fontStyle="--text-base-medium" color="--color-gray-800"/>
+                <DataItem text={ item.unit &&transformToTitleCase(item.unit)} align="center" flex={1} fontStyle="--text-base-medium" color="--color-gray-800"/>
                 <DataItem text={`$ ${currencyFormatter(unitPrice)}`} align="flex-end" flex={1} fontStyle="--text-base-medium" color="--color-gray-800"/>
 
             </>
@@ -199,6 +210,7 @@ const OrderItemTab = ({
             onCheckBoxPress={handleOnCheckBoxPress(item)}
             onItemPress={() => {
             }}
+            isDisabled = {item.status} 
             itemView={listItemFormat(item, index)}
         />
     );
@@ -214,6 +226,17 @@ const OrderItemTab = ({
                 disabled={!isEditMode}
                 touchable={!!isEditMode}
             />
+        );
+
+        const cofirmDelivery = (
+            <ActionItem
+                title="Confirm Delivery"
+                icon={<AddIcon strokeColor={isEditMode ? theme.colors['--color-green-700'] : theme.colors['--color-gray-600']}/>}
+                onPress={handleConfirmDelivery}
+                disabled={!isEditMode}
+                touchable={!!isEditMode}
+            />
+
         );
 
         const deleteItem = (
@@ -237,6 +260,7 @@ const OrderItemTab = ({
             floatingActions={[
                 deleteItem,
                 addItem,
+                cofirmDelivery
             ]}
             title="ORDERS ACTIONS"
         />;
@@ -271,6 +295,11 @@ const OrderItemTab = ({
         });
         onRemoveProductItems(updatedOrders);
     };
+
+    const handleConfirmDelivery = () => {
+        onConfirmDelivery(selectedItems);
+        setSelectedItems([]);
+    }
 
     const onChangeText = value => setSearchValue(value);
 

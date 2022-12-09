@@ -39,7 +39,7 @@ const CheckboxContainer = styled.View`
     justify-content: center;
 `;
 
-function CheckBoxComponent({isCheck, isIndeterminate, onPress, paddingLeft, paddingRight, paddingTop}) {
+function CheckBoxComponent({isCheck, isIndeterminate, onPress, paddingLeft, paddingRight, paddingTop, isDisabled=false}) {
     const theme = useTheme();
      
     return (
@@ -47,7 +47,8 @@ function CheckBoxComponent({isCheck, isIndeterminate, onPress, paddingLeft, padd
         <CheckboxWrapper onPress={onPress} activeOpacity={0.8} theme={theme}
         paddingLeft={paddingLeft}
         paddingRight={paddingRight}
-        paddingTop={paddingTop}>
+        paddingTop={paddingTop}
+        disabled = {isDisabled}>
             <CheckboxContainer theme={theme}>
                 {
                     isIndeterminate

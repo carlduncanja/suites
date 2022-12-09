@@ -9,26 +9,24 @@ import MultipleSelectionsField from "../common/Input Fields/MultipleSelectionsFi
 import { addCategory, getCategories } from "../../api/network";
 import { useModal } from "react-native-modalfy";
 import ConfirmationComponent from "../ConfirmationComponent";
+import SearchableOptionsField from "../common/Input Fields/SearchableOptionsField";
+import InputLabelComponent from "../common/InputLablel";
 
 
 
-const PhysiciansDetailsTab = ({ onFieldChange, fields, errorFields }) =>{
+const PhysiciansDetailsTab = ({ onFieldChange, fields, errorFields, setAboveOpen = () => {} }) =>{
+    const [attemptedSubmit, setAttemptedSubmit] = useState(false);
+    const [patientValue, setPatient] = useState(undefined);
     const modal = useModal();
     const templateText = {
         true: "Yes",
         false: "No"
     }
-
     const [dateText, setDateText] = useState(fields['dob'])
     const [trnText, setTrnText] = useState(fields['trn'])
 
     const handleDateValidation = (date) => {
         onFieldChange('dob')(date)
-        // let dateRegex = /^([0-2][0-9]|(3)[0-1])(\/)(((0)[0-9])|((1)[0-2]))(\/)\d{4}/g
-        // if (dateRegex.test(date) || !date) {
-        //     onFieldChange('dob')(date)
-        // }
-        // setDateText(date)
     }
 
     const handleTrnValidation = (trnValue) => {
@@ -44,6 +42,11 @@ const PhysiciansDetailsTab = ({ onFieldChange, fields, errorFields }) =>{
     const [categorySearchValue, setCategorySearchValue] = useState();
     const [categorySearchResults, setCategorySearchResult] = useState([]);
 
+    const [valueState, setValueState] = useState({ name: fields.field });
+    const [searchDocterFieldQuery, setSearchDocterFeildQuery] = useState({});
+    const [docterFeild, setDocterFeild] = useState('');
+    const [docterFieldResult, setDocterFieldResult] = useState([]);
+
     const handleCategorySelected = (checkCategories) => {
         const categoryIds = [];
 
@@ -56,10 +59,15 @@ const PhysiciansDetailsTab = ({ onFieldChange, fields, errorFields }) =>{
     }
     
     const fetchCategories = () => {
-        getCategories("staff", 1000, categorySearchValue)
-            .then(data => {
-                setCategorySearchResult(data.data.map(item => { return item.name }));
-                categories.length == 0 && setCategories(data.data);
+        getCategories("staff", 1000, docterFeild)
+            .then(categoriesData => {
+                const { data = [], page } = categoriesData
+                const fulldata = data.map(cats => {
+                    const { _id = '', name = '', status = '' } = cats
+                    return { _id: _id, name: name, status: status }
+                });
+                
+                setDocterFieldResult(fulldata || []);
             })
             .catch(error => {
                 console.log('Unable to retrieve physician category items: ', error);
@@ -68,14 +76,16 @@ const PhysiciansDetailsTab = ({ onFieldChange, fields, errorFields }) =>{
 
     useEffect(() => {
         fetchCategories();
-    }, [categorySearchValue, categories]);
+    }, [docterFeild]);
     
-    const createCategory = (name) => {
+    const createCategory = (name, handlePatientFunc, setSelectedValueFunc) => {
         if(!name) return;
         addCategory({ name: name, type: "staff" })
             .then(_ => {
-                setCategories([]);
-                setCategorySearchValue('');
+                setAboveOpen(false);
+                handlePatientFunc({ name: name, type: "staff" });
+                setSelectedValueFunc({ name: name, type: "staff" })
+                setDocterFeild("");
                 fetchCategories();
                 modal.openModal('ConfirmationModal', {
                     content: <ConfirmationComponent
@@ -113,27 +123,8 @@ const PhysiciansDetailsTab = ({ onFieldChange, fields, errorFields }) =>{
             })
     };
 
-    
     return (
         <View style={styles.sectionContainer}>
-
-            <View style={styles.rightRow}>
-
-                <View style={styles.inputWrapper}>
-                    <MultipleSelectionsField
-                        label={"Specialisation"}
-                        onOptionsSelected={(value) => handleCategorySelected(value)}
-                        options={categorySearchResults}
-                        createNew={() => createCategory(categorySearchValue)}
-                        searchText={categorySearchValue}
-                        onSearchChangeText={(value) => setCategorySearchValue(value)}
-                        onClear={() => { setCategorySearchValue('') }}
-                        handlePopovers={() => { }}
-                        isPopoverOpen={true}
-                    />
-                </View>
-
-            </View>
 
             <View style={styles.row}>
 
@@ -182,6 +173,38 @@ const PhysiciansDetailsTab = ({ onFieldChange, fields, errorFields }) =>{
                     />
                 </View>
                 
+            </View>
+
+            <View style={styles.row}>
+                <View style={styles.inputWrapper}>
+                    <InputLabelComponent label={'Specialization'} />
+                    <SearchableOptionsField
+                        setIsOpen={setAboveOpen}
+                        isMedium={true}
+                        value={valueState}
+                        onClear={() => {
+                            setSearchDocterFeildQuery(" ")
+                            setDocterFeild("")
+                            onFieldChange('field')('')
+                            setValueState("")
+                        }}
+                        onChangeText={(value) => {
+                            setDocterFeild(value)
+                        }}
+                        oneOptionsSelected={(value) => {
+                            onFieldChange('field')(value.name)
+                        }}
+                        options={docterFieldResult}
+                        showActionButton={true}
+                        updateDB={createCategory}
+                        isPopoverOpen={searchDocterFieldQuery}
+                        handlePatient={(value) => {
+                            setValueState(value)
+                            onFieldChange('field')(value.name)
+                        }}
+                        text={docterFeild}
+                    />
+                </View>
             </View>
         </View>
     )

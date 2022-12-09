@@ -23,7 +23,6 @@ import Row from '../common/Row';
 import FieldContainer from '../common/FieldContainerComponent';
 import ConfirmationComponent from '../ConfirmationComponent';
 import _ from "lodash";
-
 import styled, { css } from '@emotion/native';
 import { useTheme } from 'emotion-theming';
 import OverlayDialogContent from '../common/Dialog/OverlayContent';
