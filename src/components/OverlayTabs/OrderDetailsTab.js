@@ -146,7 +146,7 @@ const OrderDetailsTab = ({
     };
 
     function formatNumberField(value) {
-        return value.toString().replace(/\D/g,'');
+        return value.toString().replace(/[^\d.]/g,'');
     }
 
     const onFieldChange = (fieldName) => (value) => {
