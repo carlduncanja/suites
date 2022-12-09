@@ -109,7 +109,7 @@ function CreateInventoryGroupDialogContainer({ navigation, route }) {
     // Handle category search
     useEffect(() => {
         fetchCategories();
-    }, [categorySearchValue])
+    }, [categorySearchValue, categories])
 
 
     const fetchCategory = () => {
@@ -139,6 +139,7 @@ function CreateInventoryGroupDialogContainer({ navigation, route }) {
         addCategory({ name: name, type: "inventory" })
             .then(_ => {
                 setCategories([]);
+                setCategorySearchValue('');
                 fetchCategories();
                 modal.openModal('ConfirmationModal', {
                     content: <ConfirmationComponent
