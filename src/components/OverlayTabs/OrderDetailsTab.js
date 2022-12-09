@@ -220,6 +220,7 @@ const OrderDetailsTab = ({
             shipping_cost: fields['shipping_cost'],
             payment_method: fields['payment_method']
         }
+        
         updatePurchaseOrderDetails(_id, updatedFields)
             .then(_ => {
                 console.log("Success")
@@ -270,6 +271,8 @@ const OrderDetailsTab = ({
             })
     }
 
+    console.log('one');
+    console.log(fields['supplier_tax']);
     return (
         <>
             <>
@@ -408,7 +411,6 @@ const OrderDetailsTab = ({
                         recordPlaceholder={'Edit to add key notes for this order'}
                         editMode={isEditMode}
                         editable={true}
-                        useTextArea={true}
                         onClearValue={() => {
                             onFieldChange('payment_method')('')
                         }}
@@ -417,7 +419,7 @@ const OrderDetailsTab = ({
 
                     <Record
                         recordTitle="Suppliers Tax"
-                        recordValue={isEditMode ? fields['supplier_tax'] : `${fields['supplier_tax']}%`}
+                        recordValue={isEditMode ? `${fields['supplier_tax']}` : `${fields['supplier_tax']}%`}
                         recordPlaceholder={'Edit to add key notes for this order'}
                         editMode={isEditMode}
                         editable={true}
@@ -429,7 +431,7 @@ const OrderDetailsTab = ({
 
                     <Record
                         recordTitle="Shipping Cost"
-                        recordValue={isEditMode ? fields['shipping_cost'] : formatToCurrency.format(fields['shipping_cost'])}
+                        recordValue={isEditMode ? `${fields['shipping_cost']}` : formatToCurrency.format(fields['shipping_cost'])}
                         recordPlaceholder={'--'}
                         editMode={isEditMode}
                         editable={true}
@@ -451,6 +453,7 @@ const OrderDetailsTab = ({
                         editMode={isEditMode}
                         recordPlaceholder={'Edit to add key notes for this order'}
                         editable={true}
+                        useTextArea={true}
                         onRecordUpdate={onFieldChange('notes')}
                         onClearValue={() => {
                             onFieldChange('notes')('')
