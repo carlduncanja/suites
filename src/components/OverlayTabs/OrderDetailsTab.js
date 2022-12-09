@@ -61,8 +61,6 @@ const OrderDetailsTab = ({
         
     } = order
 
-    // console.log("Order: ",deliveryDate)
-
     const { description = "", representatives = [] } = supplier;
     const { name = "" } = storageLocation || {};
 
@@ -213,17 +211,16 @@ const OrderDetailsTab = ({
         let updatedFields = {
             ...fields,
             deliveryDate: fields['deliveryDate'].toString(),
-            description: fields['description'],
+            description: fields['description'] ? fields['description'] : '',
             storageLocation: fields.storageLocation._id,
-            notes: fields['notes'],
-            supplier_tax: fields['supplier_tax'],
-            shipping_cost: fields['shipping_cost'],
-            payment_method: fields['payment_method']
+            notes: fields['notes'] ? fields['notes'] : '',
+            supplier_tax: fields['supplier_tax'] ? fields['supplier_tax'] : 0,
+            shipping_cost: fields['shipping_cost'] ? fields['shipping_cost'] : 0,
+            payment_method: fields['payment_method'] ? fields['payment_method'] : ''
         }
         
         updatePurchaseOrderDetails(_id, updatedFields)
             .then(_ => {
-                console.log("Success")
                 modal.openModal('ConfirmationModal',
                     {
                         content: <ConfirmationComponent
@@ -242,11 +239,10 @@ const OrderDetailsTab = ({
                     })
             })
             .catch(error => {
-                console.log("Update PO details error: ", error);
                 modal.openModal('ConfirmationModal',
                     {
                         content: <ConfirmationComponent
-                            isError={isError}
+                            isError={true}
                             isEditUpdate={false}
                             onAction={() => {
                                 modal.closeModals('ConfirmationModal')
