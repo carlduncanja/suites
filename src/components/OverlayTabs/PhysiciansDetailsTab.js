@@ -93,7 +93,7 @@ const PhysiciansDetailsTab = ({physician}) => {
         />,
         <Record
             recordTitle="Specialization"
-            recordValue={ field || "Neurosurgeon" }
+            recordValue={ field || "" }
         />
     ];
 

@@ -256,7 +256,7 @@ const Physicians = props => {
     const statusColor = status => (status === 'Active' ? '#4E5664' : '#E53E3E');
 
     const physiciansItem = item => {
-        const { _id = '', surname = '', field: type = 'Neurosurgeon', status = 'Active', casesCount = 0 } = item;
+        const { _id = '', surname = '', field: type = '', status = 'Active', casesCount = 0 } = item;
         return (
             <>
                 <View style={[styles.item, {}]}>

@@ -77,12 +77,14 @@ const EditablePhysiciansDetailsTab = ({ fields, onFieldChange }) => {
                 console.log('Unable to retrieve physician category items: ', error);
             });
     }
-    const createCategory = (name) => {
+    const createCategory = (name, handlePatientFunc, setSelectedValueFunc) => {
 
         if (!name) return;
         addCategory({ name: name, type: "staff" })
             .then(_ => {
-                onFieldChange('field')('')
+                onFieldChange('field')('');
+                handlePatientFunc({ name: name, type: "staff" });
+                setSelectedValueFunc({ name: name, type: "staff" })
                 fetchCategories();
                 modal.openModal('ConfirmationModal', {
                     content: <ConfirmationComponent
@@ -500,7 +502,7 @@ const EditablePhysiciansDetailsTab = ({ fields, onFieldChange }) => {
 
             </View>
 
-            <View style={styles.row}>
+            <View style={[styles.row, {zIndex: 11}]}>
 
                 <View style={styles.fieldWrapper}>
                     <View style={{ marginBottom: 5 }}>
@@ -530,6 +532,7 @@ const EditablePhysiciansDetailsTab = ({ fields, onFieldChange }) => {
                             setSearchDocterFeildQuery(" ")
                             onFieldChange('field')('')
                             setValueState("")
+                            setDocterFeild('');
                         }}
                         onChangeText={(value) => {
                             setDocterFeild(value)
@@ -664,48 +667,7 @@ const EditablePhysiciansDetailsTab = ({ fields, onFieldChange }) => {
                             </View>
 
                             <>
-                                {/* <TouchableOpacity
-                                style={{paddingRight:35, width:'33%', marginBottom:30, zIndex:1}}
-                                onPress = {()=>{openEmergencyName(index); handlePopovers(true)(`emergency${index + 1}`)}}
-                                activeOpacity = {1}
-                            >
-                                <View style={{ marginBottom:5}}>
-                                    <Text style={[styles.title,{fontSize:12}]}>Emergency Contact Name {index + 1}</Text>
-                                </View>
 
-                                <View style={[styles.inputWrapper]}>
-                                    {/* <View style={styles.inputField}>
-                                        <Text>
-                                            {`${contact.name} (${contact.relation})`}
-                                        </Text>
-                                    </View> */}
-
-                                {/* <InputField2
-                                        onChangeText = {()=>{}}
-                                        value = {`${contact.name} (${contact.relation})`}
-                                        onClear = {()=>{}}
-                                    />
-                                    { isEmergencyOpen && index === emergencyIndex && isOpen[0].status &&
-                                        <View style={styles.modalContainer}>
-                                            <InputField2
-                                                label = "Name"
-                                                onChangeText = {(value)=>handleEmergency(value, 'name', contact._id )}
-                                                value = {contact.name}
-                                                onClear = {()=>handleEmergency('', 'name', contact._id)}
-                                            />
-
-                                            <InputField2
-                                                label = "Relation"
-                                                onChangeText = {(value)=>handleEmergency(value, 'relation', contact._id )}
-                                                value = {contact.relation}
-                                                onClear = {()=>handleEmergency('', 'relation', contact._id)}
-                                            />
-
-                                        </View>
-                                    }
-                                </View>
-                            </TouchableOpacity>
- */}
                                 <View style={[styles.row]}>
 
                                     <View style={{ paddingRight: 35, flex: 1, marginBottom: 30, zIndex: -1 }}>
