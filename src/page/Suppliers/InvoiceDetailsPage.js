@@ -91,7 +91,7 @@ const InvoiceDetailsPage = ({
                     font="--text-sm-medium"
                     textColor="--color-blue-600"
                 >{frameName}</PageText>
-                {
+                {/* {
                     isEditMode && (
                         <IconConatiner>
                             <IconButton
@@ -100,7 +100,7 @@ const InvoiceDetailsPage = ({
                             />
                         </IconConatiner>
                     )
-                }
+                } */}
             </ImageTitleContainer>
             <InvoiceUploadContainer
                 theme={theme}
@@ -214,7 +214,7 @@ const InvoiceDetailsPage = ({
                     font="--text-sm-medium"
                     textColor="--color-blue-600"
                 >{frameName}</PageText>
-                {
+                {/* {
                     (canDelete && isEditMode) && (
                         <IconConatiner>
                             <IconButton
@@ -223,7 +223,7 @@ const InvoiceDetailsPage = ({
                             />
                         </IconConatiner>
                     )
-                }
+                } */}
             </ImageTitleContainer>
             {
                 isImageUpdating ? <LoadingIndicator /> : content()
