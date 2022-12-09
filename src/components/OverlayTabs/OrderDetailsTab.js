@@ -148,7 +148,7 @@ const OrderDetailsTab = ({
     };
 
     function formatNumberField(value) {
-        return value.toString().replace(/\D/g,'') || 0;
+        return value.toString().replace(/\D/g,'');
     }
 
     const onFieldChange = (fieldName) => (value) => {
@@ -270,9 +270,6 @@ const OrderDetailsTab = ({
                 onUpdate()
             })
     }
-
-    console.log('one');
-    console.log(fields['supplier_tax']);
     return (
         <>
             <>
