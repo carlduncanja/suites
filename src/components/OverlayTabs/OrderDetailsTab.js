@@ -150,10 +150,11 @@ const OrderDetailsTab = ({
     }
 
     const onFieldChange = (fieldName) => (value) => {
-        const formattedValue = formatNumberField(value);
+       
 
         let finalValue = value;
         if (fieldName === 'supplier_tax' || fieldName === 'shipping_cost') {
+            const formattedValue = formatNumberField(value);
             finalValue = formattedValue;
         }
 
@@ -212,7 +213,7 @@ const OrderDetailsTab = ({
             ...fields,
             deliveryDate: fields['deliveryDate'].toString(),
             description: fields['description'] ? fields['description'] : '',
-            storageLocation: fields.storageLocation._id,
+            storageLocation: fields.storageLocation && fields.storageLocation._id,
             notes: fields['notes'] ? fields['notes'] : '',
             supplier_tax: fields['supplier_tax'] ? fields['supplier_tax'] : 0,
             shipping_cost: fields['shipping_cost'] ? fields['shipping_cost'] : 0,
