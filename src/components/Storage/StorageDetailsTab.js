@@ -195,9 +195,9 @@ function StorageDetailsTab({
         if (!name) return;
         addCategory({ name: name, type: "storage" })
             .then(_ => {
-                setCategories([]);
                 setCategorySearchValue('');
-                fetchCategories();
+                setCategories([]);
+                // fetchCategories();
                 modal.openModal('ConfirmationModal', {
                     content: <ConfirmationComponent
                         isEditUpdate={false}
