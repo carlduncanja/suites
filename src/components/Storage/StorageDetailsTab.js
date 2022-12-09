@@ -165,6 +165,19 @@ function StorageDetailsTab({
             })
 
             setAllCategories(data.data)
+            if (typeof categories[0] === 'string') {
+                const newCategories = [];
+
+                container.map(item => {
+                    categories.map(result => {
+                        if (item._id === result) {
+                            newCategories.push(item);
+                        }
+                    })
+                });
+                
+                setCategories(newCategories)
+            }
 
             setCategorySearchResult(data.data.map(item => { return item.name }));
         })

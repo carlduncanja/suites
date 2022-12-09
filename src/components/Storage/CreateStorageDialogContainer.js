@@ -176,7 +176,6 @@ function CreateStorageDialogContainer({ onCancel, onCreated, addStorageLocation 
 
 
     const createStorageCall = () => {
-        console.log(fields);
         createStorageLocation(fields)
             .then(data => {
                 console.log("Data: ", data);
@@ -198,12 +197,6 @@ function CreateStorageDialogContainer({ onCancel, onCreated, addStorageLocation 
                         console.log('Modal closed');
                     },
                 })
-
-                // Alert.alert("Success", `New storage location ${fields['name']}, has been created.`)
-                // setTimeout(() => {
-                //     onCreated(data)
-                // }, 200);
-                // addStorageLocation(data);
             })
             .catch(error => {
                 // todo handle error
@@ -242,6 +235,7 @@ function CreateStorageDialogContainer({ onCancel, onCreated, addStorageLocation 
             value && categoryIds.push(value._id);
         });
 
+        console.log(categoryIds);
         onFieldChange('categories')(categoryIds);
     }
 
