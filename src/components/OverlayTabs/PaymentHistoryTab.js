@@ -9,6 +9,7 @@ import AddIcon from "../../../assets/svg/addIcon";
 import Footer from "../common/Page/Footer";
 import ActionItem from "../common/ActionItem";
 import ActionContainer from "../common/FloatingAction/ActionContainer";
+import RegisterPaymentDialogContainer from "../PurchaseOrders/RegisterPaymentDialogContainer";
 
 const LineDividerContainer = styled.View`
     margin-bottom : ${({ theme }) => theme.space['--space-32']};
@@ -24,9 +25,8 @@ const PaymentHistoryTab = ({
     const baseStateRef = useRef();
     const { pageState, setPageState } = useContext(PageContext);
     const { isEditMode } = pageState;
-    const [selectedPayment, setSelectedPayment] = useState();
+    const [selectedPayment, setSelectedPayment] = useState({});
     const [isFloatingActionDisabled, setFloatingAction] = useState(false);
-
     const { payments } = order;
 
     const floatingActions = () => {
@@ -35,7 +35,7 @@ const PaymentHistoryTab = ({
             <ActionItem
                 title="Register Payment"
                 icon={<AddIcon strokeColor={selectedPayment ? theme.colors['--color-green-700'] : theme.colors['--color-gray-600']} />}
-                onPress={() => { console.log("TBA") }}
+                onPress={openRegisterPaymentDialog}
                 disabled={!selectedPayment}
                 touchable={selectedPayment}
             />
@@ -61,6 +61,21 @@ const PaymentHistoryTab = ({
                     setFloatingAction(false);
                 },
             });
+    };
+
+  
+    const openRegisterPaymentDialog = () => {
+        modal.closeModals('ActionContainerModal');
+        setTimeout(() => {
+            modal.openModal('OverlayModal',
+                {
+                    content: <RegisterPaymentDialogContainer
+                        headerTitle={"Register Payment"}
+                        onCancel={() => {console.log("false")}}
+                    />,
+                    onClose: () => setFloatingAction(false)
+                });
+        }, 200);
     };
 
 
