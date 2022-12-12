@@ -14,7 +14,6 @@ import styled, { css } from '@emotion/native';
 import { useTheme } from 'emotion-theming';
 import { isValidNumber, currencyFormatter } from '../../utils/formatter';
 
-
 /**
  * Component to handle the create storage process.
  *
@@ -33,13 +32,14 @@ const ModalText = styled.Text(({ textColor = '--color-gray-600', theme, font = '
     color: theme.colors[textColor],
 }));
 
-function RegisterPaymentDialogContainer({ onCancel, headerTitle }) {
+function RegisterPaymentDialogContainer({ onCancel, headerTitle, handleDonePressed }) {
 
     // ######### CONST
     const modal = useModal();
     const theme = useTheme();
     const [amountPaid, setAmountPaid] = useState(0);
     const [receiptId, setReceiptId] = useState('');
+    const [errors, setErrors] = useState({})
 
     // ######### EVENT HANDLERS
 
@@ -51,19 +51,31 @@ function RegisterPaymentDialogContainer({ onCancel, headerTitle }) {
     const handleAmount = (value) => {
         if (/^\d+(\.\d{1,2})?$/g.test(value) || /^\d+$/g.test(value) || !value) {
             setAmountPaid(value)
+            updateErrors("amountPaid")
+        }
+    }
+
+    const updateErrors = (fieldName) => {
+        if(fieldName in errors) {
+            let localErrors = errors;
+            delete localErrors[fieldName];
+            setErrors(localErrors);
         }
     }
 
     const handleReceipt = (value) => {
         setReceiptId(value)
+        updateErrors("receiptId")
     }
 
-    const onFieldChange = fieldName => value => {
-        setFields({
-            ...fields,
-            [fieldName]: value
-        });
-    };
+    const validateFields = () => {
+        let errors = {};
+        if(!amountPaid) errors = {amountPaid: true}
+        if(!receiptId) errors = {...errors, receiptId: true}
+        setErrors(errors);
+
+        if(_.isEmpty(errors)) handleDonePressed(amountPaid, receiptId);
+    }
 
 
     const openErrorConfirmation = () => {
@@ -95,8 +107,8 @@ function RegisterPaymentDialogContainer({ onCancel, headerTitle }) {
                         value={amountPaid}
                         onClear={() => setAmountPaid(0)}
                         keyboardType="number-pad"
-                        hasError={false}
-                        errorMessage="Amount Paid is required"
+                        hasError={errors?.amountPaid}
+                        errorMessage="This field is required"
                     />
                 </FieldContainer>
 
@@ -106,8 +118,8 @@ function RegisterPaymentDialogContainer({ onCancel, headerTitle }) {
                         onChangeText={(value) => handleReceipt(value)}
                         value={receiptId}
                         onClear={() => setReceiptId('')}
-                        hasError={false}
-                        errorMessage="Receipt ID is required"
+                        hasError={errors?.receiptId}
+                        errorMessage="This field is required"
                     />
                 </FieldContainer>
 
@@ -126,7 +138,7 @@ function RegisterPaymentDialogContainer({ onCancel, headerTitle }) {
     return (
         <OverlayDialog
             title={headerTitle}
-            onPositiveButtonPress={() => { }}
+            onPositiveButtonPress={() => validateFields()}
             onClose={handleCloseDialog}
             positiveText={"DONE"}
             maxWidth={'800px'}

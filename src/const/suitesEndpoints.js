@@ -118,6 +118,7 @@ export const confirmDeliveryEndpoint = id => `/purchase_orders/${id}/delivery`;
 export const requestQuotationEndpoint = id => `/purchase_orders/request_quotation/${id}`;
 export const sendToSupplierEndpoint = id => `/purchase_orders/send_to_supplier/${id}`;
 export const addDocumentEndpoint = id => `/purchase_orders/${id}/document`;
+export const addPaymentEndpoint = id => `/purchase_orders/add/${id}/payment`;
 
 // ##### CATEGORIES
 export const categoriesEndpoint = '/categories/';

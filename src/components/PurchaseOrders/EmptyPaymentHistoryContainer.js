@@ -40,7 +40,7 @@ const SubMessageWrapper = styled.Text(({ theme }) => ({
 }))
 
 
-function EmptyPaymentHistoryContainer({ headerMessage = "No Payments Registered", subMessage = "Register payments made to the supplier here." }) {
+function EmptyPaymentHistoryContainer({ headerMessage = "No Payments Registered", subMessage = "Register payments made to the supplier here.", handleRegisterPayment }) {
     const theme = useTheme();
 
     return (
@@ -58,7 +58,7 @@ function EmptyPaymentHistoryContainer({ headerMessage = "No Payments Registered"
                 {/*    SUB MESSAGE  */}
                 <SubMessageWrapper theme={theme}>{subMessage}</SubMessageWrapper>
 
-                <ButtonContainer background='--color-blue-700'>
+                <ButtonContainer background='--color-blue-700' onPress={() => handleRegisterPayment() }>
                     <ModalText theme={theme} textColor="--default-shade-white" font="--text-base-bold">Register Payment</ModalText>
                 </ButtonContainer>
             </PageContent>

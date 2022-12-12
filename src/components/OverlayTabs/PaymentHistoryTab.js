@@ -10,7 +10,8 @@ import Footer from "../common/Page/Footer";
 import ActionItem from "../common/ActionItem";
 import ActionContainer from "../common/FloatingAction/ActionContainer";
 import RegisterPaymentDialogContainer from "../PurchaseOrders/RegisterPaymentDialogContainer";
-
+import { registerPayment } from "../../api/network";
+import ConfirmationComponent from "../ConfirmationComponent";
 const LineDividerContainer = styled.View`
     margin-bottom : ${({ theme }) => theme.space['--space-32']};
 `;
@@ -63,6 +64,12 @@ const PaymentHistoryTab = ({
             });
     };
 
+    const handleAddPayment = (amount, receipt) => {
+        registerPayment(order._id, {paid: amount, receiptId: receipt})
+        .then(_ => successModal())
+        .catch(_ => errorModal())
+    }
+
   
     const openRegisterPaymentDialog = () => {
         modal.closeModals('ActionContainerModal');
@@ -72,11 +79,48 @@ const PaymentHistoryTab = ({
                     content: <RegisterPaymentDialogContainer
                         headerTitle={"Register Payment"}
                         onCancel={() => {console.log("false")}}
+                        handleDonePressed={handleAddPayment}
                     />,
                     onClose: () => setFloatingAction(false)
                 });
         }, 200);
     };
+
+    const successModal = () => {
+        modal.openModal(
+            'ConfirmationModal', {
+            content: <ConfirmationComponent
+                isError={false}
+                isEditUpdate={false}
+                onAction={() => {
+                    modal.closeAllModals();
+                }}
+                onCancel={() => {
+                    modal.closeAllModals();
+                }}
+            />,
+            onClose: () => {
+                modal.closeAllModals();
+            }
+        }
+        );
+    }
+
+    const errorModal = () => {
+        modal.openModal(
+            'ConfirmationModal',
+            {
+                content: <ConfirmationComponent
+                    isError={true}
+                    isEditUpdate={false}
+                    onCancel={() => modal.closeAllModals()}
+                />,
+                onClose: () => {
+                    modal.closeAllModals();
+                }
+            }
+        );
+    }
 
 
     return (
@@ -86,7 +130,7 @@ const PaymentHistoryTab = ({
 
                     <></>
                     :
-                    <EmptyPaymentHistoryContainer />
+                    <EmptyPaymentHistoryContainer handleRegisterPayment={openRegisterPaymentDialog} />
             }
 
 
