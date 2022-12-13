@@ -82,7 +82,7 @@ const OrderItemTab = ({
     const {pageState, setPageState} = useContext(PageContext);
     const {isEditMode, isLoading} = pageState;
 
-    const recordsPerPage = 15;
+    const recordsPerPage = 1;
 
     const [isFloatingActionDisabled, setFloatingAction] = useState(false);
 

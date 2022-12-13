@@ -322,7 +322,7 @@ function OrderItemPage({ route, navigation }) {
             case 'Invoice':
                 return <RequisitionTab key={2} order={selectedOrder} onUpdate={() => fetchOrder(_id)} type={ORDER_TYPES.PURCHASE_ORDER}/>;
             case 'Payments':
-                return <PaymentHistoryTab order={selectedOrder} />
+                return <PaymentHistoryTab order={selectedOrder} onUpdate={() => fetchOrder(_id)} />
             default:
                 return <View />;
         }
