@@ -17,10 +17,10 @@ export const role = roleId => `/users/roles/${roleId}`;
 
 // ##### Appointments
 export const appointmentsEndpoint = '/appointments/';
-export const appointmentEndpoint = id => `/appointments/${id}`; 
+export const appointmentEndpoint = id => `/appointments/${id}`;
 
 // #### Appiontment Type
-export const appointmentTypeEndPiont = `/appointment-types` 
+export const appointmentTypeEndPiont = `/appointment-types`
 export const updateAppiontmentTypeEndpiont = id => `/appointment-types/${id}`
 
 // ##### Theatre
@@ -119,6 +119,7 @@ export const requestQuotationEndpoint = id => `/purchase_orders/request_quotatio
 export const sendToSupplierEndpoint = id => `/purchase_orders/send_to_supplier/${id}`;
 export const addDocumentEndpoint = id => `/purchase_orders/${id}/document`;
 export const addPaymentEndpoint = id => `/purchase_orders/add/${id}/payment`;
+export const revertPaymentEndpoint = id => `/purchase_orders/revert/${id}/payment`;
 
 // ##### CATEGORIES
 export const categoriesEndpoint = '/categories/';

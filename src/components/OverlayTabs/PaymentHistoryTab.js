@@ -12,11 +12,11 @@ import ActionItem from "../common/ActionItem";
 import ActionContainer from "../common/FloatingAction/ActionContainer";
 import RegisterPaymentDialogContainer from "../PurchaseOrders/RegisterPaymentDialogContainer";
 import RevertPaymentDialogContainer from "../PurchaseOrders/RevertPaymentDialogContainer";
-import { registerPayment } from "../../api/network";
+import { registerPayment, revertPayment } from "../../api/network";
 import ConfirmationComponent from "../ConfirmationComponent";
 import Search from "../common/Search";
 import Table from "../common/Table/Table";
-import {useNextPaginator, usePreviousPaginator, checkboxItemPress, selectAll} from '../../helpers/caseFilesHelpers';
+import { useNextPaginator, usePreviousPaginator, checkboxItemPress, selectAll } from '../../helpers/caseFilesHelpers';
 import Item from "../common/Table/Item";
 import DataItem from "../common/List/DataItem";
 import { currencyFormatter } from "../../utils/formatter";
@@ -120,6 +120,11 @@ const PaymentHistoryTab = ({
             .catch(_ => errorModal())
     }
 
+    const handleRevertPayment = (receipt) => {
+        revertPayment(order._id, { paymentId: receipt })
+            .then(_ => successModal())
+            .catch(_ => errorModal())
+    }
 
     const openRegisterPaymentDialog = () => {
         modal.closeModals('ActionContainerModal');
@@ -135,23 +140,45 @@ const PaymentHistoryTab = ({
                 });
         }, 200);
     };
-    
-    const handleRevertPayment =(receipt)=>{
-         console.log(receipt)
-    }
+
+
 
     const openRevertPaymentDialog = () => {
         modal.closeModals('ActionContainerModal')
+
         modal.openModal('OverlayModal',
             {
                 content: <RevertPaymentDialogContainer
                     headerTitle={"Revert Payment"}
                     onCancel={() => { console.log("false") }}
-                    handleDonePressed={handleRevertPayment}
+                    handleDonePressed={(receipt) => { showConfirmation(receipt) }/*handleRevertPayment*/}
                 />,
                 onClose: () => setFloatingAction(false)
             }
         )
+    }
+
+    const showConfirmation = (receipt) => {
+        modal.openModal('ConfirmationModal', {
+            content: (
+                <ConfirmationComponent
+                    isWarning={true}
+                    onCancel={() => {
+                        modal.closeModals('ConfirmationModal');
+                    }}
+                    onAction={() => {
+
+                        modal.closeAllModals(); 
+                        handleRevertPayment(receipt)
+                    }}
+                    message={"Reverting this payment will be subtracted from the Total Paid and increease the Outstanding Balance. Are you sure you want to continue?"}
+                    secondaryMessage={"Do you wish to continue?"}
+                />
+            ),
+            onClose: () => {
+                modal.closeModals('ConfirmationModal');
+            },
+        });
     }
 
     const successModal = () => {
@@ -229,10 +256,10 @@ const PaymentHistoryTab = ({
 
         return (
             <>
-                <DataItem text={receiptId}  fontStyle="--text-base-medium" color="--color-blue-600" />
-                <DataItem text={`$${currencyFormatter(paid)}`}  fontStyle="--text-base-medium" color="--color-gray-800" />
-                <DataItem text={registeredBy}  fontStyle="--text-base-medium" color="--color-gray-800" />
-                <DataItem text={date}  fontStyle="--text-base-medium" color="--color-gray-800" />
+                <DataItem text={receiptId} fontStyle="--text-base-medium" color="--color-blue-600" />
+                <DataItem text={`$${currencyFormatter(paid)}`} fontStyle="--text-base-medium" color="--color-gray-800" />
+                <DataItem text={registeredBy} fontStyle="--text-base-medium" color="--color-gray-800" />
+                <DataItem text={date} fontStyle="--text-base-medium" color="--color-gray-800" />
 
             </>
         );
