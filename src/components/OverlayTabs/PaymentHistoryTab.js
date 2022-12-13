@@ -6,10 +6,12 @@ import { PageContext } from "../../contexts/PageContext";
 import { useModal } from "react-native-modalfy";
 import EmptyPaymentHistoryContainer from "../PurchaseOrders/EmptyPaymentHistoryContainer";
 import AddIcon from "../../../assets/svg/addIcon";
+import RemoveIcon from "../../../assets/svg/remove2";
 import Footer from "../common/Page/Footer";
 import ActionItem from "../common/ActionItem";
 import ActionContainer from "../common/FloatingAction/ActionContainer";
 import RegisterPaymentDialogContainer from "../PurchaseOrders/RegisterPaymentDialogContainer";
+import RevertPaymentDialogContainer from "../PurchaseOrders/RevertPaymentDialogContainer";
 import { registerPayment } from "../../api/network";
 import ConfirmationComponent from "../ConfirmationComponent";
 const LineDividerContainer = styled.View`
@@ -41,11 +43,20 @@ const PaymentHistoryTab = ({
                 touchable={selectedPayment}
             />
         );
+        const revertPayment = (
+            <ActionItem
+                title="Revert Payment"
+                icon={<RemoveIcon />}
+                onPress={openRevertPaymentDialog}
+
+            />
+        )
 
 
         return <ActionContainer
             floatingActions={[
                 addItem,
+                revertPayment
             ]}
             title="PAYMENT ACTIONS"
         />;
@@ -65,12 +76,12 @@ const PaymentHistoryTab = ({
     };
 
     const handleAddPayment = (amount, receipt) => {
-        registerPayment(order._id, {paid: amount, receiptId: receipt})
-        .then(_ => successModal())
-        .catch(_ => errorModal())
+        registerPayment(order._id, { paid: amount, receiptId: receipt })
+            .then(_ => successModal())
+            .catch(_ => errorModal())
     }
 
-  
+
     const openRegisterPaymentDialog = () => {
         modal.closeModals('ActionContainerModal');
         setTimeout(() => {
@@ -78,13 +89,31 @@ const PaymentHistoryTab = ({
                 {
                     content: <RegisterPaymentDialogContainer
                         headerTitle={"Register Payment"}
-                        onCancel={() => {console.log("false")}}
+                        onCancel={() => { console.log("false") }}
                         handleDonePressed={handleAddPayment}
                     />,
                     onClose: () => setFloatingAction(false)
                 });
         }, 200);
     };
+    
+    const handleRevertPayment =(receipt)=>{
+         console.log(receipt)
+    }
+
+    const openRevertPaymentDialog = () => {
+        modal.closeModals('ActionContainerModal')
+        modal.openModal('OverlayModal',
+            {
+                content: <RevertPaymentDialogContainer
+                    headerTitle={"Revert Payment"}
+                    onCancel={() => { console.log("false") }}
+                    handleDonePressed={handleRevertPayment}
+                />,
+                onClose: () => setFloatingAction(false)
+            }
+        )
+    }
 
     const successModal = () => {
         modal.openModal(
