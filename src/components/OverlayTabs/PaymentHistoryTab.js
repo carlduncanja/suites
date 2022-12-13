@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect } from "react";
-import { View,  StyleSheet } from "react-native";
+import { View, StyleSheet } from "react-native";
 import styled from '@emotion/native';
 import { useTheme } from 'emotion-theming';
 import { PageContext } from "../../contexts/PageContext";
@@ -47,7 +47,7 @@ const PaymentHistoryTab = ({
 
     const [searchValue, setSearchValue] = useState('');
 
-    const recordsPerPage = 3;
+    const recordsPerPage = 15;
 
     // pagination
     const [currentPageListMin, setCurrentPageListMin] = useState(0);
@@ -64,7 +64,7 @@ const PaymentHistoryTab = ({
         let itemsToDisplay;
         if (searchValue) {
             itemsToDisplay = listItems.filter(item => item.receiptId.toLowerCase().includes(searchValue.toLowerCase()) ||
-            item.registeredBy.toLowerCase().includes(searchValue.toLowerCase()));
+                item.registeredBy.toLowerCase().includes(searchValue.toLowerCase()));
         }
         else itemsToDisplay = order.payments;
         setListItems(itemsToDisplay)
@@ -108,7 +108,8 @@ const PaymentHistoryTab = ({
         registerPayment(order._id, { paid: amount, receiptId: receipt })
             .then(_ => {
                 onUpdate();
-                successModal()})
+                successModal()
+            })
             .catch(_ => errorModal())
     }
 
@@ -198,14 +199,14 @@ const PaymentHistoryTab = ({
 
 
     const listItemFormat = (item, index) => {
-        const { receiptId, paid, registeredBy, createdAt} = item;
+        const { receiptId, paid, registeredBy, createdAt } = item;
 
         return (
             <>
                 <DataItem text={receiptId} fontStyle="--text-base-medium" color="--color-blue-600" />
                 <DataItem text={`$${currencyFormatter(paid)}`} fontStyle="--text-base-medium" color="--color-gray-800" />
                 <DataItem text={registeredBy} fontStyle="--text-base-medium" color="--color-gray-800" />
-                <DataItem text={formatDate(createdAt,'DD/MM/YYYY' )} fontStyle="--text-base-medium" color="--color-gray-800" />
+                <DataItem text={formatDate(createdAt, 'DD/MM/YYYY')} fontStyle="--text-base-medium" color="--color-gray-800" />
             </>
         );
     };
@@ -248,7 +249,7 @@ const PaymentHistoryTab = ({
                         </Row>
 
                         <Search
-                            placeholderText="Search by Transaciton ID, Registered By or Date"
+                            placeholderText="Search by Transaciton ID or Registered By"
                             changeText={value => onChangeText(value)}
                             inputText={searchValue}
                             onClear={() => onChangeText('')}
@@ -262,22 +263,22 @@ const PaymentHistoryTab = ({
                             toggleHeaderCheckbox={handleOnSelectAll}
                             itemSelected={selectedItems}
                         />
-                        <Footer
-                            totalPages={totalPages}
-                            currentPage={currentPagePosition}
-                            goToNextPage={goToNextPage}
-                            goToPreviousPage={goToPreviousPage}
-                            isDisabled={isFloatingActionDisabled}
-                            toggleActionButton={toggleActionButton}
-                            isNextDisabled={currentPagePosition >= totalPages}
-                            isPreviousDisabled={(currentPagePosition === 1)}
-                        />
+
                     </>
                     :
                     <EmptyPaymentHistoryContainer handleRegisterPayment={openRegisterPaymentDialog} />
             }
 
-
+            <Footer
+                totalPages={totalPages}
+                currentPage={currentPagePosition}
+                goToNextPage={goToNextPage}
+                goToPreviousPage={goToPreviousPage}
+                isDisabled={isFloatingActionDisabled}
+                toggleActionButton={toggleActionButton}
+                isNextDisabled={currentPagePosition >= totalPages}
+                isPreviousDisabled={(currentPagePosition === 1)}
+            />
 
 
         </>
@@ -310,7 +311,7 @@ const listHeaders = [
         hasSort: false
     },
     {
-        name: 'Amount Paid',
+        name: 'Registered By',
         hasSort: false
     },
     {
