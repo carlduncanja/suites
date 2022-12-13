@@ -217,7 +217,7 @@ function AlertTypeComponent({
                             /> 
 
                             <View style={styles.clearContianer}>
-                                <TextItem>clear list</TextItem>
+                                
                             </View>
                         </FooterContainer>
 

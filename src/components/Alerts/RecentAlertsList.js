@@ -82,6 +82,7 @@ const TextItem = styled.Text(({ theme, flex = 1, color = '--color-gray-800', fon
 
 const TittleContianer = styled.View` 
     flex-direction: row;
+    justify-content: space-between;
 `
 
 function RecentAlertsList({ data = [], updateAlerts = () => { } }) {
@@ -176,11 +177,12 @@ function RecentAlertsList({ data = [], updateAlerts = () => { } }) {
                                 {transformToSentence(priority)}
                             </TextItem>
                         </View>
-                    </TitleSection>
+                    </TitleSection> 
+
                     <TextItem
                         color="--color-gray-500"
                         //fontStyle="--actions-title"
-                        flex={0.5}
+                        flex={0.3}
                     >  {createdOn === '' ?
                         formatDate(updatedAt, 'MMMM DD, YYYY')
                         :

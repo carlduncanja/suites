@@ -6,7 +6,8 @@ import { PageContext } from "../../contexts/PageContext";
 import { useModal } from "react-native-modalfy";
 import EmptyPaymentHistoryContainer from "../PurchaseOrders/EmptyPaymentHistoryContainer";
 import AddIcon from "../../../assets/svg/addIcon";
-import RemoveIcon from "../../../assets/svg/remove2";
+import RemoveIcon from "../../../assets/svg/remove2"; 
+import Minus from "../../../assets/svg/minus";
 import Footer from "../common/Page/Footer";
 import ActionItem from "../common/ActionItem";
 import ActionContainer from "../common/FloatingAction/ActionContainer";
@@ -60,6 +61,7 @@ const PaymentHistoryTab = ({
     const [isPreviousDisabled, setPreviousDisabled] = useState(true);
     const [listItems, setListItems] = useState();
     const [selectedItems, setSelectedItems] = useState([]);
+    const [transactionData,setTransactionData]=useState({})
 
 
     useEffect(() => {
@@ -73,14 +75,14 @@ const PaymentHistoryTab = ({
         let itemsToDisplay;
         if (searchValue) {
             itemsToDisplay = listItems.filter(item => item.receiptId.toLowerCase().includes(searchValue.toLowerCase()) ||
-            item.registeredBy.toLowerCase().includes(searchValue.toLowerCase()));
+                item.registeredBy.toLowerCase().includes(searchValue.toLowerCase()));
         }
         else itemsToDisplay = order.payments;
         setListItems(itemsToDisplay)
     }, [searchValue])
 
     const floatingActions = () => {
-
+        let active  = selectedItems.length === 1 ? true :false
         const addItem = (
             <ActionItem
                 title="Register Payment"
@@ -91,10 +93,12 @@ const PaymentHistoryTab = ({
             />
         );
         const revertPayment = (
+           
             <ActionItem
                 title="Revert Payment"
-                icon={<RemoveIcon />}
+                icon={<Minus strokeColor={active ? "red":"gray"}/>}
                 onPress={openRevertPaymentDialog}
+                disabled={!active}
 
             />
         )
@@ -126,13 +130,17 @@ const PaymentHistoryTab = ({
         registerPayment(order._id, { paid: amount, receiptId: receipt })
             .then(_ => {
                 onUpdate();
-                successModal()})
+                successModal()
+            })
             .catch(_ => errorModal())
     }
 
     const handleRevertPayment = (receipt) => {
         revertPayment(order._id, { paymentId: receipt })
-            .then(_ => successModal())
+            .then(_ => {
+                onUpdate()
+                successModal()
+            })
             .catch(_ => errorModal())
     }
 
@@ -160,8 +168,10 @@ const PaymentHistoryTab = ({
             {
                 content: <RevertPaymentDialogContainer
                     headerTitle={"Revert Payment"}
+                    selectedPayment={selectedItems[0]}
+                    transactionData={transactionData}
                     onCancel={() => { console.log("false") }}
-                    handleDonePressed={(receipt) => { showConfirmation(receipt) }/*handleRevertPayment*/}
+                    handleDonePressed={(receipt) => { showConfirmation(receipt) }}
                 />,
                 onClose: () => setFloatingAction(false)
             }
@@ -178,7 +188,7 @@ const PaymentHistoryTab = ({
                     }}
                     onAction={() => {
 
-                        modal.closeAllModals(); 
+                        modal.closeAllModals();
                         handleRevertPayment(receipt)
                     }}
                     message={"Reverting this payment will be subtracted from the Total Paid and increease the Outstanding Balance. Are you sure you want to continue?"}
@@ -254,9 +264,11 @@ const PaymentHistoryTab = ({
 
     const handleOnCheckBoxPress = item => () => {
         const { _id } = item;
+        
         const updatedItems = checkboxItemPress(_id, selectedItems);
 
         setSelectedItems(updatedItems);
+        setTransactionData(item)
     };
 
 

@@ -32,12 +32,12 @@ const ModalText = styled.Text(({ textColor = '--color-gray-600', theme, font = '
     color: theme.colors[textColor],
 }));
 
-function RevertPaymentDialogContainer({ selectedData,onCancel, headerTitle, handleDonePressed = () => { } }) {
-
+function RevertPaymentDialogContainer({ transactionData,selectedPayment, onCancel, headerTitle, handleDonePressed = () => { } }) {
+    
     // ######### CONST
     const modal = useModal();
     const theme = useTheme();
-    const [receiptId, setReceiptId] = useState('');
+    const [receiptId, setReceiptId] = useState(transactionData.receiptId);
     const [errors, setErrors] = useState({})
 
     // ######### EVENT HANDLERS
@@ -49,7 +49,7 @@ function RevertPaymentDialogContainer({ selectedData,onCancel, headerTitle, hand
 
     const validateFields = () => {
         if (setReceiptId !== '') {
-            handleDonePressed(receiptId);
+            handleDonePressed(selectedPayment);
         }
     }
 
@@ -92,7 +92,7 @@ function RevertPaymentDialogContainer({ selectedData,onCancel, headerTitle, hand
             <Row margin={1}>
                 <ModalText>
                     Enter the receipt/transaction id for the amount to confirm reverting this transaction.
-                    Typography
+                    
                 </ModalText>
             </Row>
         </>
@@ -102,7 +102,12 @@ function RevertPaymentDialogContainer({ selectedData,onCancel, headerTitle, hand
     return (
         <OverlayDialog
             title={headerTitle}
-            onPositiveButtonPress={() => validateFields()}
+            onPositiveButtonPress={() => {
+                receiptId !== '' ?
+                    validateFields()
+                    :
+                    null
+            }}
             onClose={handleCloseDialog}
             positiveText={"DONE"}
             maxWidth={'800px'}
