@@ -20,54 +20,62 @@ import { useNextPaginator, usePreviousPaginator, checkboxItemPress, selectAll } 
 import Item from "../common/Table/Item";
 import DataItem from "../common/List/DataItem";
 import { currencyFormatter } from "../../utils/formatter";
+import Row from "../common/Row";
+
+const HeaderText = styled.Text(({ theme }) => ({
+    ...theme.font['--text-lg-regular'],
+    color: theme.colors['--color-gray-600'],
+    marginBottom: 10
+}))
+
+const SecondaryText = styled.Text(({ theme }) => ({
+    ...theme.font['--text-xl-medium'],
+    color: theme.colors['--color-black']
+}))
 
 const PaymentHistoryTab = ({
     order,
+    onUpdate
 }) => {
 
     const theme = useTheme();
     const modal = useModal();
-    const baseStateRef = useRef();
+
     const { pageState, setPageState } = useContext(PageContext);
     const { isEditMode } = pageState;
     const [selectedPayment, setSelectedPayment] = useState({});
     const [isFloatingActionDisabled, setFloatingAction] = useState(false);
-    const { payments } = order;
 
-    const [isFetchingData, setFetchingData] = useState(false);
 
     const [searchValue, setSearchValue] = useState('');
 
-    const recordsPerPage = 1;
+    const recordsPerPage = 15;
 
     // pagination
     const [totalPages, setTotalPages] = useState(0);
     const [currentPageListMin, setCurrentPageListMin] = useState(0);
     const [currentPageListMax, setCurrentPageListMax] = useState(recordsPerPage);
-    const [currentPagePosition, setCurrentPagePosition] = useState(1);
+    const [currentPagePosition, setCurrentPagePosition] = useState(0);
     const [isNextDisabled, setNextDisabled] = useState(false);
     const [isPreviousDisabled, setPreviousDisabled] = useState(true);
-
+    const [listItems, setListItems] = useState();
+    const [selectedItems, setSelectedItems] = useState([]);
 
 
     useEffect(() => {
-        setTotalPages(Math.ceil(payments.length / recordsPerPage));
+        setTotalPages(Math.ceil(order.payments.length / recordsPerPage));
     }, []);
 
-    const [listItems, setListItems] = useState(payments)
-    const [selectedItems, setSelectedItems] = useState([]);
+
+
+
     useEffect(() => {
         let itemsToDisplay;
         if (searchValue) {
-            itemsToDisplay = listItems.filter(item => item.receiptId?.toLowerCase() || ''
-                .includes(searchValue.toLowerCase() || item.registeredBy?.toLowerCase() || ''
-                    .includes(searchValue.toLowerCase() || item.date?.toLowerCase() || ''
-                        .includes(searchValue.toLowerCase()))
-                ));
+            itemsToDisplay = listItems.filter(item => item.receiptId.toLowerCase().includes(searchValue.toLowerCase()) ||
+            item.registeredBy.toLowerCase().includes(searchValue.toLowerCase()));
         }
-        else itemsToDisplay = payments;
-
-        itemsToDisplay = itemsToDisplay.slice(currentPageListMin, currentPageListMax);
+        else itemsToDisplay = order.payments;
         setListItems(itemsToDisplay)
     }, [searchValue])
 
@@ -116,7 +124,9 @@ const PaymentHistoryTab = ({
 
     const handleAddPayment = (amount, receipt) => {
         registerPayment(order._id, { paid: amount, receiptId: receipt })
-            .then(_ => successModal())
+            .then(_ => {
+                onUpdate();
+                successModal()})
             .catch(_ => errorModal())
     }
 
@@ -277,25 +287,55 @@ const PaymentHistoryTab = ({
         />
     );
 
+    let dataToDisplay = [...order.payments];
+    dataToDisplay = dataToDisplay.slice(currentPageListMin, currentPageListMax);
+
     return (
         <>
             {
-                payments?.length ?
+                order.payments?.length ?
                     <>
+                        <Row>
+                            <View style={styles.headerItem}>
+                                <HeaderText>Outstanding Amount</HeaderText>
+                                <SecondaryText>${currencyFormatter(order.total - order.total_paid)}</SecondaryText>
+                            </View>
+
+                            <View style={styles.headerItem}>
+                                <HeaderText >Total Paid</HeaderText>
+                                <SecondaryText>${currencyFormatter(order.total_paid)}</SecondaryText>
+                            </View>
+
+                            <View style={styles.headerItem}>
+                                <HeaderText>Payment Status</HeaderText>
+                                <SecondaryText>{order.total_paid >= order.total ? 'Paid in Full' : 'Paid in Part'} </SecondaryText>
+                            </View>
+                        </Row>
+
                         <Search
-                            placeholderText="Search by Item Name or SKU"
+                            placeholderText="Search by Transaciton ID, Registered By or Date"
                             changeText={value => onChangeText(value)}
                             inputText={searchValue}
                             onClear={() => onChangeText('')}
                         />
-
+                        <View style={styles.spacer} />
                         <Table
-                            data={listItems}
+                            data={dataToDisplay}
                             listItemFormat={renderItemFn}
                             headers={listHeaders}
                             isCheckbox={true}
                             toggleHeaderCheckbox={handleOnSelectAll}
                             itemSelected={selectedItems}
+                        />
+                        <Footer
+                            totalPages={totalPages}
+                            currentPage={currentPagePosition}
+                            goToNextPage={goToNextPage}
+                            goToPreviousPage={goToPreviousPage}
+                            isDisabled={isFloatingActionDisabled}
+                            toggleActionButton={toggleActionButton}
+                            isNextDisabled={currentPagePosition >= totalPages}
+                            isPreviousDisabled={(currentPagePosition === 1)}
                         />
                     </>
                     :
@@ -303,16 +343,7 @@ const PaymentHistoryTab = ({
             }
 
 
-            <Footer
-                totalPages={totalPages}
-                currentPage={currentPagePosition}
-                goToNextPage={goToNextPage}
-                goToPreviousPage={goToPreviousPage}
-                isDisabled={isFloatingActionDisabled}
-                toggleActionButton={toggleActionButton}
-                isNextDisabled={currentPagePosition >= totalPages}
-                isPreviousDisabled={(currentPagePosition === 1)}
-            />
+
 
         </>
 
@@ -321,6 +352,21 @@ const PaymentHistoryTab = ({
 
 export default PaymentHistoryTab
 
+const styles = StyleSheet.create({
+
+    headerItem: {
+        flex: 1,
+        flexDirection: 'column',
+
+    },
+
+    spacer: {
+        marginTop: 10,
+        marginBottom: 10
+    }
+
+
+});
 
 
 const listHeaders = [
