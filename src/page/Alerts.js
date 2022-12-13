@@ -1,9 +1,9 @@
-import React, {useState, useEffect} from 'react';
-import styled, {css} from '@emotion/native';
-import {Text} from 'react-native';
+import React, { useState, useEffect } from 'react';
+import styled, { css } from '@emotion/native';
+import { Text, ScrollView } from 'react-native';
 import _ from 'lodash';
-import {useTheme} from 'emotion-theming';
-import {useNextPaginator, usePreviousPaginator} from '../helpers/caseFilesHelpers';
+import { useTheme } from 'emotion-theming';
+import { useNextPaginator, usePreviousPaginator } from '../helpers/caseFilesHelpers';
 import Page from '../components/common/Page/Page';
 import AlertTypeComponent from '../components/Alerts/AlertTypeComponent';
 import DataItem from '../components/common/List/DataItem';
@@ -19,17 +19,17 @@ import CustomDateRangePicker from '../components/Alerts/CustomDateRangePicker';
 
 const NumberContainer = styled.View`
     height: 20px;
-    padding: ${ ({theme}) => theme.space['--space-4']};
+    padding: ${({ theme }) => theme.space['--space-4']};
     padding-top:0;
     padding-bottom:0;
-    border: ${ ({theme}) => `1px solid ${theme.colors['--color-gray-300']}`};
-    background-color: ${ ({theme}) => theme.colors['--color-gray-100']};
+    border: ${({ theme }) => `1px solid ${theme.colors['--color-gray-300']}`};
+    background-color: ${({ theme }) => theme.colors['--color-gray-100']};
     border-radius: 4px;
     align-items: center;
     justify-content: center;
 `;
 
-const TextItem = styled.Text(({theme, color = '--color-gray-800', font = '--text-sm-regular'}) => ({
+const TextItem = styled.Text(({ theme, color = '--color-gray-800', font = '--text-sm-regular' }) => ({
     ...theme.font[font],
     color: theme.colors[color],
     paddingTop: 2
@@ -81,14 +81,14 @@ function Alerts() {
 
     const recentHeader = () => (
         <>
-            <DataItem color="--color-gray-600" fontStyle="--text-base-regular" flex={1} text="Recent"/>
+            <DataItem color="--color-gray-600" fontStyle="--text-base-regular" flex={1} text="Recent" />
             <ContentDataItem
                 align="flex-end"
                 flex={0.5}
                 content={(
                     <IconButton
                         // Icon={<ActionIcon/>}
-                        Icon={isCollapsed.includes('recent') ?  <CollapsedIcon/> : <ActionIcon/> }
+                        Icon={isCollapsed.includes('recent') ? <CollapsedIcon /> : <ActionIcon />}
                         disabled={true}
                     />
                 )}
@@ -103,12 +103,12 @@ function Alerts() {
                 content={(
                     <IconButton
                         // Icon={<ActionIcon/>}
-                        Icon={isCollapsed.includes('done') ? <CollapsedIcon/> : <ActionIcon/>}
+                        Icon={isCollapsed.includes('done') ? <CollapsedIcon /> : <ActionIcon />}
                         disabled={true}
                     />
                 )}
             />
-            <DataItem color="--color-gray-600" fontStyle="--text-base-regular" flex={2} text="Done"/>
+            <DataItem color="--color-gray-600" fontStyle="--text-base-regular" flex={2} text="Done" />
             <ContentDataItem
                 align="flex-end"
                 flex={0.5}
@@ -120,13 +120,13 @@ function Alerts() {
             />
         </>
     );
-    
+
     const onCollapse = name => () => {
         let newList = [];
         isCollapsed.includes(name) ?
             newList = [...isCollapsed.filter(item => item !== name)] :
             newList = [...isCollapsed, name];
-        
+
         setIsCollapsed(newList);
     };
 
@@ -138,7 +138,7 @@ function Alerts() {
         const pageMax = type === 'done' ? closedPageListMax : recentPageListMax;
 
         if (pagePosition < pages) {
-            let {currentPage, currentListMin, currentListMax} = useNextPaginator(pagePosition, recordsPerPage, pageMin, pageMax);
+            let { currentPage, currentListMin, currentListMax } = useNextPaginator(pagePosition, recordsPerPage, pageMin, pageMax);
             if (type === 'done') {
                 setClosedPagePosition(currentPage);
                 setClosedPageListMin(currentListMin);
@@ -160,7 +160,7 @@ function Alerts() {
         const pageMax = type === 'done' ? closedPageListMax : recentPageListMax;
 
         if (pagePosition > 1) {
-            let {currentPage, currentListMin, currentListMax} = usePreviousPaginator(pagePosition, recordsPerPage, pageMin, pageMax);
+            let { currentPage, currentListMin, currentListMax } = usePreviousPaginator(pagePosition, recordsPerPage, pageMin, pageMax);
             if (type === 'done') {
                 setClosedPagePosition(currentPage);
                 setClosedPageListMin(currentListMin);
@@ -209,60 +209,62 @@ function Alerts() {
     const pageContent = (
 
         <>
-            <AlertTypeComponent
-                alertType="Recent"
-                header={recentHeader}
-                onItemPress={onCollapse('recent')}
-                isCollapsed={isCollapsed.includes('recent')}
-                currentPage={recentPagePosition}
-                totalPages={recentTotalPages}
-                goToNextPage={goToNextPage('recent')}
-                goToPreviousPage={goToPreviousPage('recent')}
-                searchValue={recentSearchValue}
-                onChangeText={value => setRecentSearchValue(value)}
-                onChangeDate={onChangeDate('recent')}
-                startDate={recentStartDate}
-                endDate={recentEndDate}
-                onClearCalendarDates={() => { setRecentEndDate(''); setRecentStartDate(''); fetchOpenAlert(1, '', ''); }}
-                content={(
-                    <RecentAlertsList
-                        data={recentAlerts}
-                        updateAlerts={() => { setFetchingData(true); fetchClosedAlert(1); fetchOpenAlert(1); }}
-                    />
-                )}
-            />
+            
+                <AlertTypeComponent
+                    alertType="Recent"
+                    header={recentHeader}
+                    onItemPress={onCollapse('recent')}
+                    isCollapsed={isCollapsed.includes('recent')}
+                    currentPage={recentPagePosition}
+                    totalPages={recentTotalPages}
+                    goToNextPage={goToNextPage('recent')}
+                    goToPreviousPage={goToPreviousPage('recent')}
+                    searchValue={recentSearchValue}
+                    onChangeText={value => setRecentSearchValue(value)}
+                    onChangeDate={onChangeDate('recent')}
+                    startDate={recentStartDate}
+                    endDate={recentEndDate}
+                    onClearCalendarDates={() => { setRecentEndDate(''); setRecentStartDate(''); fetchOpenAlert(1, '', ''); }}
+                    content={(
+                        <RecentAlertsList
+                            data={recentAlerts}
+                            updateAlerts={() => { setFetchingData(true); fetchClosedAlert(1); fetchOpenAlert(1); }}
+                        />
+                    )}
+                />
 
-            <Space/>
+                <Space />
 
-            <AlertTypeComponent
-                alertType="Done"
-                header={doneHeader}
-                onItemPress={onCollapse('done')}
-                isCollapsed={isCollapsed.includes('done')}
-                currentPage={closedPagePosition}
-                totalPages={closedTotalPages}
-                goToNextPage={goToNextPage('done')}
-                goToPreviousPage={goToPreviousPage('done')}
-                searchValue={searchValue}
-                onChangeText={value => setSearchValue(value)}
-                onChangeDate={onChangeDate('done')}
-                startDate={closedStartDate}
-                endDate={closedEndDate}
-                onClearCalendarDates={() => { setClosedEndDate(''); setClosedStartDate(''); fetchClosedAlert(1, '', ''); }}
-                content={(
-                    <DoneAlertsList
-                        data={closedAlerts}
-                    />
-                )}
-                backgroundColor="--color-gray-100"
-            />
+                <AlertTypeComponent
+                    alertType="Done"
+                    header={doneHeader}
+                    onItemPress={onCollapse('done')}
+                    isCollapsed={isCollapsed.includes('done')}
+                    currentPage={closedPagePosition}
+                    totalPages={closedTotalPages}
+                    goToNextPage={goToNextPage('done')}
+                    goToPreviousPage={goToPreviousPage('done')}
+                    searchValue={searchValue}
+                    onChangeText={value => setSearchValue(value)}
+                    onChangeDate={onChangeDate('done')}
+                    startDate={closedStartDate}
+                    endDate={closedEndDate}
+                    onClearCalendarDates={() => { setClosedEndDate(''); setClosedStartDate(''); fetchClosedAlert(1, '', ''); }}
+                    content={(
+                        <DoneAlertsList
+                            data={closedAlerts}
+                        />
+                    )}
+                    backgroundColor="--color-gray-100"
+                />
+           
         </>
     );
 
     const fetchClosedAlert = (page = 1, start = closedStartDate, end = closedEndDate) => {
         getAlerts('closed', recordsPerPage, page, searchValue, start.toString(), end.toString())
             .then(results => {
-                const {data = [], totalPages = 0} = results;
+                const { data = [], totalPages = 0 } = results;
                 setClosedAlerts(data);
                 setClosedTotalPages(totalPages);
                 setClosedCount(data.length);
@@ -276,11 +278,11 @@ function Alerts() {
         console.log("RECENT ALERTS");
         getAlerts('open', recordsPerPage, page, recentSearchValue, start.toString(), end.toString())
             .then(results => {
-                const {data = [], totalPages = 0} = results;
+                const { data = [], totalPages = 0 } = results;
                 console.log("Recent data: ", data);
                 setRecentAlerts(data);
                 setRecentTotalPages(totalPages);
-                
+
             })
             .catch(error => {
                 console.log('Error fetching alerts: ', error);
@@ -299,7 +301,7 @@ function Alerts() {
     useEffect(() => {
         if (!searchValue) {
             // empty search values and cancel any out going request.
-            
+
             setSearchResult([]);
             fetchClosedAlert(1);
             if (searchQuery.cancel) searchQuery.cancel();
@@ -324,7 +326,7 @@ function Alerts() {
     useEffect(() => {
         if (!recentSearchValue) {
             // empty search values and cancel any out going request.
-            
+
             setRecentSearchResult([]);
             fetchOpenAlert(1);
             if (recentSearchQuery.cancel) recentSearchQuery.cancel();
