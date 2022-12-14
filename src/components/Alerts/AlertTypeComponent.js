@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import styled, {css} from '@emotion/native';
 import {useTheme} from 'emotion-theming';
+import { Text, StyleSheet, View } from 'react-native';
 import PropTypes from 'prop-types';
 
 import CollapsibleListItem from '../common/List/CollapsibleListItem';
@@ -80,9 +81,12 @@ const ContentContainer = styled.View`
 const FooterContainer = styled.View`
     height: 32px;
     width: 122px;
-    position: absolute;
+    //position: absolute;
+    margin:16px;
     bottom: 18;
     right: 18;
+    flex-direction:row;
+    justify-content:space-between;
     border: ${ ({theme}) => `1px solid ${theme.colors['--color-gray-400']}`};
     border-radius: 4px;
     background-color: ${ ({theme}) => theme.colors['--default-shade-white'] };
@@ -210,7 +214,11 @@ function AlertTypeComponent({
                                 hasNumberBorder={false}
                                 goToNextPage={goToNextPage}
                                 goToPreviousPage={goToPreviousPage}
-                            />
+                            /> 
+
+                            <View style={styles.clearContianer}>
+                                
+                            </View>
                         </FooterContainer>
 
                     </AlertContent>
@@ -219,7 +227,15 @@ function AlertTypeComponent({
             </AlertContainer>
         </AlertWrapper>
     );
-}
+} 
+
+const styles = StyleSheet.create({
+   clearContianer:{
+    justifyContent:"center",
+    flexDirection:'row',
+    alignItems:'center'
+   }
+})
 
 AlertTypeComponent.propTypes = {};
 AlertTypeComponent.defaultProps = {};

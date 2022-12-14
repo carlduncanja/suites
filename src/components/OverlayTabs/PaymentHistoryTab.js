@@ -6,11 +6,14 @@ import { PageContext } from "../../contexts/PageContext";
 import { useModal } from "react-native-modalfy";
 import EmptyPaymentHistoryContainer from "../PurchaseOrders/EmptyPaymentHistoryContainer";
 import AddIcon from "../../../assets/svg/addIcon";
+import RemoveIcon from "../../../assets/svg/remove2"; 
+import Minus from "../../../assets/svg/minus";
 import Footer from "../common/Page/Footer";
 import ActionItem from "../common/ActionItem";
 import ActionContainer from "../common/FloatingAction/ActionContainer";
 import RegisterPaymentDialogContainer from "../PurchaseOrders/RegisterPaymentDialogContainer";
-import { registerPayment } from "../../api/network";
+import RevertPaymentDialogContainer from "../PurchaseOrders/RevertPaymentDialogContainer";
+import { registerPayment, revertPayment } from "../../api/network";
 import ConfirmationComponent from "../ConfirmationComponent";
 import Search from "../common/Search";
 import Table from "../common/Table/Table";
@@ -55,6 +58,7 @@ const PaymentHistoryTab = ({
     const [currentPagePosition, setCurrentPagePosition] = useState(1);
     const [listItems, setListItems] = useState();
     const [selectedItems, setSelectedItems] = useState([]);
+    const [transactionData,setTransactionData]=useState({})
     const totalPages = order.payments.length === 0 ? 1 : Math.ceil(order.payments.length / recordsPerPage);
 
 
@@ -71,7 +75,7 @@ const PaymentHistoryTab = ({
     }, [searchValue, order])
 
     const floatingActions = () => {
-
+        let active  = selectedItems.length === 1 ? true :false
         const addItem = (
             <ActionItem
                 title="Register Payment"
@@ -81,11 +85,22 @@ const PaymentHistoryTab = ({
                 touchable={selectedPayment}
             />
         );
+        const revertPayment = (
+           
+            <ActionItem
+                title="Revert Payment"
+                icon={<Minus strokeColor={active ? "red":"gray"}/>}
+                onPress={()=>{showConfirmation(selectedItems[0])}}
+                disabled={!active}
+
+            />
+        )
 
 
         return <ActionContainer
             floatingActions={[
                 addItem,
+                revertPayment
             ]}
             title="PAYMENT ACTIONS"
         />;
@@ -108,11 +123,23 @@ const PaymentHistoryTab = ({
         registerPayment(order._id, { paid: amount, receiptId: receipt })
             .then(_ => {
                 onUpdate();
+                setSelectedItems([]);
+                setTransactionData({});
                 successModal()
             })
             .catch(_ => errorModal())
     }
 
+    const handleRevertPayment = (receipt) => {
+        revertPayment(order._id, { paymentId: receipt })
+            .then(_ => {
+                onUpdate() 
+                setSelectedItems([])
+                setTransactionData({})
+                successModal()
+            })
+            .catch(_ => errorModal())
+    }
 
     const openRegisterPaymentDialog = () => {
         modal.closeModals('ActionContainerModal');
@@ -127,6 +154,48 @@ const PaymentHistoryTab = ({
                 });
         }, 200);
     };
+
+
+
+    const openRevertPaymentDialog = () => {
+        modal.closeModals('ActionContainerModal')
+
+        modal.openModal('OverlayModal',
+            {
+                content: <RevertPaymentDialogContainer
+                    headerTitle={"Revert Payment"}
+                    selectedPayment={selectedItems[0]}
+                    transactionData={transactionData}
+                    onCancel={() => { console.log("false") }}
+                    handleDonePressed={(receipt) => { showConfirmation(receipt) }}
+                />,
+                onClose: () => setFloatingAction(false)
+            }
+        )
+    }
+
+    const showConfirmation = (receipt) => {
+        modal.openModal('ConfirmationModal', {
+            content: (
+                <ConfirmationComponent
+                    isWarning={true}
+                    onCancel={() => {
+                        modal.closeModals('ConfirmationModal');
+                    }}
+                    onAction={() => {
+
+                        modal.closeAllModals();
+                        handleRevertPayment(receipt)
+                    }}
+                    message={"Reverting this payment will be subtracted from the Total Paid and increease the Outstanding Balance. Are you sure you want to continue?"}
+                    secondaryMessage={"Do you wish to continue?"}
+                />
+            ),
+            onClose: () => {
+                modal.closeModals('ConfirmationModal');
+            },
+        });
+    }
 
     const successModal = () => {
         modal.openModal(
@@ -191,9 +260,11 @@ const PaymentHistoryTab = ({
 
     const handleOnCheckBoxPress = item => () => {
         const { _id } = item;
+        
         const updatedItems = checkboxItemPress(_id, selectedItems);
 
         setSelectedItems(updatedItems);
+        setTransactionData(item)
     };
 
 
