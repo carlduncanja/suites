@@ -55,7 +55,7 @@ const RenderHiddenItemContainer = styled.View`
 `;
 const TitleSection = styled.View`
 flex-direction: row;
-flex: 0.3;  
+flex: 0.4;  
 justify-content: flex-start;
 `;
 
@@ -146,7 +146,7 @@ function RecentAlertsList({ data = [], updateAlerts = () => { } }) {
                 colorGenerator="#FFF5F5"
                 break;
             case 'low':
-                colorGenerator="#FFF5F5"
+                colorGenerator="#EBF8FF"
                 break;
             case 'medium':
                 colorGenerator="#FFF5F5"
@@ -158,21 +158,46 @@ function RecentAlertsList({ data = [], updateAlerts = () => { } }) {
                 break;
         } 
         return colorGenerator
+    } 
+
+    const textColorGenerator = (priority)=>{
+        let colorGenerator =''
+        switch(priority){
+            case 'high':
+                colorGenerator='--color-red-500'
+                break; 
+            case 'critical':
+                colorGenerator="--color-red-500"
+                break;
+            case 'low':
+                colorGenerator="--color-blue-500"
+                break;
+            case 'medium':
+                colorGenerator="--color-red-500"
+                break; 
+            case 'new' :
+                colorGenerator="--color-green-500"
+                break;
+            default:
+                break;
+        } 
+        return colorGenerator
     }
     const listItem = item => {
         const { body = '', priority = '', createdOn = '', title = '', updatedAt = '' } = item; 
         let background=backgroundColorGenerator(priority)
+        let text=textColorGenerator(priority)
         return (
 
             <ListItemContainer>
                 <TittleContianer>
                     <TitleSection>
-                        <TextItem color="--color-gray-800">{` ${title}`}</TextItem>
+                        <TextItem color="--color-gray-800" flex={1}>{` ${title}`}</TextItem>
                         <View style={[styles.holder,{backgroundColor:background}]}>
                             <TextItem
-                                color="--color-red-500"
+                                color={text}
                                 fontStyle="--text-sm-medium"
-                            //flex={}
+                            flex={1}
                             >
                                 {transformToSentence(priority)}
                             </TextItem>
