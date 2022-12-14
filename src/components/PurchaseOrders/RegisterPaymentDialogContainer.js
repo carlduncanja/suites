@@ -1,18 +1,15 @@
-import React, { useEffect, useState } from 'react';
-import PropTypes from 'prop-types';
-import { View, StyleSheet, Text, Alert, TouchableOpacity } from "react-native";
+import React, { useState } from 'react';
 import OverlayDialog from "../common/Dialog/OverlayDialog";
 import OverlayDialogContent from "../common/Dialog/OverlayContent";
 import { useModal } from "react-native-modalfy";
-import DialogTabs from "../common/Dialog/DialogTabs";
 import InputField2 from "../common/Input Fields/InputField2";
 import Row from '../common/Row';
 import FieldContainer from '../common/FieldContainerComponent'
 import ConfirmationComponent from '../ConfirmationComponent';
 import _ from "lodash";
-import styled, { css } from '@emotion/native';
+import styled from '@emotion/native';
 import { useTheme } from 'emotion-theming';
-import { isValidNumber, currencyFormatter } from '../../utils/formatter';
+import { currencyFormatter } from '../../utils/formatter';
 
 /**
  * Component to handle the create storage process.
@@ -32,7 +29,7 @@ const ModalText = styled.Text(({ textColor = '--color-gray-600', theme, font = '
     color: theme.colors[textColor],
 }));
 
-function RegisterPaymentDialogContainer({ onCancel, headerTitle, handleDonePressed }) {
+function RegisterPaymentDialogContainer({headerTitle, handleDonePressed }) {
 
     // ######### CONST
     const modal = useModal();
@@ -44,19 +41,27 @@ function RegisterPaymentDialogContainer({ onCancel, headerTitle, handleDonePress
     // ######### EVENT HANDLERS
 
     const handleCloseDialog = () => {
-        onCancel();
         modal.closeAllModals();
     };
 
     const handleAmount = (value) => {
-        if (/^\d+(\.\d{1,2})?$/g.test(value) || /^\d+$/g.test(value) || !value) {
-            setAmountPaid(value)
+        const amount = value.replace(/[^0-9.]/g, '');
+        if (/^\d+(\.){0,1}(\d{1,2})?$/g.test(amount) || !amount) {
+            setAmountPaid(amount)
             updateErrors("amountPaid")
         }
     }
 
+
+
+    const formatAmount = () => {
+        if (amountPaid) {
+            setAmountPaid(currencyFormatter(amountPaid));
+        }
+    }
+
     const updateErrors = (fieldName) => {
-        if(fieldName in errors) {
+        if (fieldName in errors) {
             let localErrors = errors;
             delete localErrors[fieldName];
             setErrors(localErrors);
@@ -70,11 +75,11 @@ function RegisterPaymentDialogContainer({ onCancel, headerTitle, handleDonePress
 
     const validateFields = () => {
         let errors = {};
-        if(!amountPaid) errors = {amountPaid: true}
-        if(!receiptId) errors = {...errors, receiptId: true}
+        if (!amountPaid) errors = { amountPaid: true }
+        if (!receiptId) errors = { ...errors, receiptId: true }
         setErrors(errors);
-
-        if(_.isEmpty(errors)) handleDonePressed(amountPaid, receiptId);
+        const amount = amountPaid.replace(/[^0-9.]/g, '');
+        if (_.isEmpty(errors)) handleDonePressed(parseFloat(amount), receiptId);
     }
 
 
@@ -104,8 +109,9 @@ function RegisterPaymentDialogContainer({ onCancel, headerTitle, handleDonePress
                     <InputField2
                         label={"Amount Paid"}
                         onChangeText={(value) => { handleAmount(value) }}
-                        value={amountPaid}
-                        onClear={() => setAmountPaid(0)}
+                        value={`$ ${amountPaid.toString()}`}
+                        onClear={() => setAmountPaid('')}
+                        onEndEditing={() => formatAmount(amountPaid)}
                         keyboardType="number-pad"
                         hasError={errors?.amountPaid}
                         errorMessage="This field is required"

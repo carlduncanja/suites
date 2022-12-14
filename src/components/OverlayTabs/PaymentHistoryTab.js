@@ -1,6 +1,6 @@
-import React, { useRef, useContext, useState, useEffect } from "react";
-import { View, Text, StyleSheet } from "react-native";
-import styled, { css } from '@emotion/native';
+import React, { useContext, useState, useEffect } from "react";
+import { View, StyleSheet } from "react-native";
+import styled from '@emotion/native';
 import { useTheme } from 'emotion-theming';
 import { PageContext } from "../../contexts/PageContext";
 import { useModal } from "react-native-modalfy";
@@ -20,7 +20,7 @@ import Table from "../common/Table/Table";
 import { useNextPaginator, usePreviousPaginator, checkboxItemPress, selectAll } from '../../helpers/caseFilesHelpers';
 import Item from "../common/Table/Item";
 import DataItem from "../common/List/DataItem";
-import { currencyFormatter } from "../../utils/formatter";
+import { currencyFormatter, formatDate } from "../../utils/formatter";
 import Row from "../common/Row";
 
 const HeaderText = styled.Text(({ theme }) => ({
@@ -53,20 +53,13 @@ const PaymentHistoryTab = ({
     const recordsPerPage = 15;
 
     // pagination
-    const [totalPages, setTotalPages] = useState(0);
     const [currentPageListMin, setCurrentPageListMin] = useState(0);
     const [currentPageListMax, setCurrentPageListMax] = useState(recordsPerPage);
-    const [currentPagePosition, setCurrentPagePosition] = useState(0);
-    const [isNextDisabled, setNextDisabled] = useState(false);
-    const [isPreviousDisabled, setPreviousDisabled] = useState(true);
+    const [currentPagePosition, setCurrentPagePosition] = useState(1);
     const [listItems, setListItems] = useState();
     const [selectedItems, setSelectedItems] = useState([]);
     const [transactionData,setTransactionData]=useState({})
-
-
-    useEffect(() => {
-        setTotalPages(Math.ceil(order.payments.length / recordsPerPage));
-    }, []);
+    const totalPages = order.payments.length === 0 ? 1 : Math.ceil(order.payments.length / recordsPerPage);
 
 
 
@@ -79,7 +72,7 @@ const PaymentHistoryTab = ({
         }
         else itemsToDisplay = order.payments;
         setListItems(itemsToDisplay)
-    }, [searchValue])
+    }, [searchValue, order])
 
     const floatingActions = () => {
         let active  = selectedItems.length === 1 ? true :false
@@ -97,7 +90,7 @@ const PaymentHistoryTab = ({
             <ActionItem
                 title="Revert Payment"
                 icon={<Minus strokeColor={active ? "red":"gray"}/>}
-                onPress={openRevertPaymentDialog}
+                onPress={()=>{showConfirmation(selectedItems[0])}}
                 disabled={!active}
 
             />
@@ -151,7 +144,6 @@ const PaymentHistoryTab = ({
                 {
                     content: <RegisterPaymentDialogContainer
                         headerTitle={"Register Payment"}
-                        onCancel={() => { console.log("false") }}
                         handleDonePressed={handleAddPayment}
                     />,
                     onClose: () => setFloatingAction(false)
@@ -274,15 +266,14 @@ const PaymentHistoryTab = ({
 
 
     const listItemFormat = (item, index) => {
-        const { receiptId, paid, registeredBy, date = '1/2/22' } = item;
+        const { receiptId, paid, registeredBy, createdAt } = item;
 
         return (
             <>
                 <DataItem text={receiptId} fontStyle="--text-base-medium" color="--color-blue-600" />
                 <DataItem text={`$${currencyFormatter(paid)}`} fontStyle="--text-base-medium" color="--color-gray-800" />
                 <DataItem text={registeredBy} fontStyle="--text-base-medium" color="--color-gray-800" />
-                <DataItem text={date} fontStyle="--text-base-medium" color="--color-gray-800" />
-
+                <DataItem text={formatDate(createdAt, 'DD/MM/YYYY')} fontStyle="--text-base-medium" color="--color-gray-800" />
             </>
         );
     };
@@ -299,7 +290,7 @@ const PaymentHistoryTab = ({
         />
     );
 
-    let dataToDisplay = [...order.payments];
+    let dataToDisplay = listItems ? [...listItems] : [...order.payments];
     dataToDisplay = dataToDisplay.slice(currentPageListMin, currentPageListMax);
 
     return (
@@ -325,7 +316,7 @@ const PaymentHistoryTab = ({
                         </Row>
 
                         <Search
-                            placeholderText="Search by Transaciton ID, Registered By or Date"
+                            placeholderText="Search by Transaciton ID or Registered By"
                             changeText={value => onChangeText(value)}
                             inputText={searchValue}
                             onClear={() => onChangeText('')}
@@ -339,22 +330,22 @@ const PaymentHistoryTab = ({
                             toggleHeaderCheckbox={handleOnSelectAll}
                             itemSelected={selectedItems}
                         />
-                        <Footer
-                            totalPages={totalPages}
-                            currentPage={currentPagePosition}
-                            goToNextPage={goToNextPage}
-                            goToPreviousPage={goToPreviousPage}
-                            isDisabled={isFloatingActionDisabled}
-                            toggleActionButton={toggleActionButton}
-                            isNextDisabled={currentPagePosition >= totalPages}
-                            isPreviousDisabled={(currentPagePosition === 1)}
-                        />
+
                     </>
                     :
                     <EmptyPaymentHistoryContainer handleRegisterPayment={openRegisterPaymentDialog} />
             }
 
-
+            <Footer
+                totalPages={totalPages}
+                currentPage={currentPagePosition}
+                goToNextPage={goToNextPage}
+                goToPreviousPage={goToPreviousPage}
+                isDisabled={isFloatingActionDisabled}
+                toggleActionButton={toggleActionButton}
+                isNextDisabled={currentPagePosition >= totalPages}
+                isPreviousDisabled={(currentPagePosition === 1)}
+            />
 
 
         </>
@@ -387,7 +378,7 @@ const listHeaders = [
         hasSort: false
     },
     {
-        name: 'Amount Paid',
+        name: 'Registered By',
         hasSort: false
     },
     {

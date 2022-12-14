@@ -29,7 +29,6 @@ const IconWrapper = styled.View`
 const MessageWrapper = styled.Text(({ theme }) => ({
     ...theme.font['--text-base-bold'],
     color: theme.colors['--color-gray-600'],
-    fontStyle: 'bold',
     marginBottom: 20
 }))
 

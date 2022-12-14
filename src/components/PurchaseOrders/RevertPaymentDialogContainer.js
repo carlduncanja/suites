@@ -84,6 +84,7 @@ function RevertPaymentDialogContainer({ transactionData,selectedPayment, onCance
                         onClear={() => setReceiptId('')}
                         hasError={errors?.receiptId}
                         errorMessage="This field is required"
+                        enabled={false}
                     />
                 </FieldContainer>
 
@@ -92,7 +93,6 @@ function RevertPaymentDialogContainer({ transactionData,selectedPayment, onCance
             <Row margin={1}>
                 <ModalText>
                     Enter the receipt/transaction id for the amount to confirm reverting this transaction.
-                    
                 </ModalText>
             </Row>
         </>
