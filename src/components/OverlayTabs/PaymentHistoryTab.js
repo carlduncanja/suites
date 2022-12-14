@@ -123,6 +123,8 @@ const PaymentHistoryTab = ({
         registerPayment(order._id, { paid: amount, receiptId: receipt })
             .then(_ => {
                 onUpdate();
+                setSelectedItems([]);
+                setTransactionData({});
                 successModal()
             })
             .catch(_ => errorModal())
@@ -131,7 +133,9 @@ const PaymentHistoryTab = ({
     const handleRevertPayment = (receipt) => {
         revertPayment(order._id, { paymentId: receipt })
             .then(_ => {
-                onUpdate()
+                onUpdate() 
+                setSelectedItems([])
+                setTransactionData({})
                 successModal()
             })
             .catch(_ => errorModal())
