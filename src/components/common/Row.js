@@ -3,7 +3,7 @@ import styled, {css} from '@emotion/native';
 import {useTheme} from 'emotion-theming';
 
 const RowWrapper = styled.View`
-    margin-bottom: ${({theme}) => theme.space['--space-32']};
+    margin-bottom: ${({theme, margin}) => margin ? margin : theme.space['--space-32']};
     //margin-top: ${({theme}) => theme.space['--space-32']};
     width: 100%;
     display: flex;
@@ -24,7 +24,7 @@ function Row({children, zIndex = 1, margin}) {
     const theme = useTheme();
 
     return (
-        <RowWrapper theme={theme} zIndex={zIndex}>
+        <RowWrapper theme={theme} zIndex={zIndex} margin={margin}>
             <RowContainer>
                 {children}
             </RowContainer>

@@ -11,6 +11,7 @@ import ConfirmationComponent from '../../components/ConfirmationComponent';
 import { useModal } from 'react-native-modalfy';
 import { ORDER_TYPES, PURCHASE_ORDER_STATUSES } from '../../const';
 import RequisitionTab from '../../components/OverlayTabs/RequisitionTab';
+import PaymentHistoryTab from '../../components/OverlayTabs/PaymentHistoryTab';
 
 function OrderItemPage({ route, navigation }) {
 
@@ -19,7 +20,7 @@ function OrderItemPage({ route, navigation }) {
     const modal = useModal();
 
 
-    const currentTabs = ['Details', 'Items', 'Suppliers', 'Requisition', 'Invoice'];
+    const currentTabs = ['Details', 'Items', 'Suppliers', 'Requisition', 'Invoice', 'Payments'];
     const { _id, supplier = {}, purchaseOrderNumber, deliveryDate = '', description = '' } = order;
     const { name = '' } = supplier
 
@@ -320,6 +321,8 @@ function OrderItemPage({ route, navigation }) {
                 return <RequisitionTab key={1} order={selectedOrder} onUpdate={() => fetchOrder(_id)} type={ORDER_TYPES.REQUISITION} />;
             case 'Invoice':
                 return <RequisitionTab key={2} order={selectedOrder} onUpdate={() => fetchOrder(_id)} type={ORDER_TYPES.PURCHASE_ORDER}/>;
+            case 'Payments':
+                return <PaymentHistoryTab order={selectedOrder} onUpdate={() => fetchOrder(_id)} />
             default:
                 return <View />;
         }

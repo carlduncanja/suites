@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
-import { View, StyleSheet, Text, TouchableOpacity } from "react-native";
+import { View, StyleSheet, Text, TouchableOpacity, Dimensions } from "react-native";
 import ClearIcon from "../../../../assets/svg/clearIcon";
 import RightArrow from "../../../../assets/svg/rightArrow";
 
@@ -20,11 +20,12 @@ import OverlayDialogFooter from "./OverlayDialogFooter";
 
 const OverlayDialogWrapper = styled.View`
     flex : 1;
-    max-width : 636px;
+    max-width: ${({maxWidth}) => `${maxWidth}px`};
 `;
 const OverlayDialogContainer = styled.View`
     display : flex;
     width : 100%;
+    height: 100%;
     position : relative;
     border-radius: 8px;
     background-color : ${ ({theme}) => theme.colors['--default-shade-white']};
@@ -51,18 +52,21 @@ function OverlayDialog(props) {
     buttonIcon = <View />,
     isButtonDisabled = false,
     // handlePopovers = () =>{},
-    isOpen = false
+    isOpen = false,
   } = props;
 
   const theme = useTheme();
   const [zIndex, setZindex] = useState(isOpen ? 11 : 1);
+  const dimensions = Dimensions.get("window");
+
+  const maxWidth = dimensions.width - 150;
   
   useEffect(() => {
     setZindex(isOpen ? 11 : 1)
   }, [isOpen])
 
   return (
-    <OverlayDialogWrapper>
+    <OverlayDialogWrapper maxWidth={maxWidth}>
       <OverlayDialogContainer theme = {theme}>
 
         <OverlayDialogHeader

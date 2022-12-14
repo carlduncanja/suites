@@ -104,7 +104,8 @@ import {
     resetPasswordEndpoint,
     casePatientEndpoint,
     requestQuotationEndpoint,
-    sendToSupplierEndpoint
+    sendToSupplierEndpoint,
+    addPaymentEndpoint
 } from '../const/suitesEndpoints';
 import { createDocumentLink, documentById, documentData, documentUpload } from '../const/documentGenerationEndpoints';
 
@@ -868,6 +869,11 @@ export const sendToSupplier = async (purchaseOrderId, email) => suitesAxiosInsta
 
 export const addDocumentToOrder = async (orderId, data) => suitesAxiosInstance
     .put(addDocumentEndpoint(orderId), data)
+    .then(handleResponse)
+    .catch(handleError)
+
+export const registerPayment = async (orderId, data) => suitesAxiosInstance
+    .put(addPaymentEndpoint(orderId), data)
     .then(handleResponse)
     .catch(handleError)
 
