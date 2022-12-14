@@ -149,10 +149,10 @@ function RecentAlertsList({ data = [], updateAlerts = () => { } }) {
                 colorGenerator="#EBF8FF"
                 break;
             case 'medium':
-                colorGenerator="#FFF5F5"
+                colorGenerator="#FFFAF0"
                 break; 
             case 'new' :
-                colorGenerator="#FFF5F5"
+                colorGenerator="#F0FFF4"
                 break;
             default:
                 break;
@@ -167,13 +167,13 @@ function RecentAlertsList({ data = [], updateAlerts = () => { } }) {
                 colorGenerator='--color-red-500'
                 break; 
             case 'critical':
-                colorGenerator="--color-red-500"
+                colorGenerator="--color-red-800"
                 break;
             case 'low':
                 colorGenerator="--color-blue-500"
                 break;
             case 'medium':
-                colorGenerator="--color-red-500"
+                colorGenerator="--color-orange-500"
                 break; 
             case 'new' :
                 colorGenerator="--color-green-500"
