@@ -618,7 +618,7 @@ const Equipment = props => {
 
         const createEquipmentType = (
             <ActionItem
-                title="Create Equipment Type"
+                title="Create Equipment Group"
                 icon={<AddIcon/>}
                 onPress={openEquipmentTypeDialog}
             />
@@ -636,7 +636,6 @@ const Equipment = props => {
             />
         );
     
-        const addCategory  = <ActionItem title="Create Item Group" icon={<AddIcon/>} onPress={openCreateGroupDialog}/>;
 
 
         return (
@@ -647,7 +646,6 @@ const Equipment = props => {
                     assignEquipment,
                     createEquipmentType,
                     createEquipment,
-                    addCategory,
                 ]}
                 title="EQUIPMENT ACTIONS"
             />

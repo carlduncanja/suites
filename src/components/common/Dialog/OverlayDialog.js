@@ -53,6 +53,7 @@ function OverlayDialog(props) {
     isButtonDisabled = false,
     // handlePopovers = () =>{},
     isOpen = false,
+    footerIndex
   } = props;
 
   const theme = useTheme();
@@ -87,6 +88,7 @@ function OverlayDialog(props) {
           positiveText = {positiveText}
           buttonIcon = {buttonIcon}
           isButtonDisabled={isButtonDisabled}
+          zIndex={footerIndex}
         />
 
      
