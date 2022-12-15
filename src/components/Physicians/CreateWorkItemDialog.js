@@ -11,10 +11,10 @@ import SearchableOptionsField from '../../components/common/Input Fields/Searcha
 import CustomSearchableOptionsField from '../../components/common/Input Fields/CustomSearchableOptionsField';
 import DateInputField from '../../components/common/Input Fields/DateInputField';
 import { connect } from 'react-redux';
-import { getTheatres, createTheatre, createNewProcedure, updateCaseFile, updateAppointmentById, updatePatient as patientUpdater, getUsersCall, getProcedures, getCaseFiles, createCaseFile, createAppointment } from '../../api/network';
+import { getTheatres, createTheatre, createNewProcedure,updatePatient as patientUpdater, getUsersCall, getProcedures, getCaseFiles, createCaseFile, createAppointment,addProcedureAppointmentCall } from '../../api/network';
 import _, { reduce, set } from "lodash";
-import moment from 'moment';
-import { formatDate } from '../../utils/formatter';
+import moment, { duration } from 'moment';
+import { formatDate,dateDifferenceToHours } from '../../utils/formatter';
 /**
  * Component to handle the create storage process.
  *
@@ -341,10 +341,10 @@ const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem }) => 
     const fetchCaseFiles = () => {
 
 
-        getCaseFiles()
+        getCaseFiles(searchCaseValue,5)
             .then(caseResult => {
                 const { data = [], pages = 0 } = caseResult;
-                console.log("alll the cases", data)
+                
                 setSearchCaseResult(data || [])
             })
             .catch(error => {
@@ -438,6 +438,32 @@ const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem }) => 
 
         setErrors(errors)
         return isValid;
+    } 
+
+    const addProcedure = async () => {
+        
+        let duration = dateDifferenceToHours(endTime,startTime)
+        console.log("this is the start",startTime) 
+        
+        let procedureData = {
+            "procedure":procedure._id,
+            "location":location._id,
+            "startTime":startTime,
+            "duration":duration
+        }
+        let caseId=caseItem._id
+        addProcedureAppointment(caseId,procedureData)
+    } 
+    
+    const addProcedureAppointment = (caseId, procedureAppointment) => {
+        addProcedureAppointmentCall(caseId, procedureAppointment)
+            .then(data => {
+            })
+            .catch(
+                err => {
+                    console.log(err)
+                }
+            )
     }
 
     const createWorkItem = () => {
@@ -454,9 +480,10 @@ const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem }) => 
                 "isRecovery": false,
                 "authInfo": addWorkItem.id
             }
-
+            addProcedure()
             createAppointment(workItem)
                 .then(data => {
+
                     modal.openModal(
                         'ConfirmationModal',
                         {

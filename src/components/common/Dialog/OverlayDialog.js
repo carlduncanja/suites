@@ -60,7 +60,7 @@ function OverlayDialog(props) {
   const [zIndex, setZindex] = useState(isOpen ? 11 : 1);
   const dimensions = Dimensions.get("window");
 
-  const maxWidth = dimensions.width - 150;
+  const maxWidth = dimensions.width - 100;
   
   useEffect(() => {
     setZindex(isOpen ? 11 : 1)
