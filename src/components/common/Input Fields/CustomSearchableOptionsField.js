@@ -278,7 +278,7 @@ function CustomSearchableOptionsField({
                                                 borderStyle:  "solid", 
                                                 borderColor: "#90CDF4"
                                             }}
-                                        >{selectedValue?.caseNumber || ''}</InputText>
+                                        >{selectedValue?.name || ''}</InputText>
                                     </ValueContainer>
 
                                     <IconContainer>

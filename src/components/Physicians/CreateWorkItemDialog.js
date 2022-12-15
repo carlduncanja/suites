@@ -607,7 +607,7 @@ const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem }) => 
 
                     </View>
 
-                    <View style={[styles.row, { zIndex: 10 }]}>
+                    <View style={[styles.row, { zIndex: 7 }]}>
                         <View style={styles.inputWrapper}>
                             <View style={styles.textContainer}>
                                 <Text style={styles.labels}>Case</Text>
