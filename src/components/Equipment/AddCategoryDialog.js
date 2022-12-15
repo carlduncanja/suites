@@ -241,7 +241,7 @@ function AddCategoryDialog({ navigation, route }) {
                         onClear={() => onFieldChange('categoryType')('')}
                         hasError={errorFields['categoryType']}
                         //onClick={()=> <SearchWithInput data = {categorySearchResults} open ={true} />}
-                        onFocus={setIsOpen(!isOpen)}
+                        // onFocus={setIsOpen(!isOpen)}
                         errorMessage="category field must be filled."
                     />
                 </FieldContainer>

@@ -105,7 +105,8 @@ import {
     casePatientEndpoint,
     requestQuotationEndpoint,
     sendToSupplierEndpoint,
-    addPaymentEndpoint
+    addPaymentEndpoint,
+    revertPaymentEndpoint
 } from '../const/suitesEndpoints';
 import { createDocumentLink, documentById, documentData, documentUpload } from '../const/documentGenerationEndpoints';
 
@@ -833,7 +834,7 @@ export const updatePurchaseOrderDetails = async (purchaseOrderId, data) => suite
     .catch(handleError);
 
 export const confirmDelivery = async (purchaseOrderId, data) => suitesAxiosInstance
-    .put(confirmDeliveryEndpoint(purchaseOrderId),  data )
+    .put(confirmDeliveryEndpoint(purchaseOrderId), data)
     .then(handleResponse)
     .catch(handleError);
 
@@ -874,6 +875,11 @@ export const addDocumentToOrder = async (orderId, data) => suitesAxiosInstance
 
 export const registerPayment = async (orderId, data) => suitesAxiosInstance
     .put(addPaymentEndpoint(orderId), data)
+    .then(handleResponse)
+    .catch(handleError)
+
+export const revertPayment = async (orderId, data) => suitesAxiosInstance
+    .put(revertPaymentEndpoint(orderId), data)
     .then(handleResponse)
     .catch(handleError)
 

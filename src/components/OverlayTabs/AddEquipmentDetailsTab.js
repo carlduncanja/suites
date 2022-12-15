@@ -80,6 +80,7 @@ function AddEquipmentDetailsTab({ data, onFieldChange, onLocationUpdate, locatio
 
     }, [searchValue])
 
+    console.log(equipmentDetails)
 
     const fetchTheatres = () => {
         getTheatres(searchValue, 5)
@@ -134,28 +135,6 @@ function AddEquipmentDetailsTab({ data, onFieldChange, onLocationUpdate, locatio
                     />
                 </FieldContainer>
                 <FieldContainer>
-                    <AutoFillField
-                        label = "Category"
-                        value = {isEmpty(equipmentDetails?.categories[0]) ? "--" : equipmentDetails.categories[0]}
-                    />
-                </FieldContainer>
-            </Row>
-
-            <Row zIndex = {-1}>
-                <FieldContainer>
-                    <OptionsField
-                        key={data['Assignment']}
-                        labelWidth={98}
-                        label="Assignment"
-                        text={data['Assignment']}
-                        oneOptionsSelected={onFieldChange('Assignment')}
-                        menuOption={<MenuOptions>
-                            <MenuOption value={"Location"} text='Location' />
-                            <MenuOption value={"Person"} text='Person' />
-                        </MenuOptions>}
-                    />
-                </FieldContainer>
-                <FieldContainer>
                     <InputField2
                         key={data['Quantity']}
                         value={data['Quantity']}
@@ -169,7 +148,11 @@ function AddEquipmentDetailsTab({ data, onFieldChange, onLocationUpdate, locatio
                 </FieldContainer>
             </Row>
 
-            <Row zIndex = {-2}> 
+            {/* <Row zIndex = {-1}> */}
+             
+            {/* </Row> */}
+
+            {/* <Row zIndex = {-2}> 
                 <FieldContainer>
                     <SearchableOptionsField
                         label="Assigned"
@@ -208,7 +191,7 @@ function AddEquipmentDetailsTab({ data, onFieldChange, onLocationUpdate, locatio
                         </MenuOptions>}
                     />
                 </FieldContainer>
-            </Row>
+            </Row> */}
 
         </>
 
