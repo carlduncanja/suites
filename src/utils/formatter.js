@@ -84,7 +84,12 @@ export const mergeObjectArraysByKey = (arrOld = [], arrNew = [], key = '') => {
         });
     });
     return arrOld;
-};
+}; 
+
+// used to convert different between two dates into hours 
+export const  dateDifferenceToHours = (endTime,startTime) =>{
+    return Math.ceil((Math.abs(endTime-startTime)*(0.00000027777777777778)))
+}
 
 export const formatToCurrency = new Intl.NumberFormat('en-US', {
     style: 'currency',
