@@ -197,7 +197,6 @@ function OrderItemPage({ route, navigation }) {
     };
 
     const onConfirmDelivery = (data) => {
-        console.log("confirm delivery data", data)
         if(order.status !== PURCHASE_ORDER_STATUSES.APPROVED)
         {
             errorScreen("This order must be approved before confirming delivery.");
