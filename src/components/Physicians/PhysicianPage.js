@@ -229,7 +229,7 @@ function PhysicianPage({route, navigation}) {
             case 'Case Files':
                 return <CaseFilesTab setSelectedPhysician={setSelectedPhysician} selectedPhysician={selectedPhysician} cases={cases}/>;
             case 'Custom Procedures':
-                return <CustomProceduresTab selectedPhysician={selectedPhysician} procedures={procedures} setSelectedPhysician={setSelectedPhysician} />;
+                return <CustomProceduresTab selectedPhysician={selectedPhysician} procedures={procedures} id = {_id} fetchPhysician = {fetchPhysician} setSelectedPhysician={setSelectedPhysician} />;
             case 'Schedule':
                 return <PaginatedSchedule ID={physician._id} isPhysician={true}/>;
             default:

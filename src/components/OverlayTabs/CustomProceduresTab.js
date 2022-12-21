@@ -61,8 +61,7 @@ const testData = [
     }
 ];
 
-const CustomProceduresTab = ({ selectedPhysician, procedures, setSelectedPhysician}) => {
-
+const CustomProceduresTab = ({ selectedPhysician, procedures, setSelectedPhysician, id, fetchPhysician = () => {}}) => {
 
     const recordsPerPage = 10;
     const modal = useModal();
@@ -213,7 +212,10 @@ const CustomProceduresTab = ({ selectedPhysician, procedures, setSelectedPhysici
     }
 
     const removeCustomProcedureLongPress = () => {
-        if (selectedIds.length > 0) openDeletionConfirm({ ids: [...selectedIds] });
+        if (selectedIds.length > 0) {
+            openDeletionConfirm({ ids: [...selectedIds] });
+            fetchPhysician(id);
+        }
         else openErrorConfirmation();
 
     }
@@ -308,6 +310,7 @@ const CustomProceduresTab = ({ selectedPhysician, procedures, setSelectedPhysici
         })
         .finally(_ => {
             setIsFloatingActionDisabled(false)
+
         });
 
 
