@@ -11,7 +11,9 @@ const Patient = ({
     onPatientUpdated = () => {
     },
     isEditMode
-}) => {
+}) => { 
+    console.log("tyyrueueieiei",isEditMode)
+    
     const dates = procedures.map(item => {
         const {appointment} = item;
         //const {startTime} = appointment;

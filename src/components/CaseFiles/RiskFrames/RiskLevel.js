@@ -148,7 +148,7 @@ function RiskLevel({
             <HeaderWrapper theme={theme} borderColor={theme.colors[borderColor]} backgroundColor={theme.colors[titleBackground]}>
                 <HeaderContainer theme={theme}>
                     <RiskIcon fillColor={theme.colors[levelColor]}/>
-                    <Title titleColor={theme.colors[cardColor]} theme={theme}>Risk Level</Title>
+                    <Title titleColor={isEditMode? theme.colors['--color-purple-600']:theme.colors[cardColor]} theme={theme}>Risk Level</Title>
                 </HeaderContainer>
             </HeaderWrapper>
 
