@@ -2,9 +2,14 @@ import React,{useContext, useState} from 'react';
 import { View, Text, StyleSheet, ScrollView } from "react-native";
 import {Low, Moderate, High, VeryHigh} from '../../RiskFrames/RiskLevels' 
 import RiskLevel from '../../RiskFrames/RiskLevel'; 
+import {PageContext} from '../../../../contexts/PageContext';
 
-const PateintRisk = ({tabDetails = [], isEditMode, fields, onFieldChange}) => { 
-
+const PateintRisk = ({tabDetails = [], fields, onFieldChange}) => { 
+     
+    const {pageState, setPageState} = useContext(PageContext);
+    const {isEditMode} = pageState;
+     
+    
     const [risks, setRisks] = useState(tabDetails)
 
     const onRiskChange = (id) => (newLevel) => {
@@ -27,7 +32,9 @@ const PateintRisk = ({tabDetails = [], isEditMode, fields, onFieldChange}) => {
             {
                 risks.length === 0 &&
                 <>
-                    <RiskLevel/>
+                    <RiskLevel
+                     isEditMode={isEditMode}
+                    />
                 </>
             }
             {risks.map((risk,index)=>{
