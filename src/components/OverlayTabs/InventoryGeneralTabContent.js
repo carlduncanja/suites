@@ -85,8 +85,7 @@ function InventoryGeneralTabContent(props) {
 
             <View style={styles.item}>
                 <Text style={styles.textLabel}>Unit Price</Text>
-                {unitPrice? <Text style={styles.textDefault}>${currencyFormatter(unitPrice)} </Text> : ""}
-                
+                <Text style={styles.textDefault}>${currencyFormatter(unitPrice)} </Text>
             </View>
         </View>
 

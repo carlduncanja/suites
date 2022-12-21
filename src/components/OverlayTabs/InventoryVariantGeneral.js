@@ -233,6 +233,8 @@ function InventoryVariantGeneral({
 
         if (!isNaN(price)) {
             onFieldChange('unitCost')(parseFloat(price));
+        } else {
+            onFieldChange('unitCost')(price)
         }
         // if (/^\d+(\.\d{1,2})?$/g.test(price) || /^\d+$/g.test(price) || !price) {
         //     onFieldChange('unitCost')(parseFloat(price));
