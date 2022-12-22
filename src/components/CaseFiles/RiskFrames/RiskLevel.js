@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import styled, { css } from '@emotion/native';
 import { useTheme } from 'emotion-theming';
@@ -8,7 +8,7 @@ import RiskIcon from '../../../../assets/svg/riskLevel';
 import LineDivider from '../../common/LineDivider';
 import TextArea from '../../common/Input Fields/TextArea';
 import TextEditor from '../../common/Input Fields/TextEditor';
-import { set } from 'lodash';
+import { set, update } from 'lodash';
 
 
 const RiskLevelWrapper = styled.View`
@@ -134,6 +134,11 @@ function RiskLevel({
         },
     ];
     const [selectedRiskLevel, setSelectedRiskLevel] = useState({ "level": riskLevel, "name": riskLevel })
+    const [isUpdated, setIsUpdated] = useState(false)
+    const [fields, setFields] = useState({
+        riskLevel: "",
+        description: ""
+    })
 
     const Level = (name, backgroundColor, textColor) => {
         const background = backgroundColor;
@@ -144,6 +149,12 @@ function RiskLevel({
             </LevelContainer>
         );
     };
+
+    useEffect(() => {
+        if (isUpdated && !isEditMode) {
+            onRiskChange(selectedRiskLevel.level)
+        }
+    }, [isEditMode])
 
     return (
         <RiskLevelWrapper theme={theme}>
@@ -169,7 +180,7 @@ function RiskLevel({
                                         onPress={() => {
                                             if (isEditMode) {
                                                 setSelectedRiskLevel(level);
-                                                onRiskChange(level.level);
+                                                setIsUpdated(true);
                                             }
 
                                         }}

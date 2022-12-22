@@ -11,7 +11,7 @@ const PateintRisk = ({tabDetails = [], fields, onFieldChange}) => {
      
     
     const [risks, setRisks] = useState(tabDetails)
-
+    console.log("what the actual hell is this garbage",tabDetails)
     const onRiskChange = (id) => (newLevel) => {
 
         if (isEditMode){
@@ -34,6 +34,7 @@ const PateintRisk = ({tabDetails = [], fields, onFieldChange}) => {
                 <>
                     <RiskLevel
                      isEditMode={isEditMode}
+                     onRiskChange = {onRiskChange()}
                     />
                 </>
             }
