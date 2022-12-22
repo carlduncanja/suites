@@ -236,13 +236,7 @@ function InventoryVariantGeneral({
         } else {
             onFieldChange('unitCost')('')
         }
-        // if (/^\d+(\.\d{1,2})?$/g.test(price) || /^\d+$/g.test(price) || !price) {
-        //     onFieldChange('unitCost')(parseFloat(price));
-        // }
-
-        // if (/^\d+(\.){0,1}(\d{1,2})?$/g.test(price) || !price) {
-        //     setUnitPriceText(price);
-        // }
+        
     };
 
 
@@ -297,7 +291,9 @@ function InventoryVariantGeneral({
                             editMode={isEditMode}
                             editable={true}
                             onRecordUpdate={value => onUnitPriceChange(value)}
-                            onClearValue={() => onUnitPriceChange('')}
+                            onClearValue= {() => {
+                                onFieldChange('unitOfMeasurement')('');
+                            }}
                         />
 
                         <Record
