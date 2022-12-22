@@ -292,7 +292,7 @@ function InventoryVariantGeneral({
                             editable={true}
                             onRecordUpdate={value => onUnitPriceChange(value)}
                             onClearValue= {() => {
-                                onFieldChange('unitOfMeasurement')('');
+                                onFieldChange('unitCost')('');
                             }}
                         />
 
