@@ -90,7 +90,7 @@ function InventoryVariantGeneral({
         setFields({
             description,
             name,
-            unitCost,
+            unitCost:unitCost.toString(),
             unitOfMeasurement
         })
     }, [inventoryVariant]);
@@ -233,14 +233,10 @@ function InventoryVariantGeneral({
 
         if (!isNaN(price)) {
             onFieldChange('unitCost')(parseFloat(price));
+        } else {
+            onFieldChange('unitCost')('')
         }
-        // if (/^\d+(\.\d{1,2})?$/g.test(price) || /^\d+$/g.test(price) || !price) {
-        //     onFieldChange('unitCost')(parseFloat(price));
-        // }
-
-        // if (/^\d+(\.){0,1}(\d{1,2})?$/g.test(price) || !price) {
-        //     setUnitPriceText(price);
-        // }
+        
     };
 
 
@@ -289,13 +285,15 @@ function InventoryVariantGeneral({
                         <Record
                             recordTitle="Unit Price"
                             recordValue={ isEditMode
-                                ? fields.unitCost.toString()
+                                ? fields.unitCost
                                 : `$ ${currencyFormatter(fields.unitCost)}`
                             }
                             editMode={isEditMode}
                             editable={true}
                             onRecordUpdate={value => onUnitPriceChange(value)}
-                            onClearValue={() => onUnitPriceChange('')}
+                            onClearValue= {() => {
+                                onFieldChange('unitCost')('');
+                            }}
                         />
 
                         <Record
