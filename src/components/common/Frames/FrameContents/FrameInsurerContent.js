@@ -131,7 +131,7 @@ const FrameInsurerContent = ({
                     <InputField2
                         enabled = {isEditMode}
                         value = { isEditMode
-                            ? fields.unitCost.toString()
+                            ? data.coverageLimit.toString()
                             : `$ ${currencyFormatter(data['coverageLimit'])}`}
                         label = "Coverage"
                         onChangeText = {(value) => {onFieldChange('coverageLimit')(value)}}
