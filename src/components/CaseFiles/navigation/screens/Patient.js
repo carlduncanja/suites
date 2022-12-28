@@ -12,7 +12,7 @@ const Patient = ({
     },
     isEditMode
 }) => { 
-    console.log("tyyrueueieiei",isEditMode)
+    
     
     const dates = procedures.map(item => {
         const {appointment} = item;
@@ -160,6 +160,7 @@ const Patient = ({
                 return (
                     <PatientRisk
                         tabDetails={risks}
+                        patientId={patient._id}
                         isEditMode={isEditMode}
                     />
                 );

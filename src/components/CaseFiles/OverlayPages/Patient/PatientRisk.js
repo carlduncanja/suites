@@ -4,18 +4,18 @@ import {Low, Moderate, High, VeryHigh} from '../../RiskFrames/RiskLevels'
 import RiskLevel from '../../RiskFrames/RiskLevel'; 
 import {PageContext} from '../../../../contexts/PageContext';
 
-const PateintRisk = ({tabDetails = [], fields, onFieldChange}) => { 
+const PateintRisk = ({tabDetails = [], fields, onFieldChange,patientId}) => { 
      
     const {pageState, setPageState} = useContext(PageContext);
     const {isEditMode} = pageState;
      
     
     const [risks, setRisks] = useState(tabDetails)
-    console.log("what the actual hell is this garbage",tabDetails)
+    //console.log("what the actual hell is this garbage",patientId)
     const onRiskChange = (id) => (newLevel) => {
-
-        if (isEditMode){
-            const findIndex = risks.findIndex(obj => obj._id === id);
+          console.log("we in here",id)
+        
+           /* const findIndex = risks.findIndex(obj => obj._id === id);
             const updatedObj = { ...risks[findIndex], level: newLevel};
             const updatedRisks = [
                 ...risks.slice(0, findIndex),
@@ -23,8 +23,8 @@ const PateintRisk = ({tabDetails = [], fields, onFieldChange}) => {
                 ...risks.slice(findIndex + 1),
             ]; 
             setRisks(updatedRisks)
-            console.log("Id and Level: ", id, newLevel)
-        }     
+            console.log("Id and Level: ", id, newLevel)*/
+          
     }
 
     return ( 
@@ -34,7 +34,7 @@ const PateintRisk = ({tabDetails = [], fields, onFieldChange}) => {
                 <>
                     <RiskLevel
                      isEditMode={isEditMode}
-                     onRiskChange = {onRiskChange()}
+                     onRiskChange = {onRiskChange(patientId)}
                     />
                 </>
             }
