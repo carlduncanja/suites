@@ -217,59 +217,6 @@ function RiskLevel({
             </ContentWrapper>
 
 
-            {/* <View style={[styles.titleContainer,{backgroundColor:titleBackground, borderColor:borderColor, borderWidth:1}]}>
-                <RiskIcon fillColor={levelColor}/>
-                <Text style={{color:cardColor, marginLeft:5}}>Risk Level</Text>
-            </View> */}
-
-            {/* <View style={styles.contentContainer}>
-                <View style={styles.levelsContainer}>
-                    {
-                        levels.map((level,index)=>{
-                            return(
-                                <TouchableOpacity
-                                    activeOpacity = {1}
-                                    key = {index}
-                                    style = {{flex:1, borderWidth : level.level === riskLevel && 0 }}
-                                    onPress = {()=>{onRiskChange(level.level)}}
-                                >
-                                    {Level(
-                                        level.name,
-                                        level.level === riskLevel ? levelColor : "#FFFFFF",
-                                        level.level === riskLevel ? "#FFFFFF" : "#4E5664"
-                                    )}
-                                </TouchableOpacity>
-                            )
-
-                        })
-                    }
-                </View>
-                <View
-                    style={{
-                        backgroundColor:"#CCD6E0",
-                        height:1,
-                        borderRadius:2,
-                        marginTop:35,
-                        marginBottom:35
-                    }}
-                />
-                <View style={styles.notesContainer}>
-                    <View style={styles.notesTitleContainer}>
-                        <Text style={styles.notesTitle}>Note</Text>
-                    </View>
-                    {
-                        isEditMode ?
-                            <TextEditor
-                                onFieldChange = {onFieldChange}
-                            />
-                            :
-                            <View>
-                                <FrameItem itemContent={itemContent}/>
-                            </View>
-                    }
-                </View>
-            </View> */}
-
         </RiskLevelWrapper>
     );
 }
