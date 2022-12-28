@@ -130,12 +130,13 @@ const FrameInsurerContent = ({
 
                     <InputField2
                         enabled = {isEditMode}
-                        value = {`$ ${currencyFormatter(data['coverageLimit'])}`}
+                        value = { isEditMode
+                            ? fields.unitCost.toString()
+                            : `$ ${currencyFormatter(data['coverageLimit'])}`}
                         label = "Coverage"
                         onChangeText = {(value) => {onFieldChange('coverageLimit')(value)}}
                         onClear = {() => {onFieldChange('coverageLimit')('')}}
                         backgroundColor = '--default-shade-white'
-
                     />
                     
                     <FieldContainer/>
