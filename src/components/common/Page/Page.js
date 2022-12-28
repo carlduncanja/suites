@@ -4,7 +4,7 @@ import PageTitle from './PageTitle';
 import Search from '../Search';
 import List from '../List/List';
 import DisabledSectionComponent from '../../DisabledSectionComponent';
-
+import EmptyState from '../../../../assets/svg/emptyState'
 import Wrapper from '../Wrapper';
 import LoadingIndicator from '../LoadingIndicator';
 import { SuitesContext } from '../../../contexts/SuitesContext';
@@ -95,7 +95,8 @@ function Page(props) {
             refreshing={isFetchingData}
         />
     ) :
-        pageContent;
+        //pageContent;
+        <EmptyState/>
 
     return (
         <PageWrapper theme={theme}>
