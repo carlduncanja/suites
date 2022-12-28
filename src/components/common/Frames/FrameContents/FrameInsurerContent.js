@@ -52,6 +52,40 @@ const FrameInsurerContent = ({
     console.log("Edit mode: ", isEditMode);
     const theme = useTheme();
 
+    const {
+        name = "",
+        patient = "",
+        policyNumber = "",
+        coverageLimit = 0
+    } = fields
+    
+    const [fields, setFields] = useState({
+        name,
+        patient,
+        policyNumber,
+        coverageLimit
+    });
+
+    function formatNumberField(value) {
+        return value.toString().replace(/[^\d.]/g,'');
+    }
+
+    const onFieldChange = (fieldName) => (value) => {
+       
+        let finalValue = value;
+        if (fieldName === 'coverage') {
+            const formattedValue = formatNumberField(value);
+            finalValue = formattedValue;
+        }
+
+        setFields({
+            ...fields,
+            [fieldName]: finalValue
+        });
+        
+    };
+
+
     return (
         <ContentWrapper theme = {theme}>
             <ContentContainer theme = {theme}>
@@ -61,8 +95,8 @@ const FrameInsurerContent = ({
                         enabled = {isEditMode}
                         value = {fields.name}
                         label = "Insurer"
-                        onChangeText = {() => {}}
-                        onClear = {()=>{}}
+                        onChangeText = {(value) => {onFieldChange('name')(value)}}
+                        onClear = {()=>{onFieldChange('name')('')}}
                         backgroundColor = '--default-shade-white'
                     />
                 </RowWrapper>
@@ -74,8 +108,8 @@ const FrameInsurerContent = ({
                             enabled = {isEditMode}
                             value = {fields.patient}
                             label = "Insured"
-                            onChangeText = {() => {}}
-                            onClear = {()=>{}}
+                            onChangeText = {(value) => {onFieldChange('patient')(value)}}
+                            onClear = {() => {onFieldChange('patient')('')}}
                             backgroundColor = '--default-shade-white'
                         />
                     </FieldContainer>
@@ -84,8 +118,8 @@ const FrameInsurerContent = ({
                         enabled = {isEditMode}
                         value = {fields.policyNumber}
                         label = "Policy #"
-                        onChangeText = {() => {}}
-                        onClear = {()=>{}}
+                        onChangeText = {(value) => {onFieldChange('policyNumber')(value)}}
+                        onClear = {() => {onFieldChange('policyNumber')('')}}
                         backgroundColor = '--default-shade-white'
 
                     />
@@ -97,8 +131,8 @@ const FrameInsurerContent = ({
                         enabled = {isEditMode}
                         value = {`$ ${currencyFormatter(fields.coverageLimit)}`}
                         label = "Coverage"
-                        onChangeText = {() => {}}
-                        onClear = {()=>{}}
+                        onChangeText = {(value) => {onFieldChange('coverageLimit')(value)}}
+                        onClear = {() => {onFieldChange('coverageLimit')('')}}
                         backgroundColor = '--default-shade-white'
 
                     />
