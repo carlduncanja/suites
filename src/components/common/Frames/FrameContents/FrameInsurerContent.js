@@ -73,7 +73,8 @@ const FrameInsurerContent = ({
     const onFieldChange = (fieldName) => (value) => {
        
         let finalValue = value;
-        if (fieldName === 'coverage') {
+        
+        if (fieldName === 'coverageLimit') {
             const formattedValue = formatNumberField(value);
             finalValue = formattedValue;
         }
