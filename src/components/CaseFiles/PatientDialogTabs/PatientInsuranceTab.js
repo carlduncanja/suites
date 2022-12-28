@@ -38,10 +38,13 @@ const PatientInsuranceTab = ({ onFieldChange, fields }) => {
     })
 
     const handleInsurance = (type) => (value) => {
+        console.log("i am value", value)
         let updatedInsurance = {
             ...insuranceValues,
             [type] : value
         }
+        
+        setInsurance(updatedInsurance)
 
         if(type === 'coverage'){
             (/\d+((\.){1}(\d{2})){0,1}$/g.test(value) ) && onFieldChange('insurance')({...insuranceValues, coverage : parseInt(value)})
@@ -49,7 +52,6 @@ const PatientInsuranceTab = ({ onFieldChange, fields }) => {
             onFieldChange('insurance')(updatedInsurance)
         }
 
-        setInsurance(updatedInsurance)
     }
 
     return (
