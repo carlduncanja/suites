@@ -59,7 +59,7 @@ const FrameInsurerContent = ({
         coverageLimit = 0
     } = fields
     
-    const [fields, setFields] = useState({
+    const [data, setData] = useState({
         name,
         patient,
         policyNumber,
@@ -73,14 +73,14 @@ const FrameInsurerContent = ({
     const onFieldChange = (fieldName) => (value) => {
        
         let finalValue = value;
-        
+
         if (fieldName === 'coverageLimit') {
             const formattedValue = formatNumberField(value);
             finalValue = formattedValue;
         }
 
-        setFields({
-            ...fields,
+        setData({
+            ...data,
             [fieldName]: finalValue
         });
         
