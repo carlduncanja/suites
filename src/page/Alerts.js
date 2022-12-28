@@ -12,10 +12,12 @@ import IconButton from '../components/common/Buttons/IconButton';
 import CollapsedIcon from '../../assets/svg/closeArrow';
 import ActionIcon from '../../assets/svg/dropdownIcon';
 import DoneAlertsList from '../components/Alerts/DoneAlertsList';
-import { getAlerts, closeAlert } from '../api/network';
+import { getAlerts, closeAlert, closeAllAlerts } from '../api/network';
 import RecentAlertsList from '../components/Alerts/RecentAlertsList';
 import { useModal } from 'react-native-modalfy';
 import CustomDateRangePicker from '../components/Alerts/CustomDateRangePicker';
+import ConfirmationComponent from '../components/ConfirmationComponent';
+import ConfirmationCheckBoxComponent from '../components/ConfirmationCheckBoxComponent';
 
 const NumberContainer = styled.View`
     height: 20px;
@@ -209,55 +211,57 @@ function Alerts() {
     const pageContent = (
 
         <>
-            
-                <AlertTypeComponent
-                    alertType="Recent"
-                    header={recentHeader}
-                    onItemPress={onCollapse('recent')}
-                    isCollapsed={isCollapsed.includes('recent')}
-                    currentPage={recentPagePosition}
-                    totalPages={recentTotalPages}
-                    goToNextPage={goToNextPage('recent')}
-                    goToPreviousPage={goToPreviousPage('recent')}
-                    searchValue={recentSearchValue}
-                    onChangeText={value => setRecentSearchValue(value)}
-                    onChangeDate={onChangeDate('recent')}
-                    startDate={recentStartDate}
-                    endDate={recentEndDate}
-                    onClearCalendarDates={() => { setRecentEndDate(''); setRecentStartDate(''); fetchOpenAlert(1, '', ''); }}
-                    content={(
-                        <RecentAlertsList
-                            data={recentAlerts}
-                            updateAlerts={() => { setFetchingData(true); fetchClosedAlert(1); fetchOpenAlert(1); }}
-                        />
-                    )}
-                />
 
-                <Space />
+            <AlertTypeComponent
+                alertType="Recent"
+                header={recentHeader}
+                onItemPress={onCollapse('recent')}
+                isCollapsed={isCollapsed.includes('recent')}
+                currentPage={recentPagePosition}
+                totalPages={recentTotalPages}
+                goToNextPage={goToNextPage('recent')}
+                goToPreviousPage={goToPreviousPage('recent')}
+                searchValue={recentSearchValue}
+                onChangeText={value => setRecentSearchValue(value)}
+                onChangeDate={onChangeDate('recent')}
+                startDate={recentStartDate}
+                endDate={recentEndDate}
+                onClearCalendarDates={() => { setRecentEndDate(''); setRecentStartDate(''); fetchOpenAlert(1, '', ''); }}
+                onClearList={() => { openClearConfirm() }}
+                content={(
+                    <RecentAlertsList
+                        data={recentAlerts}
+                        updateAlerts={() => { setFetchingData(true); fetchClosedAlert(1); fetchOpenAlert(1); }}
+                    />
+                )}
+            />
 
-                <AlertTypeComponent
-                    alertType="Done"
-                    header={doneHeader}
-                    onItemPress={onCollapse('done')}
-                    isCollapsed={isCollapsed.includes('done')}
-                    currentPage={closedPagePosition}
-                    totalPages={closedTotalPages}
-                    goToNextPage={goToNextPage('done')}
-                    goToPreviousPage={goToPreviousPage('done')}
-                    searchValue={searchValue}
-                    onChangeText={value => setSearchValue(value)}
-                    onChangeDate={onChangeDate('done')}
-                    startDate={closedStartDate}
-                    endDate={closedEndDate}
-                    onClearCalendarDates={() => { setClosedEndDate(''); setClosedStartDate(''); fetchClosedAlert(1, '', ''); }}
-                    content={(
-                        <DoneAlertsList
-                            data={closedAlerts}
-                        />
-                    )}
-                    backgroundColor="--color-gray-100"
-                />
-           
+            <Space />
+
+            <AlertTypeComponent
+                alertType="Done"
+                header={doneHeader}
+                onItemPress={onCollapse('done')}
+                isCollapsed={isCollapsed.includes('done')}
+                currentPage={closedPagePosition}
+                totalPages={closedTotalPages}
+                goToNextPage={goToNextPage('done')}
+                goToPreviousPage={goToPreviousPage('done')}
+                searchValue={searchValue}
+                onChangeText={value => setSearchValue(value)}
+                onChangeDate={onChangeDate('done')}
+                startDate={closedStartDate}
+                endDate={closedEndDate}
+                showClearList={false}
+                onClearCalendarDates={() => { setClosedEndDate(''); setClosedStartDate(''); fetchClosedAlert(1, '', ''); }}
+                content={(
+                    <DoneAlertsList
+                        data={closedAlerts}
+                    />
+                )}
+                backgroundColor="--color-gray-100"
+            />
+
         </>
     );
 
@@ -273,6 +277,87 @@ function Alerts() {
                 console.log('Error fetching alerts: ', error);
             });
     };
+
+    const openClearConfirm = () => {
+        {
+            recentAlerts.length !== 0 ?
+            modal.openModal(
+                'ConfirmationModal',
+                {
+                    content: <ConfirmationCheckBoxComponent
+                        isError={false}
+                        isEditUpdate={true}
+                        confirmMessage="Yes i want to clear this list"
+                        onCancel={() => {
+                            modal.closeModals('ConfirmationModal');
+
+                        }}
+                        onAction={() => {
+                            modal.closeModals('ConfirmationModal');
+                            clearRecentList()
+                        }}
+                        message="Do you want to clear all Alerts in the Recent List"
+                    />,
+                    onClose: () => {
+                        modal.closeModals('ConfirmationModal');
+                    }
+                }
+            )
+            :
+            null
+        }
+    };
+
+    const clearRecentList = () => {
+        closeAllAlerts()
+            .then(_ => {
+                setFetchingData(true);
+                modal.openModal('ConfirmationModal', {
+                    content: (
+                        <ConfirmationComponent
+                            isError={false}//boolean to show whether an error icon or success icon
+                            isEditUpdate={false}
+                            onCancel={() => {
+                                modal.closeAllModals();
+                                fetchClosedAlert(1);
+                                fetchOpenAlert(1)
+                            }}
+                            onAction={() => {
+                                modal.closeAllModals();
+                                fetchClosedAlert(1);
+                                fetchOpenAlert(1)
+                            }}
+                        />
+                    ),
+                    onClose: () => {
+                        console.log('Modal closed');
+                    },
+                });
+
+
+            })
+            .catch(_ => {
+                // show modal fail
+                console.log("Error");
+                modal.openModal('ConfirmationModal', {
+                    content: (
+                        <ConfirmationComponent
+                            isError={true}//boolean to show whether an error icon or success icon
+                            isEditUpdate={false}
+                            onCancel={() => {
+                                modal.closeAllModals();
+                            }}
+                            onAction={() => {
+                                modal.closeAllModals();
+                            }}
+                        />
+                    ),
+                    onClose: () => {
+                        console.log('Modal closed');
+                    },
+                });
+            });
+    }
 
     const fetchOpenAlert = (page = 1, start = recentStartDate, end = recentEndDate) => {
         console.log("RECENT ALERTS");
