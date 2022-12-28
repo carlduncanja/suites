@@ -94,7 +94,7 @@ const FrameInsurerContent = ({
                 <RowWrapper theme = {theme}>
                     <InputField2
                         enabled = {isEditMode}
-                        value = {fields.name}
+                        value = {data['name']}
                         label = "Insurer"
                         onChangeText = {(value) => {onFieldChange('name')(value)}}
                         onClear = {()=>{onFieldChange('name')('')}}
@@ -107,7 +107,7 @@ const FrameInsurerContent = ({
                     <FieldContainer theme = {theme}>
                         <InputField2
                             enabled = {isEditMode}
-                            value = {fields.patient}
+                            value = {data['patient']}
                             label = "Insured"
                             onChangeText = {(value) => {onFieldChange('patient')(value)}}
                             onClear = {() => {onFieldChange('patient')('')}}
@@ -117,7 +117,7 @@ const FrameInsurerContent = ({
                     
                     <InputField2
                         enabled = {isEditMode}
-                        value = {fields.policyNumber}
+                        value = {data['policyNumber']}
                         label = "Policy #"
                         onChangeText = {(value) => {onFieldChange('policyNumber')(value)}}
                         onClear = {() => {onFieldChange('policyNumber')('')}}
@@ -130,7 +130,7 @@ const FrameInsurerContent = ({
 
                     <InputField2
                         enabled = {isEditMode}
-                        value = {`$ ${currencyFormatter(fields.coverageLimit)}`}
+                        value = {`$ ${currencyFormatter(data['coverageLimit'])}`}
                         label = "Coverage"
                         onChangeText = {(value) => {onFieldChange('coverageLimit')(value)}}
                         onClear = {() => {onFieldChange('coverageLimit')('')}}
