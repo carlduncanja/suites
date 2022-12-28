@@ -161,7 +161,8 @@ const Patient = ({
                     <PatientRisk
                         tabDetails={risks}
                         patientId={patient._id}
-                        isEditMode={isEditMode}
+                        isEditMode={isEditMode} 
+                        onRiskUpdate={ononRiskUpdate}
                     />
                 );
 

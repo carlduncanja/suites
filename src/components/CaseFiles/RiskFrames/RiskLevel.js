@@ -134,7 +134,7 @@ function RiskLevel({
         },
     ];
     const [selectedRiskLevel, setSelectedRiskLevel] = useState({ "level": riskLevel, "name": riskLevel })
-    const [isUpdated, setIsUpdated] = useState(true)
+    const [isUpdated, setIsUpdated] = useState(false)
     const [fields, setFields] = useState({
         riskLevel: "",
         description: ""
@@ -210,6 +210,7 @@ function RiskLevel({
                                 <TextArea  
                                 onChangeText={(value) =>{
                                     setNotes(value)
+                                    setIsUpdated(true)
                                 }}  
                                 value={notes}
                                 onClear={()=>{
