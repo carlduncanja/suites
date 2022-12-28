@@ -2,7 +2,8 @@ import React, { useContext, useState } from 'react';
 import { View, Text, StyleSheet, ScrollView } from "react-native";
 import { Low, Moderate, High, VeryHigh } from '../../RiskFrames/RiskLevels'
 import RiskLevel from '../../RiskFrames/RiskLevel';
-import { PageContext } from '../../../../contexts/PageContext';
+import { PageContext } from '../../../../contexts/PageContext'; 
+import {updatePatientRisk} from '../../../../api/network'
 
 const PateintRisk = ({ tabDetails = [], fields, onFieldChange, patientId }) => {
 
@@ -11,7 +12,7 @@ const PateintRisk = ({ tabDetails = [], fields, onFieldChange, patientId }) => {
 
 
     const [risks, setRisks] = useState(tabDetails)
-    //console.log("what the actual hell is this garbage",patientId)
+    
     const onRiskChange = (id) => (newLevel) => {
         console.log("we in here", newLevel)
 

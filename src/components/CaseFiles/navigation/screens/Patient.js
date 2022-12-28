@@ -1,8 +1,8 @@
-import React, {useContext, useState} from 'react';
-import {View, Text} from 'react-native';
+import React, { useContext, useState } from 'react';
+import { View, Text } from 'react-native';
 import moment from 'moment';
-import {SuitesContext} from '../../../../contexts/SuitesContext';
-import {Details, Diagnosis, Insurance, PatientRisk, EditablePatientDetails, CovidTestTab} from '../../OverlayPages/Patient';
+import { SuitesContext } from '../../../../contexts/SuitesContext';
+import { Details, Diagnosis, Insurance, PatientRisk, EditablePatientDetails, CovidTestTab } from '../../OverlayPages/Patient';
 
 const Patient = ({
     patient,
@@ -10,16 +10,18 @@ const Patient = ({
     selectedTab,
     onPatientUpdated = () => {
     },
+    onRiskUpdate = () => {
+    },
     isEditMode
-}) => { 
-    
-    
+}) => {
+
+
     const dates = procedures.map(item => {
-        const {appointment} = item;
+        const { appointment } = item;
         //const {startTime} = appointment;
-        
+
         const startTime = appointment?.startTime || "";
-        
+
         return moment(startTime)
 
     });
@@ -51,8 +53,8 @@ const Patient = ({
         nextVisit = getDate(dates) || null
     } = patient;
 
-    const {phones = [], emails = [], emergencyContact: emergencyContacts = []} = contactInfo;
-    const {diagnosis = [], risks = []} = medicalInfo;
+    const { phones = [], emails = [], emergencyContact: emergencyContacts = [] } = contactInfo;
+    const { diagnosis = [], risks = [] } = medicalInfo;
 
     const handlePhones = () => {
         const cellPhone = phones.find(p => p.type === 'cell');
@@ -161,8 +163,8 @@ const Patient = ({
                     <PatientRisk
                         tabDetails={risks}
                         patientId={patient._id}
-                        isEditMode={isEditMode} 
-                        onRiskUpdate={ononRiskUpdate}
+                        isEditMode={isEditMode}
+                        onRiskUpdate={onRiskUpdate}
                     />
                 );
 
@@ -176,7 +178,7 @@ const Patient = ({
                 );
 
             default:
-                return (<View/>);
+                return (<View />);
         }
     };
 
