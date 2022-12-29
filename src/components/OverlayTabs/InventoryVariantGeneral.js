@@ -90,7 +90,7 @@ function InventoryVariantGeneral({
         setFields({
             description,
             name,
-            unitCost,
+            unitCost:unitCost.toString(),
             unitOfMeasurement
         })
     }, [inventoryVariant]);
@@ -285,7 +285,7 @@ function InventoryVariantGeneral({
                         <Record
                             recordTitle="Unit Price"
                             recordValue={ isEditMode
-                                ? fields.unitCost.toString()
+                                ? fields.unitCost
                                 : `$ ${currencyFormatter(fields.unitCost)}`
                             }
                             editMode={isEditMode}

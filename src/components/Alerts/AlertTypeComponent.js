@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import styled, {css} from '@emotion/native';
-import {useTheme} from 'emotion-theming';
-import { Text, StyleSheet, View } from 'react-native';
+import styled, { css } from '@emotion/native';
+import { useTheme } from 'emotion-theming';
+import { Text, StyleSheet, View, TouchableOpacity } from 'react-native';
 import PropTypes from 'prop-types';
 
 import CollapsibleListItem from '../common/List/CollapsibleListItem';
@@ -9,6 +9,7 @@ import Search from '../common/Search';
 import SearchIcon from '../../../assets/svg/search';
 import CalendarIcon from '../../../assets/svg/calendar';
 import ClearIcon from '../../../assets/svg/clearIcon';
+import ClearList from '../../../assets/svg/clearList';
 import { formatDate } from '../../utils/formatter';
 import Footer from '../common/Page/Footer';
 import Paginator from '../common/Paginators/Paginator';
@@ -21,10 +22,10 @@ const AlertWrapper = styled.View`
 const AlertContainer = styled.View`
     display : flex;
     flex-direction: column;
-    background-color: ${ ({theme, backgroundColor}) => backgroundColor ? theme.colors[backgroundColor] : theme.colors['--default-shade-white']};
+    background-color: ${({ theme, backgroundColor }) => backgroundColor ? theme.colors[backgroundColor] : theme.colors['--default-shade-white']};
     
     border-radius: 8px;
-    border: ${ ({theme}) => `1px solid ${theme.colors['--color-gray-400']}`};
+    border: ${({ theme }) => `1px solid ${theme.colors['--color-gray-400']}`};
 `;
 
 const HeaderContainer = styled.TouchableOpacity`
@@ -34,37 +35,37 @@ const HeaderContainer = styled.TouchableOpacity`
     background-color: white;
     border-top-left-radius: 8px;
     border-top-right-radius: 8px;
-    padding-left: ${ ({theme}) => theme.space['--space-18']};
-    padding-right: ${ ({theme}) => theme.space['--space-18']};
-    border-bottom-color: ${ ({theme}) => theme.colors['--color-gray-300']};
-    border-radius: ${ ({isCollapsed}) => isCollapsed ? 0 : `8px`};
-    border-bottom-width: ${ ({isCollapsed}) => isCollapsed ? `1px` : 0};
+    padding-left: ${({ theme }) => theme.space['--space-18']};
+    padding-right: ${({ theme }) => theme.space['--space-18']};
+    border-bottom-color: ${({ theme }) => theme.colors['--color-gray-300']};
+    border-radius: ${({ isCollapsed }) => isCollapsed ? 0 : `8px`};
+    border-bottom-width: ${({ isCollapsed }) => isCollapsed ? `1px` : 0};
 `;
 
 const AlertContent = styled.View`
     display: flex;
-    padding-left: ${ ({theme}) => theme.space['--space-18']};
-    padding-right: ${ ({theme}) => theme.space['--space-18']};
+    padding-left: ${({ theme }) => theme.space['--space-18']};
+    padding-right: ${({ theme }) => theme.space['--space-18']};
     
 `;
 
 const HeaderSearchContainer = styled.View`
     height: 32px;
     width: 100%;
-    margin-top : ${ ({theme}) => theme.space['--space-16']};
+    margin-top : ${({ theme }) => theme.space['--space-16']};
     flex-direction: row;
     justify-content: space-between;
-    margin-bottom: ${ ({isCollapsed}) => !isCollapsed ? `20px` : `30px`};
+    margin-bottom: ${({ isCollapsed }) => !isCollapsed ? `20px` : `30px`};
 `;
 
 const DateContainer = styled.TouchableOpacity`
     width: 250px;
     flex-direction: row;
-    border: ${ ({theme}) => `1px solid ${theme.colors['--color-gray-400']}`};
+    border: ${({ theme }) => `1px solid ${theme.colors['--color-gray-400']}`};
     border-radius: 8px;
     align-items: center;
     justify-content: space-between;
-    padding: ${ ({theme}) => theme.space['--space-8']};
+    padding: ${({ theme }) => theme.space['--space-8']};
     padding-top: 0;
     padding-bottom: 0;
 `;
@@ -86,17 +87,17 @@ const FooterContainer = styled.View`
     bottom: 18;
     right: 18;
     flex-direction:row;
-    justify-content:space-between;
-    border: ${ ({theme}) => `1px solid ${theme.colors['--color-gray-400']}`};
+    justify-content: space-between;
+    border: ${({ theme }) => `1px solid ${theme.colors['--color-gray-400']}`};
     border-radius: 4px;
-    background-color: ${ ({theme}) => theme.colors['--default-shade-white'] };
+    background-color: ${({ theme }) => theme.colors['--default-shade-white']};
 `;
 
 const TextItemContainer = styled.View`
     flex:1;
-    padding-left: ${ ({theme}) => theme.space['--space-6']};
+    padding-left: ${({ theme }) => theme.space['--space-6']};
 `;
-const TextItem = styled.Text(({theme, color = '--color-gray-800', font = '--text-sm-regular'}) => ({
+const TextItem = styled.Text(({ theme, color = '--color-gray-800', font = '--text-sm-regular' }) => ({
     ...theme.font[font],
     color: theme.colors[color],
     paddingTop: 2
@@ -112,12 +113,12 @@ const ClearContainer = styled.TouchableOpacity`
 `;
 
 function AlertTypeComponent({
-    header = () => {},
+    header = () => { },
     isCollapsed = true,
     startDate = new Date(),
     endDate = new Date(),
     dateSelected = true,
-    content = () => {},
+    content = () => { },
     onItemPress,
     backgroundColor,
     currentPage,
@@ -127,10 +128,12 @@ function AlertTypeComponent({
     searchValue,
     onChangeText,
     onChangeDate,
-    onClearCalendarDates
+    onClearCalendarDates,
+    onClearList,
+    showClearList = true
 }) {
     const theme = useTheme();
-    const date = `${(!startDate && !endDate) ? 'Select date' : `${formatDate(startDate, 'DD/MM/YYYY')} ${(startDate !== '' || endDate !== '') && '-'} ${formatDate(endDate, 'DD/MM/YYYY')}` } `;
+    const date = `${(!startDate && !endDate) ? 'Select date' : `${formatDate(startDate, 'DD/MM/YYYY')} ${(startDate !== '' || endDate !== '') && '-'} ${formatDate(endDate, 'DD/MM/YYYY')}`} `;
     // `${formatDate(startDate, 'DD/MM/YYYY')} - ${formatDate(endDate, 'DD/MM/YYYY')}`;
 
     return (
@@ -162,7 +165,7 @@ function AlertTypeComponent({
                                 theme={theme}
                                 onPress={() => onChangeDate()}
                             >
-                                <CalendarIcon/>
+                                <CalendarIcon />
                                 {
                                     dateSelected &&
                                     <>
@@ -173,28 +176,28 @@ function AlertTypeComponent({
                                                 {date}
                                             </TextItem>
                                         </TextItemContainer>
-                                        
+
                                         {/* <TextItem>{formatDate(startDate, 'DD/MM/YYYY')} {(startDate !== '' || endDate !== '') && '-'} {formatDate(endDate, 'DD/MM/YYYY')}</TextItem> */}
                                         {
                                             (startDate !== '' || endDate !== '') &&
-                                                <ClearContainer onPress={() => onClearCalendarDates()}>
-                                                    <ClearIcon/>
-                                                    {/* <IconButton Icon={<ClearIcon/>} onPress={onClearCalendarDates} /> */}
-                                                </ClearContainer>
-                                            
+                                            <ClearContainer onPress={() => onClearCalendarDates()}>
+                                                <ClearIcon />
+                                                {/* <IconButton Icon={<ClearIcon/>} onPress={onClearCalendarDates} /> */}
+                                            </ClearContainer>
+
                                         }
-                                        
+
                                     </>
                                 }
-                                
+
                             </DateContainer>
 
                             <SearchContainer>
-                                
+
                                 <Search
                                     hasIcon={true}
                                     placeholderText="Search"
-                                    Icon={<SearchIcon strokeColor={theme.colors['--color-gray-500']}/>}
+                                    Icon={<SearchIcon strokeColor={theme.colors['--color-gray-500']} />}
                                     inputText={searchValue}
                                     changeText={value => onChangeText(value)}
                                     onClear={() => onChangeText('')}
@@ -202,39 +205,66 @@ function AlertTypeComponent({
                             </SearchContainer>
 
                         </HeaderSearchContainer>
-                    
+
                         <ContentContainer>
                             {content}
                         </ContentContainer>
-
-                        <FooterContainer theme={theme}>
-                            <Paginator
-                                currentPage={currentPage}
-                                totalPages={totalPages}
-                                hasNumberBorder={false}
-                                goToNextPage={goToNextPage}
-                                goToPreviousPage={goToPreviousPage}
-                            /> 
-
-                            <View style={styles.clearContianer}>
-                                
-                            </View>
-                        </FooterContainer>
-
+                        <View style={styles.footerHolder}>
+                            <FooterContainer theme={theme}>
+                                <Paginator
+                                    currentPage={currentPage}
+                                    totalPages={totalPages}
+                                    hasNumberBorder={false}
+                                    goToNextPage={goToNextPage}
+                                    goToPreviousPage={goToPreviousPage}
+                                />
+                            </FooterContainer>
+                            {showClearList ?
+                                <TouchableOpacity
+                                    style={styles.clearListContianer}
+                                    onPress={() => onClearList()}
+                                >
+                                    <View style={styles.clearContianer}>
+                                        <TextItem
+                                            color={'--color-gray-600'}
+                                        >
+                                            Clear List
+                                        </TextItem>
+                                        <View style={styles.spacer}>
+                                            <ClearList strokeColor={theme.colors['--color-gray-500']} />
+                                        </View>
+                                    </View>
+                                </TouchableOpacity>
+                                :
+                                null
+                            }
+                        </View>
                     </AlertContent>
                 }
 
             </AlertContainer>
         </AlertWrapper>
     );
-} 
+}
 
 const styles = StyleSheet.create({
-   clearContianer:{
-    justifyContent:"center",
-    flexDirection:'row',
-    alignItems:'center'
-   }
+    clearContianer: {
+        justifyContent: "center",
+        flexDirection: 'row',
+        alignItems: 'center',
+        flexDirection: 'row'
+    },
+    footerHolder: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+    },
+    clearListContianer: {
+        marginTop: 12
+        //justifyContent:"center"
+    },
+    spacer: {
+        marginLeft: 8
+    }
 })
 
 AlertTypeComponent.propTypes = {};
