@@ -40,7 +40,8 @@ function NavPage({
     isPreviousDisabled = () => { },
     onClear = () => { },
     navigation,
-    hasEmpty = false
+    hasEmpty = false,
+    hasList
 }) {
     const theme = useTheme();
 
@@ -63,7 +64,8 @@ function NavPage({
                     onSelectAll={onSelectAll}
                     listItemFormat={listItemFormat}
                     navigation={navigation}
-                    hasEmpty= {hasEmpty}
+                    hasEmpty= {hasEmpty} 
+                    hasList={hasList}
                 // onClear = {onClear}
                 />
 

@@ -72,9 +72,10 @@ function Theatres(props) {
     const pageTitle = 'Theatre Rental';
     const modal = useModal();
     const recordsPerPage = 10;
-    const hasEmpty = true
+    //const hasEmpty = true
 
-    // ##### States
+    // ##### States 
+    const [hasEmpty,setHasEmpty]=useState(false)
     const [isFetchingData, setFetchingData] = useState(false);
     const [isFloatingActionDisabled, setFloatingAction] = useState(false);
 
@@ -405,7 +406,7 @@ function Theatres(props) {
         getTheatres(searchValue, recordsPerPage, currentPosition)
             .then(result => {
                 const {data = [], pages = 0} = result;
-
+                  
                 if (pages === 1) {
                     setPreviousDisabled(true);
                     setNextDisabled(true);
@@ -421,7 +422,9 @@ function Theatres(props) {
                 } else {
                     setNextDisabled(true);
                     setPreviousDisabled(true);
-                }
+                } 
+                data.length === 0 ? setHasEmpty(true) :setHasEmpty(false)
+        
                 console.log('Theatre data:', data);
                 setTheatres(data);
                 data.length === 0 ? setTotalPages(1) : setTotalPages(pages);
@@ -500,7 +503,8 @@ function Theatres(props) {
                 hasActions={true}
                 isNextDisabled={isNextDisabled}
                 isPreviousDisabled={isPreviousDisabled}
-                hasEmpty={hasEmpty}
+                hasEmpty={hasEmpty} 
+                hasList={!hasEmpty}
             />
 
         </PageSettingsContext.Provider>
