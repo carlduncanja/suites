@@ -86,7 +86,7 @@ const PateintRisk = ({ tabDetails = [], fields, onFieldChange, patientId,onPatie
                                 <View>
                                     <RiskLevel
                                         titleBackground="#EBF8FF"
-                                        borderColor="#90CDF4"
+                                        borderColor="--color-gray-400"
                                         levelColor="#4299E1"
                                         cardColor="--color-gray-600"
                                         riskLevel={status}

@@ -128,7 +128,7 @@ function RiskLevel({
             "name": "High",
         },
         {
-            "level": "veryHigh",
+            "level": "very high",
             "name": "Very High",
         },
     ];
