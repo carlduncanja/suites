@@ -44,7 +44,9 @@ export const FieldContainer = styled.View`
 
 
 const FrameInsurerContent = ({
-        fields = {}
+        fields = {},
+        setFields = () => {
+        }
     }) => {
     
     const { pageState } = useContext(PageContext);
@@ -83,7 +85,9 @@ const FrameInsurerContent = ({
             ...data,
             [fieldName]: finalValue
         });
-        
+
+        setFields(data)
+       
     };
 
 
