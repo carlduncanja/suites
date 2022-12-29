@@ -66,6 +66,7 @@ function NavPage({
                     navigation={navigation}
                     hasEmpty= {hasEmpty} 
                     hasList={hasList}
+                    emptyTitle={emptyTitle}
                 // onClear = {onClear}
                 />
 

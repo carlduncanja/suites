@@ -70,6 +70,7 @@ function Theatres(props) {
     const {theatres = [], setTheatres} = props;
     const theme = useTheme();
     const pageTitle = 'Theatre Rental';
+    const emptyTitle = 'No Theatres Found';
     const modal = useModal();
     const recordsPerPage = 10;
     //const hasEmpty = true
@@ -505,6 +506,7 @@ function Theatres(props) {
                 isPreviousDisabled={isPreviousDisabled}
                 hasEmpty={hasEmpty} 
                 hasList={!hasEmpty}
+                emptyTitle={emptyTitle}
             />
 
         </PageSettingsContext.Provider>

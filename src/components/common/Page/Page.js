@@ -40,6 +40,12 @@ const PageSearchWrapper = styled.View`
         margin-bottom : ${({ theme }) => theme.space['--space-24']};
 `;
 
+const EmptyWrapper = styled.View`
+  display: flex;
+  flex: 1;
+  justify-content: center;
+  align-items: center;
+`
 const PageHeader = styled.View`
     flex-direction:row;
     width:100%;
@@ -53,7 +59,7 @@ const PageContent = styled.View`
  padding-bottom: ${({ theme }) => theme.space['--space-72']};
 `
 const IconWrapper = styled.View`
-   margin-bottom: ${({ theme }) => theme.space['--space-10']};
+   margin-bottom: ${({ theme }) => theme.space['--space-40']};
    
 `
 const MessageWrapper = styled.Text(({ theme }) => ({
@@ -90,7 +96,8 @@ function Page(props) {
         hasList = true,
         hasSearch = true,
         pageContent,
-        hasEmpty
+        hasEmpty,
+        emptyTitle
         // navigation
     } = props;
 
@@ -111,18 +118,18 @@ function Page(props) {
             refreshing={isFetchingData}
         />
     )  : hasEmpty && listData?.length<1 ?
-        
-        <PageContent theme={theme}>
-            {/*    ICON     */}
-            <IconWrapper theme={theme}>
-                <EmptyState />
-            </IconWrapper>
+        <EmptyWrapper theme={theme}>
+            <PageContent theme={theme}>
+                {/*    ICON     */}
+                <IconWrapper theme={theme}>
+                    <EmptyState />
+                </IconWrapper>
 
-            {/*    MESSAGE HEADER  */}
-            <MessageWrapper theme={theme}>{"No Theatres Found"}</MessageWrapper>
+                {/*    MESSAGE HEADER  */}
+                <MessageWrapper theme={theme}>{emptyTitle}</MessageWrapper>
 
-        </PageContent>
-        
+            </PageContent>
+        </EmptyWrapper> 
     : pageContent
     return (
         <PageWrapper theme={theme}>
