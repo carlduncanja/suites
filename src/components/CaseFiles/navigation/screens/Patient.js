@@ -24,7 +24,9 @@ const Patient = ({
 
         return moment(startTime)
 
-    });
+    }); 
+
+    console.log("we are here to have fun",patient)
 
     const getDate = dates => {
         let updatedDates = [...dates];

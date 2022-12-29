@@ -138,8 +138,8 @@ function RiskLevel({
     const [fields, setFields] = useState({
         riskLevel: "",
         description: ""
-    }) 
-    const [notes,setNotes]=useState("")
+    })
+    const [notes, setNotes] = useState("")
 
     const Level = (name, backgroundColor, textColor) => {
         const background = backgroundColor;
@@ -153,8 +153,9 @@ function RiskLevel({
 
     useEffect(() => {
         if (isUpdated && !isEditMode) {
+            let updatedRiskData = { "notes": notes, "risk": selectedRiskLevel.level }
             //console.log("we in here ",selectedRiskLevel.level)
-            onRiskChange(selectedRiskLevel.level)
+            onRiskChange(updatedRiskData)
         }
     }, [isEditMode])
 
@@ -207,15 +208,15 @@ function RiskLevel({
                         <NotesText theme={theme}>Notes</NotesText>
                         {
                             isEditMode ?
-                                <TextArea  
-                                onChangeText={(value) =>{
-                                    setNotes(value)
-                                    setIsUpdated(true)
-                                }}  
-                                value={notes}
-                                onClear={()=>{
-                                  setNotes('')
-                                }}
+                                <TextArea
+                                    onChangeText={(value) => {
+                                        setNotes(value)
+                                        setIsUpdated(true)
+                                    }}
+                                    value={notes}
+                                    onClear={() => {
+                                        setNotes('')
+                                    }}
                                 /> :
                                 <FrameItem itemContent={itemContent} />
                         }
