@@ -76,8 +76,9 @@ import {
     patientEndpoint,
     allPatientsEndpoint,
     updatePatientRiskEndpoint,
-    alertsEndpoint,
+    alertsEndpoint, 
     closeAlertEndpoint,
+    closeAllAlertsEndpoint,
     configEndpoint,
     updateBufferEndpoint,
     userPassword,
@@ -932,7 +933,12 @@ export const createAlert = async (data) => suitesAxiosInstance
 export const closeAlert = async id => suitesAxiosInstance
     .put(closeAlertEndpoint(id))
     .then(handleResponse)
-    .catch(handleError);
+    .catch(handleError); 
+
+export const closeAllAlerts =async () => suitesAxiosInstance 
+ .put(closeAllAlertsEndpoint)
+ .then(handleResponse)
+ .catch(handleError)
 
 // ################# Configurations Endpoints
 

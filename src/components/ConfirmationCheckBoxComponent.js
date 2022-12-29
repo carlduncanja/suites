@@ -218,6 +218,7 @@ function ConfirmationCheckBoxComponent({
     },
     titleText = 'Confirm Action',
     message = '',
+    confirmMessage="Yes, I want to delete",
     action = 'Save',
     type = ''
 }) {
@@ -247,7 +248,7 @@ function ConfirmationCheckBoxComponent({
                             />
                         </View >
                         <View style={styles.centerContent}>
-                            <Text>{"Yes, I want to delete"}</Text>
+                            <Text>{confirmMessage}</Text>
                         </View>
                     </View>
 

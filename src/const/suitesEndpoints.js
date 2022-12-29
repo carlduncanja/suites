@@ -132,7 +132,8 @@ export const updatePatientRiskEndpoint = id => `/patients/${id}/risk`
 
 // ##### ALERTS
 export const alertsEndpoint = '/alerts';
-export const closeAlertEndpoint = id => `/alerts/${id}/close`;
+export const closeAlertEndpoint = id => `/alerts/${id}/close`; 
+export const closeAllAlertsEndpoint = '/alerts/closeAll'
 
 // ##### CONFIGURATIONS
 export const configEndpoint = '/configurations';
