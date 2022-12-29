@@ -141,7 +141,7 @@ function RiskLevel({
     const [notes, setNotes] = useState(itemContent)
 
     const Level = (name, backgroundColor, textColor) => {
-        const background = backgroundColor;
+        const background =  backgroundColor;
 
         return (
             <LevelContainer backgroundColor={background}>
