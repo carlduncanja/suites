@@ -62,6 +62,7 @@ function NavPage({
                     onSelectAll={onSelectAll}
                     listItemFormat={listItemFormat}
                     navigation={navigation}
+                    pageName="theatre"
                 // onClear = {onClear}
                 />
 

@@ -90,6 +90,7 @@ function Page(props) {
         hasList = true,
         hasSearch = true,
         pageContent,
+        pageName
         // navigation
     } = props;
 
@@ -98,7 +99,7 @@ function Page(props) {
 
     const isAdmin = route?.params?.isAdmin || false;
     
-    const content = listData?.length>1 ? (
+    const content = hasList ? (
         <List
             listData={listData}
             listHeaders={listHeaders}
@@ -109,8 +110,8 @@ function Page(props) {
             listItemFormat={listItemFormat}
             refreshing={isFetchingData}
         />
-    ) :
-        //pageContent;
+    )  :pageName == "theatre" && listData?.length>1 ?
+        
         <PageContent theme={theme}>
             {/*    ICON     */}
             <IconWrapper theme={theme}>
@@ -121,7 +122,8 @@ function Page(props) {
             <MessageWrapper theme={theme}>{"No Theatres Found"}</MessageWrapper>
 
         </PageContent>
-
+        
+    : pageContent
     return (
         <PageWrapper theme={theme}>
             <PageContainer theme={theme}>
