@@ -72,6 +72,7 @@ function Theatres(props) {
     const pageTitle = 'Theatre Rental';
     const modal = useModal();
     const recordsPerPage = 10;
+    const hasEmpty = true
 
     // ##### States
     const [isFetchingData, setFetchingData] = useState(false);
@@ -499,6 +500,7 @@ function Theatres(props) {
                 hasActions={true}
                 isNextDisabled={isNextDisabled}
                 isPreviousDisabled={isPreviousDisabled}
+                hasEmpty={hasEmpty}
             />
 
         </PageSettingsContext.Provider>

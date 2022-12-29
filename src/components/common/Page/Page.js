@@ -90,7 +90,7 @@ function Page(props) {
         hasList = true,
         hasSearch = true,
         pageContent,
-        pageName
+        hasEmpty
         // navigation
     } = props;
 
@@ -110,7 +110,7 @@ function Page(props) {
             listItemFormat={listItemFormat}
             refreshing={isFetchingData}
         />
-    )  :pageName == "theatre" && listData?.length>1 ?
+    )  : hasEmpty && listData?.length>1 ?
         
         <PageContent theme={theme}>
             {/*    ICON     */}
