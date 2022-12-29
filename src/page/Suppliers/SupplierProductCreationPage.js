@@ -324,7 +324,7 @@ function SupplierProductCreationPage({route}) {
                         onClear={onUpdateValue('unitPrice', index)}
                         onChangeText={(value) => {
                             if (!isNaN(value))
-                                onUpdateValue('unitPrice', index)(value)
+                                onUpdateValue('unitPrice', index)
                         }}
                         keyboardType="numeric"
                     />
