@@ -47,6 +47,21 @@ const PageHeader = styled.View`
     justify-content: space-between;
     margin-bottom: 24px;
 `
+const PageContent = styled.View`
+ align-items: center; 
+ justify-content: center;
+ padding-bottom: ${({ theme }) => theme.space['--space-72']};
+`
+const IconWrapper = styled.View`
+   margin-bottom: ${({ theme }) => theme.space['--space-40']};
+   
+`
+const MessageWrapper = styled.Text(({ theme }) => ({
+    ...theme.font['--text-base-bold'],
+    color: theme.colors['--color-gray-600'],
+    marginBottom: 20
+}))
+
 
 /** 
  * @returns {*}
@@ -96,7 +111,16 @@ function Page(props) {
         />
     ) :
         //pageContent;
-        <EmptyState/>
+        <PageContent theme={theme}>
+            {/*    ICON     */}
+            <IconWrapper theme={theme}>
+                <EmptyState />
+            </IconWrapper>
+
+            {/*    MESSAGE HEADER  */}
+            <MessageWrapper theme={theme}>{"No Theatres Found"}</MessageWrapper>
+
+        </PageContent>
 
     return (
         <PageWrapper theme={theme}>
