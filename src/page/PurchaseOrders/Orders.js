@@ -13,7 +13,7 @@ import NavPage from '../../components/common/Page/NavPage';
 import DataItem from '../../components/common/List/DataItem';
 import ConfirmationComponent from '../../components/ConfirmationComponent';
 import { PageSettingsContext } from '../../contexts/PageSettingsContext';
-
+import ConfirmationCheckBoxComponent from "../../components/ConfirmationCheckBoxComponent";
 
 import styled, { css } from '@emotion/native';
 import { useTheme } from 'emotion-theming';
@@ -241,6 +241,28 @@ const Orders = (props) => {
         });
     };
 
+    const openDeletionConfirm = () => {
+
+        modal.openModal(
+            'ConfirmationModal',
+            {
+                content: <ConfirmationCheckBoxComponent
+                    isError={false}
+                    isEditUpdate={true}
+                    onCancel={() => modal.closeModals('ConfirmationModal')}
+                    onAction={() => {
+                        modal.closeModals('ConfirmationModal');
+                        onRemovePurchaseOrder();
+                    }}
+                    // onAction = { () => confirmAction()}
+                    message="Do you want to delete these item(s)?"
+                />,
+                onClose: () => {
+                    modal.closeModals('ConfirmationModal');
+                }
+            }
+        );
+    };
     // ############# Helper functions
 
     const errorScreen = () => {
@@ -394,7 +416,7 @@ const Orders = (props) => {
                 <LongPressWithFeedback
                     pressTimer={LONG_PRESS_TIMER.MEDIUM}
                     isDisabled={isDeleteDisabled}
-                    onLongPress={onRemovePurchaseOrder}
+                    onLongPress={openDeletionConfirm}
                 >
                     <ActionItem
                         title="Hold to Delete"
