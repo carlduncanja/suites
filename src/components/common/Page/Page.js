@@ -53,7 +53,7 @@ const PageContent = styled.View`
  padding-bottom: ${({ theme }) => theme.space['--space-72']};
 `
 const IconWrapper = styled.View`
-   margin-bottom: ${({ theme }) => theme.space['--space-40']};
+   margin-bottom: ${({ theme }) => theme.space['--space-10']};
    
 `
 const MessageWrapper = styled.Text(({ theme }) => ({
