@@ -4,27 +4,37 @@ import { Low, Moderate, High, VeryHigh } from '../../RiskFrames/RiskLevels'
 import RiskLevel from '../../RiskFrames/RiskLevel';
 import { PageContext } from '../../../../contexts/PageContext';
 import { updatePatientRisk } from '../../../../api/network'
+import { useTheme } from 'emotion-theming';
+import { useModal, withModal } from 'react-native-modalfy';
+import ConfirmationComponent from '../../../ConfirmationComponent';
 
-const PateintRisk = ({ tabDetails = [], fields, onFieldChange, patientId }) => {
+const PateintRisk = ({ tabDetails = [], fields, onFieldChange, patientId,onPatientUpdated }) => {
+
+    const theme = useTheme();
+    const modal = useModal();
 
     const { pageState, setPageState } = useContext(PageContext);
     const { isEditMode } = pageState;
-    console.log(tabDetails)
 
     const [risks, setRisks] = useState(tabDetails)
 
     const onRiskChange = (id) => (newLevelData) => {
+
         console.log("we in here", newLevelData)
         updatePatientRisk(id, newLevelData)
             .then(_ => {
-                setUpdated(false);
+                //setUpdated(false);
                 modal.openModal('ConfirmationModal', {
                     content: (
                         <ConfirmationComponent
                             isError={false} // boolean to show whether an error icon or success icon
                             isEditUpdate={false}
                             onCancel={() => modal.closeAllModals()}
-                            onAction={() => modal.closeAllModals()}
+                            onAction={() => {
+                                onPatientUpdated()
+                                modal.closeAllModals()
+                                
+                            }}
                             message="Changes were successful." // general message you can send to be displayed
                             action="Yes"
                         />
@@ -37,12 +47,12 @@ const PateintRisk = ({ tabDetails = [], fields, onFieldChange, patientId }) => {
                 modal.openModal('ConfirmationModal', {
                     content: (
                         <ConfirmationComponent
-                            error={true}//boolean to show whether an error icon or success icon
+                            isError={true}//boolean to show whether an error icon or success icon
                             isEditUpdate={false}
                             onCancel={() => modal.closeAllModals()}
                             onAction={() => {
                                 modal.closeAllModals();
-                                resetState();
+                                //resetState();
                             }}
                             message="Something went wrong when applying changes."//general message you can send to be displayed
                             action="Yes"
@@ -51,9 +61,10 @@ const PateintRisk = ({ tabDetails = [], fields, onFieldChange, patientId }) => {
                     onClose: () => console.log('Modal closed'),
                 });
             })
-       
+
 
     }
+
 
     return (
         <ScrollView>
@@ -67,55 +78,55 @@ const PateintRisk = ({ tabDetails = [], fields, onFieldChange, patientId }) => {
                 </>
             }
             {risks.map((risk, index) => {
-                const { level = 'low', notes = [], _id = "" } = risk
+                const { status = 'low', notes = [], _id = "" } = risk
                 return (
                     <View key={index}>
                         {
-                            level === 'low' ?
+                            status === 'low' ?
                                 <View>
                                     <RiskLevel
                                         titleBackground="#EBF8FF"
                                         borderColor="#90CDF4"
                                         levelColor="#4299E1"
-                                        cardColor="#3182CE"
-                                        riskLevel={level}
+                                        cardColor="--color-gray-600"
+                                        riskLevel={status}
                                         itemContent={notes}
                                         isEditMode={isEditMode}
                                         fields={fields}
                                         onFieldChange={onFieldChange}
-                                        onRiskChange={onRiskChange(_id)}
+                                        onRiskChange={onRiskChange(patientId)}
                                     />
                                 </View>
                                 :
-                                level === 'moderate' ?
+                                status === 'moderate' ?
                                     <View>
                                         <RiskLevel
                                             titleBackground="#FFFAF0"
-                                            borderColor="#FBD38D"
+                                            borderColor="--color-gray-400"
                                             levelColor="#ED8936"
-                                            cardColor="#DD6B20"
-                                            riskLevel={level}
+                                            cardColor="--color-gray-600"
+                                            riskLevel={status}
                                             itemContent={notes}
                                             isEditMode={isEditMode}
                                             fields={fields}
                                             onFieldChange={onFieldChange}
-                                            onRiskChange={onRiskChange(_id)}
+                                            onRiskChange={onRiskChange(patientId)}
                                         />
                                     </View>
                                     :
-                                    level === 'high' ?
+                                    status === 'high' ?
                                         <View>
                                             <RiskLevel
                                                 titleBackground="#FFF5F5"
-                                                borderColor="#FEB2B2"
+                                                borderColor="--color-gray-400"
                                                 levelColor="#F56565"
-                                                cardColor="#E53E3E"
-                                                riskLevel={level}
+                                                cardColor="--color-gray-600"
+                                                riskLevel={status}
                                                 itemContent={notes}
                                                 isEditMode={isEditMode}
                                                 fields={fields}
                                                 onFieldChange={onFieldChange}
-                                                onRiskChange={onRiskChange(_id)}
+                                                onRiskChange={onRiskChange(patientId)}
                                             />
                                         </View>
                                         :
@@ -123,15 +134,15 @@ const PateintRisk = ({ tabDetails = [], fields, onFieldChange, patientId }) => {
                                         <View>
                                             <RiskLevel
                                                 titleBackground="#FAF5FF"
-                                                borderColor="#D6BCFA"
+                                                borderColor="--color-gray-400"
                                                 levelColor="#9F7AEA"
-                                                cardColor="#805AD5"
-                                                riskLevel={level}
+                                                cardColor="--color-gray-600"
+                                                riskLevel={status}
                                                 itemContent={notes}
                                                 isEditMode={isEditMode}
                                                 fields={fields}
                                                 onFieldChange={onFieldChange}
-                                                onRiskChange={onRiskChange(_id)}
+                                                onRiskChange={onRiskChange(patientId)}
                                             />
                                         </View>
                         }

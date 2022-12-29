@@ -2,15 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import styled, { css } from '@emotion/native';
 import { useTheme } from 'emotion-theming';
-
+import { useModal, withModal } from 'react-native-modalfy';
 import FrameItem from '../../common/Frames/FrameItems/FrameItem';
 import RiskIcon from '../../../../assets/svg/riskLevel';
 import LineDivider from '../../common/LineDivider';
 import TextArea from '../../common/Input Fields/TextArea';
 import TextEditor from '../../common/Input Fields/TextEditor';
-import { set, update } from 'lodash';
-
-
+import ConfirmationComponent from '../../ConfirmationComponent';
 const RiskLevelWrapper = styled.View`
     width : 100%;
     border-radius : 8px;
@@ -109,12 +107,13 @@ function RiskLevel({
     levelColor = '--color-gray-500',
     cardColor = '--color-gray-600',
     riskLevel = 'default',
-    itemContent = [],
+    itemContent = "",
     isEditMode = false,
     onFieldChange = () => { },
     onRiskChange = () => { }
 }) {
     const theme = useTheme();
+    const modal = useModal();
     const levels = [
         {
             "level": "low",
@@ -139,7 +138,7 @@ function RiskLevel({
         riskLevel: "",
         description: ""
     })
-    const [notes, setNotes] = useState("")
+    const [notes, setNotes] = useState(itemContent)
 
     const Level = (name, backgroundColor, textColor) => {
         const background = backgroundColor;
@@ -153,9 +152,27 @@ function RiskLevel({
 
     useEffect(() => {
         if (isUpdated && !isEditMode) {
-            let updatedRiskData = { "notes": notes, "risk": selectedRiskLevel.level }
-            //console.log("we in here ",selectedRiskLevel.level)
-            onRiskChange(updatedRiskData)
+            modal.openModal('ConfirmationModal', {
+                content: (
+                    <ConfirmationComponent
+                        isError={false} // boolean to show whether to show an error icon or a success icon
+                        isEditUpdate={true}
+                        onCancel={() => {
+                            modal.closeAllModals();
+                        }}
+                        onAction={() => {
+                            modal.closeAllModals();
+                            let updatedRiskData = { "notes": notes, "risk": selectedRiskLevel.level }
+                            //console.log("we in here ",selectedRiskLevel.level)
+                            onRiskChange(updatedRiskData)
+                        }}
+                        message="Do you want to save changes?" // general message you can send to be displayed
+                        action="Yes"
+                    />
+                ),
+                onClose: () => console.log('Modal closed'),
+            });
+
         }
     }, [isEditMode])
 
@@ -218,7 +235,7 @@ function RiskLevel({
                                         setNotes('')
                                     }}
                                 /> :
-                                <FrameItem itemContent={itemContent} />
+                                <FrameItem itemContent={notes} />
                         }
                     </>
 

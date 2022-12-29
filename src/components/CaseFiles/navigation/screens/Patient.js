@@ -26,7 +26,7 @@ const Patient = ({
 
     }); 
 
-    console.log("we are here to have fun",patient)
+   
 
     const getDate = dates => {
         let updatedDates = [...dates];
@@ -56,7 +56,8 @@ const Patient = ({
     } = patient;
 
     const { phones = [], emails = [], emergencyContact: emergencyContacts = [] } = contactInfo;
-    const { diagnosis = [], risks = [] } = medicalInfo;
+    const { diagnosis = [], risk = [] } = medicalInfo; 
+    //console.log("we are here to have fun",risk)
 
     const handlePhones = () => {
         const cellPhone = phones.find(p => p.type === 'cell');
@@ -163,10 +164,11 @@ const Patient = ({
             case 'Patient Risk':
                 return (
                     <PatientRisk
-                        tabDetails={risks}
+                        tabDetails={risk}
                         patientId={patient._id}
                         isEditMode={isEditMode}
                         onRiskUpdate={onRiskUpdate}
+                        onPatientUpdated={onPatientUpdated}
                     />
                 );
 
