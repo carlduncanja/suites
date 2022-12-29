@@ -85,10 +85,15 @@ const FrameInsurerContent = ({
             ...data,
             [fieldName]: finalValue
         });
-
-        setFields(data)
+        console.log("testing")
+        console.log(fields)
+        setFields(fields)
        
     };
+
+    const onFieldUpdate = () => {
+
+    }
 
 
     return (
