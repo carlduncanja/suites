@@ -110,7 +110,7 @@ function Page(props) {
             listItemFormat={listItemFormat}
             refreshing={isFetchingData}
         />
-    )  : hasEmpty && listData?.length>1 ?
+    )  : hasEmpty && listData?.length<1 ?
         
         <PageContent theme={theme}>
             {/*    ICON     */}
