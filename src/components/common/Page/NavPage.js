@@ -41,7 +41,8 @@ function NavPage({
     onClear = () => { },
     navigation,
     hasEmpty = false,
-    hasList
+    hasList,
+    emptyTitle
 }) {
     const theme = useTheme();
 
