@@ -75,6 +75,7 @@ import {
     role,
     patientEndpoint,
     allPatientsEndpoint,
+    updatePatientRiskEndpoint,
     alertsEndpoint, 
     closeAlertEndpoint,
     closeAllAlertsEndpoint,
@@ -892,6 +893,11 @@ export const updatePatient = async (id, data) => suitesAxiosInstance
 
 export const getPatients = async (query, max, page) => suitesAxiosInstance
     .get(allPatientsEndpoint, ({ params: { query, max, page } }))
+    .then(handleResponse)
+    .catch(handleError)
+
+export const updatePatientRisk = async (id, data) => suitesAxiosInstance
+    .put(updatePatientRiskEndpoint(id), data)
     .then(handleResponse)
     .catch(handleError)
 

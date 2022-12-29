@@ -159,7 +159,7 @@ const EditWorkItemDialogContainer = ({ onCancel, onCreated, appiontment }) => {
                     endTime = '' ,
                     location={}
                 } = data 
-
+                console.log("we living good and the dogs dem willing too",data)
                 setCaseItem({
                     _id: item.case._id,
                     name: item.case.caseNumber
