@@ -98,7 +98,7 @@ function Page(props) {
 
     const isAdmin = route?.params?.isAdmin || false;
     
-    const content = listData.length>1 ? (
+    const content = listData?.length>1 ? (
         <List
             listData={listData}
             listHeaders={listHeaders}
