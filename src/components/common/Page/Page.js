@@ -98,17 +98,17 @@ function Page(props) {
 
     const isAdmin = route?.params?.isAdmin || false;
     
-    const content = hasList ? (
-        <PageContent theme={theme}>
-        {/*    ICON     */}
-        <IconWrapper theme={theme}>
-            <EmptyState />
-        </IconWrapper>
-
-        {/*    MESSAGE HEADER  */}
-        <MessageWrapper theme={theme}>{"No Theatres Found"}</MessageWrapper>
-
-    </PageContent>
+    const content = listData.length>1 ? (
+        <List
+            listData={listData}
+            listHeaders={listHeaders}
+            itemsSelected={itemsSelected}
+            onRefresh={onRefresh}
+            isCheckbox={true}
+            onSelectAll={onSelectAll}
+            listItemFormat={listItemFormat}
+            refreshing={isFetchingData}
+        />
     ) :
         //pageContent;
         <PageContent theme={theme}>
