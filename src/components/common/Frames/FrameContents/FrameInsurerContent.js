@@ -60,6 +60,8 @@ const FrameInsurerContent = ({
         policyNumber = "",
         coverageLimit = 0
     } = fields
+
+    const [name1, setname] = useState('');
     
     const [data, setData] = useState({
         name,
@@ -76,6 +78,8 @@ const FrameInsurerContent = ({
        
         let finalValue = value;
 
+        if(fieldName === 'name'){ setname(value)}
+
         if (fieldName === 'coverageLimit') {
             const formattedValue = formatNumberField(value);
             finalValue = formattedValue;
@@ -86,7 +90,9 @@ const FrameInsurerContent = ({
             [fieldName]: finalValue
         });
 
-        onFieldUpdate()
+        //testing data fields
+        console.log("data information")
+        console.log(data)
 
     };
     
@@ -108,7 +114,7 @@ const FrameInsurerContent = ({
                 <RowWrapper theme = {theme}>
                     <InputField2
                         enabled = {isEditMode}
-                        value = {data['name']}
+                        value = {name1}
                         label = "Insurer"
                         onChangeText = {(value) => {onFieldChange('name')(value)}}
                         onClear = {()=>{onFieldChange('name')('')}}
