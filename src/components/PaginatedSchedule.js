@@ -223,6 +223,7 @@ function PaginatedSchedule({ ID, isPhysician }) {
                 <EditWorkItemDialogContainer
                     onCancel={() => setFloatingAction(false)}
                     appiontment={{ "id": selectedIds[0] }}
+                    refreshShedule={onRefesh()}
                 />
             ),
             onClose: () => setFloatingAction(false)
