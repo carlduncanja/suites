@@ -110,9 +110,9 @@ function VerificationCodePage({ navigation, route }) {
             return;
         }
         setLoading(true);
-        verifyOtp(userId, code)
+        verifyOtp(userId)
             .then(_ => {
-                navigation.navigate('new-password', userId);
+                navigation.navigate('new-password', userId, code);
             })
             .catch(error => {
                 console.log(error);
