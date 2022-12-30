@@ -75,8 +75,10 @@ import {
     role,
     patientEndpoint,
     allPatientsEndpoint,
-    alertsEndpoint,
+    updatePatientRiskEndpoint,
+    alertsEndpoint, 
     closeAlertEndpoint,
+    closeAllAlertsEndpoint,
     configEndpoint,
     updateBufferEndpoint,
     userPassword,
@@ -894,6 +896,11 @@ export const getPatients = async (query, max, page) => suitesAxiosInstance
     .then(handleResponse)
     .catch(handleError)
 
+export const updatePatientRisk = async (id, data) => suitesAxiosInstance
+    .put(updatePatientRiskEndpoint(id), data)
+    .then(handleResponse)
+    .catch(handleError)
+
 // ################# Document Generation Endpoints
 export const generateDocumentLink = async data => documentGenerationInstance.post(createDocumentLink, data)
     .then(handleResponse)
@@ -926,7 +933,12 @@ export const createAlert = async (data) => suitesAxiosInstance
 export const closeAlert = async id => suitesAxiosInstance
     .put(closeAlertEndpoint(id))
     .then(handleResponse)
-    .catch(handleError);
+    .catch(handleError); 
+
+export const closeAllAlerts =async () => suitesAxiosInstance 
+ .put(closeAllAlertsEndpoint)
+ .then(handleResponse)
+ .catch(handleError)
 
 // ################# Configurations Endpoints
 
