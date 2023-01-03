@@ -204,6 +204,7 @@ function AddItemContainer({supplierId = "", onAddProductItems = ()=>{}, orders =
     }
 
     const handlePositiveButtonPress = () => {
+        console.log("testing function")
         modal
             .openModal(
                 'ConfirmationModal',
@@ -228,7 +229,6 @@ function AddItemContainer({supplierId = "", onAddProductItems = ()=>{}, orders =
     }
 
     const onFooterPress = () => {
-        console.log("testing")
         onAddProductItems(itemstoAdd);
         setTimeout(()=>{
             modal.closeModals('OverlayInfoModal');
