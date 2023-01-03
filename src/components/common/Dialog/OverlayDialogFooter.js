@@ -59,9 +59,9 @@ function OverlayDialogFooter({
   
   return (
    
-    <OverlayFooterWrapper onPress = {console.log(onPositiveButtonPress)} zIndex={zIndex}>
+    <OverlayFooterWrapper zIndex={zIndex}>
         <OverlayFooterContainer>
-            <FooterText disabled={isButtonDisabled}>{positiveText}</FooterText>
+            <FooterText onPress = {onPositiveButtonPress} disabled={isButtonDisabled}>{positiveText}</FooterText>
             {buttonIcon}
         </OverlayFooterContainer>
     </OverlayFooterWrapper> 
