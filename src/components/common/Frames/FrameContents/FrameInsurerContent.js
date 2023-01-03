@@ -13,7 +13,8 @@ import BrokenLineDivider from "../../BrokenLineDivider";
 import { PageContext } from '../../../../contexts/PageContext';
 import { currencyFormatter } from '../../../../utils/formatter';
 import { useModal } from "react-native-modalfy";
-import ConfirmationComponent from '../../../ConfirmationComponent';
+import ConfirmationComponent from '../../../ConfirmationComponent'; 
+import { updatePatient } from '../../../../api/network';
 
 const ContentWrapper = styled.View`
     width : 100%;
@@ -51,11 +52,13 @@ const FrameInsurerContent = ({
     },
     updateInsuranceData = () => {
 
-    }
+    },
+    isEditMode,
+    patientID,
+    onUpdated = () => { }
 }) => {
 
-    const { pageState } = useContext(PageContext);
-    const { isEditMode } = pageState;
+    
     //console.log("Edit mode: ", isEditMode);
     const theme = useTheme();
     const modal = useModal();
@@ -94,13 +97,58 @@ const FrameInsurerContent = ({
         setData({
             ...data,
             [fieldName]: finalValue
-        });
+        }); 
+        console.log(isUpdated)
     };
 
+    const updatePatientAction = (data) => {
 
+        setLoading(true);
+        updatePatient(patientID, data)
+            .then(_ => {
+                onUpdated(data);
+                setUpdated(false);
+                modal.openModal('ConfirmationModal', {
+                    content: (
+                        <ConfirmationComponent
+                            isError={false} // boolean to show whether an error icon or success icon
+                            isEditUpdate={false}
+                            onCancel={() => modal.closeAllModals()}
+                            onAction={() => modal.closeAllModals()}
+                            message="Changes were successful." // general message you can send to be displayed
+                            action="Yes"
+                        />
+                    ),
+                    onClose: () => console.log('Modal closed'),
+                });
+            })
+            .catch(error => {
+                console.log('Failed to update Patient', error);
+                modal.openModal('ConfirmationModal', {
+                    content: (
+                        <ConfirmationComponent
+                            error={true}//boolean to show whether an error icon or success icon
+                            isEditUpdate={false}
+                            onCancel={() => modal.closeAllModals()}
+                            onAction={() => {
+                                modal.closeAllModals();
+                                resetState();
+                            }}
+                            message="Something went wrong when applying changes."//general message you can send to be displayed
+                            action="Yes"
+                        />
+                    ),
+                    onClose: () => console.log('Modal closed'),
+                });
+            })
+            .finally(_ => {
+                setLoading(false);
+            });
+    };
     useEffect(() => {
-        console.log("Object 2", data)
-        if (!isEditMode) { 
+        console.log(isUpdated)
+        if (isUpdated && !isEditMode) { 
+            console.log("Object 2", data)
             let formatData = {
                 "insurance": {
                     "name": data['name'],
@@ -113,13 +161,12 @@ const FrameInsurerContent = ({
                         isError={false} // boolean to show whether to show an error icon or a success icon
                         isEditUpdate={true}
                         onCancel={() => {
-                            modal.closeAllModals();
+                            modal.closeAllModals(); 
+
                         }}
                         onAction={() => {
                             modal.closeAllModals();
-                            let updatedRiskData = { "notes": notes, "risk": selectedRiskLevel.level }
-                            //console.log("we in here ",selectedRiskLevel.level)
-                            onRiskChange(updatedRiskData)
+                            
                         }}
                         message="Do you want to save changes?" // general message you can send to be displayed
                         action="Yes"
@@ -191,18 +238,6 @@ const FrameInsurerContent = ({
                     />
 
                     <FieldContainer />
-                    {/* <FieldContainer theme = {theme} flex = {1}>
-                        <InputField2
-                            enabled = {false}
-                            value = {`$ ${currencyFormatter(fields.coverageLimit)}`}
-                            label = "Coverage"
-                            onChangeText = {() => {}}
-                            onClear = {()=>{}}
-                            backgroundColor = '--default-shade-white'
-                        />
-                    </FieldContainer>
-
-                    <FieldContainer /> */}
 
                 </RowWrapper>
 

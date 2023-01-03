@@ -149,7 +149,8 @@ const Patient = ({
                         ...insurance,
                         patient: `${firstName} ${surname}`,
                         procedures
-                    }} 
+                    }}  
+                    onUpdated={onPatientUpdated}
                     patientID={patient._id}
                     />
                 );

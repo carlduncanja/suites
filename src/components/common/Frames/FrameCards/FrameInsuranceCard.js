@@ -1,4 +1,4 @@
-import React, { Component, useState } from 'react';
+import React, { Component, useState,useContext } from 'react';
 import { View, StyleSheet, Alert } from 'react-native';
 import FrameTitle from '../FrameTitle'
 import FrameInsurerContent from '../FrameContents/FrameInsurerContent';
@@ -12,6 +12,7 @@ import { useModal } from "react-native-modalfy";
 import moment from "moment";
 import LoadingComponent from "../../../LoadingComponent";
 import { useTheme } from "emotion-theming";
+import { PageContext } from '../../../../contexts/PageContext';
 
 const InsuranceCardWrapper = styled.View`
    flex: 1;
@@ -31,11 +32,14 @@ const InsuranceCardContent = styled.View`
 
 function FrameInsuranceCard({
     insuranceDetails = {},
-    isEditMode
+    patientID,
+    onUpdated = () => { }
 }) {
     const modal = useModal();
     const theme = useTheme();
-
+    const { pageState } = useContext(PageContext);
+    const { isEditMode } = pageState;
+    
     const [fields, setFields] = useState({ ...insuranceDetails });
     console.log("tag the text",insuranceDetails)
     
@@ -64,6 +68,9 @@ function FrameInsuranceCard({
                 <FrameInsurerContent
                     fields={fields}
                     setFields={setFields}
+                    patientID={patientID} 
+                    onUpdated={onUpdated} 
+                    isEditMode={isEditMode}
                 />
             </InsuranceCardContent>
 
