@@ -15,7 +15,7 @@ import {useModal} from 'react-native-modalfy';
 import PreAuthorizationSheet from './PreAuthorizationSheet';
 import ConfirmationComponent from '../../../ConfirmationComponent';
 
-const Insurance = ({tabDetails}) => { 
+const Insurance = ({tabDetails,patientID}) => { 
     const theme = useTheme();
     const modal = useModal();
     const {name, coverageLimit, policyNumber, procedures} = tabDetails
@@ -103,6 +103,51 @@ const handleProcedurePress = item => () => {
             modal.closeAllModals();
         },
     });
+}; 
+
+const updatePatientAction = (data) => {
+
+    setLoading(true);
+    updatePatient(patientID, data)
+        .then(_ => {
+            onUpdated(data);
+            setUpdated(false);
+            modal.openModal('ConfirmationModal', {
+                content: (
+                    <ConfirmationComponent
+                        isError={false} // boolean to show whether an error icon or success icon
+                        isEditUpdate={false}
+                        onCancel={() => modal.closeAllModals()}
+                        onAction={() => modal.closeAllModals()}
+                        message="Changes were successful." // general message you can send to be displayed
+                        action="Yes"
+                    />
+                ),
+                onClose: () => console.log('Modal closed'),
+            });
+        })
+        .catch(error => {
+            console.log('Failed to update Patient', error);
+            modal.openModal('ConfirmationModal', {
+                content: (
+                    <ConfirmationComponent
+                        error={true}//boolean to show whether an error icon or success icon
+                        isEditUpdate={false}
+                        onCancel={() => modal.closeAllModals()}
+                        onAction={() => {
+                            modal.closeAllModals();
+                            resetState();
+                        }}
+                        message="Something went wrong when applying changes."//general message you can send to be displayed
+                        action="Yes"
+                    />
+                ),
+                onClose: () => console.log('Modal closed'),
+            });
+        })
+        .finally(_ => {
+            setLoading(false);
+        });
 };
 
 
@@ -117,7 +162,7 @@ const renderListFn = item => (
     return(
         <InsuranceWrapper>
             <InsuranceContainer>
-                <FrameInsuranceCard insuranceDetails = {tabDetails} isEditMode={isEditMode}/>
+                <FrameInsuranceCard insuranceDetails = {tabDetails} isEditMode={isEditMode} />
             </InsuranceContainer>
             <PreAuthorization>
                 <PreAuthTitle>Pre-Authorizations</PreAuthTitle>

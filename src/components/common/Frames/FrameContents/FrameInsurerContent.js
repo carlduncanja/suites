@@ -1,13 +1,13 @@
-import React, {useEffect, useState, useContext} from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 
 import styled, { css } from "@emotion/native";
 import _ from "lodash";
-import {useTheme} from "emotion-theming";
+import { useTheme } from "emotion-theming";
 import InputUnitField from "../../Input Fields/InputUnitFields";
 import OptionsField from "../../Input Fields/OptionsField";
 import InputField2 from "../../Input Fields/InputField2";
 import Row from '../../Row';
-import {MenuOption, MenuOptions} from "react-native-popup-menu";
+import { MenuOption, MenuOptions } from "react-native-popup-menu";
 import TextButton from "../../Buttons/TextButton";
 import BrokenLineDivider from "../../BrokenLineDivider";
 import { PageContext } from '../../../../contexts/PageContext';
@@ -20,13 +20,13 @@ const ContentWrapper = styled.View`
 const ContentContainer = styled.View`
     width : 100%;
     border-width : 1px;
-    background-color: ${ ({theme}) => theme.colors['--default-shade-white']};
-    border-color : ${ ({theme}) => theme.colors['--color-gray-300']};
+    background-color: ${({ theme }) => theme.colors['--default-shade-white']};
+    border-color : ${({ theme }) => theme.colors['--color-gray-300']};
     border-top-width : 0px;
     border-bottom-left-radius : 8px;
     border-bottom-right-radius : 8px;
-    padding : ${ ({theme}) => theme.space['--space-16']};
-    padding-bottom : ${ ({theme}) => theme.space['--space-32']};
+    padding : ${({ theme }) => theme.space['--space-16']};
+    padding-bottom : ${({ theme }) => theme.space['--space-32']};
 
 `;
 
@@ -34,21 +34,24 @@ export const RowWrapper = styled.View`
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    margin-bottom : ${ ({theme}) => theme.space['--space-16']};
+    margin-bottom : ${({ theme }) => theme.space['--space-16']};
 `
 
 export const FieldContainer = styled.View` 
     flex : 1;
-    margin-right: ${({theme}) => theme.space['--space-16']};
+    margin-right: ${({ theme }) => theme.space['--space-16']};
 `
 
 
 const FrameInsurerContent = ({
-        fields = {},
-        setFields = () => {
-        }
-    }) => {
-    
+    fields = {},
+    setFields = () => {
+    },
+    updateInsuranceData = () => {
+
+    }
+}) => {
+
     const { pageState } = useContext(PageContext);
     const { isEditMode } = pageState;
     console.log("Edit mode: ", isEditMode);
@@ -62,23 +65,23 @@ const FrameInsurerContent = ({
     } = fields
 
     const [name1, setname] = useState('');
-    
+
     const [data, setData] = useState({
-        name,
-        patient,
-        policyNumber,
-        coverageLimit
+        "name": name,
+        "patient": patient,
+        "policyNumber": policyNumber,
+        "coverageLimit": coverageLimit
     });
 
+    const [isUpdated, setIsUpdated] = useState(false)
+    
     function formatNumberField(value) {
-        return value.toString().replace(/[^\d.]/g,'');
+        return value.toString().replace(/[^\d.]/g, '');
     }
 
     const onFieldChange = (fieldName) => (value) => {
-       
-        let finalValue = value;
 
-        if(fieldName === 'name'){ setname(value)}
+        let finalValue = value;
 
         if (fieldName === 'coverageLimit') {
             const formattedValue = formatNumberField(value);
@@ -95,7 +98,7 @@ const FrameInsurerContent = ({
         console.log(data)
 
     };
-    
+
     const onFieldUpdate = () => () => {
         fields.name = data['name']
         fields.patient = data['patient']
@@ -106,60 +109,83 @@ const FrameInsurerContent = ({
         setFields(fields)
     }
 
+    useEffect(() => { 
+        console.log("ouyfoyfufluyuufugu",data)
+        if (isUpdated && !isEditMode) {
+            let formatData = {
+                "insurance": {
+                    "name": data['name'],
+                    "policyNumber": data['policyNumber']
+                }
+            }
+            console.log('formatted data', formatData)
+
+        }
+    }, [isEditMode])
+
 
     return (
-        <ContentWrapper theme = {theme}>
-            <ContentContainer theme = {theme}>
-                
-                <RowWrapper theme = {theme}>
+        <ContentWrapper theme={theme}>
+            <ContentContainer theme={theme}>
+
+                <RowWrapper theme={theme}>
                     <InputField2
-                        enabled = {isEditMode}
-                        value = {name1}
-                        label = "Insurer"
-                        onChangeText = {(value) => {onFieldChange('name')(value)}}
-                        onClear = {()=>{onFieldChange('name')('')}}
-                        backgroundColor = '--default-shade-white'
+                        enabled={isEditMode}
+                        value={data['name']}
+                        label="Insurer"
+                        onChangeText={(value) => {
+                            onFieldChange('name')(value)
+                            setIsUpdated(true)
+                        }}
+                        onClear={() => { onFieldChange('name')('') }}
+                        backgroundColor='--default-shade-white'
                     />
                 </RowWrapper>
 
-                <RowWrapper theme = {theme}>
+                <RowWrapper theme={theme}>
 
-                    <FieldContainer theme = {theme}>
+                    <FieldContainer theme={theme}>
                         <InputField2
-                            enabled = {isEditMode}
-                            value = {data['patient']}
-                            label = "Insured"
-                            onChangeText = {(value) => {onFieldChange('patient')(value)}}
-                            onClear = {() => {onFieldChange('patient')('')}}
-                            backgroundColor = '--default-shade-white'
+                            enabled={isEditMode}
+                            value={data['patient']}
+                            label="Insured"
+                            onChangeText={(value) => {
+                                onFieldChange('patient')(value)
+
+                            }}
+                            onClear={() => { onFieldChange('patient')('') }}
+                            backgroundColor='--default-shade-white'
                         />
                     </FieldContainer>
-                    
+
                     <InputField2
-                        enabled = {isEditMode}
-                        value = {data['policyNumber']}
-                        label = "Policy #"
-                        onChangeText = {(value) => {onFieldChange('policyNumber')(value)}}
-                        onClear = {() => {onFieldChange('policyNumber')('')}}
-                        backgroundColor = '--default-shade-white'
+                        enabled={isEditMode}
+                        value={data['policyNumber']}
+                        label="Policy #"
+                        onChangeText={(value) => {
+                            onFieldChange('policyNumber')(value)
+                            setIsUpdated(true)
+                        }}
+                        onClear={() => { onFieldChange('policyNumber')('') }}
+                        backgroundColor='--default-shade-white'
 
                     />
                 </RowWrapper>
 
-                <RowWrapper theme = {theme}>
+                <RowWrapper theme={theme}>
 
                     <InputField2
-                        enabled = {isEditMode}
-                        value = { isEditMode
+                        enabled={isEditMode}
+                        value={isEditMode
                             ? data.coverageLimit.toString()
                             : `$ ${currencyFormatter(data['coverageLimit'])}`}
-                        label = "Coverage"
-                        onChangeText = {(value) => {onFieldChange('coverageLimit')(value)}}
-                        onClear = {() => {onFieldChange('coverageLimit')('')}}
-                        backgroundColor = '--default-shade-white'
+                        label="Coverage"
+                        onChangeText={(value) => { onFieldChange('coverageLimit')(value) }}
+                        onClear={() => { onFieldChange('coverageLimit')('') }}
+                        backgroundColor='--default-shade-white'
                     />
-                    
-                    <FieldContainer/>
+
+                    <FieldContainer />
                     {/* <FieldContainer theme = {theme} flex = {1}>
                         <InputField2
                             enabled = {false}
@@ -177,8 +203,8 @@ const FrameInsurerContent = ({
 
             </ContentContainer>
         </ContentWrapper>
-        
-    );  
+
+    );
 }
 
 export default FrameInsurerContent;
