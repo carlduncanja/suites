@@ -24,7 +24,6 @@ const OverlayFooterWrapper = styled.TouchableOpacity`
   position : absolute;
   bottom:0;
   z-index : ${ ({zIndex}) => zIndex};
-  
 `;
 
 const OverlayFooterContainer = styled.View`
@@ -56,12 +55,12 @@ function OverlayDialogFooter({
 }) {
 
   const theme = useTheme();
-  
+
   return (
    
-    <OverlayFooterWrapper zIndex={zIndex}>
+    <OverlayFooterWrapper zIndex={zIndex} onPress = {onPositiveButtonPress}>
         <OverlayFooterContainer>
-            <FooterText onPress = {() => ("clicked")} disabled={isButtonDisabled}>{positiveText}</FooterText>
+            <FooterText  disabled={isButtonDisabled}>{positiveText}</FooterText>
             {buttonIcon}
         </OverlayFooterContainer>
     </OverlayFooterWrapper> 

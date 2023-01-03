@@ -204,7 +204,6 @@ function AddItemContainer({supplierId = "", onAddProductItems = ()=>{}, orders =
     }
 
     const handlePositiveButtonPress = () => {
-        console.log("testing function")
         modal
             .openModal(
                 'ConfirmationModal',
@@ -283,6 +282,8 @@ function AddItemContainer({supplierId = "", onAddProductItems = ()=>{}, orders =
                 onSearchChange = {onSearchChange}
                 searchQuery = {searchInventoryQuery}
                 onSelectItem = {onSelectItem}
+                footerIndex={'30'}
+
             />
         </View>
     )
