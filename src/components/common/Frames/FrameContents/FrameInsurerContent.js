@@ -71,7 +71,9 @@ const FrameInsurerContent = ({
         "patient": patient,
         "policyNumber": policyNumber,
         "coverageLimit": coverageLimit
-    });
+    }); 
+
+    
 
     const [isUpdated, setIsUpdated] = useState(false)
     
@@ -88,10 +90,12 @@ const FrameInsurerContent = ({
             finalValue = formattedValue;
         }
 
-        setData({
+        setData(data =>{
+            return {
             ...data,
             [fieldName]: finalValue
-        });
+        }
+    });
 
         //testing data fields
         console.log("data information")
@@ -146,7 +150,7 @@ const FrameInsurerContent = ({
 
                     <FieldContainer theme={theme}>
                         <InputField2
-                            enabled={isEditMode}
+                            enabled={false}
                             value={data['patient']}
                             label="Insured"
                             onChangeText={(value) => {
