@@ -311,7 +311,6 @@ const OrderItemTab = ({
             ));
     } else itemsToDisplay = [...orders];
 
-    // problem with currentpagelistmax
     itemsToDisplay = itemsToDisplay.slice(currentPageListMin, currentPageListMax);
 
     return (
