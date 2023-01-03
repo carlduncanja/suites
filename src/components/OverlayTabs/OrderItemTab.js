@@ -82,7 +82,7 @@ const OrderItemTab = ({
     const {pageState, setPageState} = useContext(PageContext);
     const {isEditMode, isLoading} = pageState;
 
-    const recordsPerPage = 1;
+    const recordsPerPage = 10;
 
     const [isFloatingActionDisabled, setFloatingAction] = useState(false);
 
@@ -311,6 +311,7 @@ const OrderItemTab = ({
             ));
     } else itemsToDisplay = [...orders];
 
+    // problem with currentpagelistmax
     itemsToDisplay = itemsToDisplay.slice(currentPageListMin, currentPageListMax);
 
     return (
