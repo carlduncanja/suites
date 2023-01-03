@@ -12,6 +12,8 @@ import TextButton from "../../Buttons/TextButton";
 import BrokenLineDivider from "../../BrokenLineDivider";
 import { PageContext } from '../../../../contexts/PageContext';
 import { currencyFormatter } from '../../../../utils/formatter';
+import { useModal } from "react-native-modalfy";
+import ConfirmationComponent from '../../../ConfirmationComponent';
 
 const ContentWrapper = styled.View`
     width : 100%;
@@ -54,9 +56,10 @@ const FrameInsurerContent = ({
 
     const { pageState } = useContext(PageContext);
     const { isEditMode } = pageState;
-    console.log("Edit mode: ", isEditMode);
+    //console.log("Edit mode: ", isEditMode);
     const theme = useTheme();
-
+    const modal = useModal();
+    
     const {
         name = "",
         patient = "",
@@ -64,19 +67,17 @@ const FrameInsurerContent = ({
         coverageLimit = 0
     } = fields
 
-    const [name1, setname] = useState('');
-
     const [data, setData] = useState({
         "name": name,
         "patient": patient,
         "policyNumber": policyNumber,
         "coverageLimit": coverageLimit
-    }); 
+    });
 
-    
+
 
     const [isUpdated, setIsUpdated] = useState(false)
-    
+
     function formatNumberField(value) {
         return value.toString().replace(/[^\d.]/g, '');
     }
@@ -89,41 +90,44 @@ const FrameInsurerContent = ({
             const formattedValue = formatNumberField(value);
             finalValue = formattedValue;
         }
-
-        setData(data =>{
-            return {
+        setIsUpdated(true)
+        setData({
             ...data,
             [fieldName]: finalValue
-        }
-    });
-
-        //testing data fields
-        console.log("data information")
-        console.log(data)
-
+        });
     };
 
-    const onFieldUpdate = () => () => {
-        fields.name = data['name']
-        fields.patient = data['patient']
-        fields.policyNumber = data['policyNumber']
-        fields.coverageLimit = data['coverageLimit']
-        console.log("testing")
-        console.log(fields)
-        setFields(fields)
-    }
 
-    useEffect(() => { 
-        console.log("ouyfoyfufluyuufugu",data)
-        if (isUpdated && !isEditMode) {
+    useEffect(() => {
+        console.log("Object 2", data)
+        if (!isEditMode) { 
             let formatData = {
                 "insurance": {
                     "name": data['name'],
                     "policyNumber": data['policyNumber']
                 }
             }
-            console.log('formatted data', formatData)
-
+            modal.openModal('ConfirmationModal', {
+                content: (
+                    <ConfirmationComponent
+                        isError={false} // boolean to show whether to show an error icon or a success icon
+                        isEditUpdate={true}
+                        onCancel={() => {
+                            modal.closeAllModals();
+                        }}
+                        onAction={() => {
+                            modal.closeAllModals();
+                            let updatedRiskData = { "notes": notes, "risk": selectedRiskLevel.level }
+                            //console.log("we in here ",selectedRiskLevel.level)
+                            onRiskChange(updatedRiskData)
+                        }}
+                        message="Do you want to save changes?" // general message you can send to be displayed
+                        action="Yes"
+                    />
+                ),
+                onClose: () => console.log('Modal closed'),
+            });
+           
         }
     }, [isEditMode])
 
@@ -139,7 +143,6 @@ const FrameInsurerContent = ({
                         label="Insurer"
                         onChangeText={(value) => {
                             onFieldChange('name')(value)
-                            setIsUpdated(true)
                         }}
                         onClear={() => { onFieldChange('name')('') }}
                         backgroundColor='--default-shade-white'
@@ -155,7 +158,6 @@ const FrameInsurerContent = ({
                             label="Insured"
                             onChangeText={(value) => {
                                 onFieldChange('patient')(value)
-
                             }}
                             onClear={() => { onFieldChange('patient')('') }}
                             backgroundColor='--default-shade-white'
@@ -168,7 +170,6 @@ const FrameInsurerContent = ({
                         label="Policy #"
                         onChangeText={(value) => {
                             onFieldChange('policyNumber')(value)
-                            setIsUpdated(true)
                         }}
                         onClear={() => { onFieldChange('policyNumber')('') }}
                         backgroundColor='--default-shade-white'
