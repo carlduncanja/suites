@@ -109,10 +109,11 @@ function VerificationCodePage({ navigation, route }) {
             setError("Please enter the correct verification code");
             return;
         }
+
         setLoading(true);
-        verifyOtp(userId)
+        verifyOtp(userId, code)
             .then(_ => {
-                navigation.navigate('new-password', userId, code);
+                navigation.navigate('new-password', {userId, code});
             })
             .catch(error => {
                 console.log(error);
