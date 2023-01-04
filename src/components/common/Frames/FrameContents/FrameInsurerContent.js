@@ -108,7 +108,7 @@ const FrameInsurerContent = ({
 
     const updatePatientAction = (updatedData) => {
 
-       
+
         updatePatient(patientID, updatedData)
             .then(_ => {
                 modal.openModal('ConfirmationModal', {
@@ -121,7 +121,7 @@ const FrameInsurerContent = ({
                                 onUpdated()
                             }}
                             onAction={() => {
-                                modal.closeAllModals() 
+                                modal.closeAllModals()
                                 onUpdated()
                             }}
                             message="Changes were successful." // general message you can send to be displayed
@@ -153,12 +153,13 @@ const FrameInsurerContent = ({
 
     const onSavePress = () => {
         console.log(isUpdated)
-        console.log("Object 2", data)
+        console.log("Object 2", data['coverageLimit'])
         let formatData = {
             "insurance": {
+                "coverageLimit": data['coverageLimit'].toString(),
                 "name": data['name'],
-                "policyNumber": data['policyNumber'],
-                "coverageLimit":data['coverageLimit']
+                "policyNumber": data['policyNumber']
+            
             }
         }
         modal.openModal('ConfirmationModal', {
@@ -178,7 +179,7 @@ const FrameInsurerContent = ({
                     action="Yes"
                 />
             ),
-            onClose: () =>  modal.closeAllModals(),
+            onClose: () => modal.closeAllModals(),
         });
 
 
