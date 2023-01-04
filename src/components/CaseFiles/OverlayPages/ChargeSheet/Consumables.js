@@ -185,7 +185,7 @@ function Consumables({
                 ? {...updatedObj}
                 : {...item}
         })
-
+        
         onConsumablesUpdate(sectionIndex, updatedData);
     }
 
