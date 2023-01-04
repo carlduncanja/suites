@@ -157,7 +157,8 @@ const FrameInsurerContent = ({
         let formatData = {
             "insurance": {
                 "name": data['name'],
-                "policyNumber": data['policyNumber']
+                "policyNumber": data['policyNumber'],
+                "coverageLimit":data['coverageLimit']
             }
         }
         modal.openModal('ConfirmationModal', {
