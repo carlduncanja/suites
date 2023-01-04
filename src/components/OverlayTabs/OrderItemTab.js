@@ -185,15 +185,7 @@ const OrderItemTab = ({
                 <DataItem text={status ? transformToTitleCase(status) : 'Pending'} align="center" flex={1} fontStyle="--text-base-medium" color="--color-gray-800"/>
                 <DataItem text={sku === '' ? 'n/a' : sku} align="center" flex={1} fontStyle="--text-base-medium" color="--color-gray-800"/>
                 {
-                    isEditMode ? (
-                        <NumberChangeField
-                            onChangePress={onQuantityChange(item)}
-                            onAmountChange={onAmountChange(item)}
-                            value={amount === 0 ? '0' : amount.toString()}
-                            borderColor="--color-gray-400"
-                            backgroundColor="--color-gray-100"
-                        />
-                    ) : <DataItem text={amount} align="center" flex={1} fontStyle="--text-base-medium" color="--color-gray-800"/>
+                    <DataItem text={amount} align="center" flex={1} fontStyle="--text-base-medium" color="--color-gray-800"/>
 
                 }
                 <DataItem text={ item.unit &&transformToTitleCase(item.unit)} align="center" flex={1} fontStyle="--text-base-medium" color="--color-gray-800"/>
@@ -298,6 +290,7 @@ const OrderItemTab = ({
 
     const handleConfirmDelivery = () => {
         onConfirmDelivery(selectedItems);
+
         setSelectedItems([]);
     }
 
