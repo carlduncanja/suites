@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from 'react';
-
+import { View } from 'react-native';
 import styled, { css } from "@emotion/native";
 import _ from "lodash";
 import { useTheme } from "emotion-theming";
@@ -13,7 +13,7 @@ import BrokenLineDivider from "../../BrokenLineDivider";
 import { PageContext } from '../../../../contexts/PageContext';
 import { currencyFormatter } from '../../../../utils/formatter';
 import { useModal } from "react-native-modalfy";
-import ConfirmationComponent from '../../../ConfirmationComponent'; 
+import ConfirmationComponent from '../../../ConfirmationComponent';
 import { updatePatient } from '../../../../api/network';
 
 const ContentWrapper = styled.View`
@@ -39,7 +39,12 @@ export const RowWrapper = styled.View`
     justify-content: space-between;
     margin-bottom : ${({ theme }) => theme.space['--space-16']};
 `
-
+export const ReverceRowWrapper = styled.View`
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    
+`
 export const FieldContainer = styled.View` 
     flex : 1;
     margin-right: ${({ theme }) => theme.space['--space-16']};
@@ -58,11 +63,11 @@ const FrameInsurerContent = ({
     onUpdated = () => { }
 }) => {
 
-    
+
     //console.log("Edit mode: ", isEditMode);
     const theme = useTheme();
     const modal = useModal();
-    
+
     const {
         name = "",
         patient = "",
@@ -97,29 +102,33 @@ const FrameInsurerContent = ({
         setData({
             ...data,
             [fieldName]: finalValue
-        }); 
+        });
         console.log(isUpdated)
     };
 
-    const updatePatientAction = (data) => {
+    const updatePatientAction = (updatedData) => {
 
-        setLoading(true);
-        updatePatient(patientID, data)
+       
+        updatePatient(patientID, updatedData)
             .then(_ => {
-                onUpdated(data);
-                setUpdated(false);
                 modal.openModal('ConfirmationModal', {
                     content: (
                         <ConfirmationComponent
                             isError={false} // boolean to show whether an error icon or success icon
                             isEditUpdate={false}
-                            onCancel={() => modal.closeAllModals()}
-                            onAction={() => modal.closeAllModals()}
+                            onCancel={() => {
+                                modal.closeAllModals()
+                                onUpdated()
+                            }}
+                            onAction={() => {
+                                modal.closeAllModals() 
+                                onUpdated()
+                            }}
                             message="Changes were successful." // general message you can send to be displayed
                             action="Yes"
                         />
                     ),
-                    onClose: () => console.log('Modal closed'),
+                    onClose: () => onUpdated(),
                 });
             })
             .catch(error => {
@@ -132,7 +141,6 @@ const FrameInsurerContent = ({
                             onCancel={() => modal.closeAllModals()}
                             onAction={() => {
                                 modal.closeAllModals();
-                                resetState();
                             }}
                             message="Something went wrong when applying changes."//general message you can send to be displayed
                             action="Yes"
@@ -141,42 +149,39 @@ const FrameInsurerContent = ({
                     onClose: () => console.log('Modal closed'),
                 });
             })
-            .finally(_ => {
-                setLoading(false);
-            });
     };
-    useEffect(() => {
-        console.log(isUpdated)
-        if (isUpdated && !isEditMode) { 
-            console.log("Object 2", data)
-            let formatData = {
-                "insurance": {
-                    "name": data['name'],
-                    "policyNumber": data['policyNumber']
-                }
-            }
-            modal.openModal('ConfirmationModal', {
-                content: (
-                    <ConfirmationComponent
-                        isError={false} // boolean to show whether to show an error icon or a success icon
-                        isEditUpdate={true}
-                        onCancel={() => {
-                            modal.closeAllModals(); 
 
-                        }}
-                        onAction={() => {
-                            modal.closeAllModals();
-                            
-                        }}
-                        message="Do you want to save changes?" // general message you can send to be displayed
-                        action="Yes"
-                    />
-                ),
-                onClose: () => console.log('Modal closed'),
-            });
-           
+    const onSavePress = () => {
+        console.log(isUpdated)
+        console.log("Object 2", data)
+        let formatData = {
+            "insurance": {
+                "name": data['name'],
+                "policyNumber": data['policyNumber']
+            }
         }
-    }, [isEditMode])
+        modal.openModal('ConfirmationModal', {
+            content: (
+                <ConfirmationComponent
+                    isError={false} // boolean to show whether to show an error icon or a success icon
+                    isEditUpdate={true}
+                    onCancel={() => {
+                        modal.closeAllModals();
+
+                    }}
+                    onAction={() => {
+                        modal.closeAllModals();
+                        updatePatientAction(formatData)
+                    }}
+                    message="Do you want to save changes?" // general message you can send to be displayed
+                    action="Yes"
+                />
+            ),
+            onClose: () =>  modal.closeAllModals(),
+        });
+
+
+    }
 
 
     return (
@@ -240,8 +245,19 @@ const FrameInsurerContent = ({
                     <FieldContainer />
 
                 </RowWrapper>
-
+                {isEditMode && isUpdated &&
+                    < ReverceRowWrapper>
+                        <View style={{ height: 10 }}>
+                            <TextButton
+                                title="Save"
+                                buttonPress={onSavePress}
+                            />
+                        </View>
+                    </ ReverceRowWrapper>
+                }
             </ContentContainer>
+
+
         </ContentWrapper>
 
     );

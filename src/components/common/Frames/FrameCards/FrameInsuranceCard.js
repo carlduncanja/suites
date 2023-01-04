@@ -41,7 +41,7 @@ function FrameInsuranceCard({
     const { isEditMode } = pageState;
     
     const [fields, setFields] = useState({ ...insuranceDetails });
-    console.log("tag the text",insuranceDetails)
+    //console.log("tag the text",insuranceDetails)
     
 
     return (

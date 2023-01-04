@@ -126,7 +126,7 @@ const Insurance = ({ tabDetails, patientID, onUpdated = () => { } }) => {
                 <Table
                     isCheckbox={false}
                     data={procedures}
-                    //istItemFormat={!isEditMode ? archivedItemFormat : renderListFn}
+                    istItemFormat={!isEditMode ? archivedItemFormat : renderListFn}
                     headers={Headers}
                 />
             </PreAuthorization>
