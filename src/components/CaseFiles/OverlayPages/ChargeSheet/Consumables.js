@@ -79,12 +79,13 @@ function Consumables({
                          allItems = []
                      }) {
 
-    // console.log("Cae: ", caseProcedures)
+    console.log("Case: ", caseProcedures)
+    
     const theme = useTheme();
     const {pageState} = useContext(PageContext);
     const {isEditMode} = pageState
 
-    // console.log("caseProcedures: ", caseProcedures);
+    
 
 
     // const [checkBoxList, setCheckBoxList] = useState([]);
