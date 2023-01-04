@@ -105,7 +105,7 @@ function TheatresPage({route, navigation}) {
     const getOverlayScreen = selectedOverlay => {
         switch (selectedOverlay) {
             case 'Details': {
-                // console.log('Theatre:', selectedTheatre);
+                console.log('Theatre:', selectedTheatre);
                 const appointments = selectedTheatre.appointments || [];
 
                 const {isActive, isRecovery} = isInUse(selectedTheatre.appointments || []);
