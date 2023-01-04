@@ -452,6 +452,9 @@ const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem }) => 
             "duration":duration
         }
         let caseId=caseItem._id
+
+        console.log("new procedure info", procedureData)
+        console.log("case info", caseId)
         addProcedureAppointment(caseId,procedureData)
     } 
     
@@ -480,6 +483,7 @@ const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem }) => 
                 "isRecovery": false,
                 "authInfo": addWorkItem.id
             }
+            console.log("work item for api", workItem)
             addProcedure()
             createAppointment(workItem)
                 .then(data => {
