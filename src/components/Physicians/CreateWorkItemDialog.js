@@ -358,7 +358,7 @@ const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem, detai
         setPhysicianInfo(value
             ? {
                 _id: value._id,
-                name: value.firstName
+                name: `Dr. ${value.firstName} ${value.surname}`
             } :
             value);
         onFieldChange("physician")(value);
