@@ -21,7 +21,7 @@ import ConfirmationComponent from './ConfirmationComponent';
 import ConfirmationCheckBoxComponent from './ConfirmationCheckBoxComponent';
 import _ from 'lodash'
 
-function PaginatedSchedule({ ID, isPhysician }) {
+function PaginatedSchedule({ ID, details, isPhysician }) {
     const weekday = new Array(7);
     weekday[0] = 'Sunday';
     weekday[1] = 'Monday';
@@ -208,6 +208,7 @@ function PaginatedSchedule({ ID, isPhysician }) {
                 <CreateWorkItemDialogContainer
                     onCancel={() => setFloatingAction(false)}
                     addWorkItem={{ "id": ID }}
+                    details = {details}
                 />
             ),
             onClose: () => setFloatingAction(false)

@@ -263,7 +263,7 @@ function TheatresPage({route, navigation}) {
                 return <EquipmentsTab equipments={equipments}/>;
             }
             case 'Schedule':
-                return <PaginatedSchedule ID={theatre._id} isPhysician={false}/>;
+                return <PaginatedSchedule ID={theatre._id} details = {theatre} isPhysician={false}/>;
             default:
                 return <View/>;
         }

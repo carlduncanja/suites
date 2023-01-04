@@ -25,8 +25,8 @@ import { formatDate,dateDifferenceToHours } from '../../utils/formatter';
  * @constructor
  */
 
-const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem }) => {
-
+const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem, details }) => {
+    console.log("theatre deatils", details)
     const modal = useModal();
     const dialogTabs = ['Details'];
     const selectedIndex = 0;
