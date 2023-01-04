@@ -323,6 +323,28 @@ const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem, detai
 
     }
 
+    const errorScreen = (message) => {
+        setTimeout(() => {
+            modal
+                .openModal(
+                    'ConfirmationModal',
+                    {
+                        content: <ConfirmationComponent
+                            isEditUpdate={false}
+                            isError={true}
+                            onCancel={() => {
+                                modal.closeModals('ConfirmationModal')
+                            }}
+                            message={message}
+                        />
+                        ,
+                        onClose: () => {
+                            modal.closeModals('ConfirmationModal')
+                        }
+                    })
+        }, 100);
+    }
+
     const fetchLocations = () => {
         getTheatres(searchLocationValue, 5)
             .then((locationsInfo) => {
