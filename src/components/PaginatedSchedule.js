@@ -93,13 +93,13 @@ function PaginatedSchedule({ ID, details, isPhysician }) {
 
         console.log("date passed", fromDate, toDate, id)
             ,
-            getAppointments("", "", fromDate, fromDate, '', id)
+            getAppointments("", id, fromDate, fromDate, '', "")
                 .then(data => {
                     //console.log("Objected values:", Object.values(data));
                     console.log('The appointment data received is:', data);
                     relevantAppointment.length = 0;
                     //console.log("data visualization", relevantAppointment)
-
+                    console.log('data information', data)
                     const appointmentData = data.map(item => {
                         let modifiedAppointment = { ...item };
                         let today = new Date();
@@ -116,6 +116,7 @@ function PaginatedSchedule({ ID, details, isPhysician }) {
                         return { ...modifiedAppointment, }
                     })
 
+                    console.log("schedule appointments", appointmentData)
                     setrelevantApppointments(relevantAppointment.concat(appointmentData));
                 })
                 .catch(error => {

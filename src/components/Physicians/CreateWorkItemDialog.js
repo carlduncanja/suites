@@ -275,7 +275,7 @@ const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem, detai
             // isTemplate : false,
             hasRecovery: false,
             physician: {
-                "_id": addWorkItem.id,
+                "_id": physicianInfo.id,
                 "active": "active",
                 "address": Array[
                     {
@@ -290,6 +290,8 @@ const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem, detai
             // equipments:[],
             // serviceFee : 0
         };
+
+        console.log("procedure result", result)
 
         await createNewProcedure(result).then(res => {
 
