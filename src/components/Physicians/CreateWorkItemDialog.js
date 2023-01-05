@@ -232,7 +232,7 @@ const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem, detai
         console.log('king');
         const allFields = {
             procedure,
-            physician,
+            physicianInfo,
             location,
             caseItem,
             selectedDate,
@@ -515,7 +515,7 @@ const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem, detai
     const validateFields = () => {
         let errors = {};
         let isValid = true;
-        const requiredFields = ['procedure','location','caseItem', 'physician','selectedDate','startTime', 'endTime']
+        const requiredFields = ['procedure','location','caseItem', 'physicianInfo','selectedDate','startTime', 'endTime']
         for (const requiredField of requiredFields) {
             if (!fields[requiredField]) {
                 errors = {
