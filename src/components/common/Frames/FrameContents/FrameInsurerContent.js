@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from 'react';
-import { View } from 'react-native';
+import { View, Text } from 'react-native';
 import styled, { css } from "@emotion/native";
 import _ from "lodash";
 import { useTheme } from "emotion-theming";
@@ -14,7 +14,8 @@ import { PageContext } from '../../../../contexts/PageContext';
 import { currencyFormatter } from '../../../../utils/formatter';
 import { useModal } from "react-native-modalfy";
 import ConfirmationComponent from '../../../ConfirmationComponent';
-import { updatePatient } from '../../../../api/network';
+import { updatePatient, getHealthInsurers } from '../../../../api/network';
+import SearchableOptionsField from '../../Input Fields/SearchableOptionsField';
 
 const ContentWrapper = styled.View`
     width : 100%;
@@ -70,21 +71,19 @@ const FrameInsurerContent = ({
 
     const {
         name = "",
-        patient = "",
         policyNumber = "",
-        coverageLimit = 0
     } = fields
 
     const [data, setData] = useState({
         "name": name,
-        "patient": patient,
         "policyNumber": policyNumber,
-        "coverageLimit": coverageLimit
     });
 
-
-
     const [isUpdated, setIsUpdated] = useState(false)
+    const [healthInsurerFeild, setHealthInsurerFeild] = useState('')
+    const [insurerResults, setInsurerResults] = useState([])
+    const [searchHealthInsurerFeildQuery, setSearchHeathInsurerFeildQuery] = useState({})
+    const [healthInsurerState, setHealthInsuereState] = useState({ name: data['name'] })
 
     function formatNumberField(value) {
         return value.toString().replace(/[^\d.]/g, '');
@@ -94,10 +93,6 @@ const FrameInsurerContent = ({
 
         let finalValue = value;
 
-        if (fieldName === 'coverageLimit') {
-            const formattedValue = formatNumberField(value);
-            finalValue = formattedValue;
-        }
         setIsUpdated(true)
         setData({
             ...data,
@@ -106,9 +101,29 @@ const FrameInsurerContent = ({
         console.log(isUpdated)
     };
 
+    useEffect(() => {
+        fetchHealthInsurers()
+    }, [healthInsurerFeild])
+
+    const fetchHealthInsurers = () => {
+        getHealthInsurers(healthInsurerFeild, 5)
+            .then((healthInsurerData) => {
+                const { data = [], page } = healthInsurerData
+                const fullData = data.map(insurer => {
+
+                    const { _id = '', name = '', status = '' } = insurer
+                    return { _id: _id, name: name, status: status }
+                })
+                setInsurerResults(fullData || [])
+            })
+            .catch(error => {
+                console.error('Fetching health insurer data failed', error);
+            });
+    }
+
+
+
     const updatePatientAction = (updatedData) => {
-
-
         updatePatient(patientID, updatedData)
             .then(_ => {
                 modal.openModal('ConfirmationModal', {
@@ -152,14 +167,12 @@ const FrameInsurerContent = ({
     };
 
     const onSavePress = () => {
-        console.log(isUpdated)
-        console.log("Object 2", data['coverageLimit'])
+
         let formatData = {
             "insurance": {
-                "coverageLimit": data['coverageLimit'].toString(),
                 "name": data['name'],
                 "policyNumber": data['policyNumber']
-            
+
             }
         }
         modal.openModal('ConfirmationModal', {
@@ -189,35 +202,51 @@ const FrameInsurerContent = ({
     return (
         <ContentWrapper theme={theme}>
             <ContentContainer theme={theme}>
+                <View style={{ zIndex: 1 }}>
+                    <RowWrapper theme={theme}>
+                        {isEditMode ?
 
+                            <SearchableOptionsField
+                                label="Insurer"
+                                value={healthInsurerState}
+                                placeholder="Select an Health insurer"
+                                onClear={() => {
+                                    setSearchHeathInsurerFeildQuery(' ')
+                                    onFieldChange('name')('')
+                                    setHealthInsurerFeild('');
+                                    setHealthInsuereState('')
+                                }}
+                                onChangeText={(value) => {
+
+                                    setHealthInsurerFeild(value)
+                                }}
+                                oneOptionsSelected={(value) => {
+                                    onFieldChange('name')(value.name)
+                                }}
+                                options={insurerResults}
+                                isPopoverOpen={searchHealthInsurerFeildQuery}
+                                handlePatient={(value) => {
+                                    setHealthInsuereState(value)
+                                    onFieldChange('field')(value.name)
+                                }}
+                                text={healthInsurerFeild}
+                            />
+
+                            :
+                            <InputField2
+                                enabled={false}
+                                value={data['name']}
+                                label="Insurer"
+                                onChangeText={(value) => {
+                                    onFieldChange('name')(value)
+                                }}
+                                onClear={() => { onFieldChange('name')('') }}
+                                backgroundColor='--default-shade-white'
+                            />
+                        }
+                    </RowWrapper>
+                </View>
                 <RowWrapper theme={theme}>
-                    <InputField2
-                        enabled={isEditMode}
-                        value={data['name']}
-                        label="Insurer"
-                        onChangeText={(value) => {
-                            onFieldChange('name')(value)
-                        }}
-                        onClear={() => { onFieldChange('name')('') }}
-                        backgroundColor='--default-shade-white'
-                    />
-                </RowWrapper>
-
-                <RowWrapper theme={theme}>
-
-                    <FieldContainer theme={theme}>
-                        <InputField2
-                            enabled={false}
-                            value={data['patient']}
-                            label="Insured"
-                            onChangeText={(value) => {
-                                onFieldChange('patient')(value)
-                            }}
-                            onClear={() => { onFieldChange('patient')('') }}
-                            backgroundColor='--default-shade-white'
-                        />
-                    </FieldContainer>
-
                     <InputField2
                         enabled={isEditMode}
                         value={data['policyNumber']}
@@ -227,26 +256,9 @@ const FrameInsurerContent = ({
                         }}
                         onClear={() => { onFieldChange('policyNumber')('') }}
                         backgroundColor='--default-shade-white'
-
                     />
                 </RowWrapper>
 
-                <RowWrapper theme={theme}>
-
-                    <InputField2
-                        enabled={isEditMode}
-                        value={isEditMode
-                            ? data.coverageLimit.toString()
-                            : `$ ${currencyFormatter(data['coverageLimit'])}`}
-                        label="Coverage"
-                        onChangeText={(value) => { onFieldChange('coverageLimit')(value) }}
-                        onClear={() => { onFieldChange('coverageLimit')('') }}
-                        backgroundColor='--default-shade-white'
-                    />
-
-                    <FieldContainer />
-
-                </RowWrapper>
                 {isEditMode && isUpdated &&
                     < ReverceRowWrapper>
                         <View style={{ height: 10 }}>
