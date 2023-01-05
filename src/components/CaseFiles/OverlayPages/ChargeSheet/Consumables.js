@@ -79,7 +79,7 @@ function Consumables({
                          allItems = []
                      }) {
 
-    console.log("Case: ", caseProcedures)
+    
     
     const theme = useTheme();
     const {pageState} = useContext(PageContext);
