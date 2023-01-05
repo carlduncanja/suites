@@ -363,8 +363,8 @@ const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem, detai
             value);
         onFieldChange("physician")(value);
         setSearchPhysicianValue('')
-        setSearchPhysicianValueResult([])
-        setSearchPhysicianValueQuery(undefined)
+        setSearchPhysicianResult([])
+        setSearchPhysicianQuery(undefined)
 
     }
 
