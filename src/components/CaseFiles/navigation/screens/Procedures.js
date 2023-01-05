@@ -4,7 +4,7 @@ import { ScrollView, View } from 'react-native';
 
 const Procedures = ({procedures, caseId, proceduresBillableItems}) => {
 
-    console.log("Procedures: ", procedures);
+    //console.log("Procedures: ", procedures);
     return (
 
         <ProcedureDetailsContainer
