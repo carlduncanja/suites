@@ -96,7 +96,7 @@ function PaginatedSchedule({ ID, details, isPhysician , isTheatre}) {
         console.log("date passed", fromDate, toDate, id)
             
             if(isTheatre) {
-                getAppointments("", "", fromDate, fromDate, '', id)
+                getAppointments("", id, fromDate, fromDate, '', "")
                 .then(data => {
                     //console.log("Objected values:", Object.values(data));
                     console.log('The appointment data received is:', data);
