@@ -63,11 +63,6 @@ function CollapsibleListItem({
         setCollapsed(!isCollapsed);
     }
 
-
-    // useEffect(() => {
-    //     setCollapsed(isCollapsed);
-    // },[isCollapsed])
-
     return (
 
         <CollapsibleListItemWrapper theme={theme}>

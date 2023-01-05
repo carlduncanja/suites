@@ -48,8 +48,8 @@ function Table({
     hasBanner = false,
     bannerText = '',
     
-    keyExtractor = (item) => ((item?.id || "") || (item?._id || "")) + new Date().getTime()
-}) {
+    keyExtractor = (item) => ((item?.id || "") || (item?._id || ""))
+ }) {
     // const {
     //     data = [],
     //     listItemFormat = () => {
@@ -89,8 +89,8 @@ function Table({
                     data={data}
                     style={{ height: '100%' }}
                     nestedScrollEnabled={true}
-                    renderItem={({ item }) => listItemFormat(item)}
-                    keyExtractor={keyExtractor}
+                    renderItem={({ item, index }) => listItemFormat(item, index)}
+                    keyExtractor={(item) => item.id}
                     contentContainerStyle={{ paddingBottom: 100 }}
                     keyboardShouldPersistTaps={'always'}
                     extraData={extraData}
