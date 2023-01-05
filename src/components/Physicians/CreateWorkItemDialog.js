@@ -358,11 +358,11 @@ const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem, detai
         setPhysicianInfo(value
             ? {
                 _id: value._id,
-                name: value.name
+                name: `Dr. ${value.firstName} ${value.surname}`
             } :
             value);
         onFieldChange("physician")(value);
-        setSearchPhysicianValue(value.name)
+        setSearchPhysicianValue('')
         setSearchPhysicianResult([])
         setSearchPhysicianQuery(undefined)
 
@@ -740,7 +740,7 @@ const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem, detai
                                     onFieldChange("physician")('');
                                     setPhysicianInfo(undefined) }}
                                 options={SearchPhysicianResult}
-                                isPopoverOpen={searchLocationQuery}
+                                isPopoverOpen={searchPhysicianQuery}
                                 handlePatient={handlephysician}
                                 hasError={fieldErrors['physician']}
                                 errorMessage={fieldErrors['physicians']}
