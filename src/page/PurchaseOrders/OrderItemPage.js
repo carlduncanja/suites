@@ -197,6 +197,14 @@ function OrderItemPage({ route, navigation }) {
     };
 
     const onConfirmDelivery = (data) => {
+        const container = []
+        orderItems.filter((order, index) => {
+            if (order._id === data[index])
+            {
+                container.push(order.productId._id);
+            }
+        });
+
         if(order.status !== PURCHASE_ORDER_STATUSES.APPROVED)
         {
             errorScreen("This order must be approved before confirming delivery.");
@@ -215,7 +223,7 @@ function OrderItemPage({ route, navigation }) {
             return;
         }
 
-        confirmDelivery(_id, {items: data})
+        confirmDelivery(_id, {items: container})
             .then(_ => {
                 modal.openModal(
                     'ConfirmationModal',
