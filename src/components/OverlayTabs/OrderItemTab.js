@@ -185,7 +185,7 @@ const OrderItemTab = ({
                 <DataItem text={status ? transformToTitleCase(status) : 'Pending'} align="center" flex={1} fontStyle="--text-base-medium" color="--color-gray-800"/>
                 <DataItem text={sku === '' ? 'n/a' : sku} align="center" flex={1} fontStyle="--text-base-medium" color="--color-gray-800"/>
                 {
-                    <DataItem text={amount} align="center" flex={1} fontStyle="--text-base-medium" color="--color-gray-800"/>
+                    <DataItem text={amount} align="center" flex={1} fontStyle="--text-base-medium" color="--color-gray-800" width = '100%'/>
 
                 }
                 <DataItem text={ item.unit &&transformToTitleCase(item.unit)} align="center" flex={1} fontStyle="--text-base-medium" color="--color-gray-800"/>
@@ -216,7 +216,7 @@ const OrderItemTab = ({
                 icon={<AddIcon strokeColor={isEditMode ? theme.colors['--color-green-700'] : theme.colors['--color-gray-600']}/>}
                 onPress={onAddItem}
                 disabled={!isEditMode}
-                touchable={!!isEditMode}
+                touchable={!!isEditMode}d
             />
         );
 
