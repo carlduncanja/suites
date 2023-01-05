@@ -169,7 +169,12 @@ const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem, detai
         getPhysicians(searchPhysicianValue, 5)
             .then((physicianInfo) => {
                 const { data = [], pages } = physicianInfo;
-                setSearchPhysicianResult(data || []);
+                const results = data.map(item => ({
+                    name: `Dr. ${item.surname}`,
+                    ...item
+                }));
+                console.log('Results: ', results);
+                setSearchPhysicianResult(results || []);
 
             })
             .catch((error) => {
@@ -359,7 +364,7 @@ const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem, detai
         setPhysicianInfo(value
             ? {
                 _id: value._id,
-                name: `Dr. ${value.firstName} ${value.surname}`
+                name: value.name
             } :
             value);
         onFieldChange("physician")(value);
