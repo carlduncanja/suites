@@ -61,6 +61,7 @@ function FrameInsuranceCard ({
                 <InsuranceCardContent>
                     <FrameInsurerContent
                         fields = {fields}
+                        setFields = {setFields}
                     />
                 </InsuranceCardContent>
 
