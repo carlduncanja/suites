@@ -21,7 +21,9 @@ import ConfirmationComponent from './ConfirmationComponent';
 import ConfirmationCheckBoxComponent from './ConfirmationCheckBoxComponent';
 import _ from 'lodash'
 
-function PaginatedSchedule({ ID, details, isPhysician }) {
+function PaginatedSchedule({ ID, details, isPhysician , isTheatre}) {
+
+    console.log("theare oage? ", isTheatre)
     const weekday = new Array(7);
     weekday[0] = 'Sunday';
     weekday[1] = 'Monday';
@@ -92,14 +94,15 @@ function PaginatedSchedule({ ID, details, isPhysician }) {
         let toDate = formatDate(tommorrow, 'YYYY/MM/DD')
 
         console.log("date passed", fromDate, toDate, id)
-            ,
-            getAppointments("", id, fromDate, fromDate, '', "")
+            
+            if(isTheatre) {
+                getAppointments("", "", fromDate, fromDate, '', id)
                 .then(data => {
                     //console.log("Objected values:", Object.values(data));
                     console.log('The appointment data received is:', data);
                     relevantAppointment.length = 0;
                     //console.log("data visualization", relevantAppointment)
-                    console.log('data information', data)
+
                     const appointmentData = data.map(item => {
                         let modifiedAppointment = { ...item };
                         let today = new Date();
@@ -125,6 +128,41 @@ function PaginatedSchedule({ ID, details, isPhysician }) {
                 .finally(_ => {
                     setFetchingAppointment(false);
                 });
+            } else {
+                getAppointments("", "", fromDate, fromDate, '', id)
+                .then(data => {
+                    //console.log("Objected values:", Object.values(data));
+                    console.log('The appointment data received is:', data);
+                    relevantAppointment.length = 0;
+                    //console.log("data visualization", relevantAppointment)
+
+                    const appointmentData = data.map(item => {
+                        let modifiedAppointment = { ...item };
+                        let today = new Date();
+                        // const mm = moment(item.startTime);
+                        const start = moment(modifiedAppointment.startTime);
+                        const end = moment(modifiedAppointment.endTime);
+
+                        const isActive = moment().isBetween(start, end);
+                        if (end < today) {
+                            console.log("appointment has passed");
+                            modifiedAppointment.type = 3;
+                        } else (isActive) ? (modifiedAppointment.type = 0) : (modifiedAppointment.type = 1);
+
+                        return { ...modifiedAppointment, }
+                    })
+
+                    console.log("schedule appointments", appointmentData)
+                    setrelevantApppointments(relevantAppointment.concat(appointmentData));
+                })
+                .catch(error => {
+                    console.log('Failed to get desired appointments', error);
+                })
+                .finally(_ => {
+                    setFetchingAppointment(false);
+                });
+            }
+            
     };
 
 
