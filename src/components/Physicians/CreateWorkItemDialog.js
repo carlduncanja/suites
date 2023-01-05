@@ -358,11 +358,11 @@ const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem, detai
         setPhysicianInfo(value
             ? {
                 _id: value._id,
-                name: `Dr. ${value.firstName} ${value.surname}`
+                name: value.name
             } :
             value);
         onFieldChange("physician")(value);
-        setSearchPhysicianValue('')
+        setSearchPhysicianValue(value.name)
         setSearchPhysicianResult([])
         setSearchPhysicianQuery(undefined)
 
@@ -734,7 +734,7 @@ const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem, detai
                                 value={physicianInfo}
                                 placeholder="Select physician"
                                 text={searchPhysicianValue}
-                                oneOptionsSelected={handlephysician}
+                                oneOptionsSelected={item => handlephysician(item)}
                                 onChangeText={(value) => setSearchPhysicianValue(value)}
                                 onClear={() => { 
                                     onFieldChange("physician")('');
