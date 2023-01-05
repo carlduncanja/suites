@@ -227,6 +227,7 @@ const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem, detai
         console.log('king');
         const allFields = {
             procedure,
+            physician,
             location,
             caseItem,
             selectedDate,
@@ -507,7 +508,7 @@ const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem, detai
     const validateFields = () => {
         let errors = {};
         let isValid = true;
-        const requiredFields = ['procedure','location','caseItem', 'selectedDate','startTime', 'endTime']
+        const requiredFields = ['procedure','location','caseItem', 'physician','selectedDate','startTime', 'endTime']
         for (const requiredField of requiredFields) {
             if (!fields[requiredField]) {
                 errors = {
@@ -734,7 +735,7 @@ const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem, detai
                                 value={physicianInfo}
                                 placeholder="Select physician"
                                 text={searchPhysicianValue}
-                                oneOptionsSelected={item => handlephysician(item)}
+                                oneOptionsSelected={handlephysician}
                                 onChangeText={(value) => setSearchPhysicianValue(value)}
                                 onClear={() => { 
                                     onFieldChange("physician")('');
