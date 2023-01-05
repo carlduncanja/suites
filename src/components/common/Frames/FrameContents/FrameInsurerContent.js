@@ -44,13 +44,68 @@ export const FieldContainer = styled.View`
 
 
 const FrameInsurerContent = ({
-        fields = {}
+        fields = {},
+        setFields = () => {
+        }
     }) => {
     
     const { pageState } = useContext(PageContext);
     const { isEditMode } = pageState;
     console.log("Edit mode: ", isEditMode);
     const theme = useTheme();
+
+    const {
+        name = "",
+        patient = "",
+        policyNumber = "",
+        coverageLimit = 0
+    } = fields
+
+    const [name1, setname] = useState('');
+    
+    const [data, setData] = useState({
+        name,
+        patient,
+        policyNumber,
+        coverageLimit
+    });
+
+    function formatNumberField(value) {
+        return value.toString().replace(/[^\d.]/g,'');
+    }
+
+    const onFieldChange = (fieldName) => (value) => {
+       
+        let finalValue = value;
+
+        if(fieldName === 'name'){ setname(value)}
+
+        if (fieldName === 'coverageLimit') {
+            const formattedValue = formatNumberField(value);
+            finalValue = formattedValue;
+        }
+
+        setData({
+            ...data,
+            [fieldName]: finalValue
+        });
+
+        //testing data fields
+        console.log("data information")
+        console.log(data)
+
+    };
+    
+    const onFieldUpdate = () => () => {
+        fields.name = data['name']
+        fields.patient = data['patient']
+        fields.policyNumber = data['policyNumber']
+        fields.coverageLimit = data['coverageLimit']
+        console.log("testing")
+        console.log(fields)
+        setFields(fields)
+    }
+
 
     return (
         <ContentWrapper theme = {theme}>
@@ -59,10 +114,10 @@ const FrameInsurerContent = ({
                 <RowWrapper theme = {theme}>
                     <InputField2
                         enabled = {isEditMode}
-                        value = {fields.name}
+                        value = {name1}
                         label = "Insurer"
-                        onChangeText = {() => {}}
-                        onClear = {()=>{}}
+                        onChangeText = {(value) => {onFieldChange('name')(value)}}
+                        onClear = {()=>{onFieldChange('name')('')}}
                         backgroundColor = '--default-shade-white'
                     />
                 </RowWrapper>
@@ -72,20 +127,20 @@ const FrameInsurerContent = ({
                     <FieldContainer theme = {theme}>
                         <InputField2
                             enabled = {isEditMode}
-                            value = {fields.patient}
+                            value = {data['patient']}
                             label = "Insured"
-                            onChangeText = {() => {}}
-                            onClear = {()=>{}}
+                            onChangeText = {(value) => {onFieldChange('patient')(value)}}
+                            onClear = {() => {onFieldChange('patient')('')}}
                             backgroundColor = '--default-shade-white'
                         />
                     </FieldContainer>
                     
                     <InputField2
                         enabled = {isEditMode}
-                        value = {fields.policyNumber}
+                        value = {data['policyNumber']}
                         label = "Policy #"
-                        onChangeText = {() => {}}
-                        onClear = {()=>{}}
+                        onChangeText = {(value) => {onFieldChange('policyNumber')(value)}}
+                        onClear = {() => {onFieldChange('policyNumber')('')}}
                         backgroundColor = '--default-shade-white'
 
                     />
@@ -95,12 +150,13 @@ const FrameInsurerContent = ({
 
                     <InputField2
                         enabled = {isEditMode}
-                        value = {`$ ${currencyFormatter(fields.coverageLimit)}`}
+                        value = { isEditMode
+                            ? data.coverageLimit.toString()
+                            : `$ ${currencyFormatter(data['coverageLimit'])}`}
                         label = "Coverage"
-                        onChangeText = {() => {}}
-                        onClear = {()=>{}}
+                        onChangeText = {(value) => {onFieldChange('coverageLimit')(value)}}
+                        onClear = {() => {onFieldChange('coverageLimit')('')}}
                         backgroundColor = '--default-shade-white'
-
                     />
                     
                     <FieldContainer/>

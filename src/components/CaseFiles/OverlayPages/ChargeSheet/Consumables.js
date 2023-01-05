@@ -79,12 +79,13 @@ function Consumables({
                          allItems = []
                      }) {
 
-    // console.log("Cae: ", caseProcedures)
+    
+    
     const theme = useTheme();
     const {pageState} = useContext(PageContext);
     const {isEditMode} = pageState
 
-    // console.log("caseProcedures: ", caseProcedures);
+    
 
 
     // const [checkBoxList, setCheckBoxList] = useState([]);
@@ -184,7 +185,7 @@ function Consumables({
                 ? {...updatedObj}
                 : {...item}
         })
-
+        
         onConsumablesUpdate(sectionIndex, updatedData);
     }
 
