@@ -362,7 +362,7 @@ function SupplierProductCreationPage({route}) {
             };
         });
 
-        // console.log('create products', supplierId, createProductsData);
+        console.log('create products', supplierId, createProductsData);
 
         createSupplierProductsCall(supplierId, createProductsData)
             .then(_ => {
