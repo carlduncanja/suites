@@ -26,7 +26,7 @@ import { formatDate,dateDifferenceToHours } from '../../utils/formatter';
  */
 
 const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem, details }) => {
-    console.log("theatre details", details)
+    
     const modal = useModal();
     const dialogTabs = ['Details'];
     const selectedIndex = 0;
@@ -229,7 +229,7 @@ const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem, detai
         // check if fields are empty
         // add confirmation modal here
         //modal.closeAllModals();
-        console.log('king');
+        
         const allFields = {
             procedure,
             physicianInfo,
@@ -291,7 +291,7 @@ const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem, detai
             // serviceFee : 0
         };
 
-        console.log("procedure result", result)
+    
 
         await createNewProcedure(result).then(res => {
 
@@ -417,7 +417,7 @@ const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem, detai
         getTheatres(searchLocationValue, 5)
             .then((locationsInfo) => {
                 const { data = [], pages } = locationsInfo;
-                console.log("all Locations", data)
+                
                 setSearchLocationResult(data || []);
             })
             .catch((error) => {
@@ -533,7 +533,7 @@ const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem, detai
     const addProcedure = async () => {
         
         let duration = dateDifferenceToHours(endTime,startTime)
-        console.log("this is the start",startTime) 
+       
         
         let procedureData = {
             "procedure":procedure._id,
@@ -543,8 +543,7 @@ const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem, detai
         }
         let caseId=caseItem._id
 
-        console.log("new procedure info", procedureData)
-        console.log("case info", caseId)
+       
         addProcedureAppointment(caseId,procedureData)
     } 
     
@@ -566,14 +565,14 @@ const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem, detai
             let workItem = {
                 "startTime": startTime,
                 "endTime": endTime,
-                "LocationId": location._id,
+                "locationId": location._id,
                 "caseId": caseItem._id,
                 "procedureId": procedure._id,
                 "physicianId": physicianInfo._id,
                 "isRecovery": false,
                 "authInfo": physicianInfo.id
             }
-            console.log("work item for api", workItem)
+            
             addProcedure()
             createAppointment(workItem)
                 .then(data => {
