@@ -21,7 +21,9 @@ import ConfirmationComponent from './ConfirmationComponent';
 import ConfirmationCheckBoxComponent from './ConfirmationCheckBoxComponent';
 import _ from 'lodash'
 
-function PaginatedSchedule({ ID, isPhysician }) {
+function PaginatedSchedule({ ID, details, isPhysician , isTheatre}) {
+
+    console.log("theare oage? ", isTheatre)
     const weekday = new Array(7);
     weekday[0] = 'Sunday';
     weekday[1] = 'Monday';
@@ -92,8 +94,9 @@ function PaginatedSchedule({ ID, isPhysician }) {
         let toDate = formatDate(tommorrow, 'YYYY/MM/DD')
 
         console.log("date passed", fromDate, toDate, id)
-            ,
-            getAppointments("", "", fromDate, fromDate, '', id)
+            
+            if(isTheatre) {
+                getAppointments("", id, fromDate, fromDate, '', "")
                 .then(data => {
                     //console.log("Objected values:", Object.values(data));
                     console.log('The appointment data received is:', data);
@@ -116,6 +119,7 @@ function PaginatedSchedule({ ID, isPhysician }) {
                         return { ...modifiedAppointment, }
                     })
 
+                    console.log("schedule appointments", appointmentData)
                     setrelevantApppointments(relevantAppointment.concat(appointmentData));
                 })
                 .catch(error => {
@@ -124,6 +128,7 @@ function PaginatedSchedule({ ID, isPhysician }) {
                 .finally(_ => {
                     setFetchingAppointment(false);
                 });
+            } 
     };
 
 
@@ -208,6 +213,7 @@ function PaginatedSchedule({ ID, isPhysician }) {
                 <CreateWorkItemDialogContainer
                     onCancel={() => setFloatingAction(false)}
                     addWorkItem={{ "id": ID }}
+                    details = {details}
                 />
             ),
             onClose: () => setFloatingAction(false)

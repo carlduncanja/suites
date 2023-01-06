@@ -1006,8 +1006,8 @@ export const updateLifeStyleItems = async (id, data) => suitesAxiosInstance
 
 // ################# HEALTH INSURER ENDPOINTS 
 
-export const getHealthInsurers = async () => suitesAxiosInstance
-    .get(healthInsurerEndpoint)
+export const getHealthInsurers = async (query, max, page) => suitesAxiosInstance
+    .get(healthInsurerEndpoint,{params:{query, max, page}})
     .then(handleResponse)
     .catch(handleError)
 
