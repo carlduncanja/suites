@@ -473,7 +473,7 @@ const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem }) => 
             let workItem = {
                 "startTime": startTime,
                 "endTime": endTime,
-                "LocationId": location._id,
+                "locationId": location._id,
                 "caseId": caseItem._id,
                 "procedureId": procedure._id,
                 "physicianId": addWorkItem.id,

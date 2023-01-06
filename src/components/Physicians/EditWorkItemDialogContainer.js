@@ -156,7 +156,8 @@ const EditWorkItemDialogContainer = ({ onCancel, onCreated, appiontment, refresh
 
     const fetchAppointmentbyId = (id) => {
         getAppointmentById(appiontment.id)
-            .then(data => {
+            .then(data => { 
+                console.log("23456789qwertyuiosasdfghj",data)
                 const { item = {},
                     users = {},
                     type = {},
@@ -180,10 +181,10 @@ const EditWorkItemDialogContainer = ({ onCancel, onCreated, appiontment, refresh
 
                 setAppiomentId(_id);
 
-                setDate(formatDate(startTime, 'DD/MM/YYYY'));
+                setDate(formatDate(startTime, 'YYYY-MM-DD'));
                 setStartTime(startTime);
                 setEndTime(endTime);
-
+                
                 setLocation({
                     _id: location._id,
                     name: location.name,
@@ -192,7 +193,7 @@ const EditWorkItemDialogContainer = ({ onCancel, onCreated, appiontment, refresh
                     "caseItem": item,
                     "procedure": title,
                     "location": location,
-                    "selectedDate": formatDate(startTime, 'DD/MM/YYYY'),
+                    "selectedDate": formatDate(startTime, 'YYYY-MM-DD'),
                     "startTime": startTime,
                     "endTime": endTime
                 })
@@ -445,16 +446,21 @@ const EditWorkItemDialogContainer = ({ onCancel, onCreated, appiontment, refresh
     };
 
     const onTimeUpdate = (field) => (dateTime) => {
-
-        let newTime = moment(dateTime);
+       //console.log("ahhhhhhhhhhhhhhhhh",dateTime)
+        let newTime = moment(dateTime); 
+        console.log("oooooooooo",moment())
+        console.log('wwwwwwwwwww',selectedDate)
         if (selectedDate) {
-            const dateMoment = new moment(selectedDate);
+            const dateMoment = new moment(selectedDate); 
             newTime
                 .year(dateMoment.year())
                 .month(dateMoment.month())
                 .date(dateMoment.date());
+        console.log("ahhhhhhhhh",dateMoment.year())
+        console.log("ahhhhhhhhh",dateMoment.month())
+        console.log("ahhhhhhhhh",dateMoment.date())
         }
-
+        
         setStartTime(newTime)
         onFieldChange("startTime")(newTime);
         setProcedure({
@@ -473,7 +479,7 @@ const EditWorkItemDialogContainer = ({ onCancel, onCreated, appiontment, refresh
                 .month(dateMoment.month())
                 .date(dateMoment.date());
         }
-
+        console.log("ahhhhhhhhh",dateTime)
         setEndTime(newTime)
         onFieldChange("endTime")(newTime);
         setProcedure({
@@ -507,13 +513,14 @@ const EditWorkItemDialogContainer = ({ onCancel, onCreated, appiontment, refresh
             let workItem = {
                 "startTime": startTime,
                 "endTime": endTime,
-                "LocationId": location._id,
-                "caseId": caseItem._id,
-                "procedureId": procedure._id,
+                "location": location._id,
+                "item":{'case':caseItem._id},
+                "title": procedure.name,
                 "physicianId": physicianId,
                 "isRecovery": false,
-                "authInfo": physicianId
-            }
+                "authInfo": physicianId 
+                
+            } 
 
             updateAppointmentById(appiontmentId, workItem)
                 .then(data => {
@@ -583,7 +590,7 @@ const EditWorkItemDialogContainer = ({ onCancel, onCreated, appiontment, refresh
 
 
     }
-
+    console.log("the date that was sent over in order",selectedDate)
     return (
 
         <OverlayDialog
@@ -695,7 +702,7 @@ const EditWorkItemDialogContainer = ({ onCancel, onCreated, appiontment, refresh
                             </View>
 
                             <DateInputField
-                                value={selectedDate}
+                                value={formatDate(selectedDate, 'DD/MM/YYYY')}
                                 minDate={new Date(today)}
                                 onClear={() => {
                                     onFieldChange("selectedDate")('');
