@@ -157,7 +157,7 @@ const EditWorkItemDialogContainer = ({ onCancel, onCreated, appiontment, refresh
     const fetchAppointmentbyId = (id) => {
         getAppointmentById(appiontment.id)
             .then(data => { 
-                console.log("23456789qwertyuiosasdfghj",data)
+               
                 const { item = {},
                     users = {},
                     type = {},
@@ -248,7 +248,7 @@ const EditWorkItemDialogContainer = ({ onCancel, onCreated, appiontment, refresh
         // check if fields are empty
         // add confirmation modal here
         //modal.closeAllModals();
-        console.log('king');
+        
         const allFields = {
             procedure,
             location,
@@ -397,7 +397,7 @@ const EditWorkItemDialogContainer = ({ onCancel, onCreated, appiontment, refresh
         getTheatres(searchLocationValue, 5)
             .then((locationsInfo) => {
                 const { data = [], pages } = locationsInfo;
-                console.log("all Locations", data)
+                
                 setSearchLocationResult(data || []);
             })
             .catch((error) => {
@@ -414,7 +414,7 @@ const EditWorkItemDialogContainer = ({ onCancel, onCreated, appiontment, refresh
         getCaseFiles()
             .then(caseResult => {
                 const { data = [], pages = 0 } = caseResult;
-                console.log("alll the cases", data)
+                
                 setSearchCaseResult(data || [])
             })
             .catch(error => {
@@ -446,19 +446,16 @@ const EditWorkItemDialogContainer = ({ onCancel, onCreated, appiontment, refresh
     };
 
     const onTimeUpdate = (field) => (dateTime) => {
-       //console.log("ahhhhhhhhhhhhhhhhh",dateTime)
+      
         let newTime = moment(dateTime); 
-        console.log("oooooooooo",moment())
-        console.log('wwwwwwwwwww',selectedDate)
+       
         if (selectedDate) {
             const dateMoment = new moment(selectedDate); 
             newTime
                 .year(dateMoment.year())
                 .month(dateMoment.month())
                 .date(dateMoment.date());
-        console.log("ahhhhhhhhh",dateMoment.year())
-        console.log("ahhhhhhhhh",dateMoment.month())
-        console.log("ahhhhhhhhh",dateMoment.date())
+       
         }
         
         setStartTime(newTime)
@@ -479,7 +476,7 @@ const EditWorkItemDialogContainer = ({ onCancel, onCreated, appiontment, refresh
                 .month(dateMoment.month())
                 .date(dateMoment.date());
         }
-        console.log("ahhhhhhhhh",dateTime)
+        
         setEndTime(newTime)
         onFieldChange("endTime")(newTime);
         setProcedure({
@@ -590,7 +587,7 @@ const EditWorkItemDialogContainer = ({ onCancel, onCreated, appiontment, refresh
 
 
     }
-    console.log("the date that was sent over in order",selectedDate)
+   
     return (
 
         <OverlayDialog
