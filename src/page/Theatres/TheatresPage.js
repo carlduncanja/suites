@@ -105,7 +105,7 @@ function TheatresPage({route, navigation}) {
     const getOverlayScreen = selectedOverlay => {
         switch (selectedOverlay) {
             case 'Details': {
-                // console.log('Theatre:', selectedTheatre);
+                console.log('Theatre:', selectedTheatre);
                 const appointments = selectedTheatre.appointments || [];
 
                 const {isActive, isRecovery} = isInUse(selectedTheatre.appointments || []);
@@ -263,7 +263,7 @@ function TheatresPage({route, navigation}) {
                 return <EquipmentsTab equipments={equipments}/>;
             }
             case 'Schedule':
-                return <PaginatedSchedule ID={theatre._id} isPhysician={false}/>;
+                return <PaginatedSchedule ID={theatre._id} details = {theatre} isTheatre = {true} isPhysician={false}/>;
             default:
                 return <View/>;
         }

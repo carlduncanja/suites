@@ -11,7 +11,7 @@ import SearchableOptionsField from '../../components/common/Input Fields/Searcha
 import CustomSearchableOptionsField from '../../components/common/Input Fields/CustomSearchableOptionsField';
 import DateInputField from '../../components/common/Input Fields/DateInputField';
 import { connect } from 'react-redux';
-import { getTheatres, createTheatre, createNewProcedure,updatePatient as patientUpdater, getUsersCall, getProcedures, getCaseFiles, createCaseFile, createAppointment,addProcedureAppointmentCall } from '../../api/network';
+import { getTheatres, createTheatre, createNewProcedure,updatePatient as patientUpdater, getUsersCall, getProcedures, getCaseFiles, createCaseFile, createAppointment,addProcedureAppointmentCall, getPhysicians } from '../../api/network';
 import _, { reduce, set } from "lodash";
 import moment, { duration } from 'moment';
 import { formatDate,dateDifferenceToHours } from '../../utils/formatter';
@@ -25,8 +25,8 @@ import { formatDate,dateDifferenceToHours } from '../../utils/formatter';
  * @constructor
  */
 
-const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem }) => {
-
+const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem, details }) => {
+    console.log("theatre details", details)
     const modal = useModal();
     const dialogTabs = ['Details'];
     const selectedIndex = 0;
@@ -47,6 +47,13 @@ const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem }) => 
     const [searchLocationQuery, setSearchLocationQuery] = useState({});
 
     const [caseItem, setCaseItem] = useState(undefined);
+
+    const [physicianInfo, setPhysicianInfo] = useState(undefined);
+    const [searchPhysicianValue, setSearchPhysicianValue] = useState("");
+    const [searchPhysicianQuery, setSearchPhysicianQuery] = useState({});
+    const [SearchPhysicianResult, setSearchPhysicianResult] = useState([]);
+
+
     const [searchCaseValue, setSearchCaseValue] = useState("");
     const [searchCaseResult, setSearchCaseResult] = useState([]);
     const [searchCaseQuery, setSearchCaseQuery] = useState({});
@@ -77,6 +84,28 @@ const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem }) => 
 
         search();
     }, [searchProcedureValue]);
+
+    useEffect(() => {
+        if (!searchPhysicianValue) {
+            // empty search values and cancel any out going request.
+            setSearchPhysicianResult([]);
+            if (searchPhysicianQuery?.cancel) searchPhysicianQuery?.cancel();
+            return;
+        }
+
+        // wait 300ms before search. cancel any prev request before executing current.
+
+        const search = _.debounce(fetchPhyscians, 300);
+
+        setSearchPhysicianQuery((prevSearch) => {
+            if (prevSearch && prevSearch?.cancel) {
+                prevSearch?.cancel();
+            }
+            return search;
+        });
+
+        search();
+    }, [searchPhysicianValue]);
 
     useEffect(() => {
         if (!searchLocationValue) {
@@ -136,6 +165,27 @@ const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem }) => 
             });
     };
 
+    const fetchPhyscians = () => {
+        getPhysicians(searchPhysicianValue, 5)
+            .then((physicianInfo) => {
+                const { data = [], pages } = physicianInfo;
+                const results = data.map(item => ({
+                    name: `Dr. ${item.surname}`,
+                    ...item
+                }));
+                console.log('Results: ', results);
+                setSearchPhysicianResult(results || []);
+
+            })
+            .catch((error) => {
+                // TODO handle error
+                console.log("failed to get physicians");
+                setSearchPhysicianResult([]);
+            });
+    };
+
+
+
     const handleProcedure = (value) => {
         setProcedure(value
             ? {
@@ -182,6 +232,7 @@ const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem }) => 
         console.log('king');
         const allFields = {
             procedure,
+            physicianInfo,
             location,
             caseItem,
             selectedDate,
@@ -224,7 +275,7 @@ const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem }) => 
             // isTemplate : false,
             hasRecovery: false,
             physician: {
-                "_id": addWorkItem.id,
+                "_id": physicianInfo.id,
                 "active": "active",
                 "address": Array[
                     {
@@ -239,6 +290,8 @@ const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem }) => 
             // equipments:[],
             // serviceFee : 0
         };
+
+        console.log("procedure result", result)
 
         await createNewProcedure(result).then(res => {
 
@@ -308,6 +361,21 @@ const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem }) => 
         setSearchLocationQuery(undefined);
     };
 
+    const handlephysician = (value) => {
+
+        setPhysicianInfo(value
+            ? {
+                _id: value._id,
+                name: value.name
+            } :
+            value);
+        onFieldChange("physician")(value);
+        setSearchPhysicianValue('')
+        setSearchPhysicianResult([])
+        setSearchPhysicianQuery(undefined)
+
+    }
+
     const handleCaseChange = (value) => {
 
         setCaseItem(value
@@ -321,6 +389,28 @@ const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem }) => 
         setSearchCaseResult([])
         setSearchCaseQuery(undefined)
 
+    }
+
+    const errorScreen = (message) => {
+        setTimeout(() => {
+            modal
+                .openModal(
+                    'ConfirmationModal',
+                    {
+                        content: <ConfirmationComponent
+                            isEditUpdate={false}
+                            isError={true}
+                            onCancel={() => {
+                                modal.closeModals('ConfirmationModal')
+                            }}
+                            message={message}
+                        />
+                        ,
+                        onClose: () => {
+                            modal.closeModals('ConfirmationModal')
+                        }
+                    })
+        }, 100);
     }
 
     const fetchLocations = () => {
@@ -425,7 +515,7 @@ const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem }) => 
     const validateFields = () => {
         let errors = {};
         let isValid = true;
-        const requiredFields = ['procedure','location','caseItem', 'selectedDate','startTime', 'endTime']
+        const requiredFields = ['procedure','location','caseItem', 'physician','selectedDate','startTime', 'endTime']
         for (const requiredField of requiredFields) {
             if (!fields[requiredField]) {
                 errors = {
@@ -452,6 +542,9 @@ const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem }) => 
             "duration":duration
         }
         let caseId=caseItem._id
+
+        console.log("new procedure info", procedureData)
+        console.log("case info", caseId)
         addProcedureAppointment(caseId,procedureData)
     } 
     
@@ -476,10 +569,11 @@ const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem }) => 
                 "LocationId": location._id,
                 "caseId": caseItem._id,
                 "procedureId": procedure._id,
-                "physicianId": addWorkItem.id,
+                "physicianId": physicianInfo._id,
                 "isRecovery": false,
-                "authInfo": addWorkItem.id
+                "authInfo": physicianInfo.id
             }
+            console.log("work item for api", workItem)
             addProcedure()
             createAppointment(workItem)
                 .then(data => {
@@ -635,7 +729,60 @@ const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem }) => 
 
                         </View>
 
-                        <View style={styles.inputWrapper}>
+
+                        <View style={[styles.inputWrapper]}>
+                            <View style={styles.textContainer}>
+                                <Text style={styles.labels}>Physician</Text>
+                            </View>
+
+                            <SearchableOptionsField
+                                emptyAfterSubmit={attemptedSubmit && physicianInfo === undefined ? true : false}
+                                updateDB={updateTheatreDB}
+                                showActionButton={true}
+                                value={physicianInfo}
+                                placeholder="Select physician"
+                                text={searchPhysicianValue}
+                                oneOptionsSelected={handlephysician}
+                                onChangeText={(value) => setSearchPhysicianValue(value)}
+                                onClear={() => { 
+                                    onFieldChange("physician")('');
+                                    setPhysicianInfo(undefined) }}
+                                options={SearchPhysicianResult}
+                                isPopoverOpen={searchPhysicianQuery}
+                                handlePatient={handlephysician}
+                                hasError={fieldErrors['physician']}
+                                errorMessage={fieldErrors['physicians']}
+                            />
+
+                        </View>
+
+                        {/* <View style={styles.inputWrapper}>
+                            <View style={styles.textContainer}>
+                                <Text style={styles.labels}>Date</Text>
+                            </View>
+
+                            <DateInputField
+                                value={selectedDate}
+                                onClear={() => { 
+                                    onFieldChange("selectedDate")('');
+                                    setDate(undefined) }}
+                                keyboardType="number-pad"
+                                mode={'date'}
+                                format={"DD/MM/YYYY"}
+                                placeholder="DD/MM/YYYY"
+                                onDateChange={onDateUpdate}
+                                hasError={fieldErrors['selectedDate']}
+                                errorMessage={fieldErrors['selectedDate']}
+                                borderColor={fieldErrors['selectedDate'] ? '--color-red-700' : '--color-gray-300'}
+                            />
+
+                        </View> */}
+
+                    </View>
+
+                    <View style={[styles.row]}>
+
+                    <View style={styles.inputWrapper}>
                             <View style={styles.textContainer}>
                                 <Text style={styles.labels}>Date</Text>
                             </View>
@@ -657,10 +804,6 @@ const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem }) => 
 
                         </View>
 
-                    </View>
-
-                    <View style={[styles.row]}>
-
                         <View style={styles.inputWrapper}>
                             <View style={styles.textContainer}>
                                 <Text style={styles.labels}>Start</Text>
@@ -681,7 +824,32 @@ const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem }) => 
                             />
 
                         </View>
-                        <View style={styles.inputWrapper}>
+                        {/* <View style={styles.inputWrapper}>
+                            <View style={styles.textContainer}>
+                                <Text style={styles.labels}>End</Text>
+                            </View>
+
+                            <DateInputField
+                                onDateChange={EndTimeUpdate("endTime")}
+                                value={endTime}
+                                mode={"time"}
+                                format={"hh:mm A"}
+                                onClear={() => {
+                                    onFieldChange("endTime")('');
+                                    setEndTime(undefined)}}
+                                placeholder="HH:MM"
+                                hasError={!!fieldErrors['endTime']}
+                                errorMessage={fieldErrors['endTime']}
+                                borderColor={fieldErrors['endTime'] ? '--color-red-700' : '--color-gray-300'}
+                            />
+
+                        </View> */}
+
+                    </View>
+
+
+                    <View style={[styles.row]}>
+                    <View style={styles.inputWrapper}>
                             <View style={styles.textContainer}>
                                 <Text style={styles.labels}>End</Text>
                             </View>
@@ -701,8 +869,8 @@ const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem }) => 
                             />
 
                         </View>
-
                     </View>
+
 
                 </View>
             </View>
