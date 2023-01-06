@@ -11,10 +11,10 @@ import SearchableOptionsField from '../../components/common/Input Fields/Searcha
 import CustomSearchableOptionsField from '../../components/common/Input Fields/CustomSearchableOptionsField';
 import DateInputField from '../../components/common/Input Fields/DateInputField';
 import { connect } from 'react-redux';
-import { getTheatres, createTheatre, createNewProcedure,updatePatient as patientUpdater, getUsersCall, getProcedures, getCaseFiles, createCaseFile, createAppointment,addProcedureAppointmentCall, getPhysicians } from '../../api/network';
+import { getTheatres, createTheatre, createNewProcedure, updatePatient as patientUpdater, getUsersCall, getProcedures, getCaseFiles, createCaseFile, createAppointment, addProcedureAppointmentCall, getPhysicians } from '../../api/network';
 import _, { reduce, set } from "lodash";
 import moment, { duration } from 'moment';
-import { formatDate,dateDifferenceToHours } from '../../utils/formatter';
+import { formatDate, dateDifferenceToHours } from '../../utils/formatter';
 /**
  * Component to handle the create storage process.
  *
@@ -25,8 +25,8 @@ import { formatDate,dateDifferenceToHours } from '../../utils/formatter';
  * @constructor
  */
 
-const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem, details }) => {
-    
+const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem, details, isTheatre }) => {
+
     const modal = useModal();
     const dialogTabs = ['Details'];
     const selectedIndex = 0;
@@ -207,19 +207,19 @@ const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem, detai
             ...fields,
             [fieldName]: value
         })
-        
-        const updatedErrors = {...fieldErrors}
+
+        const updatedErrors = { ...fieldErrors }
         delete updatedErrors[fieldName]
         setErrors(updatedErrors)
-    
+
     };
 
     const removeEmpty = (obj) => {
         // REVIEW
         let newObj = {};
         Object.keys(obj).forEach((key) => {
-          if (obj[key] === Object(obj[key])) newObj[key] = removeEmpty(obj[key]);
-          else if (obj[key] !== undefined) newObj[key] = obj[key];
+            if (obj[key] === Object(obj[key])) newObj[key] = removeEmpty(obj[key]);
+            else if (obj[key] !== undefined) newObj[key] = obj[key];
         });
         return newObj;
     };
@@ -229,7 +229,7 @@ const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem, detai
         // check if fields are empty
         // add confirmation modal here
         //modal.closeAllModals();
-        
+
         const allFields = {
             procedure,
             physicianInfo,
@@ -291,7 +291,7 @@ const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem, detai
             // serviceFee : 0
         };
 
-    
+
 
         await createNewProcedure(result).then(res => {
 
@@ -417,7 +417,7 @@ const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem, detai
         getTheatres(searchLocationValue, 5)
             .then((locationsInfo) => {
                 const { data = [], pages } = locationsInfo;
-                
+
                 setSearchLocationResult(data || []);
             })
             .catch((error) => {
@@ -431,10 +431,10 @@ const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem, detai
     const fetchCaseFiles = () => {
 
 
-        getCaseFiles(searchCaseValue,5)
+        getCaseFiles(searchCaseValue, 5)
             .then(caseResult => {
                 const { data = [], pages = 0 } = caseResult;
-                
+
                 setSearchCaseResult(data || [])
             })
             .catch(error => {
@@ -466,7 +466,7 @@ const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem, detai
         });
 
     };
-    
+
 
     const onTimeUpdate = (field) => (dateTime) => {
 
@@ -511,11 +511,15 @@ const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem, detai
 
     }
 
-    
+
     const validateFields = () => {
         let errors = {};
         let isValid = true;
-        const requiredFields = ['procedure','location','caseItem', 'physician','selectedDate','startTime', 'endTime']
+        const requiredFields = isTheatre ?
+            ['procedure', 'location', 'caseItem', 'physician', 'selectedDate', 'startTime', 'endTime']
+            :
+            ['procedure', 'location', 'caseItem', 'selectedDate', 'startTime', 'endTime']
+
         for (const requiredField of requiredFields) {
             if (!fields[requiredField]) {
                 errors = {
@@ -528,25 +532,25 @@ const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem, detai
 
         setErrors(errors)
         return isValid;
-    } 
+    }
 
     const addProcedure = async () => {
-        
-        let duration = dateDifferenceToHours(endTime,startTime)
-       
-        
-        let procedureData = {
-            "procedure":procedure._id,
-            "location":location._id,
-            "startTime":startTime,
-            "duration":duration
-        }
-        let caseId=caseItem._id
 
-       
-        addProcedureAppointment(caseId,procedureData)
-    } 
-    
+        let duration = dateDifferenceToHours(endTime, startTime)
+
+
+        let procedureData = {
+            "procedure": procedure._id,
+            "location": location._id,
+            "startTime": startTime,
+            "duration": duration
+        }
+        let caseId = caseItem._id
+
+
+        addProcedureAppointment(caseId, procedureData)
+    }
+
     const addProcedureAppointment = (caseId, procedureAppointment) => {
         addProcedureAppointmentCall(caseId, procedureAppointment)
             .then(data => {
@@ -560,7 +564,7 @@ const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem, detai
 
     const createWorkItem = () => {
         const validateAllFields = validateFields();
-        if(!validateAllFields){ return }
+        if (!validateAllFields) { return }
         if (validateAllFields) {
             let workItem = {
                 "startTime": startTime,
@@ -568,11 +572,11 @@ const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem, detai
                 "locationId": location._id,
                 "caseId": caseItem._id,
                 "procedureId": procedure._id,
-                "physicianId": physicianInfo._id,
+                "physicianId": isTheatre ? physicianInfo._id : addWorkItem.id,
                 "isRecovery": false,
-                "authInfo": physicianInfo.id
+                "authInfo": isTheatre ? physicianInfo.id : addWorkItem.id
             }
-            
+
             addProcedure()
             createAppointment(workItem)
                 .then(data => {
@@ -659,9 +663,10 @@ const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem, detai
                                 value={procedure}
                                 oneOptionsSelected={handleProcedure}
                                 onChangeText={(value) => setSearchProcedureValue(value)}
-                                onClear={() => { 
+                                onClear={() => {
                                     onFieldChange("procedure")('');
-                                    setProcedure(undefined) }}
+                                    setProcedure(undefined)
+                                }}
                                 options={searchProcedureResult}
                                 isPopoverOpen={searchProcedureQuery}
                                 placeholder="Select Procedure"
@@ -686,9 +691,10 @@ const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem, detai
                                 text={searchLocationValue}
                                 oneOptionsSelected={handleLocationChange}
                                 onChangeText={(value) => setSearchLocationValue(value)}
-                                onClear={() => { 
+                                onClear={() => {
                                     onFieldChange("location")('');
-                                    setLocation(undefined) }}
+                                    setLocation(undefined)
+                                }}
                                 options={searchLocationResult}
                                 isPopoverOpen={searchLocationQuery}
                                 handlePatient={handleLocationChange}
@@ -700,177 +706,250 @@ const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem, detai
 
                     </View>
 
-                    <View style={[styles.row, { zIndex: 7 }]}>
-                        <View style={styles.inputWrapper}>
-                            <View style={styles.textContainer}>
-                                <Text style={styles.labels}>Case</Text>
+                    {isTheatre ?
+                        <View>
+                            <View style={[styles.row, { zIndex: 7 }]}>
+                                <View style={styles.inputWrapper}>
+                                    <View style={styles.textContainer}>
+                                        <Text style={styles.labels}>Case</Text>
+                                    </View>
+
+                                    <CustomSearchableOptionsField
+                                        emptyAfterSubmit={attemptedSubmit && caseItem === undefined ? true : false}
+                                        updateDB={updateCaseDB}
+                                        showActionButton={true}
+                                        value={caseItem}
+                                        placeholder="Select Case"
+                                        text={searchCaseValue}
+                                        oneOptionsSelected={handleCaseChange}
+                                        onChangeText={(value) => setSearchCaseValue(value)}
+                                        onClear={() => {
+                                            onFieldChange("caseItem")('');
+                                            setCaseItem(undefined)
+                                        }}
+                                        options={searchCaseResult}
+                                        isPopoverOpen={searchCaseQuery}
+                                        handlePatient={handleCaseChange}
+                                        searchFeild='caseNumber'
+                                        hasError={!!fieldErrors['caseItem']}
+                                        errorMessage={fieldErrors['caseItem']}
+                                    />
+
+                                </View>
+
+
+                                <View style={[styles.inputWrapper]}>
+                                    <View style={styles.textContainer}>
+                                        <Text style={styles.labels}>Physician</Text>
+                                    </View>
+
+                                    <SearchableOptionsField
+                                        emptyAfterSubmit={attemptedSubmit && physicianInfo === undefined ? true : false}
+                                        updateDB={updateTheatreDB}
+                                        showActionButton={true}
+                                        value={physicianInfo}
+                                        placeholder="Select physician"
+                                        text={searchPhysicianValue}
+                                        oneOptionsSelected={handlephysician}
+                                        onChangeText={(value) => setSearchPhysicianValue(value)}
+                                        onClear={() => {
+                                            onFieldChange("physician")('');
+                                            setPhysicianInfo(undefined)
+                                        }}
+                                        options={SearchPhysicianResult}
+                                        isPopoverOpen={searchPhysicianQuery}
+                                        handlePatient={handlephysician}
+                                        hasError={fieldErrors['physician']}
+                                        errorMessage={fieldErrors['physicians']}
+                                    />
+
+                                </View>
+
+
+
                             </View>
 
-                            <CustomSearchableOptionsField
-                                emptyAfterSubmit={attemptedSubmit && caseItem === undefined ? true : false}
-                                updateDB={updateCaseDB}
-                                showActionButton={true}
-                                value={caseItem}
-                                placeholder="Select Case"
-                                text={searchCaseValue}
-                                oneOptionsSelected={handleCaseChange}
-                                onChangeText={(value) => setSearchCaseValue(value)}
-                                onClear={() => { 
-                                    onFieldChange("caseItem")('');
-                                    setCaseItem(undefined) }}
-                                options={searchCaseResult}
-                                isPopoverOpen={searchCaseQuery}
-                                handlePatient={handleCaseChange}
-                                searchFeild='caseNumber'
-                                hasError={!!fieldErrors['caseItem']}
-                                errorMessage={fieldErrors['caseItem']}
-                            />
+                            <View style={[styles.row]}>
 
+                                <View style={styles.inputWrapper}>
+                                    <View style={styles.textContainer}>
+                                        <Text style={styles.labels}>Date</Text>
+                                    </View>
+
+                                    <DateInputField
+                                        value={selectedDate}
+                                        onClear={() => {
+                                            onFieldChange("selectedDate")('');
+                                            setDate(undefined)
+                                        }}
+                                        keyboardType="number-pad"
+                                        mode={'date'}
+                                        format={"DD/MM/YYYY"}
+                                        placeholder="DD/MM/YYYY"
+                                        onDateChange={onDateUpdate}
+                                        hasError={fieldErrors['selectedDate']}
+                                        errorMessage={fieldErrors['selectedDate']}
+                                        borderColor={fieldErrors['selectedDate'] ? '--color-red-700' : '--color-gray-300'}
+                                    />
+
+                                </View>
+
+                                <View style={styles.inputWrapper}>
+                                    <View style={styles.textContainer}>
+                                        <Text style={styles.labels}>Start</Text>
+                                    </View>
+
+                                    <DateInputField
+                                        onDateChange={onTimeUpdate("startTime")}
+                                        value={startTime}
+                                        mode={"time"}
+                                        format={"hh:mm A"}
+                                        onClear={() => {
+                                            onFieldChange("startTime")('');
+                                            setStartTime(undefined)
+                                        }}
+                                        placeholder="HH:MM"
+                                        hasError={!!fieldErrors['startTime']}
+                                        errorMessage={fieldErrors['startTime']}
+                                        borderColor={fieldErrors['startTime'] ? '--color-red-700' : '--color-gray-300'}
+                                    />
+
+                                </View>
+
+
+                            </View>
+
+
+                            <View style={[styles.row]}>
+                                <View style={styles.inputWrapper}>
+                                    <View style={styles.textContainer}>
+                                        <Text style={styles.labels}>End</Text>
+                                    </View>
+
+                                    <DateInputField
+                                        onDateChange={EndTimeUpdate("endTime")}
+                                        value={endTime}
+                                        mode={"time"}
+                                        format={"hh:mm A"}
+                                        onClear={() => {
+                                            onFieldChange("endTime")('');
+                                            setEndTime(undefined)
+                                        }}
+                                        placeholder="HH:MM"
+                                        hasError={!!fieldErrors['endTime']}
+                                        errorMessage={fieldErrors['endTime']}
+                                        borderColor={fieldErrors['endTime'] ? '--color-red-700' : '--color-gray-300'}
+                                    />
+
+                                </View>
+                            </View>
+                        </View>
+                        :
+                        <View>
+                            <View style={[styles.row, { zIndex: 7 }]}>
+                                <View style={styles.inputWrapper}>
+                                    <View style={styles.textContainer}>
+                                        <Text style={styles.labels}>Case</Text>
+                                    </View>
+
+                                    <CustomSearchableOptionsField
+                                        emptyAfterSubmit={attemptedSubmit && caseItem === undefined ? true : false}
+                                        updateDB={updateCaseDB}
+                                        showActionButton={true}
+                                        value={caseItem}
+                                        placeholder="Select Case"
+                                        text={searchCaseValue}
+                                        oneOptionsSelected={handleCaseChange}
+                                        onChangeText={(value) => setSearchCaseValue(value)}
+                                        onClear={() => {
+                                            onFieldChange("caseItem")('');
+                                            setCaseItem(undefined)
+                                        }}
+                                        options={searchCaseResult}
+                                        isPopoverOpen={searchCaseQuery}
+                                        handlePatient={handleCaseChange}
+                                        searchFeild='caseNumber'
+                                        hasError={!!fieldErrors['caseItem']}
+                                        errorMessage={fieldErrors['caseItem']}
+                                    />
+
+                                </View>
+
+                                <View style={styles.inputWrapper}>
+                                    <View style={styles.textContainer}>
+                                        <Text style={styles.labels}>Date</Text>
+                                    </View>
+
+                                    <DateInputField
+                                        value={selectedDate}
+                                        onClear={() => {
+                                            onFieldChange("selectedDate")('');
+                                            setDate(undefined)
+                                        }}
+                                        keyboardType="number-pad"
+                                        mode={'date'}
+                                        format={"DD/MM/YYYY"}
+                                        placeholder="DD/MM/YYYY"
+                                        onDateChange={onDateUpdate}
+                                        hasError={fieldErrors['selectedDate']}
+                                        errorMessage={fieldErrors['selectedDate']}
+                                        borderColor={fieldErrors['selectedDate'] ? '--color-red-700' : '--color-gray-300'}
+                                    />
+
+                                </View>
+
+                            </View>
+
+                            <View style={[styles.row]}>
+
+                                <View style={styles.inputWrapper}>
+                                    <View style={styles.textContainer}>
+                                        <Text style={styles.labels}>Start</Text>
+                                    </View>
+
+                                    <DateInputField
+                                        onDateChange={onTimeUpdate("startTime")}
+                                        value={startTime}
+                                        mode={"time"}
+                                        format={"hh:mm A"}
+                                        onClear={() => {
+                                            onFieldChange("startTime")('');
+                                            setStartTime(undefined)
+                                        }}
+                                        placeholder="HH:MM"
+                                        hasError={!!fieldErrors['startTime']}
+                                        errorMessage={fieldErrors['startTime']}
+                                        borderColor={fieldErrors['startTime'] ? '--color-red-700' : '--color-gray-300'}
+                                    />
+
+                                </View>
+                                <View style={styles.inputWrapper}>
+                                    <View style={styles.textContainer}>
+                                        <Text style={styles.labels}>End</Text>
+                                    </View>
+
+                                    <DateInputField
+                                        onDateChange={EndTimeUpdate("endTime")}
+                                        value={endTime}
+                                        mode={"time"}
+                                        format={"hh:mm A"}
+                                        onClear={() => {
+                                            onFieldChange("endTime")('');
+                                            setEndTime(undefined)
+                                        }}
+                                        placeholder="HH:MM"
+                                        hasError={!!fieldErrors['endTime']}
+                                        errorMessage={fieldErrors['endTime']}
+                                        borderColor={fieldErrors['endTime'] ? '--color-red-700' : '--color-gray-300'}
+                                    />
+
+                                </View>
+
+                            </View>
                         </View>
 
 
-                        <View style={[styles.inputWrapper]}>
-                            <View style={styles.textContainer}>
-                                <Text style={styles.labels}>Physician</Text>
-                            </View>
-
-                            <SearchableOptionsField
-                                emptyAfterSubmit={attemptedSubmit && physicianInfo === undefined ? true : false}
-                                updateDB={updateTheatreDB}
-                                showActionButton={true}
-                                value={physicianInfo}
-                                placeholder="Select physician"
-                                text={searchPhysicianValue}
-                                oneOptionsSelected={handlephysician}
-                                onChangeText={(value) => setSearchPhysicianValue(value)}
-                                onClear={() => { 
-                                    onFieldChange("physician")('');
-                                    setPhysicianInfo(undefined) }}
-                                options={SearchPhysicianResult}
-                                isPopoverOpen={searchPhysicianQuery}
-                                handlePatient={handlephysician}
-                                hasError={fieldErrors['physician']}
-                                errorMessage={fieldErrors['physicians']}
-                            />
-
-                        </View>
-
-                        {/* <View style={styles.inputWrapper}>
-                            <View style={styles.textContainer}>
-                                <Text style={styles.labels}>Date</Text>
-                            </View>
-
-                            <DateInputField
-                                value={selectedDate}
-                                onClear={() => { 
-                                    onFieldChange("selectedDate")('');
-                                    setDate(undefined) }}
-                                keyboardType="number-pad"
-                                mode={'date'}
-                                format={"DD/MM/YYYY"}
-                                placeholder="DD/MM/YYYY"
-                                onDateChange={onDateUpdate}
-                                hasError={fieldErrors['selectedDate']}
-                                errorMessage={fieldErrors['selectedDate']}
-                                borderColor={fieldErrors['selectedDate'] ? '--color-red-700' : '--color-gray-300'}
-                            />
-
-                        </View> */}
-
-                    </View>
-
-                    <View style={[styles.row]}>
-
-                    <View style={styles.inputWrapper}>
-                            <View style={styles.textContainer}>
-                                <Text style={styles.labels}>Date</Text>
-                            </View>
-
-                            <DateInputField
-                                value={selectedDate}
-                                onClear={() => { 
-                                    onFieldChange("selectedDate")('');
-                                    setDate(undefined) }}
-                                keyboardType="number-pad"
-                                mode={'date'}
-                                format={"DD/MM/YYYY"}
-                                placeholder="DD/MM/YYYY"
-                                onDateChange={onDateUpdate}
-                                hasError={fieldErrors['selectedDate']}
-                                errorMessage={fieldErrors['selectedDate']}
-                                borderColor={fieldErrors['selectedDate'] ? '--color-red-700' : '--color-gray-300'}
-                            />
-
-                        </View>
-
-                        <View style={styles.inputWrapper}>
-                            <View style={styles.textContainer}>
-                                <Text style={styles.labels}>Start</Text>
-                            </View>
-
-                            <DateInputField
-                                onDateChange={onTimeUpdate("startTime")}
-                                value={startTime}
-                                mode={"time"}
-                                format={"hh:mm A"}
-                                onClear={() => {
-                                    onFieldChange("startTime")('');
-                                    setStartTime(undefined)}}
-                                placeholder="HH:MM"
-                                hasError={!!fieldErrors['startTime']}
-                                errorMessage={fieldErrors['startTime']}
-                                borderColor={fieldErrors['startTime'] ? '--color-red-700' : '--color-gray-300'}
-                            />
-
-                        </View>
-                        {/* <View style={styles.inputWrapper}>
-                            <View style={styles.textContainer}>
-                                <Text style={styles.labels}>End</Text>
-                            </View>
-
-                            <DateInputField
-                                onDateChange={EndTimeUpdate("endTime")}
-                                value={endTime}
-                                mode={"time"}
-                                format={"hh:mm A"}
-                                onClear={() => {
-                                    onFieldChange("endTime")('');
-                                    setEndTime(undefined)}}
-                                placeholder="HH:MM"
-                                hasError={!!fieldErrors['endTime']}
-                                errorMessage={fieldErrors['endTime']}
-                                borderColor={fieldErrors['endTime'] ? '--color-red-700' : '--color-gray-300'}
-                            />
-
-                        </View> */}
-
-                    </View>
-
-
-                    <View style={[styles.row]}>
-                    <View style={styles.inputWrapper}>
-                            <View style={styles.textContainer}>
-                                <Text style={styles.labels}>End</Text>
-                            </View>
-
-                            <DateInputField
-                                onDateChange={EndTimeUpdate("endTime")}
-                                value={endTime}
-                                mode={"time"}
-                                format={"hh:mm A"}
-                                onClear={() => {
-                                    onFieldChange("endTime")('');
-                                    setEndTime(undefined)}}
-                                placeholder="HH:MM"
-                                hasError={!!fieldErrors['endTime']}
-                                errorMessage={fieldErrors['endTime']}
-                                borderColor={fieldErrors['endTime'] ? '--color-red-700' : '--color-gray-300'}
-                            />
-
-                        </View>
-                    </View>
-
-
+                    }
                 </View>
             </View>
         </OverlayDialog>
