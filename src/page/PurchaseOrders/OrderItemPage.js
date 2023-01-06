@@ -199,7 +199,7 @@ function OrderItemPage({ route, navigation }) {
     const onConfirmDelivery = (data) => {
         const container = []
         orderItems.filter((order, index) => {
-            if (order._id === data[index])
+            if (data.includes(order._id))
             {
                 container.push(order.productId._id);
             }
