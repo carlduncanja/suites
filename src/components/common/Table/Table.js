@@ -85,12 +85,12 @@ function Table({
                 </DividerContainer>
 
                 <FlatList
-                    listItemFormat={listItemFormat}
+                    listItemFormat={({item, index}) => listItemFormat(item, index)}
                     data={data}
                     style={{ height: '100%' }}
                     nestedScrollEnabled={true}
-                    renderItem={({ item }) => listItemFormat(item)}
-                    keyExtractor={keyExtractor}
+                    renderItem={({ item, index }) => listItemFormat(item, index)}
+                    keyExtractor={(item) => item.id} 
                     contentContainerStyle={{ paddingBottom: 100 }}
                     keyboardShouldPersistTaps={'always'}
                     extraData={extraData}
