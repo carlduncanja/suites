@@ -75,6 +75,7 @@ import {
     role,
     patientEndpoint,
     allPatientsEndpoint,
+    updatePatientRiskEndpoint,
     alertsEndpoint, 
     closeAlertEndpoint,
     closeAllAlertsEndpoint,
@@ -895,6 +896,11 @@ export const getPatients = async (query, max, page) => suitesAxiosInstance
     .then(handleResponse)
     .catch(handleError)
 
+export const updatePatientRisk = async (id, data) => suitesAxiosInstance
+    .put(updatePatientRiskEndpoint(id), data)
+    .then(handleResponse)
+    .catch(handleError)
+
 // ################# Document Generation Endpoints
 export const generateDocumentLink = async data => documentGenerationInstance.post(createDocumentLink, data)
     .then(handleResponse)
@@ -1000,8 +1006,8 @@ export const updateLifeStyleItems = async (id, data) => suitesAxiosInstance
 
 // ################# HEALTH INSURER ENDPOINTS 
 
-export const getHealthInsurers = async () => suitesAxiosInstance
-    .get(healthInsurerEndpoint)
+export const getHealthInsurers = async (query, max, page) => suitesAxiosInstance
+    .get(healthInsurerEndpoint,{params:{query, max, page}})
     .then(handleResponse)
     .catch(handleError)
 

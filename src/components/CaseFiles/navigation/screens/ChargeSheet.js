@@ -319,6 +319,7 @@ const ChargeSheet = React.forwardRef(({
 
     const handleCaseProcedureUpdate = caseProcedures => {
         console.log('Procedure update: ', caseProcedures);
+        
         setCaseProcedure(caseProcedures);
         setUpdated(true);
     };

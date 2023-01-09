@@ -282,6 +282,8 @@ function AddItemContainer({supplierId = "", onAddProductItems = ()=>{}, orders =
                 onSearchChange = {onSearchChange}
                 searchQuery = {searchInventoryQuery}
                 onSelectItem = {onSelectItem}
+                footerIndex={'30'}
+
             />
         </View>
     )

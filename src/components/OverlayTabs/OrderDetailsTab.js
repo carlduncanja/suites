@@ -162,6 +162,7 @@ const OrderDetailsTab = ({
             ...fields,
             [fieldName]: finalValue
         });
+        
         setUpdated(true);
     };
 

@@ -21,7 +21,9 @@ import ConfirmationComponent from './ConfirmationComponent';
 import ConfirmationCheckBoxComponent from './ConfirmationCheckBoxComponent';
 import _ from 'lodash'
 
-function PaginatedSchedule({ ID, isPhysician }) {
+function PaginatedSchedule({ ID, details, isPhysician = false, isTheatre = false }) {
+
+    console.log("theare oage? ", isTheatre)
     const weekday = new Array(7);
     weekday[0] = 'Sunday';
     weekday[1] = 'Monday';
@@ -92,38 +94,41 @@ function PaginatedSchedule({ ID, isPhysician }) {
         let toDate = formatDate(tommorrow, 'YYYY/MM/DD')
 
         console.log("date passed", fromDate, toDate, id)
-            ,
-            getAppointments("", "", fromDate, fromDate, '', id)
-                .then(data => {
-                    //console.log("Objected values:", Object.values(data));
-                    console.log('The appointment data received is:', data);
-                    relevantAppointment.length = 0;
-                    //console.log("data visualization", relevantAppointment)
 
-                    const appointmentData = data.map(item => {
-                        let modifiedAppointment = { ...item };
-                        let today = new Date();
-                        // const mm = moment(item.startTime);
-                        const start = moment(modifiedAppointment.startTime);
-                        const end = moment(modifiedAppointment.endTime);
 
-                        const isActive = moment().isBetween(start, end);
-                        if (end < today) {
-                            console.log("appointment has passed");
-                            modifiedAppointment.type = 3;
-                        } else (isActive) ? (modifiedAppointment.type = 0) : (modifiedAppointment.type = 1);
+        getAppointments("", isTheatre ? id : "", fromDate, fromDate, '', isTheatre ? "" : id)
+            .then(data => {
+                //console.log("Objected values:", Object.values(data));
+                console.log('The appointment data received is:', data);
+                relevantAppointment.length = 0;
+                //console.log("data visualization", relevantAppointment)
 
-                        return { ...modifiedAppointment, }
-                    })
+                const appointmentData = data.map(item => {
+                    let modifiedAppointment = { ...item };
+                    let today = new Date();
+                    // const mm = moment(item.startTime);
+                    const start = moment(modifiedAppointment.startTime);
+                    const end = moment(modifiedAppointment.endTime);
 
-                    setrelevantApppointments(relevantAppointment.concat(appointmentData));
+                    const isActive = moment().isBetween(start, end);
+                    if (end < today) {
+                        console.log("appointment has passed");
+                        modifiedAppointment.type = 3;
+                    } else (isActive) ? (modifiedAppointment.type = 0) : (modifiedAppointment.type = 1);
+
+                    return { ...modifiedAppointment, }
                 })
-                .catch(error => {
-                    console.log('Failed to get desired appointments', error);
-                })
-                .finally(_ => {
-                    setFetchingAppointment(false);
-                });
+
+                console.log("schedule appointments", appointmentData)
+                setrelevantApppointments(relevantAppointment.concat(appointmentData));
+            })
+            .catch(error => {
+                console.log('Failed to get desired appointments', error);
+            })
+            .finally(_ => {
+                setFetchingAppointment(false);
+            });
+
     };
 
 
@@ -208,6 +213,8 @@ function PaginatedSchedule({ ID, isPhysician }) {
                 <CreateWorkItemDialogContainer
                     onCancel={() => setFloatingAction(false)}
                     addWorkItem={{ "id": ID }}
+                    details={details} 
+                    isTheatre={isTheatre}
                 />
             ),
             onClose: () => setFloatingAction(false)
@@ -223,6 +230,7 @@ function PaginatedSchedule({ ID, isPhysician }) {
                 <EditWorkItemDialogContainer
                     onCancel={() => setFloatingAction(false)}
                     appiontment={{ "id": selectedIds[0] }}
+                    refreshShedule={onRefesh()}
                 />
             ),
             onClose: () => setFloatingAction(false)
@@ -309,12 +317,12 @@ function PaginatedSchedule({ ID, isPhysician }) {
         );
     };
 
-    const removeIdFromArray = (id) =>{
-     let updatedList=[...selectedIds]
-      //console.log("can say anthing")
-      return []
+    const removeIdFromArray = (id) => {
+        let updatedList = [...selectedIds]
+        //console.log("can say anthing")
+        return []
     }
-    
+
     const updateIDs = ids => {
 
         //console.log("before", selectedIds)
@@ -323,19 +331,19 @@ function PaginatedSchedule({ ID, isPhysician }) {
         ids.map((id) => {
             let test = updatedList.includes(id)
             test ?
-                updatedList=removeIdFromArray(id)
+                updatedList = removeIdFromArray(id)
                 :
-                updatedList.push(id) 
-            
-            console.log("During",updatedList)
+                updatedList.push(id)
+
+            console.log("During", updatedList)
         })
         setSelectedIds(updatedList)
         //console.log('after', selectedIds)
 
         /*console.log('before', selectedIds)
         setSelectedIds(selectedIds.concat(ids))
-        console.log('after', selectedIds)*/ 
-       // setSelectedIds(updatedList)
+        console.log('after', selectedIds)*/
+        // setSelectedIds(updatedList)
         //console.log('after',selectedIds)
 
 
