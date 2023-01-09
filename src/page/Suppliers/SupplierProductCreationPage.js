@@ -205,8 +205,6 @@ function SupplierProductCreationPage({route}) {
     const [isNextDisabled, setNextDisabled] = useState(false);
     const [isPreviousDisabled, setPreviousDisabled] = useState(true);
 
-    const [unitPrice, setUnitPrice] = useState(0)
-
     const [searchValue, setSearchValue] = useState('')
     const [searchResults, setSearchResults] = useState([])
     const [searchQuery, setSearchQuery] = useState({});
@@ -271,7 +269,7 @@ function SupplierProductCreationPage({route}) {
         setData([
             {
                 name: item?.name,
-                unitPrice: unitPrice,
+                unitPrice: 0,
                 inventoryVariant: {...item}
             },
             ...data
@@ -282,12 +280,13 @@ function SupplierProductCreationPage({route}) {
     }
 
     const onUpdateValue = (field, selectedIndex) => value => {
+
         const updatedData = data.map((item, index) => {
             return selectedIndex === index
                 ? {...item, [field]: value}
                 : {...item}
         })
-        console.log("price update", updatedData)
+
         setData(updatedData);
     }
 
@@ -352,7 +351,6 @@ function SupplierProductCreationPage({route}) {
     const creatProducts = () => {
         // setLoading(true);
         const createProductsData = data.map(item => {
-            console.log("item data check", item)
             return {
                 name: item.name,
                 type: 'inventory',
