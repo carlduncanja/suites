@@ -280,6 +280,7 @@ function SupplierProductCreationPage({route}) {
     }
 
     const onUpdateValue = (field, selectedIndex) => value => {
+
         const updatedData = data.map((item, index) => {
             return selectedIndex === index
                 ? {...item, [field]: value}
@@ -295,9 +296,6 @@ function SupplierProductCreationPage({route}) {
         setData(updatedData);
     }
 
-    // endregion
-
-    // region helper functions
     const listItemFormat = (item, index) => {
         const {_id = '', name = '', unitPrice, inventoryVariant = {}} = item
         return (
@@ -323,8 +321,8 @@ function SupplierProductCreationPage({route}) {
                         value={unitPrice}
                         onClear={onUpdateValue('unitPrice', index)}
                         onChangeText={(value) => {
-                            if (!isNaN(value))
-                                onUpdateValue('unitPrice', index)
+                            const item = value.replace(/\D/g, "")
+                            onUpdateValue('unitPrice', index)(item)
                         }}
                         keyboardType="numeric"
                     />
@@ -351,7 +349,7 @@ function SupplierProductCreationPage({route}) {
     }
 
     const creatProducts = () => {
-        setLoading(true);
+        // setLoading(true);
         const createProductsData = data.map(item => {
             return {
                 name: item.name,
@@ -361,8 +359,6 @@ function SupplierProductCreationPage({route}) {
                 inventoryVariant: item.inventoryVariant?._id
             };
         });
-
-        // console.log('create products', supplierId, createProductsData);
 
         createSupplierProductsCall(supplierId, createProductsData)
             .then(_ => {
