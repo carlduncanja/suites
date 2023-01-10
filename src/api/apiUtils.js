@@ -1,5 +1,6 @@
 import { useSnackbar } from '../components/Snackbar/CustomSnackbarProvider';
 
+
 export async function handleRawResponse(response) {
     return response;
 }
@@ -18,7 +19,8 @@ export function handleError(error) {
                 status:2395
             }
         }
-    }
+    } 
+
 
     try {
         const STATUS_CODE = error?.response?.status;

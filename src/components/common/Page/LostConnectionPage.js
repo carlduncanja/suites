@@ -36,17 +36,17 @@ const BodyContainer = styled.View`
     justify-content:space-between;
 `;
 
-const PageText = styled.Text(({ theme, color = '--color-gray-600', font = '--text-base-regular',textDecorationLine= '' }) => ({
+const PageText = styled.Text(({ theme, color = '--color-gray-600', font = '--text-base-regular', textDecorationLine = '' }) => ({
     ...theme.font[font],
     color: theme.colors[color],
     display: 'flex',
     textAlign: 'center',
     // alignItems: 'center',
-    marginBottom:20,
+    marginBottom: 20,
     textDecorationLine: textDecorationLine
 }));
 
-const LostConnectionPage = () => {
+const LostConnectionPage = ({ navigation }) => {
     const theme = useTheme();
     return (
         <PageWrapper>
@@ -62,7 +62,7 @@ const LostConnectionPage = () => {
                         <PageText>
                             Some features may not work as expected.
                         </PageText>
-                        <TouchableText onPress = {console.log("this is a test to see if we can reload the app")}>
+                        <TouchableText onPress={() => { navigation.goBack() }}>
                             <PageText color="--color-blue-700" textDecorationLine='underline'>
                                 Reload Page
                             </PageText>

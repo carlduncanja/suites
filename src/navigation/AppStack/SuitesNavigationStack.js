@@ -203,14 +203,14 @@ export const SuitesNavigationStack = ({ auth = {} }) => {
             {/*        tabName: 'Help',*/}
             {/*    }}*/}
             {/*/>*/}
-            <SuitesNavigator.Screen
+           {/* <SuitesNavigator.Screen
                 name="Lost Connection"
                 component={LostConnectionPage}
                 initialParams={{
                     icon: ConnectionIcon,
                     tabName: 'Help',
                 }}
-            />
+            />*/}
 
             <SuitesNavigator.Screen
                 name="Settings"
