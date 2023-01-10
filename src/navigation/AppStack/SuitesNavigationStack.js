@@ -1,7 +1,7 @@
-import {createAppContainer} from 'react-navigation';
+import { createAppContainer } from 'react-navigation';
 import React from 'react';
-import {connect} from 'react-redux';
-import {createSuitesSidebarNavigator} from '../SuiteNavigator';
+import { connect } from 'react-redux';
+import { createSuitesSidebarNavigator } from '../SuiteNavigator';
 
 /* Screens */
 import SchedulePage from '../../page/Schedule/SchedulePage/SchedulePage';
@@ -29,6 +29,7 @@ import SettingsNavigationStack from './SettingsNavigationStack';
 
 /* Providers*/
 import NotFoundPage from '../../components/common/Page/NotFoundPage';
+import LostConnectionPage from '../../components/common/Page/LostConnectionPage';
 
 /* Icons */
 import InvoiceIcon from '../../../assets/svg/invoices';
@@ -44,16 +45,17 @@ import PhysiciansIcon from '../../../assets/svg/physicians';
 import ProcedureIcon from '../../../assets/svg/procedures';
 import SettingsIcon from '../../../assets/svg/settingsIcon';
 import NotificationIcon from '../../../assets/svg/notificationIcon';
-import {ROLES} from '../../const';
+import { ROLES } from '../../const';
 import UserPageIcon from '../../../assets/svg/UserPageIcon';
 import UsersNavigationStack from './UsersNavigationStack';
 import ScheduleNavigationStack from "./ScheduleNavigationStack";
 import InvoicesNavigationStack from './InvoicesNavigationStack';
+import ConnectionIcon from '../../../assets/svg/lostConnection';
 
 
 const SuitesNavigator = createSuitesSidebarNavigator();
 
-export const SuitesNavigationStack = ({auth = {}}) => {
+export const SuitesNavigationStack = ({ auth = {} }) => {
     const isAdmin = auth.user.role_name === ROLES.ADMIN;
 
     // console.log('auth suites navigator', auth);
@@ -201,6 +203,14 @@ export const SuitesNavigationStack = ({auth = {}}) => {
             {/*        tabName: 'Help',*/}
             {/*    }}*/}
             {/*/>*/}
+            <SuitesNavigator.Screen
+                name="Lost Connection"
+                component={LostConnectionPage}
+                initialParams={{
+                    icon: ConnectionIcon,
+                    tabName: 'Help',
+                }}
+            />
 
             <SuitesNavigator.Screen
                 name="Settings"
@@ -215,6 +225,6 @@ export const SuitesNavigationStack = ({auth = {}}) => {
     );
 };
 
-const mapStateToProps = state => ({auth: state.auth});
+const mapStateToProps = state => ({ auth: state.auth });
 
 export default connect(mapStateToProps)(SuitesNavigationStack);
