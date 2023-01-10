@@ -19,7 +19,8 @@ const ToastContainer = styled.View`
     background-color: ${({theme, backgroundColor}) => theme.colors[backgroundColor]};
     border: ${({theme, borderColor}) => `1px solid ${theme.colors[borderColor]}`};
     border-radius: 8px;
-    padding-left: ${({theme}) => theme.space['--space-24']};
+    border-color: transparent;
+    padding: 18px;
     padding-bottom:0;
     padding-top:0;
     justify-content:space-between;
@@ -28,8 +29,8 @@ const ToastContainer = styled.View`
 `;
 
 const ToastMessage = styled.Text(({theme, color = "--color-blue-600"}) => ({
-    ...theme.font['--text-xs-medium'],
     color: theme.colors[color],
+    fontSize: '14px'
 }));
 
 const IconContainer = styled.View`
@@ -42,15 +43,15 @@ const IconContainer = styled.View`
 const shadows = [
     {
         shadowColor: 'black',
-        shadowOffset: { width: 2, height: 0 },
-        shadowOpacity: 0.06,
+        shadowOffset: { width: 0, height: 3 },
+        shadowOpacity: 0,
         shadowRadius: 4
     },
     {
         shadowColor: 'black',
-        shadowOffset: { width: 4, height: 0 },
-        shadowOpacity: 0.1,
-        shadowRadius: 6
+        shadowOffset: { width: 0, height: 5 },
+        shadowOpacity: 0.19,
+        shadowRadius: 5,
     },
 ];
 

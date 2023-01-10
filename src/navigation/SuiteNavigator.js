@@ -175,7 +175,7 @@ const SuitesCustomNavigator = ({
                                 <CustomSnackbarProvider>
                                     {isDisplay ? (
                                         <View style={{width: '100%', height: 100, position: 'absolute', display: 'flex', zIndex: 100, padding: 30, paddingTop: 13}}>
-                                        <View style={{flex: 1, height: 48, display: 'flex'}}>
+                                        <View style={{flex: 1, height: 48, display: 'flex', alignItems: 'center', flexDirection: 'row'}}>
                                             <ToastComponent
                                                 isDisplay={isDisplay}
                                                 setIsDispay={setIsDispay}
