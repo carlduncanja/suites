@@ -9,10 +9,8 @@ import IconButton from '../common/Buttons/IconButton';
 
 
 const ToastWrapper = styled.View`
-    width: 636px;
+    width: 100%;
     height: 48px;
-    position: absolute;
-    bottom: 20;
 `;
 
 const ToastContainer = styled.View`
@@ -56,10 +54,9 @@ const shadows = [
     },
 ];
 
-const ToastComponent = ({backgroundColor = "--color-blue-100", borderColor = "--color-blue-600", message = "It seems you have lost your internet connection. Some features may not work as expected."}) => {
+const ToastComponent = ({isDisplay = false, setIsDispay, backgroundColor = "--color-blue-100", borderColor = "--color-blue-600", message = "Oops! Please check your internet connection."}) => {
     const theme = useTheme();
 
-    const [isDisplay, setIsDispay] = useState(true);
     return (
         isDisplay &&
         <ToastWrapper>

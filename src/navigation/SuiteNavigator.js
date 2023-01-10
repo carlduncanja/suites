@@ -1,8 +1,9 @@
 // SuiteNavigator.js
-import React, {useContext, useEffect} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {View, StyleSheet, Dimensions, SafeAreaView, Text} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import * as Notifications from 'expo-notifications';
+import NetInfo from "@react-native-community/netinfo";
 
 import {
     ModalProvider,
@@ -45,6 +46,7 @@ import CustomSnackbarProvider from '../components/Snackbar/CustomSnackbarProvide
 import UnauthorizedSubscription from '../UnauthorizedSubscription';
 import {setBearerToken} from "../api";
 import PrintScheduleModal from "../modals/PrintScheduleModal";
+import ToastComponent from '../components/common/ToastComponent';
 
 /**
  * Custom navigator wrapper for application.
@@ -69,6 +71,13 @@ const SuitesCustomNavigator = ({
         screenOptions,
         initialRouteName,
     });
+    const [isDisplay, setIsDispay] = useState(false);
+
+    useEffect(() => {
+        NetInfo.addEventListener(state => {
+            setIsDispay(!state.isInternetReachable);
+        });
+    }, []);
 
     useEffect(() => {
         // get user token from state,
@@ -144,7 +153,7 @@ const SuitesCustomNavigator = ({
             newState: event.nativeEvent.layout,
         });
     };
-
+    
     return (
         <NavigationHelpersContext.Provider value={navigation}>
             <SafeAreaView style={{flex: 1, backgroundColor: '#fff'}}>
@@ -163,9 +172,19 @@ const SuitesCustomNavigator = ({
 
                             <View style={styles.pageContent} onLayout={getPageMeasure}>
                                 {/*    ACTIVE SCREEN    */}
-
                                 <CustomSnackbarProvider>
-
+                                    {isDisplay ? (
+                                        <View style={{width: '100%', height: 100, position: 'absolute', display: 'flex', zIndex: 100, padding: 30, paddingTop: 13}}>
+                                        <View style={{flex: 1, height: 48, display: 'flex'}}>
+                                            <ToastComponent
+                                                isDisplay={isDisplay}
+                                                setIsDispay={setIsDispay}
+                                            />
+                                        </View>
+                                    </View>
+                                    ) : <View></View>
+                                
+                                }
                                     {descriptors[state.routes[state.index].key].render()}
 
                                     <UnauthorizedSubscription/>
