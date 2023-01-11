@@ -85,7 +85,7 @@ function Table({
                 </DividerContainer>
 
                 <FlatList
-                    listItemFormat={listItemFormat}
+                    listItemFormat={({item, index}) => listItemFormat(item, index)}
                     data={data}
                     style={{ height: '100%' }}
                     nestedScrollEnabled={true}
