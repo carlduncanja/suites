@@ -1,4 +1,5 @@
-import {useSnackbar} from '../components/Snackbar/CustomSnackbarProvider';
+import { useSnackbar } from '../components/Snackbar/CustomSnackbarProvider';
+
 
 export async function handleRawResponse(response) {
     return response;
@@ -12,13 +13,23 @@ export async function handleResponse(response) {
 export function handleError(error) {
     // eslint-disable-next-line no-console
     console.log('API call failed. ', error);
+    if (error == "Error: Network Error") {
+        error = {
+            response: {
+                status:2395
+            }
+        }
+    } 
+
 
     try {
         const STATUS_CODE = error?.response?.status;
         switch (STATUS_CODE) {
             case 401:
                 EventEmitter.dispatch(EVENTS.UNAUTHORIZED, error);
-                break; // return the error to be used if needed
+                break; // return the error to be used if needed 
+            case 2395:
+                console.log("no network connection")
             default:
                 break;
         }
@@ -55,4 +66,6 @@ export const EVENTS = {
 
     // notification message event
     UNAUTHORIZED: '401_UNAUTHORIZED',
+    
+
 };

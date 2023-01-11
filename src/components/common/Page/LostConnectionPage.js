@@ -17,10 +17,15 @@ const PageContainer = styled.View`
     padding-bottom: 100px;
 `;
 
+const TouchableText = styled.TouchableOpacity`
+    justify-content:center;
+    margin-Top: 15;
+`;
+
 const ContentContainer = styled.View`
     width: 366px;
     height: 102px;
-    margin-top: ${({theme}) => theme.space['--space-48']};
+    margin-top: ${({ theme }) => theme.space['--space-48']};
     align-items:center;
     justify-content:space-between;
 `;
@@ -31,20 +36,22 @@ const BodyContainer = styled.View`
     justify-content:space-between;
 `;
 
-const PageText = styled.Text(({theme, color = '--color-gray-700', font = '--text-base-regular'}) => ({
+const PageText = styled.Text(({ theme, color = '--color-gray-600', font = '--text-base-regular', textDecorationLine = '' }) => ({
     ...theme.font[font],
     color: theme.colors[color],
     display: 'flex',
     textAlign: 'center',
     // alignItems: 'center',
+    marginBottom: 20,
+    textDecorationLine: textDecorationLine
 }));
 
-const LostConnectionPage = () => {
+const LostConnectionPage = ({ navigation }) => {
     const theme = useTheme();
     return (
         <PageWrapper>
             <PageContainer>
-                <ConnectionIcon/>
+                <ConnectionIcon />
                 <ContentContainer>
                     <PageText theme={theme} font="--text-lg-bold">No Internet Connection!</PageText>
 
@@ -55,9 +62,13 @@ const LostConnectionPage = () => {
                         <PageText>
                             Some features may not work as expected.
                         </PageText>
-
+                        <TouchableText onPress={() => { navigation.goBack() }}>
+                            <PageText color="--color-blue-700" textDecorationLine='underline'>
+                                Reload Page
+                            </PageText>
+                        </TouchableText>
                     </BodyContainer>
-                    
+
                 </ContentContainer>
             </PageContainer>
         </PageWrapper>
