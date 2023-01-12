@@ -48,6 +48,9 @@ const PageText = styled.Text(({ theme, color = '--color-gray-600', font = '--tex
 
 const LostConnectionPage = ({ navigation }) => {
     const theme = useTheme();
+    const targetRoute = navigation.getState().routes;
+    const route = targetRoute[targetRoute.length - 1];
+
     return (
         <PageWrapper>
             <PageContainer>
@@ -62,7 +65,7 @@ const LostConnectionPage = ({ navigation }) => {
                         <PageText>
                             Some features may not work as expected.
                         </PageText>
-                        <TouchableText onPress={() => { navigation.goBack() }}>
+                        <TouchableText onPress={() => { navigation.navigate(route.name) }}>
                             <PageText color="--color-blue-700" textDecorationLine='underline'>
                                 Reload Page
                             </PageText>

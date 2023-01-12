@@ -187,7 +187,7 @@ function Page(props) {
                 </PageContainer>
 
                 :
-                <LostConnectionPage />
+                <LostConnectionPage navigation={navigation} />
             }
         </PageWrapper>
     );
