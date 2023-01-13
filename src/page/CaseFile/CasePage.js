@@ -1882,7 +1882,7 @@ function CasePage({ auth = {}, route, addNotification, navigation, ...props }) {
                     isEditMode={pageState.isEditMode}
                     modal={modal}
                     caseId={caseId}
-                    refreshData={() => { fetchCase(caseId) }}
+                    refreshData={() => {fetchCase(caseId)}}
 
 
                 />;
