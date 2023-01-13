@@ -4,7 +4,7 @@ import { Details } from '../../OverlayPages/MedicalStaff'
 import { View, Text } from 'react-native';
 import ConfirmationCheckBoxComponent from '../../../../components/ConfirmationCheckBoxComponent';
 import ConfirmationComponent from '../../../../components/ConfirmationComponent';
-import { deleteCaseStaff, addCaseStaff } from '../../../../api/network'
+import { deleteCaseStaff, addCaseStaff, editCaseStaff } from '../../../../api/network'
 
 const MedicalStaff = ({
     staff,
@@ -15,8 +15,49 @@ const MedicalStaff = ({
     refreshData = () => { },
 }) => {
 
-    const handleEdit = () => {
-        console.log("handle edit")
+
+    const handleEdit = (id, index, physicianSelection) => {
+        if (index !== undefined) {
+            let staffClone = staff;
+            const physicianContainer = [];
+            const nurseContainer = [];
+            let leadContainer = '';
+
+            staffClone.physicians.map(item => {
+                physicianContainer.push(item._id);
+            });
+
+            staffClone.nurses.map(item => {
+                nurseContainer.push(item._id);
+            });
+
+            leadContainer = physicianContainer[0];
+
+            if (physicianSelection) {
+                physicianContainer[index] = id
+                
+                if (index === 0) {
+                    leadContainer = staffClone.leadPhysician._id;
+                }
+            }
+    
+            if (!physicianSelection) {
+                nurseContainer[index] = id;
+            }
+
+            const payload = {
+                staff: {
+                    physicians: physicianContainer,
+                    nurses: nurseContainer,
+                    leadPhysician: leadContainer
+                }
+            }
+
+            editCaseStaff(caseId, payload).then(res => {
+                refreshData();
+            })
+        }
+        
     }
 
     const handleDelete = (data) => {
@@ -24,8 +65,9 @@ const MedicalStaff = ({
 
     }
 
-    const handleAdd = (id) => {
-        addCaseStaff(caseId, { "staffId": id })
+    const handleAdd = (id, index = undefined, physicianSelection) => {
+        if (index === undefined && physicianSelection == undefined) {
+            addCaseStaff(caseId, { "staffId": id })
             .then(data => {
                 modal.openModal(
                     'ConfirmationModal', {
@@ -54,7 +96,10 @@ const MedicalStaff = ({
                 }, 200)
                 console.log('failed to add this staff list', error)
             })
-
+        }
+        else {
+            handleEdit(id, index, physicianSelection)
+        }
 
     }
 
