@@ -11,8 +11,10 @@ import DevicesIcon from '../../../../../assets/svg/implantedDevices';
 
 import FrameCard from '../../../common/Frames/FrameCards/FrameCard';
 import Search from '../../../common/Search';
+import { createMedicalHistory, updatePatient } from '../../../../api/network';
 
-const General = ({tabDetails, isEditMode}) => {
+const General = ({tabDetails, isEditMode, fetchCase = () => {}, patient}) => {
+    const thing = tabDetails[0]?.patient || "";
     const getData = medicalType => {
         const container = [];
         tabDetails.map(item => {
@@ -24,12 +26,21 @@ const General = ({tabDetails, isEditMode}) => {
         return container;
     };
 
-    const handleAdd = (value, type) => {
-        const patientId = tabDetails[0]?.patient || "";
-        console.log('here he');
-        console.log(value);
-        console.log(type);
-        console.log(patientId)
+    const handleAdd = async (notes, currentType) => {
+        const patientId = patient._id;
+        let type = '';
+        tabDetails.filter(item => {
+            if (item.type.name === currentType) {
+                type = item.type._id
+            }
+        })
+        await createMedicalHistory(patientId, {notes, type}).then(response => {
+            updatePatient(patientId, {medicalInfo: {
+                medicalHistory: [...tabDetails, response]
+            }}).then(result => {
+                fetchCase()
+            })
+        })
     }
     
     return (

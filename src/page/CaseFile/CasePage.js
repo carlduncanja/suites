@@ -1890,7 +1890,8 @@ function CasePage({ auth = {}, route, addNotification, navigation, ...props }) {
                 return <MedicalHistory
                     medicalInfo={medicalInfo}
                     selectedTab={selectedTab}
-
+                    patient={patient}
+                    fetchCase={() => fetchCase(caseId)}
                 />;
             case 'Procedures':
                 return <Procedures
