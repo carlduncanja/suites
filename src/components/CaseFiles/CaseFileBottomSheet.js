@@ -63,7 +63,7 @@ const CaseFileBottomSheet = ({caseItem, isOpenEditable}) => {
         },
         {
             name: "Medical History",
-            overlayTabs: ["General", "Family History", "Lifestyle", "Other"],
+            overlayTabs: ["General", "Family History", "Lifestyle"],
             selectedIcon: <MedicalSelectedIcon/>,
             disabledIcon: <MedicalDisabledIcon/>
         },
