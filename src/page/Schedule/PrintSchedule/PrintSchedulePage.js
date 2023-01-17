@@ -164,7 +164,7 @@ function PrintSchedulePage({route, navigation}) {
                         day: title,
                         appointments: appointmentForDay.map(appointment => ({
                             info: `${appointment.title} - ${appointment.subject}`,
-                            time: `${formatDate(appointment.startTime, "") - formatDate(appointment.endTime, "")}`,
+                            time: `${formatDate(appointment.startTime, "h:mm")}` + " - " + `${formatDate(appointment.endTime, "h:mm")}`,
                             color: `${appointment.type && appointment.type.color || 'gray'}`,
                         })),
                     }
@@ -196,7 +196,7 @@ function PrintSchedulePage({route, navigation}) {
             })
     }
 
-
+    
     return (
 
         <MainWrapper>
