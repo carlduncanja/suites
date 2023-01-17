@@ -36,6 +36,8 @@ const ValueContainer = styled.View(({theme, enabled = {}}) => ({
     padding: 4,
     paddingLeft: 12,
     paddingRight: 12,
+
+   
     ...(enabled ? shadow : {})
 }))
 

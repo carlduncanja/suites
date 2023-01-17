@@ -38,6 +38,7 @@ const styles = StyleSheet.create({
         fontSize:16
     },
     valueContainer:{
+        marginLeft:5,
         flex:1,
         flexDirection:'row',
         justifyContent:'space-between',

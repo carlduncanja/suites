@@ -37,7 +37,8 @@ const PrintScheduleDayView = ({
 
     const formattedStartDate = moment(startDate).format("DD/MM/YYYY")
     const formattedEndDate = moment(startDate).format("DD/MM/YYYY")
-
+    
+    console.log("we did this")
     return (
         <Wrapper>
             <Container theme={theme}>

@@ -12,8 +12,8 @@ const Lifestyle = ({tabDetails}) => {
 
     const getTypeData = (lifestyleType) =>{
         return tabDetails.filter( item => {
-            const { type = {} } = item
-            const { name = "" } = type
+            const { type = {name:"Molly"} } = item
+            const { name = "Drug Use" } = type
             return name === lifestyleType && item
         }) || []
     }

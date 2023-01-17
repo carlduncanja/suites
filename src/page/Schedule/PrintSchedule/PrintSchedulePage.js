@@ -122,6 +122,9 @@ function PrintSchedulePage({route, navigation}) {
 
         setLoading(false);
 
+    }; 
+    const getTime = (appointmentTime) => {
+        return formatDate(appointmentTime, "h : mm a")
     };
 
     /**
@@ -184,7 +187,8 @@ function PrintSchedulePage({route, navigation}) {
     const getAppointmentsInRange = (startDate, endDate) => {
         setLoading(true);
         getAppointmentRequest({from: startDate, to: endDate})
-            .then(data => {
+            .then(data => { 
+                console.log("the data wee need to complete",data)
                 setAppointments(data);
             })
             .catch(error => {
