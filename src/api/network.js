@@ -109,6 +109,7 @@ import {
     sendToSupplierEndpoint,
     addPaymentEndpoint,
     revertPaymentEndpoint,
+    addMedicalHistoryEndpoint,
     caseUpdateStaffEndpoint
 } from '../const/suitesEndpoints';
 import { createDocumentLink, documentById, documentData, documentUpload } from '../const/documentGenerationEndpoints';
@@ -896,6 +897,11 @@ export const updatePatient = async (id, data) => suitesAxiosInstance
     .put(patientEndpoint(id), data)
     .then(handleResponse)
     .catch(handleError);
+
+export const createMedicalHistory = async (id, data) => suitesAxiosInstance
+    .post(addMedicalHistoryEndpoint(id), data)
+    .then(handleResponse)
+    .catch(handleError)
 
 export const getPatients = async (query, max, page) => suitesAxiosInstance
     .get(allPatientsEndpoint, ({ params: { query, max, page } }))
