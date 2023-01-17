@@ -108,7 +108,8 @@ import {
     requestQuotationEndpoint,
     sendToSupplierEndpoint,
     addPaymentEndpoint,
-    revertPaymentEndpoint
+    revertPaymentEndpoint,
+    caseUpdateStaffEndpoint
 } from '../const/suitesEndpoints';
 import { createDocumentLink, documentById, documentData, documentUpload } from '../const/documentGenerationEndpoints';
 
@@ -435,6 +436,11 @@ export const addCaseStaff = async (caseId, data) => suitesAxiosInstance
     .then(handleResponse)
     .catch(handleError);
 
+export const editCaseStaff = async (caseId, data) => suitesAxiosInstance
+    .put(caseUpdateStaffEndpoint(caseId), data)
+    .then(handleResponse)
+    .catch(handleError);
+    
 export const isValidCaseProcedureAppointment = async (
     procedure,
     location,
