@@ -91,7 +91,7 @@ const overlayMenu = [
     {
         name: 'Medical History',
         authenticationRequired: 'cases.read_medical_history',
-        overlayTabs: ['Details', 'Family History', 'Lifestyle', 'Other'],
+        overlayTabs: ['Details', 'Family History', 'Lifestyle'],
         selectedIcon: <MedicalSelectedIcon />,
         disabledIcon: <MedicalDisabledIcon />
     },
@@ -1882,7 +1882,7 @@ function CasePage({ auth = {}, route, addNotification, navigation, ...props }) {
                     isEditMode={pageState.isEditMode}
                     modal={modal}
                     caseId={caseId}
-                    refreshData={() => { navigation.navigate('CaseFiles') }}
+                    refreshData={() => {fetchCase(caseId)}}
 
 
                 />;

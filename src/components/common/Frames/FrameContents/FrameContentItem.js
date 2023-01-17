@@ -83,6 +83,9 @@ function FrameContentItem(props) {
                         editSateToggle(false)
                     }}
                     onEdit={onEdit}
+                    onAction={(name) => {
+                        onAction(name, index, physicianSelection)
+                    }}
                     buttonTitle="Save"
                     normalInput={normalInput}
                     id={idArray[index]}

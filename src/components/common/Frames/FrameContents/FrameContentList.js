@@ -79,21 +79,23 @@ function FrameContentList(props) {
                         :
                         cardInformation.map((itemContent, index) => {
                             return (
-                               <FrameContentItem
-                                itemContent = {itemContent}
-                                index = {index}
-                                isEditMode = {isEditMode}
-                                handleEdit = {handleEdit}
-                                handleAddNew = {handleAddNew}
-                                isAddNew = {isAddNew}
-                                onDelete={onDelete}
-                                idArray={idArray}
-                                onAction={onAction}
-                                onEdit={onEdit}
-                                physicianSelection={physicianSelection}
-                                normalInput={normalInput} 
-                                toggleAddOption={toggleAddOption}
-                               />
+                                <View style={{zIndex: 10}}>
+                                    <FrameContentItem
+                                        itemContent = {itemContent}
+                                        index = {index}
+                                        isEditMode = {isEditMode}
+                                        handleEdit = {handleEdit}
+                                        handleAddNew = {handleAddNew}
+                                        isAddNew = {isAddNew}
+                                        onDelete={onDelete}
+                                        idArray={idArray}
+                                        onAction={onAction}
+                                        onEdit={onEdit}
+                                        physicianSelection={physicianSelection}
+                                        normalInput={normalInput} 
+                                        toggleAddOption={toggleAddOption}
+                                    />
+                               </View>
                             )
                         })
 
@@ -117,6 +119,7 @@ function FrameContentList(props) {
                         :
 
                         <TouchableOpacity
+                            style={{zIndex: 5}}
                             onPress={() => {
                                 toggleAddOption(true)
                             }}>
