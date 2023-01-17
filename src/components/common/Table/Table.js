@@ -68,7 +68,7 @@ function Table({
     // const itemSelected = isCheckbox ? itemSelected : [];
 
     const isIndeterminate = itemSelected?.length > 0 && itemSelected?.length !== data?.length;
-
+    
     return (
         <ListWrapper>
             <ListContainer>
@@ -90,11 +90,12 @@ function Table({
                     style={{ height: '100%' }}
                     nestedScrollEnabled={true}
                     renderItem={({ item, index }) => listItemFormat(item, index)}
-                    keyExtractor={(item) => item.id}
+                    keyExtractor={keyExtractor}
                     contentContainerStyle={{ paddingBottom: 100 }}
                     keyboardShouldPersistTaps={'always'}
-                    extraData={extraData}
-                />
+                    //extraData={extraData}
+                /> 
+                
             </ListContainer>
         </ListWrapper>
     );
