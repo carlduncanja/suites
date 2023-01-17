@@ -91,7 +91,7 @@ const overlayMenu = [
     {
         name: 'Medical History',
         authenticationRequired: 'cases.read_medical_history',
-        overlayTabs: ['Details', 'Family History', 'Lifestyle', 'Other'],
+        overlayTabs: ['Details', 'Family History', 'Lifestyle'],
         selectedIcon: <MedicalSelectedIcon />,
         disabledIcon: <MedicalDisabledIcon />
     },
