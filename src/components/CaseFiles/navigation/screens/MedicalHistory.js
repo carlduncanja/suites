@@ -2,7 +2,6 @@ import React, { useContext } from 'react';
 import { SuitesContext } from '../../../../contexts/SuitesContext';
 import { FamilyHistory, General, Lifestyle, Other } from '../../OverlayPages/MedicalHistory';
 import { PageContext } from '../../../../contexts/PageContext';
-
 const MedicalHistory = ({
     medicalInfo,
     selectedTab,
@@ -14,7 +13,7 @@ const MedicalHistory = ({
     
     return (
         selectedTab === 'Family History' ?
-            <FamilyHistory tabDetails={familyHistory} /> :
+            <FamilyHistory tabDetails={familyHistory} isEditMode={pageState.isEditMode} fetchCase={fetchCase} patient={patient}/> :
             selectedTab === 'Details' ?
                 <General tabDetails={medicalHistory} isEditMode={pageState.isEditMode} fetchCase={fetchCase} patient={patient} /> :
                 selectedTab === 'Lifestyle' ?
