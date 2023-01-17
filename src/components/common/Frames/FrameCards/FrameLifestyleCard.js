@@ -41,9 +41,12 @@ const styles = StyleSheet.create({
         borderTopWidth:0,
         borderBottomLeftRadius:8,
         borderBottomRightRadius:8
+
     },
     titleName:{
+        marginLeft:2,
         color:"#4E5664",
         fontSize:16,
+        fontWeight: 'bold'
     }
 })
