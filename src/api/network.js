@@ -110,6 +110,7 @@ import {
     addPaymentEndpoint,
     revertPaymentEndpoint,
     addMedicalHistoryEndpoint,
+    addFamilyHistoryEndpoint,
     caseUpdateStaffEndpoint
 } from '../const/suitesEndpoints';
 import { createDocumentLink, documentById, documentData, documentUpload } from '../const/documentGenerationEndpoints';
@@ -900,6 +901,11 @@ export const updatePatient = async (id, data) => suitesAxiosInstance
 
 export const createMedicalHistory = async (id, data) => suitesAxiosInstance
     .post(addMedicalHistoryEndpoint(id), data)
+    .then(handleResponse)
+    .catch(handleError)
+
+export const createFamilyHistory = async (id, data) => suitesAxiosInstance
+    .post(addFamilyHistoryEndpoint(id), data)
     .then(handleResponse)
     .catch(handleError)
 

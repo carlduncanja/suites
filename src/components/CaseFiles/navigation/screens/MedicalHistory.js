@@ -14,7 +14,7 @@ const MedicalHistory = ({
     console.log(patient)
     return (
         selectedTab === 'Family History' ?
-            <FamilyHistory tabDetails={familyHistory} isEditMode={pageState.isEditMode} patient={patient}/> :
+            <FamilyHistory tabDetails={familyHistory} isEditMode={pageState.isEditMode} fetchCase={fetchCase} patient={patient}/> :
             selectedTab === 'Details' ?
                 <General tabDetails={medicalHistory} isEditMode={pageState.isEditMode} fetchCase={fetchCase} patient={patient} /> :
                 selectedTab === 'Lifestyle' ?
