@@ -78,7 +78,6 @@ const General = ({tabDetails, isEditMode, fetchCase = () => {}, patient}) => {
 
             
         });
-        console.log(container);
         return container;
     }
 

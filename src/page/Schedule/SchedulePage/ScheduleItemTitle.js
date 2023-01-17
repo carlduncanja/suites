@@ -4,10 +4,10 @@ import styled, {css} from '@emotion/native';
 import {useTheme} from 'emotion-theming';
 
 function ScheduleItemTitle({onScheduleClick, startTime, endTime, title}){
-
+    
     const theme = useTheme();
 
-
+    
     return (
         <ScheduleItemTitleWrapper onPress={onScheduleClick}>
             <ScheduleItemTitleContainer>

@@ -19,7 +19,7 @@ const FrameLifestyleContent = ({cardInformation}) => {
     return ( 
         <View style={styles.container}> 
             <View style = {styles.rowContainer}>
-                <View style={styles.itemContainer}>
+                <View style={styles.label}>
                     <FrameSelectItem title="Frequency" value={frequency}/>
                 </View>
                 <View style={styles.itemContainer}>
@@ -28,16 +28,16 @@ const FrameLifestyleContent = ({cardInformation}) => {
             </View>
 
             <View style = {styles.rowContainer}>
-                <View style = {styles.itemContainer}>
+                <View style = {styles.label}>
                     <FrameSelectItem title="Unit" value={unit}/>
                 </View>
                 <View style = {styles.itemContainer}>
-                    <FrameMeasureItem title="Unit of Measure" value={measureValue} unit = {unitOfMeasure}/>
+                    <FrameMeasureItem title="Capacity" value={measureValue} unit = {unitOfMeasure}/>
                 </View>
             </View>
 
             <View style = {styles.rowContainer}>
-                <View style = {styles.itemContainer}>
+                <View style = {styles.label}>
                     <FrameTableItem title="Usage" value={usage}/>
                 </View>
                 <View style={styles.itemContainer}> 
@@ -59,11 +59,20 @@ const styles = StyleSheet.create({
         flexDirection:"row",
         justifyContent:'space-between',
         // alignItems:'flex-start'
-    },
+    }, 
+
     itemContainer:{
         width:'50%',
         // backgroundColor:'yellow',
-        alignSelf:'flex-start'
+        alignSelf:'flex-end',
+        marginLeft:10
+        // alignSelf:'flex-start'
+    },
+    label:{
+        width:'50%',
+        // backgroundColor:'yellow',
+        alignSelf:'flex-end',
+        marginRight:10
         // alignSelf:'flex-start'
     }
     
