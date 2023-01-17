@@ -1,17 +1,17 @@
 import React, { useContext } from 'react';
 import { SuitesContext } from '../../../../contexts/SuitesContext';
 import { FamilyHistory, General, Lifestyle, Other } from '../../OverlayPages/MedicalHistory';
-
+import { PageContext } from '../../../../contexts/PageContext';
 const MedicalHistory = ({
     medicalInfo,
     selectedTab,
     
 }) => {
     const { medicalHistory = [], familyHistory = [], lifestyles = [] } = medicalInfo;
-
+    const {pageState} = useContext(PageContext)
     return (
         selectedTab === 'Family History' ?
-            <FamilyHistory tabDetails={familyHistory} /> :
+            <FamilyHistory tabDetails={familyHistory} isEditMode={pageState.isEditMode} patient={patient}/> :
             selectedTab === 'Details' ?
                 <General tabDetails={medicalHistory} /> :
                 selectedTab === 'Lifestyle' ?
