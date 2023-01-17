@@ -11,87 +11,140 @@ import DevicesIcon from '../../../../../assets/svg/implantedDevices';
 
 import FrameCard from '../../../common/Frames/FrameCards/FrameCard';
 import Search from '../../../common/Search';
+import { createMedicalHistory, updatePatient } from '../../../../api/network';
 
-const General = ({tabDetails}) => {
+const General = ({tabDetails, isEditMode, fetchCase = () => {}, patient}) => {
+    const thing = tabDetails[0]?.patient || "";
     const getData = medicalType => {
-        const {notes = []} = tabDetails.filter(item => item?.type?.name === medicalType[0]);
-        return notes;
+        const container = [];
+        tabDetails.map(item => {
+            if (item?.type?.name === medicalType) {
+                container.push(...item.notes)
+            }
+        });
+
+        return container;
     };
 
+    const handleAdd = async (notes, currentType) => {
+        const patientId = patient._id;
+        let type = '';
+        tabDetails.filter(item => {
+            if (item.type.name === currentType) {
+                type = item.type._id
+            }
+        })
+        await createMedicalHistory(patientId, {notes, type}).then(response => {
+            updatePatient(patientId, {medicalInfo: {
+                medicalHistory: [...tabDetails, response]
+            }}).then(result => {
+                fetchCase()
+            })
+        })
+    }
+    
     return (
         <ScrollView>
-            <View style={{marginBottom: 24}}>
-                <Search
-                    placeholderText="Search by any header or entry below"
-                    changeText={() => {
-                    }}
-                    inputText=""
-                />
-            </View>
 
             <View style={styles.frameContainer}>
                 <FrameCard
+                    isEditMode={isEditMode}
                     frameColor="#805AD5"
                     titleBackgroundColor="#FAF5FF"
                     frameBorderColor="#D6BCFA"
                     frameTitle="Allergies"
                     cardInformation={getData('Allergies')}
                     icon={AllergiesIcon}
+                    physicianSelection={false}
+                    normalInput={true}
+                    onAction={(value) => {
+                        handleAdd(value, 'Allergies')
+                    }}
                 />
             </View>
 
             <View style={styles.frameContainer}>
                 <FrameCard
+                    isEditMode={isEditMode}
                     frameColor="#DD6B20"
                     titleBackgroundColor="#FFFAF0"
                     frameBorderColor="#FBD38D"
                     frameTitle="Pre-Existing Conditions"
                     cardInformation={getData('Pre-Existing Conditions')}
                     icon={ConditionsIcon}
+                    physicianSelection={false}
+                    normalInput={true}
+                    onAction={(value) => {
+                        handleAdd(value, 'Pre-Existing Conditions')
+                    }}
                 />
             </View>
 
             <View style={styles.frameContainer}>
                 <FrameCard
+                    isEditMode={isEditMode}
                     frameColor="#3182CE"
                     titleBackgroundColor="#EBF4FF"
                     frameBorderColor="#A3BFFA"
                     frameTitle="Immunisations"
                     cardInformation={getData('Immunisations')}
                     icon={ImmunisationsIcon}
+                    physicianSelection={false}
+                    normalInput={true}
+                    onAction={(value) => {
+                        handleAdd(value, 'Immunisations')
+                    }}
                 />
             </View>
 
             <View style={styles.frameContainer}>
                 <FrameCard
+                    isEditMode={isEditMode}
                     frameColor="#E53E3E"
                     titleBackgroundColor="#FFF5F5"
                     frameBorderColor="#FEB2B2"
                     frameTitle="Medications"
                     cardInformation={getData('Medications')}
                     icon={MedicationsIcon}
+                    physicianSelection={false}
+                    normalInput={true}
+                    onAction={(value) => {
+                        handleAdd(value, 'Medications')
+                    }}
                 />
             </View>
 
             <View style={styles.frameContainer}>
                 <FrameCard
+                    isEditMode={isEditMode}
                     frameColor="#38A169"
                     titleBackgroundColor="#F0FFF4"
                     frameBorderColor="#9AE6B4"
                     frameTitle="Procedures"
                     cardInformation={getData('Procedures')}
                     icon={ProceduresIcon}
+                    physicianSelection={false}
+                    normalInput={true}
+                    onAction={(value) => {
+                        handleAdd(value, 'Procedures')
+                    }}
                 />
             </View>
 
             <View style={styles.frameContainer}>
                 <FrameCard
+                    isEditMode={isEditMode}
                     frameColor="#3182CE"
                     titleBackgroundColor="#EBF8FF"
                     frameBorderColor="#90CDF4"
                     frameTitle="Implanted Devices"
                     cardInformation={getData('Implanted Devices')}
                     icon={DevicesIcon}
+                    physicianSelection={false}
+                    normalInput={true}
+                    onAction={(value) => {
+                        handleAdd(value, 'Implanted Devices')
+                    }}
                 />
             </View>
 
