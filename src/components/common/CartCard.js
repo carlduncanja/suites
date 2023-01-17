@@ -249,6 +249,7 @@ function CartCard(props) {
                     onPositiveButtonPress={onFooterPress}
                     onClose={closeModal}
                     positiveText={footerTitle}
+                    footerIndex={"30"}
                 >
                     {tabs &&
                         <CreationDialogTabs
