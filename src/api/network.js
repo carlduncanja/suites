@@ -910,6 +910,11 @@ export const getMedicalHistoryType = async (id) => suitesAxiosInstance
     .then(handleResponse)
     .catch(handleError)
 
+export const editMedicalHistory = async (id, data) => suitesAxiosInstance
+    .put(getMedicalHistoryTypeEndpoint(id), data)
+    .then(handleResponse)
+    .catch(handleError)
+
 export const getPatients = async (query, max, page) => suitesAxiosInstance
     .get(allPatientsEndpoint, ({ params: { query, max, page } }))
     .then(handleResponse)

@@ -11,7 +11,7 @@ import DevicesIcon from '../../../../../assets/svg/implantedDevices';
 
 import FrameCard from '../../../common/Frames/FrameCards/FrameCard';
 import Search from '../../../common/Search';
-import { createMedicalHistory, getMedicalHistoryType, updatePatient } from '../../../../api/network';
+import { createMedicalHistory, editMedicalHistory, getMedicalHistoryType, updatePatient } from '../../../../api/network';
 import { useModal } from 'react-native-modalfy';
 import ConfirmationComponent from '../../../ConfirmationComponent';
 
@@ -98,11 +98,19 @@ const General = ({tabDetails, isEditMode, fetchCase = () => {}, patient}) => {
         })
     }
 
+    const handleEdit = async (id, value) => {
+        await editMedicalHistory(id, {notes: [value]}).then(res => {
+            successModal();
+            fetchCase();
+        })
+    }
+
     return (
         <ScrollView>
 
             <View style={styles.frameContainer}>
                 <FrameCard
+                    onEdit={handleEdit}
                     isEditMode={isEditMode}
                     frameColor="#805AD5"
                     titleBackgroundColor="#FAF5FF"
@@ -122,6 +130,7 @@ const General = ({tabDetails, isEditMode, fetchCase = () => {}, patient}) => {
 
             <View style={styles.frameContainer}>
                 <FrameCard
+                    onEdit={handleEdit}
                     isEditMode={isEditMode}
                     frameColor="#DD6B20"
                     titleBackgroundColor="#FFFAF0"
@@ -141,6 +150,7 @@ const General = ({tabDetails, isEditMode, fetchCase = () => {}, patient}) => {
 
             <View style={styles.frameContainer}>
                 <FrameCard
+                    onEdit={handleEdit}
                     isEditMode={isEditMode}
                     frameColor="#3182CE"
                     titleBackgroundColor="#EBF4FF"
@@ -160,6 +170,7 @@ const General = ({tabDetails, isEditMode, fetchCase = () => {}, patient}) => {
 
             <View style={styles.frameContainer}>
                 <FrameCard
+                    onEdit={handleEdit}
                     isEditMode={isEditMode}
                     frameColor="#E53E3E"
                     titleBackgroundColor="#FFF5F5"
@@ -179,6 +190,7 @@ const General = ({tabDetails, isEditMode, fetchCase = () => {}, patient}) => {
 
             <View style={styles.frameContainer}>
                 <FrameCard
+                    onEdit={handleEdit}
                     isEditMode={isEditMode}
                     frameColor="#38A169"
                     titleBackgroundColor="#F0FFF4"
@@ -198,6 +210,7 @@ const General = ({tabDetails, isEditMode, fetchCase = () => {}, patient}) => {
 
             <View style={styles.frameContainer}>
                 <FrameCard
+                    onEdit={handleEdit}
                     isEditMode={isEditMode}
                     frameColor="#3182CE"
                     titleBackgroundColor="#EBF8FF"
