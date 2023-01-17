@@ -87,6 +87,7 @@ export const updateQuotationStatusEndpoint = (caseId, quotationId) => `/cases/${
 export const caseProcedureAppointmentEndpoint = (caseId, procedureAppointmentId) => `/cases/${caseId}/procedures/${procedureAppointmentId}`;
 export const caseProcedureAppointmentsEndpoint = caseId => `/cases/${caseId}/procedures/`;
 export const caseStaffEndpoint = caseId => `/cases/staff/${caseId}`;
+export const caseUpdateStaffEndpoint = caseId => `/cases/${caseId}`;
 export const casePatientEndpoint = patientId => `/cases/patient/${patientId}`
 
 // ##### STORAGE
@@ -127,6 +128,7 @@ export const updateCategoryEndpoint = id => `/categories/${id}`;
 
 // ##### PATIENTS
 export const patientEndpoint = id => `/patients/${id}`;
+export const addMedicalHistoryEndpoint = id => `/patients/${id}/add_history`;
 export const allPatientsEndpoint = '/patients'
 export const updatePatientRiskEndpoint = id => `/patients/${id}/risk`
 
