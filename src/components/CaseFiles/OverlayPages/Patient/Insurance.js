@@ -21,6 +21,7 @@ const Insurance = ({ tabDetails, patientID, onUpdated = () => { } }) => {
     const { name, coverageLimit, policyNumber, procedures } = tabDetails
     const { pageState, setPageState } = useContext(PageContext);
     const { isEditMode } = pageState;
+    console.log("melon", procedures)
 
     const InsuranceWrapper = styled.View`
         width: 100%;
@@ -66,13 +67,12 @@ const Insurance = ({ tabDetails, patientID, onUpdated = () => { } }) => {
     flex-direction: row;
 `;
 
-    const archivedItemFormat = item => (
+    const archivedItemFormat = (item,index) => (
         <ListItemWrapper>
             <DataItem flex={2} align="flex-start" text={item?.procedure?.name} fontStyle="--text-base-regular" />
             <DataItem flex={1.5} align="flex-start" text={item?.appointment?.subject} color="--color-blue-600" fontStyle="--text-base-regular" />
             <DataItem flex={1} align="flex-start" text={item?.preAuthStatus ? "Authorized" : "Pending"} color={item?.preAuthStatus ? "--color-green-600" : "--color-red-700"} fontStyle="--text-base-regular" />
-        </ListItemWrapper>
-    );
+        </ListItemWrapper>);
 
     const PreAuthTitle = styled.Text(({ theme }) => ({
         ...theme.font['--text-xl-medium'],
@@ -108,7 +108,7 @@ const Insurance = ({ tabDetails, patientID, onUpdated = () => { } }) => {
 
 
 
-    const renderListFn = item => (
+    const renderListFn = (item,index) => (
         <ListItem
             hasCheckBox={false}
             onItemPress={handleProcedurePress(item)}
@@ -126,7 +126,7 @@ const Insurance = ({ tabDetails, patientID, onUpdated = () => { } }) => {
                 <Table
                     isCheckbox={false}
                     data={procedures}
-                    istItemFormat={!isEditMode ? archivedItemFormat : renderListFn}
+                    listItemFormat={!isEditMode ? archivedItemFormat : renderListFn}
                     headers={Headers}
                 />
             </PreAuthorization>
