@@ -11,10 +11,13 @@ import DevicesIcon from '../../../../../assets/svg/implantedDevices';
 
 import FrameCard from '../../../common/Frames/FrameCards/FrameCard';
 import Search from '../../../common/Search';
-import { createMedicalHistory, updatePatient } from '../../../../api/network';
+import { createMedicalHistory, getMedicalHistoryType, updatePatient } from '../../../../api/network';
+import { useModal } from 'react-native-modalfy';
+import ConfirmationComponent from '../../../ConfirmationComponent';
 
 const General = ({tabDetails, isEditMode, fetchCase = () => {}, patient}) => {
-    const thing = tabDetails[0]?.patient || "";
+
+    const modal = useModal();
     const getData = medicalType => {
         const container = [];
         tabDetails.map(item => {
@@ -27,22 +30,75 @@ const General = ({tabDetails, isEditMode, fetchCase = () => {}, patient}) => {
     };
 
     const handleAdd = async (notes, currentType) => {
+        
         const patientId = patient._id;
-        let type = '';
-        tabDetails.filter(item => {
-            if (item.type.name === currentType) {
-                type = item.type._id
-            }
-        })
+        let type = await getMedicalHistoryType(currentType).then(res => res[0]._id);
         await createMedicalHistory(patientId, {notes, type}).then(response => {
-            updatePatient(patientId, {medicalInfo: {
-                medicalHistory: [...tabDetails, response]
-            }}).then(result => {
-                fetchCase()
+            updatePatient(patientId, {"medicalInfo.medicalHistory": [...tabDetails, response]
+            }).then(_ => {
+                successModal();
+                fetchCase();
             })
         })
     }
+
+    const successModal = () => {
+        modal.openModal(
+            'ConfirmationModal', {
+            content: <ConfirmationComponent
+                isError={false}
+                isEditUpdate={false}
+                onAction={() => {
+                    modal.closeModals('ConfirmationModal');
+                }}
+                onCancel={() => {
+                    modal.closeModals('ConfirmationModal');
+                }}
+            />,
+            onClose: () => {
+                modal.closeModal('ConfirmationModal')
+            }
+        }
+        );
+    }
     
+    const tabDetailIds = tabDetails.map(detail => {
+        const {_id = ""} = detail;
+
+        return _id
+    });
+
+    const generateIds = (target) => {
+        const container = [];
+        tabDetails.map(detail => {
+            const {type, _id} = detail;
+            if (type.name === target) {
+                container.push(_id)
+            };
+
+            
+        });
+        console.log(container);
+        return container;
+    }
+
+    const handleDelete = async (data) => {
+        const patientId = patient._id;
+        const container = [];
+        tabDetails.filter(item => {
+            if (item._id !== data) {
+                container.push(item._id)
+            }
+        });
+
+        await updatePatient(patientId, 
+            {"medicalInfo.medicalHistory": container
+        }).then(_ => {
+            successModal();
+            fetchCase();
+        })
+    }
+
     return (
         <ScrollView>
 
@@ -60,6 +116,8 @@ const General = ({tabDetails, isEditMode, fetchCase = () => {}, patient}) => {
                     onAction={(value) => {
                         handleAdd(value, 'Allergies')
                     }}
+                    idArray={generateIds('Allergies')}
+                    onDelete={handleDelete}
                 />
             </View>
 
@@ -77,6 +135,8 @@ const General = ({tabDetails, isEditMode, fetchCase = () => {}, patient}) => {
                     onAction={(value) => {
                         handleAdd(value, 'Pre-Existing Conditions')
                     }}
+                    idArray={generateIds('Pre-Existing Conditions')}
+                    onDelete={handleDelete}
                 />
             </View>
 
@@ -94,6 +154,8 @@ const General = ({tabDetails, isEditMode, fetchCase = () => {}, patient}) => {
                     onAction={(value) => {
                         handleAdd(value, 'Immunisations')
                     }}
+                    idArray={generateIds('Immunisations')}
+                    onDelete={handleDelete}
                 />
             </View>
 
@@ -111,6 +173,8 @@ const General = ({tabDetails, isEditMode, fetchCase = () => {}, patient}) => {
                     onAction={(value) => {
                         handleAdd(value, 'Medications')
                     }}
+                    idArray={generateIds('Medications')}
+                    onDelete={handleDelete}
                 />
             </View>
 
@@ -128,6 +192,8 @@ const General = ({tabDetails, isEditMode, fetchCase = () => {}, patient}) => {
                     onAction={(value) => {
                         handleAdd(value, 'Procedures')
                     }}
+                    idArray={generateIds('Procedures')}
+                    onDelete={handleDelete}
                 />
             </View>
 
@@ -145,6 +211,8 @@ const General = ({tabDetails, isEditMode, fetchCase = () => {}, patient}) => {
                     onAction={(value) => {
                         handleAdd(value, 'Implanted Devices')
                     }}
+                    idArray={generateIds('Procedures')}
+                    onDelete={handleDelete}
                 />
             </View>
 

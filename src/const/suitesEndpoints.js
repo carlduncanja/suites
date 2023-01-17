@@ -129,6 +129,7 @@ export const updateCategoryEndpoint = id => `/categories/${id}`;
 // ##### PATIENTS
 export const patientEndpoint = id => `/patients/${id}`;
 export const addMedicalHistoryEndpoint = id => `/patients/${id}/add_history`;
+export const getMedicalHistoryTypeEndpoint = id => `/patients/medical_history/${id}`;
 export const allPatientsEndpoint = '/patients'
 export const updatePatientRiskEndpoint = id => `/patients/${id}/risk`
 
