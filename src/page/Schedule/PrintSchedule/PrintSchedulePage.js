@@ -122,6 +122,9 @@ function PrintSchedulePage({route, navigation}) {
 
         setLoading(false);
 
+    }; 
+    const getTime = (appointmentTime) => {
+        return formatDate(appointmentTime, "h : mm a")
     };
 
     /**
@@ -164,7 +167,7 @@ function PrintSchedulePage({route, navigation}) {
                         day: title,
                         appointments: appointmentForDay.map(appointment => ({
                             info: `${appointment.title} - ${appointment.subject}`,
-                            time: `${formatDate(appointment.startTime, "") - formatDate(appointment.endTime, "")}`,
+                            time:  `${getTime(appointment.startTime)}`+" - "+`${getTime(appointment.endTime)}`,
                             color: `${appointment.type && appointment.type.color || 'gray'}`,
                         })),
                     }
@@ -184,7 +187,8 @@ function PrintSchedulePage({route, navigation}) {
     const getAppointmentsInRange = (startDate, endDate) => {
         setLoading(true);
         getAppointmentRequest({from: startDate, to: endDate})
-            .then(data => {
+            .then(data => { 
+                console.log("the data wee need to complete",data)
                 setAppointments(data);
             })
             .catch(error => {

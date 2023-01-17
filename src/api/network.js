@@ -873,7 +873,7 @@ export const sendToSupplier = async (purchaseOrderId, email) => suitesAxiosInsta
 export const addDocumentToOrder = async (orderId, data) => suitesAxiosInstance
     .put(addDocumentEndpoint(orderId), data)
     .then(handleResponse)
-    .catch(handleError)
+    .catch(handleError) 
 
 export const registerPayment = async (orderId, data) => suitesAxiosInstance
     .put(addPaymentEndpoint(orderId), data)
