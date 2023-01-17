@@ -8,7 +8,7 @@ const MedicalHistory = ({
     
 }) => {
     const { medicalHistory = [], familyHistory = [], lifestyles = [] } = medicalInfo;
-    console.log("we need to get data",medicalInfo)
+
     return (
         selectedTab === 'Family History' ?
             <FamilyHistory tabDetails={familyHistory} /> :
