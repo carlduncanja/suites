@@ -25,7 +25,29 @@ const FamilyHistory = ({tabDetails, isEditMode, fetchCase = () => {}, patient}) 
         })
     }
 
-    handleEdit = async(id, relative, condition) => {
+
+    
+    const successModal = () => {
+        modal.openModal(
+            'ConfirmationModal', {
+            content: <ConfirmationComponent
+                isError={false}
+                isEditUpdate={false}
+                onAction={() => {
+                    modal.closeModals('ConfirmationModal');
+                }}
+                onCancel={() => {
+                    modal.closeModals('ConfirmationModal');
+                }}
+            />,
+            onClose: () => {
+                modal.closeModal('ConfirmationModal')
+            }
+        }
+        );
+    }
+
+    const handleEdit = async(id, relative, condition) => {
         await editFamilyHistory(id, {relative, condition}).then(res => {
             successModal();
             fetchCase();
