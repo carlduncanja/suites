@@ -66,6 +66,7 @@ const FrameTabularContent = (props) => {
                         toggleAddOption(false)
                     }}
                     onAction={onAction}
+                    onEdit ={onEdit}
                     buttonTitle="Add"
                     normalInput={normalInput}
                     physicianSelection={physicianSelection}
