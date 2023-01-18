@@ -47,7 +47,9 @@ const FrameTabularContent = (props) => {
                                             <FrameTableItem 
                                                 title={key} 
                                                 editable = {isEditMode}
+                                                onChangeValue = {onChangeValue}
                                                 value={item[key]}/>
+                                                
                                                 
                                         </View>
                                         

@@ -53,6 +53,10 @@ const FamilyHistory = ({tabDetails, isEditMode, fetchCase = () => {}, patient}) 
             fetchCase();
         })
     }
+
+    const onChangeValue = () => {
+
+    }
     
     return ( 
         <ScrollView>
