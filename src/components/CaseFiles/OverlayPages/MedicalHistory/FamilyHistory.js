@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { View, ScrollView, StyleSheet } from 'react-native';
 import { FamilyPreExistingConditions } from '../../OverlayCardFrames';
 import FrameTableCard from '../../../common/Frames/FrameCards/FrameTableCard'
-import { createFamilyHistory, updatePatient } from '../../../../api/network';
+import { createFamilyHistory, editFamilyHistory, updatePatient } from '../../../../api/network';
 import FamilyIcon from '../../../../../assets/svg/familyConditions';
 
 
@@ -25,14 +25,22 @@ const FamilyHistory = ({tabDetails, isEditMode, fetchCase = () => {}, patient}) 
         })
     }
 
+    handleEdit = async(id, relative, condition) => {
+        await editFamilyHistory(id, {relative, condition}).then(res => {
+            successModal();
+            fetchCase();
+        })
+    }
     
     return ( 
         <ScrollView>
 
             <View style={styles.frameContainer}>
                 <FrameTableCard
+
                     isEditMode={isEditMode}
                     frameColor = "#DD6B20"
+                    onEdit = {handleEdit}
                     titleBackgroundColor = "#FFFAF0"
                     frameBorderColor = "#FBD38D"
                     frameTitle = "Pre-Existing Conditions"

@@ -909,6 +909,12 @@ export const createFamilyHistory = async (id, data) => suitesAxiosInstance
     .then(handleResponse)
     .catch(handleError)
 
+export const editFamilyHistory = async (id, data) => suitesAxiosInstance
+    .post(editfamilyHistoryEndpoint(id), data)
+    .then(handleResponse)
+    .catch(handleError)
+
+
 export const getPatients = async (query, max, page) => suitesAxiosInstance
     .get(allPatientsEndpoint, ({ params: { query, max, page } }))
     .then(handleResponse)
