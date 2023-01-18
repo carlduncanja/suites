@@ -198,6 +198,7 @@ const CreatePhysicianDialogContainer = ({
             onPositiveButtonPress={onPositiveButtonPress}
             onClose={handleCloseDialog}
             positiveText={positiveText}
+            max={387}
         >
             <View style={styles.container}>
                 <DialogTabs
