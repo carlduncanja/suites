@@ -53,14 +53,15 @@ function OverlayDialog(props) {
     isButtonDisabled = false,
     // handlePopovers = () =>{},
     isOpen = false,
-    footerIndex
+    footerIndex,
+    max=100
   } = props;
 
   const theme = useTheme();
   const [zIndex, setZindex] = useState(isOpen ? 11 : 1);
   const dimensions = Dimensions.get("window");
 
-  const maxWidth = dimensions.width - 100;
+  const maxWidth = dimensions.width - max;
   
   useEffect(() => {
     setZindex(isOpen ? 11 : 1)
