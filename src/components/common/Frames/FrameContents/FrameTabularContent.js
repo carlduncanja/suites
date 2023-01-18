@@ -46,7 +46,9 @@ const FrameTabularContent = (props) => {
                                         <View key={index} style={{width:'50%'}}>
                                             <FrameTableItem 
                                                 title={key} 
+                                                editable = {isEditMode}
                                                 value={item[key]}/>
+                                                
                                         </View>
                                         
                                     )
