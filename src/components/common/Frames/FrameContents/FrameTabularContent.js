@@ -53,6 +53,7 @@ const FrameTabularContent = (props) => {
                                     return(
                                         <View key={index} style={{width:'50%'}}>
                                             <FrameTableItem 
+                                                idArray={idArray}
                                                 title={key} 
                                                 onPress={()=>{console.log("clicked!", fields)}}
                                                 editable = {isEditMode}

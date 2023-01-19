@@ -48,6 +48,7 @@ const Value = styled.TextInput(({theme}) => ({
 
 const FrameTableItem = ({
                             title = "",
+                            idArray,
                             value = "",
                             selectable = false,
                             enabled = false,
@@ -59,7 +60,7 @@ const FrameTableItem = ({
     const theme = useTheme();
 
     return (
-        <TouchableOpacity disabled={!selectable} onPress={onPress}>
+        <TouchableOpacity disabled={!selectable} onPress={( ) => onPress}>
             <FrameTableItemWrapper theme={theme}>
 
                 {
