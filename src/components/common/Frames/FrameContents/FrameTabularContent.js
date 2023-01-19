@@ -22,6 +22,8 @@ const FrameTabularContent = (props) => {
     const [fields, setFields] =  useState("")
 
     const onChangeValue = (fieldName) => (value) => {
+        console.log('belos');
+        console.log(value)
         setFields({
             ...fields,
             [fieldName]: value,
@@ -55,12 +57,11 @@ const FrameTabularContent = (props) => {
                                             <FrameTableItem 
                                                 title={key} 
                                                 editable = {isEditMode}
-                                                onChangeValue = {()=> {
-                                                    setFields(item)
-                                                    onChangeValue(key)(value)
+                                                onChangeValue = {(newValue)=> {
+                                                    onChangeValue(key)(newValue)
                                                 }
                                                 }
-                                                value={fields[key].toString()}/>            
+                                                value={fields?.[key]}/>            
                                         </View>
                                         
                                     )
