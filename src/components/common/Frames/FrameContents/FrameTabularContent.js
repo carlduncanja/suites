@@ -27,6 +27,13 @@ const FrameTabularContent = (props) => {
             ...fields,
             [fieldName]: value,
          })
+
+         for (id of idArray){
+            console.log("inside edit functon")
+            onEdit(id, fieldName, value)
+         }
+
+
     };
 
     const toggleAddOption = (value) => {

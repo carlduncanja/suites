@@ -49,7 +49,7 @@ const FamilyHistory = ({tabDetails, isEditMode, fetchCase = () => {}, patient}) 
 
     const handleEdit = async(id, relative, condition) => {
         await editFamilyHistory(id, {relative, condition}).then(res => {
-            successModal();
+            //successModal();
             fetchCase();
         })
     }
@@ -68,7 +68,7 @@ const FamilyHistory = ({tabDetails, isEditMode, fetchCase = () => {}, patient}) 
 
             <View style={styles.frameContainer}>
                 <FrameTableCard
-                
+
                     idArray={tabIds}
                     isEditMode={isEditMode}
                     frameColor = "#DD6B20"
