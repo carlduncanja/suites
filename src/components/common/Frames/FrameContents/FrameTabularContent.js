@@ -47,8 +47,7 @@ const FrameTabularContent = (props) => {
                 props.cardInformation.map((item, index)=>{
                     return(
                         <View key={index} style={styles.itemContainer}>
-                            setFields(item)
-                            console.log("fields data",fields)
+                           
                             {
                                 Object.keys(item).map((key, index)=>{
                                     return(
@@ -56,10 +55,12 @@ const FrameTabularContent = (props) => {
                                             <FrameTableItem 
                                                 title={key} 
                                                 editable = {isEditMode}
-                                                onChangeValue = {onChangeValue}
-                                                value={item[key]}/>
-                                                
-                                                
+                                                onChangeValue = {()=> {
+                                                    setFields(item)
+                                                    onChangeValue(key)(value)
+                                                }
+                                                }
+                                                value={fields[key].toString()}/>            
                                         </View>
                                         
                                     )
