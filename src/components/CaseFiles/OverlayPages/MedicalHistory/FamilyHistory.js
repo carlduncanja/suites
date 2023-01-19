@@ -68,6 +68,7 @@ const FamilyHistory = ({tabDetails, isEditMode, fetchCase = () => {}, patient}) 
 
             <View style={styles.frameContainer}>
                 <FrameTableCard
+                
                     idArray={tabIds}
                     isEditMode={isEditMode}
                     frameColor = "#DD6B20"

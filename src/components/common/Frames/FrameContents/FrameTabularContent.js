@@ -35,7 +35,6 @@ const FrameTabularContent = (props) => {
 
     return ( 
         <View style={styles.container}>
-            
 
             {
                 cardInformation.length === 0 ?
@@ -55,6 +54,7 @@ const FrameTabularContent = (props) => {
                                         <View key={index} style={{width:'50%'}}>
                                             <FrameTableItem 
                                                 title={key} 
+                                                onPress={()=>{console.log("clicked!")}}
                                                 editable = {isEditMode}
                                                 onChangeValue = {(newValue)=> {
                                                     onChangeValue(key)(newValue)
