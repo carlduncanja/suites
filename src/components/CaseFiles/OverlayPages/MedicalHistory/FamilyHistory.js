@@ -58,12 +58,17 @@ const FamilyHistory = ({tabDetails, isEditMode, fetchCase = () => {}, patient}) 
 
     }
     
+    const tabIds = tabDetails.map(item => {
+        const { _id = "" } = item
+        return _id
+    })
+
     return ( 
         <ScrollView>
 
             <View style={styles.frameContainer}>
                 <FrameTableCard
-
+                    idArray={tabIds}
                     isEditMode={isEditMode}
                     frameColor = "#DD6B20"
                     onEdit = {handleEdit}

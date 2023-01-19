@@ -22,8 +22,7 @@ const FrameTabularContent = (props) => {
     const [fields, setFields] =  useState("")
 
     const onChangeValue = (fieldName) => (value) => {
-        console.log('belos');
-        console.log(value)
+        
         setFields({
             ...fields,
             [fieldName]: value,
