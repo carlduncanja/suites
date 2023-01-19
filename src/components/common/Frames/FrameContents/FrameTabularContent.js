@@ -29,7 +29,7 @@ const FrameTabularContent = (props) => {
          })
 
          for (id of idArray){
-            console.log("inside edit functon")
+            console.log("inside edit functon", id)
             onEdit(id, fieldName, value)
          }
 
