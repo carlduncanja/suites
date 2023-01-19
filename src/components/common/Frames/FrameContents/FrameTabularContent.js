@@ -68,7 +68,7 @@ const FrameTabularContent = (props) => {
                                                     onChangeValue(key)(newValue)
                                                 }
                                                 }
-                                                value={fields?.[key]}/>            
+                                                value={isEditMode ? fields?.[key] : item[key]}/>            
                                         </View>
                                         
                                     )
