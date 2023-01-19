@@ -19,7 +19,14 @@ const FrameTabularContent = (props) => {
         onEdit = () => { }
     } = props
     const [addMode, setAddMode] = useState(false)
+    const [fields, setFields] =  useState("")
 
+    const onChangeValue = (fieldName) => (value) => {
+        setFields({
+            ...fields,
+            [fieldName]: value,
+         })
+    };
 
     const toggleAddOption = (value) => {
         setAddMode(value)
@@ -40,6 +47,8 @@ const FrameTabularContent = (props) => {
                 props.cardInformation.map((item, index)=>{
                     return(
                         <View key={index} style={styles.itemContainer}>
+                            setFields(item)
+                            console.log("fields data",fields)
                             {
                                 Object.keys(item).map((key, index)=>{
                                     return(
