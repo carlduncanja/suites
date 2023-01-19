@@ -10,7 +10,7 @@ const MedicalHistory = ({
 }) => {
     const { medicalHistory = [], familyHistory = [], lifestyles = [] } = medicalInfo;
     const {pageState} = useContext(PageContext);
-    
+
     return (
         selectedTab === 'Family History' ?
             <FamilyHistory tabDetails={familyHistory} isEditMode={pageState.isEditMode} fetchCase={fetchCase} patient={patient}/> :
