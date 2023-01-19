@@ -9,7 +9,7 @@ import AlcoholIcon from '../../../../../assets/svg/alcohol';
 import FrameLifestyleCard from '../../../common/Frames/FrameCards/FrameLifestyleCard'
 import DisabledSectionComponent from '../../../DisabledSectionComponent';
 import FrameTitle from '../../../common/Frames/FrameTitle';
-const Lifestyle = ({ tabDetails, isEditMode}) => {
+const Lifestyle = ({ tabDetails, isEditMode }) => {
 
 
 
@@ -27,24 +27,24 @@ const Lifestyle = ({ tabDetails, isEditMode}) => {
 
     return (
         tabDetails.length != 0 ?
-            <ScrollView>
+            <ScrollView style={{ marginBottom: 80 }}>
                 {drugs.length != 0 ?
-                    
-                        <View style={styles.frameContainer} >
-                            <View style={styles.container}>
-                                
-                                <FrameLifestyleCard
-                                    frameColor="#805AD5"
-                                    titleBackgroundColor="#FAF5FF"
-                                    frameBorderColor="#D6BCFA"
-                                    frameTitle="Drug Use"
-                                    cardInformation={drugs}
-                                    icon={DrugIcon}
-                                    isEditMode={isEditMode}
-                                />
-                            </View> 
 
+                    <View style={styles.frameContainer} >
+                        <View style={styles.container}>
+
+                            <FrameLifestyleCard
+                                frameColor="#805AD5"
+                                titleBackgroundColor="#FAF5FF"
+                                frameBorderColor="#D6BCFA"
+                                frameTitle="Drug Use"
+                                cardInformation={drugs}
+                                icon={DrugIcon}
+                                isEditMode={isEditMode}
+                            />
                         </View>
+
+                    </View>
                     :
                     null
                 }

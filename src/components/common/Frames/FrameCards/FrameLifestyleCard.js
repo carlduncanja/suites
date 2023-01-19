@@ -6,14 +6,34 @@ import FrameItem from '../FrameItems/FrameItem';
 import { transformToSentence } from '../../../../hooks/useTextEditHook'
 import { ScrollView } from 'react-native-gesture-handler';
 import AddIcon from '../../../../../assets/svg/addIcon';
+import FrameAddLifestyle from '../FrameItems/FrameAddLifestyle';
+
 
 const FrameLifestyleCard = (props) => {
     console.log(props.cardInformation)
     
     const [addMode, setAddMode] = useState(false) 
-
+    const [substances,setSubtances] =useState(props.cardInformation)
+    
     const toggleAddOption = (value) => {
         setAddMode(value)
+    } 
+
+    const createSubstanceAddition = (substance) =>{
+        let newLifeStyleItem={
+            "amount": 10,
+            "frequency": "",
+            "name": substance,
+            "patient": "5eb5b1d50e90f7c743439106",
+            "startDate": "1999-04-03T05:00:00.000Z",
+            "type": "5ebc43d9379d63d71a48053e",
+            "unit": "",
+            "usage": "to calm nerves", 
+        }  
+         let newSubstanceArray = substances.slice() 
+         newSubstanceArray.push(newLifeStyleItem) 
+         setSubtances(newSubstanceArray)
+
     }
     return (
         <View style={styles.container}>
@@ -27,7 +47,7 @@ const FrameLifestyleCard = (props) => {
                 />
             </View>
             <View style={styles.content} >
-                {props.cardInformation.map((categorieInformation, index) => {
+                {substances.map((categorieInformation, index) => {
                     return (
                         <View>
                             <Text style={styles.titleName}>{transformToSentence(categorieInformation.name)}</Text>
@@ -38,7 +58,16 @@ const FrameLifestyleCard = (props) => {
                 {props.isEditMode ?
 
                     addMode ?
-                        null
+                       <FrameAddLifestyle
+                        title="New Item"
+                        buttonTitle = "Add"
+                        selectMessage={"Select " + props.frameTitle + " type"} 
+                        onCancel={() => { toggleAddOption(false) } } 
+                        onAction={(substanceName)=>{ 
+                            createSubstanceAddition(substanceName)
+                            toggleAddOption(false)
+                        }}
+                       />
                         :
                         <View>
                             <FrameItem itemContent="Add New item" icon={<AddIcon />} isEditMode={props.isEditMode} onPressButton={() => { toggleAddOption(true) }} />
