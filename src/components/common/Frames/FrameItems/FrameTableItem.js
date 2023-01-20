@@ -2,11 +2,11 @@ import React from 'react';
 import {View, Text, StyleSheet, TouchableOpacity, TextInput} from "react-native";
 import styled from '@emotion/native'
 import {useTheme} from "emotion-theming";
-
-
+import IconButton from '../../Buttons/IconButton';
+import RemoveIcon from '../../../../../assets/svg/removeIcon';
 const FrameTableItemWrapper = styled.View`
   flex-direction: row;
-  margin-bottom: 10px;
+  margin: 10px;
   margin-right: 20px;
 `
 
@@ -15,6 +15,7 @@ const TitleContainer = styled.View`
   justify-content: center;
   margin-right: 10px;
   min-width: 70px;
+  
 `
 
 const Title = styled.Text(({theme}) => ({
@@ -27,7 +28,7 @@ const ValueContainer = styled.View(({theme, enabled = {}}) => ({
     // ...theme.font['--text-base-regular'],
     color: theme.colors['--color-gray-900'],
     flex: 1,
-    backgroundColor: enabled ? theme.colors['--default-shade-white'] : theme.colors['--color-gray-100'],
+    backgroundColor: enabled ? theme.colors['--default-shade-white'] : theme.colors['--color-white-100'],
     borderColor: theme.colors['--color-gray-400'],
     borderWidth: 1,
     borderRadius: 4,
@@ -54,7 +55,8 @@ const FrameTableItem = ({
                             editable = false,
                             onPress,
                             onChangeValue = () => {
-                            }
+                            },
+                            icon
 }) => {
     const theme = useTheme();
 
@@ -76,7 +78,7 @@ const FrameTableItem = ({
                     <TextInput value={value + ""} editable={editable} onChangeText={onChangeValue}/>
 
                 </ValueContainer>
-
+                
             </FrameTableItemWrapper>
         </TouchableOpacity>
     );
