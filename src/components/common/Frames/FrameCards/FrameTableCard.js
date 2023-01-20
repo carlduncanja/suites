@@ -2,7 +2,8 @@ import React from 'react';
 import { View, StyleSheet } from "react-native";
 import FrameTitle from '../FrameTitle';
 import FrameTabularContent from '../FrameContents/FrameTabularContent'
-
+import RemoveIcon from '../../../../../assets/svg/wasteIcon';
+import EditIcon from '../../../../../assets/svg/editIcon';
 const FrameTableCard = (props) => {
     const {
         frameColor,
@@ -20,7 +21,8 @@ const FrameTableCard = (props) => {
         onAction =()=>{},
         onEdit =()=>{},
         normalInput,
-        physicianSelection=true
+        physicianSelection=true,
+        editable
     } = props
 
     //const theme = useTheme();
@@ -48,6 +50,8 @@ const FrameTableCard = (props) => {
                     onEdit={onEdit}
                     physicianSelection={physicianSelection}
                     normalInput={normalInput}
+                    icon={<RemoveIcon/>}
+                    editIcon={<EditIcon/>}
                 />
             </View>
         </View>

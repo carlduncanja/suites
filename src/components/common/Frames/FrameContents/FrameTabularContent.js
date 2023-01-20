@@ -4,6 +4,16 @@ import FrameTableItem from '../FrameItems/FrameTableItem';
 import FrameItem from '../FrameItems/FrameItem';
 import FrameEditFamily from '../FrameItems/FrameEditFamily';
 import AddIcon from '../../../../../assets/svg/addIcon';
+import IconButton from '../../Buttons/IconButton';
+import RemoveIcon from '../../../../../assets/svg/removeIcon';
+import EditIcon from '../../../../../assets/svg/editIcon';
+import styled, { css } from '@emotion/native';
+import { red100 } from 'react-native-paper/src/styles/colors';
+const IconFrameAdjustment = styled.View`
+    
+    padding-bottom : ${({ theme }) => theme.space['--space-0']};
+
+`;
 const FrameTabularContent = (props) => {
     const {
         cardInformation,
@@ -16,24 +26,21 @@ const FrameTabularContent = (props) => {
         normalInput,
         physicianSelection = true,
         onAction = () => { },
-        onEdit = () => { }
+        onEdit = () => { },
+        editable = true,
+        icon,
+        editIcon
     } = props
     const [addMode, setAddMode] = useState(false)
-    const [fields, setFields] =  useState("")
+    const [fields, setFields] =  useState(cardInformation)
 
-    const onChangeValue = (fieldName) => (value) => {
-        
-        setFields({
-            ...fields,
-            [fieldName]: value,
-         })
+    const onChangeValue = (innerIndex, rowIndex) => (value) => {
+        // const fieldsClone = [...fields]
+        // let tempVar = fieldsClone[rowIndex]
+        // const rowNames = ['relative', 'condition']
+        // tempVar[rowNames[innerIndex]] = value
 
-         for (id of idArray){
-            console.log("inside edit functon", id)
-            onEdit(id, fieldName, value)
-         }
-
-
+        handleEdit(rowIndex, innerIndex, value);
     };
 
     const toggleAddOption = (value) => {
@@ -53,34 +60,45 @@ const FrameTabularContent = (props) => {
                 :
                 props.cardInformation.map((item, index)=>{
                     return(
-                        <View key={index} style={styles.itemContainer}>
-                           
+                        <View key={idArray[index]} style={isEditMode? styles.itemContainerEdit: styles.itemContainer}>
                             {
-                                Object.keys(item).map((key, index)=>{
+                                Object.keys(item).map((key, i)=>{
                                     return(
-                                        <View key={index} style={{width:'50%'}}>
+                                        <View key={index + i} style={{width:'50%'}}>
+                                            
                                             <FrameTableItem 
                                                 idArray={idArray}
                                                 title={key} 
-                                                onPress={()=>{console.log("clicked!", fields)}}
                                                 editable = {isEditMode}
-                                                onChangeValue = {(newValue)=> {
-                                                    onChangeValue(key)(newValue)
+                                                index={i}
+                                                onChangeValue = {
+                                                    (newValue, innerIndex)=> {
+                                                        onChangeValue(innerIndex, index)(newValue)
+                                                    }
                                                 }
-                                                }
-                                                value={isEditMode ? fields?.[key] : item[key]}/>            
+                                                selectable={true}
+                                                value={item[key]}/>            
                                         </View>
                                         
                                     )
                                 })
+                                
                             }
+                            {
+                                isEditMode ?
+                                    <IconFrameAdjustment>
+                                        <IconButton Icon={icon}  onPress={()=>onDelete(index)}/>
+                                    </IconFrameAdjustment>
+                                :
+                                null
+                            } 
                         </View>
                     ) 
                 })
             }
 
             {isEditMode ?
-
+            
             addMode ?
                 <FrameEditFamily
                     title="New Item"
@@ -115,7 +133,7 @@ export default FrameTabularContent;
 
 const styles = StyleSheet.create({
     container:{
-        padding:15,
+        padding:30,
         borderColor:'#CCD6E0',
         borderWidth:1,
         borderTopWidth:0,
@@ -123,9 +141,21 @@ const styles = StyleSheet.create({
         borderBottomRightRadius:8
     },
     itemContainer:{
+        
         flexDirection:'row',
         justifyContent:'space-between',
         marginBottom:10
+    },
+    itemContainerEdit:{
+        paddingRight: 45,
+        flexDirection:'row',
+        justifyContent:'space-between',
+        marginBottom:10,
+        borderColor:'#CCD6E0',
+        backgroundColor: 'white',
+        borderWidth:1,
+        borderRadius:8,
     }
+
     
 })
