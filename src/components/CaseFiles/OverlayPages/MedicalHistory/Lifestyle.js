@@ -9,18 +9,19 @@ import AlcoholIcon from '../../../../../assets/svg/alcohol';
 import FrameLifestyleCard from '../../../common/Frames/FrameCards/FrameLifestyleCard'
 import DisabledSectionComponent from '../../../DisabledSectionComponent';
 import FrameTitle from '../../../common/Frames/FrameTitle';
-const Lifestyle = ({ tabDetails, isEditMode }) => {
+const Lifestyle = ({ tabDetails, isEditMode, patient,fetchCase = () => {}}) => {
 
 
 
     const getTypeData = (lifestyleType) => {
         return tabDetails.filter(item => {
             const { type = { name: "Molly" } } = item
-            const { name = "Drug Use" } = type
+            const { name = "Alcohol Use" } = type
             return name === lifestyleType && item
         }) || []
     }
-
+    console.log("the data iam loking at",tabDetails)
+    
     const drugs = getTypeData("Drug Use")
     const alcohol = getTypeData("Alcohol Use")
     const tobacco = getTypeData("Tobacco Use")
@@ -38,9 +39,13 @@ const Lifestyle = ({ tabDetails, isEditMode }) => {
                                 titleBackgroundColor="#FAF5FF"
                                 frameBorderColor="#D6BCFA"
                                 frameTitle="Drug Use"
-                                cardInformation={drugs}
+                                cardInformation={drugs} 
+                                updateData={tabDetails}
                                 icon={DrugIcon}
                                 isEditMode={isEditMode}
+                                patient={patient} 
+                                fetchCase={fetchCase()}
+
                             />
                         </View>
 
@@ -49,34 +54,49 @@ const Lifestyle = ({ tabDetails, isEditMode }) => {
                     null
                 }
 
-                {alcohol.map((alcoholItem, index) => {
-                    return (
-                        <View style={styles.frameContainer} key={index}>
+                {alcohol.length != 0 ?
+
+
+                    <View style={styles.frameContainer} >
+                        <View style={styles.container}>
                             <FrameLifestyleCard
                                 frameColor="#E53E3E"
                                 titleBackgroundColor="#FFF5F5"
                                 frameBorderColor="#FEB2B2"
                                 frameTitle="Alcohol Use"
-                                cardInformation={alcoholItem}
-                                icon={AlcoholIcon}
+                                cardInformation={alcohol}
+                                icon={AlcoholIcon} 
+                                updateData={tabDetails}
+                                isEditMode={isEditMode}
+                                patient={patient}
                             />
                         </View>
-                    )
-                })}
-                {tobacco.map((tobaccoItem, index) => {
-                    return (
-                        <View style={styles.frameContainer} key={index}>
+                    </View>
+                    :
+                    null
+                }
+                {tobacco.length != 0 ?
+
+                    <View style={styles.frameContainer}>
+
+                        <View style={styles.container} >
                             <FrameLifestyleCard
                                 frameColor="#4E5664"
                                 titleBackgroundColor="#EEF2F6"
                                 frameBorderColor="#A0AEC0"
                                 frameTitle="Tobacco Use"
-                                cardInformation={tobaccoItem}
-                                icon={TobaccoIcon}
+                                cardInformation={tobacco}
+                                icon={TobaccoIcon} 
+                                updateData={tabDetails}
+                                isEditMode={isEditMode}
+                                patient={patient}
                             />
                         </View>
-                    )
-                })}
+                    </View>
+                    :
+                    null
+
+                }
             </ScrollView>
             :
 

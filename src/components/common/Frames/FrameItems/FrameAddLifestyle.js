@@ -9,7 +9,7 @@ import InputField2 from '../../../common/Input Fields/InputField2'
 import _, { reduce, set } from "lodash";
 import Row from '../../../common/Row';
 import SearchableOptionsField from '../../../common/Input Fields/SearchableOptionsField'
-import { getPhysicians, getUsersCall } from '../../../../api/network'
+import { getPhysicians, getLifeStyleItems } from '../../../../api/network'
 
 const FrameItemWrapper = styled.View`
     width: 100%;
@@ -158,7 +158,7 @@ function FrameAddLifestyle({
 
 
     const fetchPhysicians = () => {
-        getPhysicians(searchValue, 5)
+        getLifeStyleItems(searchValue, 5)
             .then((physicianResult = []) => {
                 const { data = [], pages = 0 } = physicianResult
                 const results = data.map(item => ({
@@ -175,24 +175,6 @@ function FrameAddLifestyle({
             })
     };
 
-
-    async function updatePhysicianDB(item, handlePatientFunc, setSelectedValueFunc) {
-        let result = {};
-        const token = item.split(" ");
-        item = {
-            "firstName": token[0],
-            "surname": token[1]
-        },
-            await createPhysician(item).then(res => {
-                result = {
-                    _id: res._id,
-                    name: `${res.firstName} ${res.surname}`
-                }
-            }).then(res => {
-                handlePatientFunc(result);
-                setSelectedValueFunc(result);
-            })
-    }
 
 
 
@@ -248,8 +230,6 @@ function FrameAddLifestyle({
 
                                     <SearchableOptionsField
                                         emptyAfterSubmit={false}
-                                        updateDB={updatePhysicianDB}
-                                        showActionButton={true}
                                         placeholder={physicianName}
                                         text={currentIndex === 1 ? searchValue : ''}
                                         value={generatedLeadSurgeon}
@@ -258,17 +238,17 @@ function FrameAddLifestyle({
                                             setCurrentIndex(1);
                                             setSelectedType("Physician")
                                         }}
-                                        oneOptionsSelected={(value) => {
-                                            const staff = {
-                                                _id: value?._id,
+                                        oneOptionsSelected={(value) => {  
+                                           
+                                            const substance = {
+                                                _id: value?.lifestyleType,
                                                 name: value?.name,
-                                                type: "Physician",
-                                                tag: "Lead Surgeon"
+
                                             }
                                             setSearchValue('')
-                                            onStaffChange(staff);
+                                            onStaffChange(substance);
                                             activateButton(true);
-                                            setName(staff.name)
+                                            setName({ name: substance.name,typeID:substance._id})
 
                                         }}
                                         handlePatient={handleSurgeon}

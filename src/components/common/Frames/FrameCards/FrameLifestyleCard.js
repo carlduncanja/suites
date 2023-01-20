@@ -1,4 +1,4 @@
-import React, { useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, } from "react-native";
 import FrameTitle from '../FrameTitle';
 import FrameLifestyleContent from '../FrameContents/FrameLifestyleContent';
@@ -7,34 +7,133 @@ import { transformToSentence } from '../../../../hooks/useTextEditHook'
 import { ScrollView } from 'react-native-gesture-handler';
 import AddIcon from '../../../../../assets/svg/addIcon';
 import FrameAddLifestyle from '../FrameItems/FrameAddLifestyle';
+import { addLifeStyleItems, createPatientLifeStyle, updatePatient } from '../../../../api/network';
+import { useModal } from 'react-native-modalfy';
+import { useTheme } from 'emotion-theming';
+import ConfirmationComponent from '../../../ConfirmationComponent';
 
-
-const FrameLifestyleCard = (props) => {
+const FrameLifestyleCard = (props,fetchCase = () => {}) => {
     console.log(props.cardInformation)
-    
-    const [addMode, setAddMode] = useState(false) 
-    const [substances,setSubtances] =useState(props.cardInformation)
-    
+
+    const modal = useModal();
+    const theme = useTheme();
+    const patientId = props.patient._id;
+
+    const [addMode, setAddMode] = useState(false)
+    const [substances, setSubtances] = useState(props.cardInformation)
+    const [newLifeStyle, setNewLifeStyleItems] = useState([])
+    const [dataUpdated, setDataUpdated] = useState(false)
+
     const toggleAddOption = (value) => {
         setAddMode(value)
-    } 
-
-    const createSubstanceAddition = (substance) =>{
-        let newLifeStyleItem={
-            "amount": 10,
-            "frequency": "",
-            "name": substance,
-            "patient": "5eb5b1d50e90f7c743439106",
-            "startDate": "1999-04-03T05:00:00.000Z",
-            "type": "5ebc43d9379d63d71a48053e",
-            "unit": "",
-            "usage": "to calm nerves", 
-        }  
-         let newSubstanceArray = substances.slice() 
-         newSubstanceArray.push(newLifeStyleItem) 
-         setSubtances(newSubstanceArray)
-
     }
+
+    const createSubstanceAddition = (substance) => {
+
+        let newLifeStyleItem = {
+            "amount": 10,
+            "frequency": "often",
+            "name": substance.name,
+            "patient": patientId,
+            "startDate": "1999-04-03T05:00:00.000Z",
+            "type": substance.typeID,
+            "unit": "",
+            "usage": "to calm nerves",
+        }
+
+
+        let newSubstanceArray = substances.slice()
+        newSubstanceArray.push(newLifeStyleItem)
+        setSubtances(newSubstanceArray)
+
+        let createNewEntry = newLifeStyle.slice()
+        createNewEntry.push(newLifeStyleItem)
+        setNewLifeStyleItems(createNewEntry)
+
+        setDataUpdated(true)
+    }
+
+    const addLifeStyleItems = () => {
+        createPatientLifeStyle({ patientLifestyleItems: newLifeStyle })
+            .then(data => {
+
+                data.map((newLifeStyle, index) => {
+                    updatePatient(patientId, {
+                        medicalInfo: {
+                            lifestyles: [...props.updateData, newLifeStyle]
+                        }
+                    }).then(result => {
+
+                    }
+                    )
+                })
+                modal.openModal('ConfirmationModal', {
+                    content: <ConfirmationComponent
+                        isEditUpdate={false}
+                        isError={false}
+                        onCancel={() => {
+                            modal.closeModals('ConfirmationModal');
+                        }}
+                        onAction={() => {
+                            modal.closeModals('ConfirmationModal');
+                            //fetchCase()
+                        }}
+                    />,
+                    onClose: () => {
+                        modal.closeModals('ConfirmationModal');
+                    },
+                });
+            }
+            )
+            .catch(error => {
+                console.log("failed to update", error)
+                modal.openModal('ConfirmationModal', {
+                    content: <ConfirmationComponent
+                        isEditUpdate={false}
+                        isError={true}
+                        onCancel={() => {
+                            modal.closeModals('ConfirmationModal');
+                        }}
+                        onAction={() => {
+                            modal.closeModals('ConfirmationModal');
+                        }}
+                    />,
+                    onClose: () => {
+                        modal.closeModals('ConfirmationModal');
+                    },
+                });
+            }
+            )
+    }
+
+    useEffect(() => {
+        dataUpdated ?
+            modal.openModal('ConfirmationModal', {
+                content: (
+                    <ConfirmationComponent
+                        isError={false} // boolean to show whether to show an error icon or a success icon
+                        isEditUpdate={true}
+                        onCancel={() => {
+
+                            modal.closeAllModals();
+                        }}
+                        onAction={() => {
+                            modal.closeAllModals();
+                            addLifeStyleItems()
+                        }}
+                        message="Do you want to save changes?" // general message you can send to be displayed
+                        action="Yes"
+                    />
+                ),
+                onClose: () => console.log('Modal closed'),
+            })
+            :
+            null
+
+    }, [props.isEditMode])
+
+
+
     return (
         <View style={styles.container}>
             <View style={styles.title}>
@@ -49,7 +148,7 @@ const FrameLifestyleCard = (props) => {
             <View style={styles.content} >
                 {substances.map((categorieInformation, index) => {
                     return (
-                        <View>
+                        <View key={index}>
                             <Text style={styles.titleName}>{transformToSentence(categorieInformation.name)}</Text>
                             <FrameLifestyleContent cardInformation={categorieInformation} />
                         </View>
@@ -58,16 +157,16 @@ const FrameLifestyleCard = (props) => {
                 {props.isEditMode ?
 
                     addMode ?
-                       <FrameAddLifestyle
-                        title="New Item"
-                        buttonTitle = "Add"
-                        selectMessage={"Select " + props.frameTitle + " type"} 
-                        onCancel={() => { toggleAddOption(false) } } 
-                        onAction={(substanceName)=>{ 
-                            createSubstanceAddition(substanceName)
-                            toggleAddOption(false)
-                        }}
-                       />
+                        <FrameAddLifestyle
+                            title="New Item"
+                            buttonTitle="Add"
+                            selectMessage={"Select " + props.frameTitle + " type"}
+                            onCancel={() => { toggleAddOption(false) }}
+                            onAction={(substance) => {
+                                createSubstanceAddition(substance)
+                                toggleAddOption(false)
+                            }}
+                        />
                         :
                         <View>
                             <FrameItem itemContent="Add New item" icon={<AddIcon />} isEditMode={props.isEditMode} onPressButton={() => { toggleAddOption(true) }} />
