@@ -321,7 +321,7 @@ function FrameEditItem({
                             <ButtonContainer
                                 onPress={() => {
                                     actionButton ?
-                                        normalInput ? buttonTitle === 'Add' ? onAction(name,condition) : onEdit(id, name) : onAction(staffInfo[0]._id)
+                                        normalInput ? buttonTitle === 'Add' ? onAction(name,condition) : onEdit(id, name, condition) : onAction(staffInfo[0]._id)
                                         :
 
                                         null

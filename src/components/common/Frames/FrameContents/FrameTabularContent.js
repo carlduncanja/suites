@@ -28,10 +28,20 @@ const FrameTabularContent = (props) => {
         onAction = () => { },
         onEdit = () => { },
         editable = true,
-        icon
+        icon,
+        editIcon
     } = props
     const [addMode, setAddMode] = useState(false)
+    const [fields, setFields] =  useState(cardInformation)
 
+    const onChangeValue = (innerIndex, rowIndex) => (value) => {
+        // const fieldsClone = [...fields]
+        // let tempVar = fieldsClone[rowIndex]
+        // const rowNames = ['relative', 'condition']
+        // tempVar[rowNames[innerIndex]] = value
+
+        handleEdit(rowIndex, innerIndex, value);
+    };
 
     const toggleAddOption = (value) => {
         setAddMode(value)
@@ -39,7 +49,6 @@ const FrameTabularContent = (props) => {
 
     return ( 
         <View style={styles.container}>
-            
 
             {
                 cardInformation.length === 0 ?
@@ -51,18 +60,24 @@ const FrameTabularContent = (props) => {
                 :
                 props.cardInformation.map((item, index)=>{
                     return(
-                        <View key={index} style={isEditMode? styles.itemContainerEdit: styles.itemContainer}>
+                        <View key={idArray[index]} style={isEditMode? styles.itemContainerEdit: styles.itemContainer}>
                             {
-                                Object.keys(item).map((key, index)=>{
+                                Object.keys(item).map((key, i)=>{
                                     return(
-                                        <View key={index} style={{width:'50%'}}>
+                                        <View key={index + i} style={{width:'50%'}}>
                                             
                                             <FrameTableItem 
+                                                idArray={idArray}
                                                 title={key} 
-                                                value={item[key]}
-                                                
-                                                />
-                                                
+                                                editable = {isEditMode}
+                                                index={i}
+                                                onChangeValue = {
+                                                    (newValue, innerIndex)=> {
+                                                        onChangeValue(innerIndex, index)(newValue)
+                                                    }
+                                                }
+                                                selectable={true}
+                                                value={item[key]}/>            
                                         </View>
                                         
                                     )
@@ -76,8 +91,7 @@ const FrameTabularContent = (props) => {
                                     </IconFrameAdjustment>
                                 :
                                 null
-                            }
-                            
+                            } 
                         </View>
                     ) 
                 })
@@ -92,6 +106,7 @@ const FrameTabularContent = (props) => {
                         toggleAddOption(false)
                     }}
                     onAction={onAction}
+                    onEdit ={onEdit}
                     buttonTitle="Add"
                     normalInput={normalInput}
                     physicianSelection={physicianSelection}
