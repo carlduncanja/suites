@@ -17,7 +17,7 @@ const MedicalHistory = ({
             selectedTab === 'Details' ?
                 <General tabDetails={medicalHistory} isEditMode={pageState.isEditMode} fetchCase={fetchCase} patient={patient} /> :
                 selectedTab === 'Lifestyle' ?
-                    <Lifestyle tabDetails={lifestyles} /> :
+                    <Lifestyle tabDetails={lifestyles} isEditMode={pageState.isEditMode} fetchCase={fetchCase} patient={patient}/> :
                     <Other tabDetails={[]} />
     );
 };
