@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {View, Text, StyleSheet, TouchableOpacity, TextInput} from "react-native";
 import styled from '@emotion/native'
 import {useTheme} from "emotion-theming";
@@ -49,6 +49,7 @@ const Value = styled.TextInput(({theme}) => ({
 
 const FrameTableItem = ({
                             title = "",
+                            idArray,
                             value = "",
                             selectable = false,
                             enabled = false,
@@ -56,12 +57,13 @@ const FrameTableItem = ({
                             onPress,
                             onChangeValue = () => {
                             },
+                            index,
                             icon
 }) => {
     const theme = useTheme();
-
+    const [currentIndex, setIndex] = useState(index)
     return (
-        <TouchableOpacity disabled={!selectable} onPress={onPress}>
+        <TouchableOpacity disabled={!selectable} onPress={( ) => onPress}>
             <FrameTableItemWrapper theme={theme}>
 
                 {
@@ -75,7 +77,7 @@ const FrameTableItem = ({
                 <ValueContainer theme={theme} enabled={enabled}>
                     {/*<Value theme={theme}> {value} </Value>*/}
 
-                    <TextInput value={value + ""} editable={editable} onChangeText={onChangeValue}/>
+                    <TextInput value={value + ""} editable={editable} onChangeText={(res) => {onChangeValue(res, currentIndex)}}/>
 
                 </ValueContainer>
                 

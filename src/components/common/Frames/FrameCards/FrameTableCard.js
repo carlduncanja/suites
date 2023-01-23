@@ -50,7 +50,8 @@ const FrameTableCard = (props) => {
                     onEdit={onEdit}
                     physicianSelection={physicianSelection}
                     normalInput={normalInput}
-                    icon={<RemoveIcon/> }
+                    icon={<RemoveIcon/>}
+                    editIcon={<EditIcon/>}
                 />
             </View>
         </View>

@@ -114,6 +114,7 @@ import {
     caseUpdateStaffEndpoint,
     getMedicalHistoryTypeEndpoint,
     addFamilyHistoryEndpoint,
+    editFamilyHistoryEndpoint,
     deleteFamilyHistoryEndpoint,
     createPatientLifestyleEndpiont,
     deletePatientLifestyleEndpiont
@@ -924,6 +925,12 @@ export const createFamilyHistory = async (id, data) => suitesAxiosInstance
     .post(addFamilyHistoryEndpoint(id), data)
     .then(handleResponse)
     .catch(handleError)
+
+export const editFamilyHistory = async (id, data) => suitesAxiosInstance
+    .put(editFamilyHistoryEndpoint(id), data)
+    .then(handleResponse)
+    .catch(handleError)
+
 
 export const deleteFamilyHistory = async (id, data) => suitesAxiosInstance
     .post(deleteFamilyHistoryEndpoint(id), data)
