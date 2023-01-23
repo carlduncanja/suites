@@ -1864,7 +1864,7 @@ function CasePage({ auth = {}, route, addNotification, navigation, ...props }) {
         } = selectedCase;
         const { medicalInfo = {} } = patient;
         const { proceduresBillableItems } = chargeSheet;
-        console.log("the life style data of a patient",medicalInfo)
+        
         switch (selectedMenuItem) {
             case 'Patient':
                 return <Patient
