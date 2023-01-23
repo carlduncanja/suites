@@ -315,7 +315,7 @@ function CaseFilesPage({ navigation, route }) {
                 actions: floatingActions(),
             });
     };
-    console.log("the life style data of a patient",lifeStyleData)
+    
     const getTabContent = (selectedTab) => {
        
         switch (selectedTab) {

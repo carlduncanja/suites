@@ -115,7 +115,8 @@ import {
     getMedicalHistoryTypeEndpoint,
     addFamilyHistoryEndpoint,
     deleteFamilyHistoryEndpoint,
-    createPatientLifestyleEndpiont
+    createPatientLifestyleEndpiont,
+    deletePatientLifestyleEndpiont
 } from '../const/suitesEndpoints';
 import { createDocumentLink, documentById, documentData, documentUpload } from '../const/documentGenerationEndpoints';
 
@@ -908,7 +909,7 @@ export const createMedicalHistory = async (id, data) => suitesAxiosInstance
     .then(handleResponse)
     .catch(handleError)
 
-    
+
 export const getMedicalHistoryType = async (id) => suitesAxiosInstance
     .get(getMedicalHistoryTypeEndpoint(id))
     .then(handleResponse)
@@ -1048,9 +1049,15 @@ export const getLifeStyleItems = async (query, max, page) => suitesAxiosInstance
     .catch(handleError)
 
 export const createPatientLifeStyle = async (data) => suitesAxiosInstance
-    .post(createPatientLifestyleEndpiont,data)
+    .post(createPatientLifestyleEndpiont, data)
     .then(handleResponse)
     .catch(handleError)
+
+export const deletePatientLifestyle = async (id) => suitesAxiosInstance
+    .delete(deletePatientLifestyleEndpiont(id))
+    .then(handleResponse)
+    .catch(handleError)
+
 // ################# HEALTH INSURER ENDPOINTS 
 
 export const getHealthInsurers = async (query, max, page) => suitesAxiosInstance

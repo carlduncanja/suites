@@ -1,19 +1,21 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import FrameTitle from '../FrameTitle';
 import FrameLifestyleContent from '../FrameContents/FrameLifestyleContent';
 import FrameItem from '../FrameItems/FrameItem';
 import { transformToSentence } from '../../../../hooks/useTextEditHook'
 import { ScrollView } from 'react-native-gesture-handler';
 import AddIcon from '../../../../../assets/svg/addIcon';
+import WasteIcon from '../../../../../assets/svg/wasteIcon';
 import FrameAddLifestyle from '../FrameItems/FrameAddLifestyle';
-import { addLifeStyleItems, createPatientLifeStyle, updatePatient } from '../../../../api/network';
+import { addLifeStyleItems, createPatientLifeStyle, updatePatient, deletePatientLifestyle } from '../../../../api/network';
 import { useModal } from 'react-native-modalfy';
 import { useTheme } from 'emotion-theming';
 import ConfirmationComponent from '../../../ConfirmationComponent';
+import ConfirmationCheckBoxComponent from '../../../ConfirmationCheckBoxComponent';
 
-const FrameLifestyleCard = (props,fetchCase = () => {}) => {
-    console.log(props.cardInformation)
+const FrameLifestyleCard = ({ fetchCase = () => { },...props}) => {
+    //console.log(props.cardInformation)
 
     const modal = useModal();
     const theme = useTheme();
@@ -76,13 +78,14 @@ const FrameLifestyleCard = (props,fetchCase = () => {}) => {
                         }}
                         onAction={() => {
                             modal.closeModals('ConfirmationModal');
-                            //fetchCase()
+                            fetchCase()
                         }}
                     />,
                     onClose: () => {
                         modal.closeModals('ConfirmationModal');
                     },
-                });
+                }); 
+
             }
             )
             .catch(error => {
@@ -95,6 +98,7 @@ const FrameLifestyleCard = (props,fetchCase = () => {}) => {
                             modal.closeModals('ConfirmationModal');
                         }}
                         onAction={() => {
+
                             modal.closeModals('ConfirmationModal');
                         }}
                     />,
@@ -103,6 +107,88 @@ const FrameLifestyleCard = (props,fetchCase = () => {}) => {
                     },
                 });
             }
+            )
+    }
+
+    const confirmDelete = (id, index) => {
+        modal.openModal(
+            'ConfirmationModal',
+            {
+                content: <ConfirmationCheckBoxComponent
+                    isError={false}
+                    isEditUpdate={true}
+                    onCancel={() => {
+                        modal.closeModals('ConfirmationModal');
+                    }}
+                    onAction={() => {
+                        //console.log(substances[index])
+                        deleteLifestyleItem(id, index)
+                        modal.closeModals('ConfirmationModal');
+                    }}
+                    message="Do you want to delete this item?"
+                />,
+                onClose: () => {
+                    modal.closeModals('ConfirmationModal');
+                    modal.closeModals('ActionContainerModal')
+
+                }
+            }
+        );
+    }
+
+    const deleteLifestyleItem = async (id, index) => {
+
+        let container = []
+        props.updateData.filter(item => {
+            if (item._id !== id) {
+                container.push(item._id)
+            }
+        });
+
+
+        await updatePatient(patientId,
+            {
+                medicalInfo: {
+                    lifestyles: container
+                }
+            })
+            .then(data => {
+                modal.openModal('ConfirmationModal', {
+                    content: <ConfirmationComponent
+                        isEditUpdate={false}
+                        isError={false}
+                        onCancel={() => {
+                            modal.closeModals('ConfirmationModal');
+                        }}
+                        onAction={() => {
+                            modal.closeModals('ConfirmationModal');
+                            fetchCase()
+                        }}
+                    />,
+                    onClose: () => {
+                        modal.closeModals('ConfirmationModal');
+                    },
+                });
+            })
+            .catch(
+                error => {
+                    console.log("failed to Delete", error)
+                    modal.openModal('ConfirmationModal', {
+                        content: <ConfirmationComponent
+                            isEditUpdate={false}
+                            isError={true}
+                            onCancel={() => {
+                                modal.closeModals('ConfirmationModal');
+                            }}
+                            onAction={() => {
+                                modal.closeModals('ConfirmationModal');
+                            }}
+                        />,
+                        onClose: () => {
+                            modal.closeModals('ConfirmationModal');
+                        },
+                    });
+                }
             )
     }
 
@@ -149,7 +235,16 @@ const FrameLifestyleCard = (props,fetchCase = () => {}) => {
                 {substances.map((categorieInformation, index) => {
                     return (
                         <View key={index}>
-                            <Text style={styles.titleName}>{transformToSentence(categorieInformation.name)}</Text>
+                            <View style={styles.headerContianer}>
+                                <Text style={styles.titleName}>{transformToSentence(categorieInformation.name)}</Text>
+                                {props.isEditMode ?
+                                    <TouchableOpacity onPress={() => { confirmDelete(categorieInformation._id, index) }}>
+                                        <WasteIcon strokeColor={theme.colors['--color-red-700']} />
+                                    </TouchableOpacity>
+                                    :
+                                    <View></View>
+                                }
+                            </View>
                             <FrameLifestyleContent cardInformation={categorieInformation} />
                         </View>
                     )
@@ -205,5 +300,11 @@ const styles = StyleSheet.create({
         color: "#4E5664",
         fontSize: 16,
         fontWeight: 'bold'
+    },
+
+    headerContianer: {
+        flexDirection: 'row',
+        justifyContent: "space-between",
+        marginRight: 12
     }
 })

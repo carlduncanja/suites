@@ -9,7 +9,7 @@ import AlcoholIcon from '../../../../../assets/svg/alcohol';
 import FrameLifestyleCard from '../../../common/Frames/FrameCards/FrameLifestyleCard'
 import DisabledSectionComponent from '../../../DisabledSectionComponent';
 import FrameTitle from '../../../common/Frames/FrameTitle';
-const Lifestyle = ({ tabDetails, isEditMode, patient,fetchCase = () => {}}) => {
+const Lifestyle = ({ tabDetails, isEditMode, patient, fetchCase = () => { } }) => {
 
 
 
@@ -20,8 +20,8 @@ const Lifestyle = ({ tabDetails, isEditMode, patient,fetchCase = () => {}}) => {
             return name === lifestyleType && item
         }) || []
     }
-    console.log("the data iam loking at",tabDetails)
-    
+
+
     const drugs = getTypeData("Drug Use")
     const alcohol = getTypeData("Alcohol Use")
     const tobacco = getTypeData("Tobacco Use")
@@ -39,12 +39,12 @@ const Lifestyle = ({ tabDetails, isEditMode, patient,fetchCase = () => {}}) => {
                                 titleBackgroundColor="#FAF5FF"
                                 frameBorderColor="#D6BCFA"
                                 frameTitle="Drug Use"
-                                cardInformation={drugs} 
+                                cardInformation={drugs}
                                 updateData={tabDetails}
                                 icon={DrugIcon}
                                 isEditMode={isEditMode}
-                                patient={patient} 
-                                fetchCase={fetchCase()}
+                                patient={patient}
+                                fetchCase={fetchCase}
 
                             />
                         </View>
@@ -65,10 +65,11 @@ const Lifestyle = ({ tabDetails, isEditMode, patient,fetchCase = () => {}}) => {
                                 frameBorderColor="#FEB2B2"
                                 frameTitle="Alcohol Use"
                                 cardInformation={alcohol}
-                                icon={AlcoholIcon} 
+                                icon={AlcoholIcon}
                                 updateData={tabDetails}
                                 isEditMode={isEditMode}
-                                patient={patient}
+                                patient={patient} 
+                                fetchCase={fetchCase}
                             />
                         </View>
                     </View>
@@ -86,10 +87,11 @@ const Lifestyle = ({ tabDetails, isEditMode, patient,fetchCase = () => {}}) => {
                                 frameBorderColor="#A0AEC0"
                                 frameTitle="Tobacco Use"
                                 cardInformation={tobacco}
-                                icon={TobaccoIcon} 
+                                icon={TobaccoIcon}
                                 updateData={tabDetails}
                                 isEditMode={isEditMode}
-                                patient={patient}
+                                patient={patient} 
+                                fetchCase={fetchCase}
                             />
                         </View>
                     </View>
