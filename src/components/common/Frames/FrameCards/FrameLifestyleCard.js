@@ -43,7 +43,6 @@ const FrameLifestyleCard = ({ fetchCase = () => { },...props}) => {
             "usage": "to calm nerves",
         }
 
-
         let newSubstanceArray = substances.slice()
         newSubstanceArray.push(newLifeStyleItem)
         setSubtances(newSubstanceArray)
@@ -263,8 +262,8 @@ const FrameLifestyleCard = ({ fetchCase = () => { },...props}) => {
                             }}
                         />
                         :
-                        <View>
-                            <FrameItem itemContent="Add New item" icon={<AddIcon />} isEditMode={props.isEditMode} onPressButton={() => { toggleAddOption(true) }} />
+                        <View> 
+                            <FrameItem itemContent="Add New item" icon={<AddIcon/>} isEditMode={props.isEditMode} onPressButton={() => { toggleAddOption(true) }} />
                         </View>
                     :
                     null
