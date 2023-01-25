@@ -77,7 +77,7 @@ const FrameTableItem = ({
                 <ValueContainer theme={theme} enabled={enabled}>
                     {/*<Value theme={theme}> {value} </Value>*/}
 
-                    <TextInput value={value + ""} editable={editable} onChangeText={(res) => {onChangeValue(res, currentIndex)}}/>
+                    <TextInput   value={value + ""} editable={editable} onChangeText={(res) => {onChangeValue(res, currentIndex)}}/>
 
                 </ValueContainer>
                 

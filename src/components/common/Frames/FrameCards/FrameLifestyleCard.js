@@ -8,13 +8,13 @@ import { ScrollView } from 'react-native-gesture-handler';
 import AddIcon from '../../../../../assets/svg/addIcon';
 import WasteIcon from '../../../../../assets/svg/wasteIcon';
 import FrameAddLifestyle from '../FrameItems/FrameAddLifestyle';
-import { addLifeStyleItems, createPatientLifeStyle, updatePatient, deletePatientLifestyle } from '../../../../api/network';
+import { addLifeStyleItems, createPatientLifeStyle, updatePatient, updatePatientLifestyle } from '../../../../api/network';
 import { useModal } from 'react-native-modalfy';
 import { useTheme } from 'emotion-theming';
 import ConfirmationComponent from '../../../ConfirmationComponent';
 import ConfirmationCheckBoxComponent from '../../../ConfirmationCheckBoxComponent';
 
-const FrameLifestyleCard = ({ fetchCase = () => { },...props}) => {
+const FrameLifestyleCard = ({ fetchCase = () => { }, ...props }) => {
     //console.log(props.cardInformation)
 
     const modal = useModal();
@@ -53,6 +53,46 @@ const FrameLifestyleCard = ({ fetchCase = () => { },...props}) => {
 
         setDataUpdated(true)
     }
+    const updateLifeStyle = (id, data) => {
+        updatePatientLifestyle(id, { pateintLifeStyle: data })
+            .then(data => {
+                modal.openModal('ConfirmationModal', {
+                    content: <ConfirmationComponent
+                        isEditUpdate={false}
+                        isError={false}
+                        onCancel={() => {
+                            modal.closeModals('ConfirmationModal');
+                        }}
+                        onAction={() => {
+                            modal.closeModals('ConfirmationModal');
+                            fetchCase()
+                        }}
+                    />,
+                    onClose: () => {
+                        modal.closeModals('ConfirmationModal');
+                    },
+                });
+            })
+            .catch(error => {
+                console.log("failed to update", error)
+                modal.openModal('ConfirmationModal', {
+                    content: <ConfirmationComponent
+                        isEditUpdate={false}
+                        isError={true}
+                        onCancel={() => {
+                            modal.closeModals('ConfirmationModal');
+                        }}
+                        onAction={() => {
+
+                            modal.closeModals('ConfirmationModal');
+                        }}
+                    />,
+                    onClose: () => {
+                        modal.closeModals('ConfirmationModal');
+                    },
+                });
+            })
+    }
 
     const addLifeStyleItems = () => {
         createPatientLifeStyle({ patientLifestyleItems: newLifeStyle })
@@ -83,7 +123,7 @@ const FrameLifestyleCard = ({ fetchCase = () => { },...props}) => {
                     onClose: () => {
                         modal.closeModals('ConfirmationModal');
                     },
-                }); 
+                });
 
             }
             )
@@ -244,7 +284,10 @@ const FrameLifestyleCard = ({ fetchCase = () => { },...props}) => {
                                     <View></View>
                                 }
                             </View>
-                            <FrameLifestyleContent cardInformation={categorieInformation} />
+                            <FrameLifestyleContent
+                                cardInformation={categorieInformation}
+                                isEditMode={props.isEditMode}
+                                onSavePress={(value) => { updateLifeStyle(categorieInformation._id, value) }} />
                         </View>
                     )
                 })}
@@ -262,8 +305,8 @@ const FrameLifestyleCard = ({ fetchCase = () => { },...props}) => {
                             }}
                         />
                         :
-                        <View> 
-                            <FrameItem itemContent="Add New item" icon={<AddIcon/>} isEditMode={props.isEditMode} onPressButton={() => { toggleAddOption(true) }} />
+                        <View>
+                            <FrameItem itemContent="Add New item" icon={<AddIcon />} isEditMode={props.isEditMode} onPressButton={() => { toggleAddOption(true) }} />
                         </View>
                     :
                     null

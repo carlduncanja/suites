@@ -160,7 +160,8 @@ export const DeleteLifeStyleitems = `/lifestyle_types/delete/items`
 export const UpdateLifeStyleItems = (id) => `/lifestyle_types/items/${id}` 
 export const lifestyleItemsEndpiont = '/lifestyle_types/items' 
 export const createPatientLifestyleEndpiont = '/lifestyle_types/patient/create'
-export const deletePatientLifestyleEndpiont = (id) =>`/lifestyle_types/patient/delete/${id}`
+export const deletePatientLifestyleEndpiont = (id) =>`/lifestyle_types/patient/delete/${id}` 
+export const updatePatientLifestyleEndpiont = (id) =>`/lifestyle_types/patient/update/${id}`
 
 // #### HEALTH INSURERS
 export const healthInsurerEndpoint = '/health_insurer'
