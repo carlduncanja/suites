@@ -8,9 +8,9 @@
     ],
     "version": "1.0.4",
     "orientation": "portrait",
-    "icon": "./assets/TheSuitesLogo2.png",
+    "icon": "./assets/MedopsLogo.png",
     "splash": {
-      "image": "./assets/splashPortrait.png",
+      "image": "./assets/MedopsSplashPortrait.png",
       "resizeMode": "contain",
       "backgroundColor": "#1866C8"
     },
