@@ -258,7 +258,7 @@ function LoginPage({ navigation, signIn, expoPushToken }) {
 
                 <CopyRightContainer theme={theme}>
                     <CopyRightText theme={theme}>
-                        {'\u00A9'} Copyright {moment().format('YYYY').toString()} The Suites
+                       Powered by SMS
                     </CopyRightText>
                 </CopyRightContainer>
 
