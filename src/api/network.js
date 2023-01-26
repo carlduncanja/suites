@@ -117,7 +117,8 @@ import {
     editFamilyHistoryEndpoint,
     deleteFamilyHistoryEndpoint,
     createPatientLifestyleEndpiont,
-    deletePatientLifestyleEndpiont
+    deletePatientLifestyleEndpiont,
+    updatePatientLifestyleEndpiont
 } from '../const/suitesEndpoints';
 import { createDocumentLink, documentById, documentData, documentUpload } from '../const/documentGenerationEndpoints';
 
@@ -1062,6 +1063,11 @@ export const createPatientLifeStyle = async (data) => suitesAxiosInstance
 
 export const deletePatientLifestyle = async (id) => suitesAxiosInstance
     .delete(deletePatientLifestyleEndpiont(id))
+    .then(handleResponse)
+    .catch(handleError)
+
+export const updatePatientLifestyle = async (id,data) => suitesAxiosInstance
+    .put(updatePatientLifestyleEndpiont(id),data)
     .then(handleResponse)
     .catch(handleError)
 

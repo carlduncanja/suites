@@ -1,15 +1,38 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Text, StyleSheet } from "react-native";
 import Dropdown from '../../Dropdown';
+import OptionsField from '../../Input Fields/OptionsField';
+import { transformToSentence } from '../../../../utils/formatter';
+import { MenuOptions, MenuOption } from 'react-native-popup-menu';
 
-const FrameSelectItem = ({ title, value }) => {
+const FrameSelectItem = ({ title, value, isEdiMode = false, options = [], onOneSelected = () => { } }) => { 
+    
     return (
         <View style={styles.container}>
             <View style={styles.titleContainer}>
                 <Text style={styles.title}>{title}</Text>
             </View>
             <View style={[styles.valueContainer, { marginLeft: title == 'Unit' ? 30 : -15 }]}>
-                <Dropdown selectedValue={value} />
+                {isEdiMode ?
+                    <OptionsField
+                        text={transformToSentence(value)}
+                        oneOptionsSelected={(value)=>onOneSelected(value)}
+                        menuOption={(
+                            <MenuOptions>
+                                {options.map((option, index) => {
+                                    return (
+                                        <MenuOption value={option} text={option} />
+                                    )
+                                })
+
+                                }
+                            </MenuOptions>
+                        )}
+                    />
+
+                    :
+                    <Dropdown selectedValue={value} />
+                }
             </View>
         </View>
     );
@@ -20,8 +43,8 @@ export default FrameSelectItem;
 const styles = StyleSheet.create({
     container: {
         flexDirection: 'row',
-        marginBottom: 10,
-        marginRight: 20,
+        margin:10,
+        marginRight:20
 
     },
     titleContainer: {
