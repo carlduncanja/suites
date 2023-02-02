@@ -275,7 +275,7 @@ const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem, detai
             // isTemplate : false,
             hasRecovery: false,
             physician: {
-                "_id": physicianInfo.id,
+                "_id": addWorkItem.id,
                 "active": "active",
                 "address": Array[
                     {
