@@ -1008,7 +1008,7 @@ function NewProcedureOverlayContainer({ appointment = {}, editMode = false, pass
 
                 <Accent />
 
-                <View style={[styles.row, { zIndex: 1 }]}>
+                <View style={[styles.row, { zIndex: 9 }]}>
                     <View style={styles.column}>
 
                         <View style={styles.textContainer}>
