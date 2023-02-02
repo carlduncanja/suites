@@ -219,6 +219,7 @@ function TheatresDetailsTab({
                                 value={fields['name']}
                                 onChangeText={onFieldChange('name')}
                                 enabled={true}
+                                onClear={() => onFieldChange('name')('')}
                             />
                     }
 
