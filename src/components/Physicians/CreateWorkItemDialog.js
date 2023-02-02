@@ -310,7 +310,7 @@ const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem, detai
         const token = item.split(" ");
 
         item = {
-            name: `${token[0]} ${token[1]}`,
+            name: `${token[0] !== undefined ? token[0] : "" } ${token[1]  !== undefined ? token[1] : ""}`,
             isRecovery: false
         }
         await createTheatre(item).then(res => {
