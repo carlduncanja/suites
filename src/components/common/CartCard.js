@@ -198,7 +198,7 @@ function CartCard(props) {
 
     const theme = useTheme();
 
-    const recordsPerPage = 4;
+    const recordsPerPage = 3;
     const dataLength = data.length;
     const totalPages = Math.ceil(dataLength / recordsPerPage);
 
@@ -249,6 +249,7 @@ function CartCard(props) {
                     onPositiveButtonPress={onFooterPress}
                     onClose={closeModal}
                     positiveText={footerTitle}
+                    footerIndex={"30"}
                 >
                     {tabs &&
                         <CreationDialogTabs

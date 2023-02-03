@@ -170,7 +170,7 @@ const CreateEquipmentTypeDialogContainer = ({
     }
 
     const getDialogContent = () => (
-        <>
+        <View>
             <Row>
                 <FieldContainer>
                     <InputField2
@@ -183,21 +183,6 @@ const CreateEquipmentTypeDialogContainer = ({
                     />
                 </FieldContainer>
                 <FieldContainer>
-                    <MultipleSelectionsField
-                        label={"Category"}
-                        onOptionsSelected={(value) => handleCategorySelected(value)}
-                        options={categorySearchResults}
-                        createNew={() => createCategory(categorySearchValue)}
-                        searchText={categorySearchValue}
-                        onSearchChangeText={(value) => setCategorySearchValue(value)}
-                        onClear={() => { setCategorySearchValue('') }}
-                        handlePopovers={() => { }}
-                        isPopoverOpen={true}
-                        height={125}
-                    />
-                </FieldContainer>
-            </Row>
-            <Row>
                 <FieldContainer>
                     <InputField2
                         label="Unit Price"
@@ -211,8 +196,24 @@ const CreateEquipmentTypeDialogContainer = ({
                         errorMessage="Price must be provided."
                     />
                 </FieldContainer>
+                </FieldContainer>
             </Row>
-        </>
+            <Row>
+                <MultipleSelectionsField
+                        label={"Category"}
+                        onOptionsSelected={(value) => handleCategorySelected(value)}
+                        options={categorySearchResults}
+                        createNew={() => createCategory(categorySearchValue)}
+                        searchText={categorySearchValue}
+                        onSearchChangeText={(value) => setCategorySearchValue(value)}
+                        onClear={() => { setCategorySearchValue('') }}
+                        handlePopovers={() => { }}
+                        isPopoverOpen={true}
+                        height={125}
+                        
+                    />
+            </Row>
+        </View>
     );
 
     const createEquipmentTypeCall = () => {
@@ -285,6 +286,7 @@ const CreateEquipmentTypeDialogContainer = ({
             onPositiveButtonPress={onPositiveButtonPress}
             onClose={handleCloseDialog}
             positiveText={positiveText}
+            footerIndex={1}
         >
             <>
                 <DialogTabs

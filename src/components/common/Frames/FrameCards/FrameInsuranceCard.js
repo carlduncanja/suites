@@ -1,17 +1,18 @@
-import React, {Component, useState} from 'react';
-import {View, StyleSheet, Alert} from 'react-native';
+import React, { Component, useState,useContext } from 'react';
+import { View, StyleSheet, Alert } from 'react-native';
 import FrameTitle from '../FrameTitle'
 import FrameInsurerContent from '../FrameContents/FrameInsurerContent';
 import styled from "@emotion/native/";
 import IconButton from "../../Buttons/IconButton";
 import WasteIcon from "../../../../../assets/svg/wasteIcon";
 import InsurerIcon from "../../../../../assets/svg/insurerIcon";
-import {updateCaseProcedureAppointmentCall} from "../../../../api/network";
+import { updateCaseProcedureAppointmentCall } from "../../../../api/network";
 import ConfirmationComponent from "../../../ConfirmationComponent";
-import {useModal} from "react-native-modalfy";
+import { useModal } from "react-native-modalfy";
 import moment from "moment";
 import LoadingComponent from "../../../LoadingComponent";
-import {useTheme} from "emotion-theming";
+import { useTheme } from "emotion-theming";
+import { PageContext } from '../../../../contexts/PageContext';
 
 const InsuranceCardWrapper = styled.View`
    flex: 1;
@@ -23,24 +24,29 @@ const InsuranceCardHeader = styled.View`
 `
 
 const InsuranceCardContent = styled.View`
-  background-color: ${({theme}) => {
-    theme.colors['--color-default-white']
-}};
+  background-color: ${({ theme }) => {
+        theme.colors['--color-default-white']
+    }};
 `
 
 
-function FrameInsuranceCard ({
+function FrameInsuranceCard({
     insuranceDetails = {},
-    isEditMode
-        }) {
+    patientID,
+    onUpdated = () => { }
+}) {
     const modal = useModal();
     const theme = useTheme();
-
-    const [fields, setFields] = useState({...insuranceDetails});
+    const { pageState } = useContext(PageContext);
+    const { isEditMode } = pageState;
+    
+    const [fields, setFields] = useState({ ...insuranceDetails });
+    //console.log("tag the text",insuranceDetails)
+    
 
     return (
         <InsuranceCardWrapper>
-           
+
             <InsuranceCardHeader>
                 <FrameTitle
                     color={theme.colors['--color-gray-600']}
@@ -50,19 +56,23 @@ function FrameInsuranceCard ({
                     frameTitle={"Insurer"}
                     ActionComponent={
                         <IconButton
-                            Icon={<WasteIcon strokeColor={!isEditMode ? theme.colors['--color-gray-500'] : "#C53030"}/>}
-                            onPress={()=>{}}
+                            Icon={<WasteIcon strokeColor={!isEditMode ? theme.colors['--color-gray-500'] : "#C53030"} />}
+                            onPress={() => { }}
                             disabled={!isEditMode}
                         />
                     }
                 />
             </InsuranceCardHeader>
 
-                <InsuranceCardContent>
-                    <FrameInsurerContent
-                        fields = {fields}
-                    />
-                </InsuranceCardContent>
+            <InsuranceCardContent>
+                <FrameInsurerContent
+                    fields={fields}
+                    setFields={setFields}
+                    patientID={patientID} 
+                    onUpdated={onUpdated} 
+                    isEditMode={isEditMode}
+                />
+            </InsuranceCardContent>
 
         </InsuranceCardWrapper>
     );

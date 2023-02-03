@@ -1008,7 +1008,7 @@ function NewProcedureOverlayContainer({ appointment = {}, editMode = false, pass
 
                 <Accent />
 
-                <View style={[styles.row, { zIndex: 1 }]}>
+                <View style={[styles.row, { zIndex: 9 }]}>
                     <View style={styles.column}>
 
                         <View style={styles.textContainer}>
@@ -1080,7 +1080,7 @@ function NewProcedureOverlayContainer({ appointment = {}, editMode = false, pass
 
                 <Accent />
 
-                <View style={styles.staffContainer}>
+                <View style={styles.staffContainer, { zIndex: 8 }}>
 
                     <View style={[styles.row, { zIndex: 10 }]}>
                         <View style={styles.staffField}>
@@ -1230,7 +1230,7 @@ function NewProcedureOverlayContainer({ appointment = {}, editMode = false, pass
 
                 <Space />
 
-                <View style={styles.staffContainer}>
+                <View style={styles.staffContainer, { zIndex: 7 }}>
                     <View style={[styles.row, { zIndex: 7 }]}>
                         <View style={styles.staffField}>
                             <SearchableOptionsField

@@ -110,6 +110,7 @@ function AddOverlayDialog(props){
         onSelectItem = () => {},
         handleCloseDialog = () => {},
         hasSearch = true,
+        footerIndex = 3
     } = props
 
     const theme = useTheme();
@@ -166,6 +167,7 @@ function AddOverlayDialog(props){
                     onPositiveButtonPress={onFooterPress}
                     onClose={closeModal}
                     positiveText={footerTitle}
+                    footerIndex={footerIndex}
                 >
                     {tabs &&
                         <TabsContainer>

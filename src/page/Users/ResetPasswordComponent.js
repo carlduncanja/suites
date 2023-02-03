@@ -146,6 +146,7 @@ const ResetPasswordComponent = ({ onClose = () => {}, userId }) => {
                 onPositiveButtonPress={onResetButtonPress}
                 onClose={onCloseDialog}
                 positiveText="RESET PASSWORD"
+                footerIndex="30"
             >
 
                 <>

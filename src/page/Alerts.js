@@ -1,9 +1,9 @@
-import React, {useState, useEffect} from 'react';
-import styled, {css} from '@emotion/native';
-import {Text} from 'react-native';
+import React, { useState, useEffect } from 'react';
+import styled, { css } from '@emotion/native';
+import { Text, ScrollView } from 'react-native';
 import _ from 'lodash';
-import {useTheme} from 'emotion-theming';
-import {useNextPaginator, usePreviousPaginator} from '../helpers/caseFilesHelpers';
+import { useTheme } from 'emotion-theming';
+import { useNextPaginator, usePreviousPaginator } from '../helpers/caseFilesHelpers';
 import Page from '../components/common/Page/Page';
 import AlertTypeComponent from '../components/Alerts/AlertTypeComponent';
 import DataItem from '../components/common/List/DataItem';
@@ -12,24 +12,26 @@ import IconButton from '../components/common/Buttons/IconButton';
 import CollapsedIcon from '../../assets/svg/closeArrow';
 import ActionIcon from '../../assets/svg/dropdownIcon';
 import DoneAlertsList from '../components/Alerts/DoneAlertsList';
-import { getAlerts, closeAlert } from '../api/network';
+import { getAlerts, closeAlert, closeAllAlerts } from '../api/network';
 import RecentAlertsList from '../components/Alerts/RecentAlertsList';
 import { useModal } from 'react-native-modalfy';
 import CustomDateRangePicker from '../components/Alerts/CustomDateRangePicker';
+import ConfirmationComponent from '../components/ConfirmationComponent';
+import ConfirmationCheckBoxComponent from '../components/ConfirmationCheckBoxComponent';
 
 const NumberContainer = styled.View`
     height: 20px;
-    padding: ${ ({theme}) => theme.space['--space-4']};
+    padding: ${({ theme }) => theme.space['--space-4']};
     padding-top:0;
     padding-bottom:0;
-    border: ${ ({theme}) => `1px solid ${theme.colors['--color-gray-300']}`};
-    background-color: ${ ({theme}) => theme.colors['--color-gray-100']};
+    border: ${({ theme }) => `1px solid ${theme.colors['--color-gray-300']}`};
+    background-color: ${({ theme }) => theme.colors['--color-gray-100']};
     border-radius: 4px;
     align-items: center;
     justify-content: center;
 `;
 
-const TextItem = styled.Text(({theme, color = '--color-gray-800', font = '--text-sm-regular'}) => ({
+const TextItem = styled.Text(({ theme, color = '--color-gray-800', font = '--text-sm-regular' }) => ({
     ...theme.font[font],
     color: theme.colors[color],
     paddingTop: 2
@@ -81,14 +83,14 @@ function Alerts() {
 
     const recentHeader = () => (
         <>
-            <DataItem color="--color-gray-600" fontStyle="--text-base-regular" flex={1} text="Recent"/>
+            <DataItem color="--color-gray-600" fontStyle="--text-base-regular" flex={1} text="Recent" />
             <ContentDataItem
                 align="flex-end"
                 flex={0.5}
                 content={(
                     <IconButton
                         // Icon={<ActionIcon/>}
-                        Icon={isCollapsed.includes('recent') ?  <CollapsedIcon/> : <ActionIcon/> }
+                        Icon={isCollapsed.includes('recent') ? <CollapsedIcon /> : <ActionIcon />}
                         disabled={true}
                     />
                 )}
@@ -103,12 +105,12 @@ function Alerts() {
                 content={(
                     <IconButton
                         // Icon={<ActionIcon/>}
-                        Icon={isCollapsed.includes('done') ? <CollapsedIcon/> : <ActionIcon/>}
+                        Icon={isCollapsed.includes('done') ? <CollapsedIcon /> : <ActionIcon />}
                         disabled={true}
                     />
                 )}
             />
-            <DataItem color="--color-gray-600" fontStyle="--text-base-regular" flex={2} text="Done"/>
+            <DataItem color="--color-gray-600" fontStyle="--text-base-regular" flex={2} text="Done" />
             <ContentDataItem
                 align="flex-end"
                 flex={0.5}
@@ -120,13 +122,13 @@ function Alerts() {
             />
         </>
     );
-    
+
     const onCollapse = name => () => {
         let newList = [];
         isCollapsed.includes(name) ?
             newList = [...isCollapsed.filter(item => item !== name)] :
             newList = [...isCollapsed, name];
-        
+
         setIsCollapsed(newList);
     };
 
@@ -138,7 +140,7 @@ function Alerts() {
         const pageMax = type === 'done' ? closedPageListMax : recentPageListMax;
 
         if (pagePosition < pages) {
-            let {currentPage, currentListMin, currentListMax} = useNextPaginator(pagePosition, recordsPerPage, pageMin, pageMax);
+            let { currentPage, currentListMin, currentListMax } = useNextPaginator(pagePosition, recordsPerPage, pageMin, pageMax);
             if (type === 'done') {
                 setClosedPagePosition(currentPage);
                 setClosedPageListMin(currentListMin);
@@ -160,7 +162,7 @@ function Alerts() {
         const pageMax = type === 'done' ? closedPageListMax : recentPageListMax;
 
         if (pagePosition > 1) {
-            let {currentPage, currentListMin, currentListMax} = usePreviousPaginator(pagePosition, recordsPerPage, pageMin, pageMax);
+            let { currentPage, currentListMin, currentListMax } = usePreviousPaginator(pagePosition, recordsPerPage, pageMin, pageMax);
             if (type === 'done') {
                 setClosedPagePosition(currentPage);
                 setClosedPageListMin(currentListMin);
@@ -209,6 +211,7 @@ function Alerts() {
     const pageContent = (
 
         <>
+
             <AlertTypeComponent
                 alertType="Recent"
                 header={recentHeader}
@@ -224,6 +227,7 @@ function Alerts() {
                 startDate={recentStartDate}
                 endDate={recentEndDate}
                 onClearCalendarDates={() => { setRecentEndDate(''); setRecentStartDate(''); fetchOpenAlert(1, '', ''); }}
+                onClearList={() => { openClearConfirm() }}
                 content={(
                     <RecentAlertsList
                         data={recentAlerts}
@@ -232,7 +236,7 @@ function Alerts() {
                 )}
             />
 
-            <Space/>
+            <Space />
 
             <AlertTypeComponent
                 alertType="Done"
@@ -248,6 +252,7 @@ function Alerts() {
                 onChangeDate={onChangeDate('done')}
                 startDate={closedStartDate}
                 endDate={closedEndDate}
+                showClearList={false}
                 onClearCalendarDates={() => { setClosedEndDate(''); setClosedStartDate(''); fetchClosedAlert(1, '', ''); }}
                 content={(
                     <DoneAlertsList
@@ -256,13 +261,14 @@ function Alerts() {
                 )}
                 backgroundColor="--color-gray-100"
             />
+
         </>
     );
 
     const fetchClosedAlert = (page = 1, start = closedStartDate, end = closedEndDate) => {
         getAlerts('closed', recordsPerPage, page, searchValue, start.toString(), end.toString())
             .then(results => {
-                const {data = [], totalPages = 0} = results;
+                const { data = [], totalPages = 0 } = results;
                 setClosedAlerts(data);
                 setClosedTotalPages(totalPages);
                 setClosedCount(data.length);
@@ -272,15 +278,96 @@ function Alerts() {
             });
     };
 
+    const openClearConfirm = () => {
+        {
+            recentAlerts.length !== 0 ?
+            modal.openModal(
+                'ConfirmationModal',
+                {
+                    content: <ConfirmationCheckBoxComponent
+                        isError={false}
+                        isEditUpdate={true}
+                        confirmMessage="Yes i want to clear this list"
+                        onCancel={() => {
+                            modal.closeModals('ConfirmationModal');
+
+                        }}
+                        onAction={() => {
+                            modal.closeModals('ConfirmationModal');
+                            clearRecentList()
+                        }}
+                        message="Do you want to clear all Alerts in the Recent List"
+                    />,
+                    onClose: () => {
+                        modal.closeModals('ConfirmationModal');
+                    }
+                }
+            )
+            :
+            null
+        }
+    };
+
+    const clearRecentList = () => {
+        closeAllAlerts()
+            .then(_ => {
+                setFetchingData(true);
+                modal.openModal('ConfirmationModal', {
+                    content: (
+                        <ConfirmationComponent
+                            isError={false}//boolean to show whether an error icon or success icon
+                            isEditUpdate={false}
+                            onCancel={() => {
+                                modal.closeAllModals();
+                                fetchClosedAlert(1);
+                                fetchOpenAlert(1)
+                            }}
+                            onAction={() => {
+                                modal.closeAllModals();
+                                fetchClosedAlert(1);
+                                fetchOpenAlert(1)
+                            }}
+                        />
+                    ),
+                    onClose: () => {
+                        console.log('Modal closed');
+                    },
+                });
+
+
+            })
+            .catch(_ => {
+                // show modal fail
+                console.log("Error");
+                modal.openModal('ConfirmationModal', {
+                    content: (
+                        <ConfirmationComponent
+                            isError={true}//boolean to show whether an error icon or success icon
+                            isEditUpdate={false}
+                            onCancel={() => {
+                                modal.closeAllModals();
+                            }}
+                            onAction={() => {
+                                modal.closeAllModals();
+                            }}
+                        />
+                    ),
+                    onClose: () => {
+                        console.log('Modal closed');
+                    },
+                });
+            });
+    }
+
     const fetchOpenAlert = (page = 1, start = recentStartDate, end = recentEndDate) => {
         console.log("RECENT ALERTS");
         getAlerts('open', recordsPerPage, page, recentSearchValue, start.toString(), end.toString())
             .then(results => {
-                const {data = [], totalPages = 0} = results;
+                const { data = [], totalPages = 0 } = results;
                 console.log("Recent data: ", data);
                 setRecentAlerts(data);
                 setRecentTotalPages(totalPages);
-                
+
             })
             .catch(error => {
                 console.log('Error fetching alerts: ', error);
@@ -299,7 +386,7 @@ function Alerts() {
     useEffect(() => {
         if (!searchValue) {
             // empty search values and cancel any out going request.
-            
+
             setSearchResult([]);
             fetchClosedAlert(1);
             if (searchQuery.cancel) searchQuery.cancel();
@@ -324,7 +411,7 @@ function Alerts() {
     useEffect(() => {
         if (!recentSearchValue) {
             // empty search values and cancel any out going request.
-            
+
             setRecentSearchResult([]);
             fetchOpenAlert(1);
             if (recentSearchQuery.cancel) recentSearchQuery.cancel();

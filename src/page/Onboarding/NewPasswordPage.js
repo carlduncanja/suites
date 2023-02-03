@@ -25,7 +25,7 @@ function NewPasswordPage({ navigation, route }) {
     const theme = useTheme();
     const [errors, setErrors] = useState({});
     const [fields, setFields] = useState({});
-    const  { userId = '5ec2f18e2a94f10cbe7e4791' } = route.params;
+    const  { userId = '', code =  ''} = route.params;
 
     const goToLogin = () => {
         navigation.navigate('login')
@@ -78,7 +78,7 @@ function NewPasswordPage({ navigation, route }) {
     }
 
     const handleSetNewPassword = () => {
-        resetPassword(userId, {password: fields.password, confirm_password: fields.confirmPassword})
+        resetPassword(userId, {password: fields.password, confirm_password: fields.confirmPassword, code})
         .then(_ => {
             navigation.navigate('confirmation', {state: true})
         })

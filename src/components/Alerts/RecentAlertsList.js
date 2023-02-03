@@ -1,12 +1,12 @@
 import React from 'react';
-import {Text, View, TouchableOpacity} from 'react-native';
+import { Text, View, TouchableOpacity, StyleSheet } from 'react-native';
 import PropTypes from 'prop-types';
-import {useTheme} from 'emotion-theming';
+import { useTheme } from 'emotion-theming';
 import { SwipeListView } from 'react-native-swipe-list-view';
-import styled, {css} from '@emotion/native';
+import styled, { css } from '@emotion/native';
 import { useModal } from 'react-native-modalfy';
 import { closeAlert } from '../../api/network';
-import {formatDate, transformToSentence} from '../../utils/formatter';
+import { formatDate, transformToSentence } from '../../utils/formatter';
 
 import ListItem from '../common/List/ListItem';
 import DataItem from '../common/List/DataItem';
@@ -15,16 +15,16 @@ import ConfirmationComponent from '../ConfirmationComponent';
 
 const RenderListItemWrapper = styled.View`
     width: 100%;
-    height: 58px;
-    margin-bottom : ${ ({ theme }) => theme.space['--space-12']};
+    height: 96px;
+    margin-bottom : ${({ theme }) => theme.space['--space-12']};
 `;
 const RenderListItemContainer = styled.View`
     height: 100%;
     width: 100%; 
     flex-direction: row;
-    background-color: ${ ({ theme }) => theme.colors['--default-shade-white']};
-    border : 1px solid ${ ({ theme }) => theme.colors['--color-gray-400']};
-    padding: ${ ({theme}) => `${theme.space['--space-10']} ${theme.space['--space-12']}`};
+    background-color: ${({ theme }) => theme.colors['--default-shade-white']};
+    border : 1px solid ${({ theme }) => theme.colors['--color-gray-400']};
+    padding: ${({ theme }) => `${theme.space['--space-10']} ${theme.space['--space-12']}`};
     border-radius: 8px;
 `;
 
@@ -42,16 +42,21 @@ const ItemWrapper = styled.View`
 
 const RenderHiddenItemWrapper = styled.View`
     width: 100%;
-    height: 58px;
+    height: 96px;
 `;
 const RenderHiddenItemContainer = styled.View`
     flex: 1; 
-    /* align-items: center; */
+    align-items: center; 
     justify-content: flex-end;
-    background-color: ${ ({ theme }) => theme.colors['--color-blue-700']};
+    background-color: ${({ theme }) => theme.colors['--color-blue-700']};
     flex-direction: row;
     /* padding-right: 20px; */
     border-radius: 8px;
+`;
+const TitleSection = styled.View`
+flex-direction: row;
+flex: 0.4;  
+justify-content: flex-start;
 `;
 
 const HiddentAction = styled.TouchableOpacity`
@@ -61,15 +66,26 @@ const HiddentAction = styled.TouchableOpacity`
     align-items: center;
     justify-content: space-around;
 `;
+const Holder = styled.View`
+   background-color:#F0FFF4;
+   border-radius: 10;
+   heigth:18;
+   width:48;
+`
 
-const TextItem = styled.Text(({theme, flex = 1, color = '--color-gray-800', font = '--text-base-regular'}) => ({
+const TextItem = styled.Text(({ theme, flex = 1, color = '--color-gray-800', font = '--text-base-regular' }) => ({
     ...theme.font[font],
     color: theme.colors[color],
     paddingTop: 2,
     flex
 }));
 
-function RecentAlertsList({ data=[], updateAlerts=() => {} }) {
+const TittleContianer = styled.View` 
+    flex-direction: row;
+    justify-content: space-between;
+`
+
+function RecentAlertsList({ data = [], updateAlerts = () => { } }) {
     const theme = useTheme();
     const modal = useModal();
 
@@ -120,43 +136,101 @@ function RecentAlertsList({ data=[], updateAlerts=() => {} }) {
                 });
             });
     };
+    const backgroundColorGenerator = (priority)=>{
+        let colorGenerator =''
+        switch(priority){
+            case 'high':
+                colorGenerator='#FFF5F5'
+                break; 
+            case 'critical':
+                colorGenerator="#FFF5F5"
+                break;
+            case 'low':
+                colorGenerator="#EBF8FF"
+                break;
+            case 'medium':
+                colorGenerator="#FFFAF0"
+                break; 
+            case 'new' :
+                colorGenerator="#F0FFF4"
+                break;
+            default:
+                break;
+        } 
+        return colorGenerator
+    } 
 
+    const textColorGenerator = (priority)=>{
+        let colorGenerator =''
+        switch(priority){
+            case 'high':
+                colorGenerator='--color-red-500'
+                break; 
+            case 'critical':
+                colorGenerator="--color-red-800"
+                break;
+            case 'low':
+                colorGenerator="--color-blue-500"
+                break;
+            case 'medium':
+                colorGenerator="--color-orange-500"
+                break; 
+            case 'new' :
+                colorGenerator="--color-green-500"
+                break;
+            default:
+                break;
+        } 
+        return colorGenerator
+    }
     const listItem = item => {
-        const { body = '', priority = '', createdOn = '', title = ''} = item;
+        const { body = '', priority = '', createdOn = '', title = '', updatedAt = '' } = item; 
+        let background=backgroundColorGenerator(priority)
+        let text=textColorGenerator(priority)
         return (
 
             <ListItemContainer>
+                <TittleContianer>
+                    <TitleSection>
+                        <TextItem color="--color-gray-800" flex={1}>{` ${title}`}</TextItem>
+                        <View style={[styles.holder,{backgroundColor:background}]}>
+                            <TextItem
+                                color={text}
+                                fontStyle="--text-sm-medium"
+                            flex={1}
+                            >
+                                {transformToSentence(priority)}
+                            </TextItem>
+                        </View>
+                    </TitleSection> 
+
+                    <TextItem
+                        color="--color-gray-500"
+                        //fontStyle="--actions-title"
+                        flex={0.3}
+                    >  {createdOn === '' ?
+                        formatDate(updatedAt, 'MMMM DD, YYYY')
+                        :
+                        formatDate(createdOn, 'MMMM DD, YYYY')
+                            //formatDate(updatedAt, 'MMM DD, YYYY - HH:MMA')
+                        }
+                    </TextItem>
+                </TittleContianer>
                 <ItemWrapper>
                     <TextItem
                         color="--color-gray-800"
                         fontStyle="--text-base-medium"
-                        flex={5}
+                        flex={8}
                     >
                         {body}
-                        {
-                            title !== 'System' &&
-                            <TextItem color="--color-blue-600">{` ${title}`}</TextItem>
-                        }
                     </TextItem>
-                    <TextItem
-                        color="--color-red-500"
-                        fontStyle="--text-sm-medium"
-                        flex={0.5}
-                    >
-                        {transformToSentence(priority)}
-                    </TextItem>
+
 
                 </ItemWrapper>
-                <TextItem
-                    color="--color-gray-500"
-                    fontStyle="--actions-title"
-                    flex={1}
-                >
-                    {formatDate(createdOn, 'MMM DD, YYYY - HH:MMA')}
-                </TextItem>
+
 
             </ListItemContainer>
-        
+
         );
     };
 
@@ -171,7 +245,7 @@ function RecentAlertsList({ data=[], updateAlerts=() => {} }) {
 
         <RenderHiddenItemWrapper theme={theme}>
             <RenderHiddenItemContainer theme={theme}>
-                
+
                 <TouchableOpacity
                     style={{
                         display: 'flex',
@@ -180,10 +254,11 @@ function RecentAlertsList({ data=[], updateAlerts=() => {} }) {
                         paddingTop: 12,
                         alignItems: 'center',
                         justifyContent: 'flex-end',
+                        alignContent: 'center'
                     }}
                     onPress={() => onResolveItem(item?.item)}
                 >
-                    <ResolveIcon/>
+                    <ResolveIcon />
                     <TextItem
                         style={css`padding-top: 6px;`}
                         color="--color-gray-200"
@@ -193,12 +268,12 @@ function RecentAlertsList({ data=[], updateAlerts=() => {} }) {
                     </TextItem>
 
                 </TouchableOpacity>
-                
+
             </RenderHiddenItemContainer>
         </RenderHiddenItemWrapper>
 
         // <View style={{
-            
+
         //     alignItems: 'center',
         //     justifyContent:'flex-end',
         //     backgroundColor: 'red',
@@ -227,6 +302,19 @@ function RecentAlertsList({ data=[], updateAlerts=() => {} }) {
         />
     );
 }
+
+
+const styles = StyleSheet.create({
+    holder: {
+        borderRadius: 10,
+        heigth: 18,
+        width: 48,
+        justifyContent:'center',
+        textAlign: 'center',
+        alignItems:'center'
+
+    }
+})
 
 RecentAlertsList.propTypes = {};
 RecentAlertsList.defaultProps = {};

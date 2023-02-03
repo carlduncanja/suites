@@ -19,9 +19,10 @@ const DataText = styled.Text( ({theme, fontStyle, color}) => ({
     ...theme.font[fontStyle],
     color: theme.colors[color],
     paddingTop: 2,
+    width: '100%'
 }));
 
-function DataItem({text = "", flex = 1, align = 'flex-start', fontStyle = '--text-sm-regular', color = '--color-gray-700', }) {
+function DataItem({text = "", flex = 1, align = 'flex-start', width = {width}, fontStyle = '--text-sm-regular', color = '--color-gray-700', }) {
     const theme = useTheme();
     
     return (

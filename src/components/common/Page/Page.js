@@ -1,10 +1,10 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { View, StyleSheet, ActivityIndicator } from 'react-native';
+import { View, StyleSheet, ActivityIndicator, Text } from 'react-native';
 import PageTitle from './PageTitle';
 import Search from '../Search';
 import List from '../List/List';
 import DisabledSectionComponent from '../../DisabledSectionComponent';
-
+import EmptyState from '../../../../assets/svg/emptyState'
 import Wrapper from '../Wrapper';
 import LoadingIndicator from '../LoadingIndicator';
 import { SuitesContext } from '../../../contexts/SuitesContext';
@@ -15,6 +15,8 @@ import PropTypes from 'prop-types';
 import styled, { css } from '@emotion/native';
 import { useTheme } from 'emotion-theming';
 import { useNavigation, useRoute, } from '@react-navigation/native';
+import LostConnectionPage from './LostConnectionPage';
+import NetInfo from "@react-native-community/netinfo";
 
 const PageWrapper = styled.View`
         display : flex;
@@ -40,6 +42,12 @@ const PageSearchWrapper = styled.View`
         margin-bottom : ${({ theme }) => theme.space['--space-24']};
 `;
 
+const EmptyWrapper = styled.View`
+  display: flex;
+  flex: 1;
+  justify-content: center;
+  align-items: center;
+`
 const PageHeader = styled.View`
     flex-direction:row;
     width:100%;
@@ -47,6 +55,21 @@ const PageHeader = styled.View`
     justify-content: space-between;
     margin-bottom: 24px;
 `
+const PageContent = styled.View`
+ align-items: center; 
+ justify-content: center;
+ padding-bottom: ${({ theme }) => theme.space['--space-72']};
+`
+const IconWrapper = styled.View`
+   margin-bottom: ${({ theme }) => theme.space['--space-40']};
+   
+`
+const MessageWrapper = styled.Text(({ theme }) => ({
+    ...theme.font['--text-base-bold'],
+    color: theme.colors['--color-gray-600'],
+    marginBottom: 20
+}))
+
 
 /** 
  * @returns {*}
@@ -75,14 +98,25 @@ function Page(props) {
         hasList = true,
         hasSearch = true,
         pageContent,
+        hasEmpty,
+        emptyTitle
         // navigation
     } = props;
 
     const navigation = useNavigation();
     const route = useRoute();
 
+    const [lostConnection, setLostConnection] = useState('false')
+
     const isAdmin = route?.params?.isAdmin || false;
-    
+
+    useEffect(() => {
+        NetInfo.addEventListener(state => {
+            setLostConnection(state.isInternetReachable);
+        });
+    }, []);
+
+
     const content = hasList ? (
         <List
             listData={listData}
@@ -94,45 +128,67 @@ function Page(props) {
             listItemFormat={listItemFormat}
             refreshing={isFetchingData}
         />
-    ) :
-        pageContent;
+    ) : hasEmpty && listData?.length < 1 ?
+        <EmptyWrapper theme={theme}>
+            <PageContent theme={theme}>
+                {/*    ICON     */}
+                <IconWrapper theme={theme}>
+                    <EmptyState />
+                </IconWrapper>
 
+                {/*    MESSAGE HEADER  */}
+                <MessageWrapper theme={theme}>{emptyTitle}</MessageWrapper>
+
+            </PageContent>
+        </EmptyWrapper>
+        : pageContent
     return (
+
         <PageWrapper theme={theme}>
-            <PageContainer theme={theme}>
-                <PageHeader>
-                    <PageTitle pageTitle={routeName} />
+            {lostConnection ?
+                <PageContainer theme={theme}>
 
-                    {TopButton && <TopButton /> }
 
-                </PageHeader>
+                    <PageHeader>
+                        <PageTitle pageTitle={routeName} />
 
-                {
-                    hasSearch &&
-                    <PageSearchWrapper theme={theme}>
-                        <Search
-                            placeholderText={placeholderText}
-                            changeText={changeText}
-                            inputText={inputText}
-                            onClear={() => {
-                                changeText('');
-                            }}
-                        />
-                    </PageSearchWrapper>
-                }
-                
-                {
-                    isFetchingData ?
-                        <LoadingIndicator /> :
-                        isDisabled ? (
-                            <DisabledSectionComponent
-                                navigation={navigation}
-                                isAdmin={isAdmin}
+                        {TopButton && <TopButton />}
+
+                    </PageHeader>
+
+                    {
+                        hasSearch &&
+                        <PageSearchWrapper theme={theme}>
+                            <Search
+                                placeholderText={placeholderText}
+                                changeText={changeText}
+                                inputText={inputText}
+                                onClear={() => {
+                                    changeText('');
+                                }}
                             />
-                          ) :
-                            content
-                }
-            </PageContainer>
+                        </PageSearchWrapper>
+                    }
+
+                    {
+                        isFetchingData ?
+                            <LoadingIndicator /> :
+                            isDisabled ? (
+                                <DisabledSectionComponent
+                                    navigation={navigation}
+                                    isAdmin={isAdmin}
+                                />
+                            ) :
+                                content
+                    }
+
+
+
+                </PageContainer>
+
+                :
+                <LostConnectionPage navigation={navigation} />
+            }
         </PageWrapper>
     );
 };

@@ -198,6 +198,7 @@ const CreatePhysicianDialogContainer = ({
             onPositiveButtonPress={onPositiveButtonPress}
             onClose={handleCloseDialog}
             positiveText={positiveText}
+            max={174}
         >
             <View style={styles.container}>
                 <DialogTabs
@@ -220,7 +221,8 @@ export default CreatePhysicianDialogContainer;
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        width: 636,
+        // width: 'auto',
+        // minWidth: 636,
         flexDirection: 'column',
         backgroundColor: 'white',
         height: 225

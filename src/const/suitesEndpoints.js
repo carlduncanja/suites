@@ -17,10 +17,10 @@ export const role = roleId => `/users/roles/${roleId}`;
 
 // ##### Appointments
 export const appointmentsEndpoint = '/appointments/';
-export const appointmentEndpoint = id => `/appointments/${id}`; 
+export const appointmentEndpoint = id => `/appointments/${id}`;
 
 // #### Appiontment Type
-export const appointmentTypeEndPiont = `/appointment-types` 
+export const appointmentTypeEndPiont = `/appointment-types`
 export const updateAppiontmentTypeEndpiont = id => `/appointment-types/${id}`
 
 // ##### Theatre
@@ -87,6 +87,7 @@ export const updateQuotationStatusEndpoint = (caseId, quotationId) => `/cases/${
 export const caseProcedureAppointmentEndpoint = (caseId, procedureAppointmentId) => `/cases/${caseId}/procedures/${procedureAppointmentId}`;
 export const caseProcedureAppointmentsEndpoint = caseId => `/cases/${caseId}/procedures/`;
 export const caseStaffEndpoint = caseId => `/cases/staff/${caseId}`;
+export const caseUpdateStaffEndpoint = caseId => `/cases/${caseId}`;
 export const casePatientEndpoint = patientId => `/cases/patient/${patientId}`
 
 // ##### STORAGE
@@ -119,6 +120,7 @@ export const requestQuotationEndpoint = id => `/purchase_orders/request_quotatio
 export const sendToSupplierEndpoint = id => `/purchase_orders/send_to_supplier/${id}`;
 export const addDocumentEndpoint = id => `/purchase_orders/${id}/document`;
 export const addPaymentEndpoint = id => `/purchase_orders/add/${id}/payment`;
+export const revertPaymentEndpoint = id => `/purchase_orders/revert/${id}/payment`;
 
 // ##### CATEGORIES
 export const categoriesEndpoint = '/categories/';
@@ -126,11 +128,18 @@ export const updateCategoryEndpoint = id => `/categories/${id}`;
 
 // ##### PATIENTS
 export const patientEndpoint = id => `/patients/${id}`;
+export const addMedicalHistoryEndpoint = id => `/patients/${id}/add_history`;
+export const getMedicalHistoryTypeEndpoint = id => `/patients/medical_history/${id}`;
+export const addFamilyHistoryEndpoint = id => `/patients/${id}/add_family`;
+export const editFamilyHistoryEndpoint = id => `/patients/${id}/edit_family`;
+export const deleteFamilyHistoryEndpoint = id => `/patients/${id}/delete_family`;
 export const allPatientsEndpoint = '/patients'
+export const updatePatientRiskEndpoint = id => `/patients/${id}/risk`
 
 // ##### ALERTS
 export const alertsEndpoint = '/alerts';
-export const closeAlertEndpoint = id => `/alerts/${id}/close`;
+export const closeAlertEndpoint = id => `/alerts/${id}/close`; 
+export const closeAllAlertsEndpoint = '/alerts/closeAll'
 
 // ##### CONFIGURATIONS
 export const configEndpoint = '/configurations';
@@ -148,7 +157,11 @@ export const emailEndpoint = '/email/send';
 export const lifestylesEndpiont = '/lifestyle_types'
 export const ItemsLifeStyleEndpiont = (id) => `/lifestyle_types/${id}/items`
 export const DeleteLifeStyleitems = `/lifestyle_types/delete/items`
-export const UpdateLifeStyleItems = (id) => `/lifestyle_types/items/${id}`
+export const UpdateLifeStyleItems = (id) => `/lifestyle_types/items/${id}` 
+export const lifestyleItemsEndpiont = '/lifestyle_types/items' 
+export const createPatientLifestyleEndpiont = '/lifestyle_types/patient/create'
+export const deletePatientLifestyleEndpiont = (id) =>`/lifestyle_types/patient/delete/${id}` 
+export const updatePatientLifestyleEndpiont = (id) =>`/lifestyle_types/patient/update/${id}`
 
 // #### HEALTH INSURERS
 export const healthInsurerEndpoint = '/health_insurer'

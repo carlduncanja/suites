@@ -75,8 +75,10 @@ import {
     role,
     patientEndpoint,
     allPatientsEndpoint,
+    updatePatientRiskEndpoint,
     alertsEndpoint,
     closeAlertEndpoint,
+    closeAllAlertsEndpoint,
     configEndpoint,
     updateBufferEndpoint,
     userPassword,
@@ -95,6 +97,7 @@ import {
     updateCategoryEndpoint,
     confirmDeliveryEndpoint,
     lifestylesEndpiont,
+    lifestyleItemsEndpiont,
     ItemsLifeStyleEndpiont,
     DeleteLifeStyleitems,
     healthInsurerEndpoint,
@@ -105,7 +108,17 @@ import {
     casePatientEndpoint,
     requestQuotationEndpoint,
     sendToSupplierEndpoint,
-    addPaymentEndpoint
+    addPaymentEndpoint,
+    revertPaymentEndpoint,
+    addMedicalHistoryEndpoint,
+    caseUpdateStaffEndpoint,
+    getMedicalHistoryTypeEndpoint,
+    addFamilyHistoryEndpoint,
+    editFamilyHistoryEndpoint,
+    deleteFamilyHistoryEndpoint,
+    createPatientLifestyleEndpiont,
+    deletePatientLifestyleEndpiont,
+    updatePatientLifestyleEndpiont
 } from '../const/suitesEndpoints';
 import { createDocumentLink, documentById, documentData, documentUpload } from '../const/documentGenerationEndpoints';
 
@@ -429,6 +442,11 @@ export const deleteCaseStaff = async (caseId, data) => suitesAxiosInstance
 
 export const addCaseStaff = async (caseId, data) => suitesAxiosInstance
     .post(caseStaffEndpoint(caseId), data)
+    .then(handleResponse)
+    .catch(handleError);
+
+export const editCaseStaff = async (caseId, data) => suitesAxiosInstance
+    .put(caseUpdateStaffEndpoint(caseId), data)
     .then(handleResponse)
     .catch(handleError);
 
@@ -833,7 +851,7 @@ export const updatePurchaseOrderDetails = async (purchaseOrderId, data) => suite
     .catch(handleError);
 
 export const confirmDelivery = async (purchaseOrderId, data) => suitesAxiosInstance
-    .put(confirmDeliveryEndpoint(purchaseOrderId),  data )
+    .put(confirmDeliveryEndpoint(purchaseOrderId), data)
     .then(handleResponse)
     .catch(handleError);
 
@@ -877,14 +895,56 @@ export const registerPayment = async (orderId, data) => suitesAxiosInstance
     .then(handleResponse)
     .catch(handleError)
 
+export const revertPayment = async (orderId, data) => suitesAxiosInstance
+    .put(revertPaymentEndpoint(orderId), data)
+    .then(handleResponse)
+    .catch(handleError)
+
 // ################# Patients Endpoints
 export const updatePatient = async (id, data) => suitesAxiosInstance
     .put(patientEndpoint(id), data)
     .then(handleResponse)
     .catch(handleError);
 
+export const createMedicalHistory = async (id, data) => suitesAxiosInstance
+    .post(addMedicalHistoryEndpoint(id), data)
+    .then(handleResponse)
+    .catch(handleError)
+
+
+export const getMedicalHistoryType = async (id) => suitesAxiosInstance
+    .get(getMedicalHistoryTypeEndpoint(id))
+    .then(handleResponse)
+    .catch(handleError)
+
+export const editMedicalHistory = async (id, data) => suitesAxiosInstance
+    .put(getMedicalHistoryTypeEndpoint(id), data)
+    .then(handleResponse)
+    .catch(handleError)
+
+export const createFamilyHistory = async (id, data) => suitesAxiosInstance
+    .post(addFamilyHistoryEndpoint(id), data)
+    .then(handleResponse)
+    .catch(handleError)
+
+export const editFamilyHistory = async (id, data) => suitesAxiosInstance
+    .put(editFamilyHistoryEndpoint(id), data)
+    .then(handleResponse)
+    .catch(handleError)
+
+
+export const deleteFamilyHistory = async (id, data) => suitesAxiosInstance
+    .post(deleteFamilyHistoryEndpoint(id), data)
+    .then(handleResponse)
+    .catch(handleError)
+
 export const getPatients = async (query, max, page) => suitesAxiosInstance
     .get(allPatientsEndpoint, ({ params: { query, max, page } }))
+    .then(handleResponse)
+    .catch(handleError)
+
+export const updatePatientRisk = async (id, data) => suitesAxiosInstance
+    .put(updatePatientRiskEndpoint(id), data)
     .then(handleResponse)
     .catch(handleError)
 
@@ -921,6 +981,11 @@ export const closeAlert = async id => suitesAxiosInstance
     .put(closeAlertEndpoint(id))
     .then(handleResponse)
     .catch(handleError);
+
+export const closeAllAlerts = async () => suitesAxiosInstance
+    .put(closeAllAlertsEndpoint)
+    .then(handleResponse)
+    .catch(handleError)
 
 // ################# Configurations Endpoints
 
@@ -986,10 +1051,30 @@ export const updateLifeStyleItems = async (id, data) => suitesAxiosInstance
     .catch(handleError)
 
 
+export const getLifeStyleItems = async (query, max, page) => suitesAxiosInstance
+    .get(lifestyleItemsEndpiont, { params: { query, max, page } })
+    .then(handleResponse)
+    .catch(handleError)
+
+export const createPatientLifeStyle = async (data) => suitesAxiosInstance
+    .post(createPatientLifestyleEndpiont, data)
+    .then(handleResponse)
+    .catch(handleError)
+
+export const deletePatientLifestyle = async (id) => suitesAxiosInstance
+    .delete(deletePatientLifestyleEndpiont(id))
+    .then(handleResponse)
+    .catch(handleError)
+
+export const updatePatientLifestyle = async (id,data) => suitesAxiosInstance
+    .put(updatePatientLifestyleEndpiont(id),data)
+    .then(handleResponse)
+    .catch(handleError)
+
 // ################# HEALTH INSURER ENDPOINTS 
 
-export const getHealthInsurers = async () => suitesAxiosInstance
-    .get(healthInsurerEndpoint)
+export const getHealthInsurers = async (query, max, page) => suitesAxiosInstance
+    .get(healthInsurerEndpoint, { params: { query, max, page } })
     .then(handleResponse)
     .catch(handleError)
 

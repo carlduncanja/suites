@@ -315,8 +315,9 @@ function CaseFilesPage({ navigation, route }) {
                 actions: floatingActions(),
             });
     };
-
+    
     const getTabContent = (selectedTab) => {
+       
         switch (selectedTab) {
             case 'LifeStyle':
                 return (
