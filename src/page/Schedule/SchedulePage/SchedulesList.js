@@ -136,14 +136,6 @@ function SchedulesList({
             setTimeout(() => scrollToIndex(dayIndex, true), 250);
         })
     };
-
-    useEffect(() => {
-        //61e89776f06c830cfce362a1 ??
-        //61e89776f06c830cfce36286 case
-        // testing every endpoint to see wtf this id is attached to
-
-    }, []);
-
     return (
         <View style={showBorder ? styles.scheduleContent : {}} >
             <View style={showBorder ? styles.container : {}}>
@@ -165,17 +157,15 @@ function SchedulesList({
                     sections={getSectionListData(daysList, appointments)}
                     stickySectionHeadersEnabled={true}
                     ItemSeparatorComponent={() => <Separator />}
-                    renderSectionHeader={({ section: { title } }) => (
-                        <View>
+                    renderSectionHeader={({ section: { title, data } }) => (
+                        <View style={{marginBottom: data.length > 0 ? 20 : 0}}>
                             <SectionListHeader
                                 onNewProcedureClick={() => onNewProcedurePress()}
                                 title={title}
                             />
-
                         </View>
                     )}
 
-                    // handles displaying the procedures for a date
                     renderItem={({ item }) => {
                         return <ScheduleItem
                             key={item.id}

@@ -10,11 +10,8 @@ function SectionListHeader({title = "", onNewProcedureClick}){
     `;
     
     const SectionListHeaderContainer = styled.View`
-        height : 50px;
+        height : 70px;
         width: 100%;
-        margin-bottom: 10px;
-        paddingBottom: 5px;
-        paddingTop: 24px;
         border-bottom-color: theme.colors['--color-gray-600'];;
         border-bottom-width: 1px;
         flex-direction: row;
@@ -25,7 +22,8 @@ function SectionListHeader({title = "", onNewProcedureClick}){
     const SectionListHeaderTitle = styled.Text({
         ...theme.font['--text-sm-bold'],
         color: theme.colors['--color-gray-700'],
-        flex: 2
+        flex: 2,
+        alignSelf: 'center'
     });
 
     const ButtonContainer = styled.View`
@@ -34,25 +32,25 @@ function SectionListHeader({title = "", onNewProcedureClick}){
         flex: 1;
         display: flex;
         flexDirection: row;
-        margin-right:30;
+        align-items: center;
+        justify-content: flex-end;
     `;
 
     const NewProcedureButton = styled.TouchableOpacity`
-        align-items:center;
         border-width:1px;
-        justify-content:center;
         border-color:${({ theme }) => theme.colors["--color-blue-700"]};
         width:110px;
-        height:22px;
+        height:24px;
         border-radius:3px;
-        margin-left: 90px;
+        justify-content:center;
+        align-items:center;
     `;
 
     const NewProcedureButtonText = styled.Text`
-        align-items: center; 
-        align-self:center;
         color: ${({ theme }) => theme.colors["--color-blue-600"]};
         font:${({ theme }) => theme.font["--text-sm-regular"]};
+        align-items: center; 
+        align-self:center;
     `;
 
     return (
