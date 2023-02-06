@@ -308,7 +308,8 @@ function RecentAlertsList({ data = [], updateAlerts = () => { } }) {
 const styles = StyleSheet.create({
     holder: {
         borderRadius: 10,
-        heigth: 18,
+        //heigth: 18,
+        maxHeight: 20,
         width: 48,
         justifyContent:'center',
         textAlign: 'center',
