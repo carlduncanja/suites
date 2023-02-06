@@ -205,6 +205,7 @@ function RecentAlertsList({ data = [], updateAlerts = () => { } }) {
                     </TitleSection> 
 
                     <TextItem
+                        style={{marginLeft: 60}}
                         color="--color-gray-500"
                         //fontStyle="--actions-title"
                         flex={0.3}
