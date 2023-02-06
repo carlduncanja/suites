@@ -45,10 +45,12 @@ const HeadingContainer = styled.View`
     
 `;
 
-const ModalText = styled.Text(({textColor = '--color-gray-600', theme, font = '--confirm-title'}) => ({
+const ModalText = styled.Text(({textColor = '--color-gray-600', theme, font = '--confirm-title', messagePadding}) => ({
     ...theme.font[font],
     color: theme.colors[textColor],
     paddingTop: 2,
+    paddingLeft: messagePadding,
+    paddingRight: messagePadding,
     textAlign: 'center',
 }));
 
@@ -219,6 +221,7 @@ const shadows = [
 
 function ConfirmationComponent({
     isEditUpdate,
+    textPadding=0,
     isError,
     isWarning,
     onCancel = () => {
@@ -260,8 +263,8 @@ function ConfirmationComponent({
             return (<>
                     <IconMessageContainer>
                         <IconContainer theme={theme}><WarningIcon/></IconContainer>
-                        <ModalText theme={theme} textColor="--color-gray-800" font="--text-base-regular">{message || `The insurance coverage amount provided to authorize this procedure will impact the patient's bill.`}</ModalText>
-                        <ModalText theme={theme} textColor="--color-gray-800" font="--text-base-bold">{secondaryMessage || 'Do you wish to continue?'}</ModalText>
+                        <ModalText messagePadding={textPadding}  theme={theme} textColor="--color-gray-800" font="--text-base-regular">{message || `The insurance coverage amount provided to authorize this procedure will impact the patient's bill.`}</ModalText>
+                        <ModalText messagePadding={textPadding} theme={theme} textColor="--color-gray-800" font="--text-base-bold">{secondaryMessage || 'Do you wish to continue?'}</ModalText>
                     </IconMessageContainer>
                
 
