@@ -62,11 +62,11 @@ const listHeaders = [
     {
         name: "Type",
         alignment: "flex-start",
-        flex: 1,
+        flex: 1.5,
     },
     {
         name: "Supplier",
-        alignment: "center",
+        alignment: "flex-start",
         flex: 1.5,
     },
 ];
