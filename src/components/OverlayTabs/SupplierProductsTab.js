@@ -33,6 +33,7 @@ import { getSupplierProducts, createPurchaseOrder, removeSupplierProducts } from
 import { addCartItem } from '../../redux/actions/cartActions';
 import LoadingIndicator from '../common/LoadingIndicator';
 import { PageContext } from '../../contexts/PageContext';
+import ConfirmationCheckBoxComponent from '../ConfirmationCheckBoxComponent';
 
 const SearchContainer = styled.View`
     margin-bottom : ${({ theme }) => theme.space['--space-20']};
@@ -468,7 +469,7 @@ function SupplierProductsTab({
         setTimeout(() => {
             modal.openModal('ConfirmationModal',
                 {
-                    content: <ConfirmationComponent
+                    content: <ConfirmationCheckBoxComponent
                         isError={false}
                         isEditUpdate={true}
                         onAction={() => {
