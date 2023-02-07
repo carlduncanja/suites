@@ -45,13 +45,14 @@ const HeadingContainer = styled.View`
     
 `;
 
-const ModalText = styled.Text(({textColor = '--color-gray-600', theme, font = '--confirm-title', messagePadding}) => ({
+const ModalText = styled.Text(({textColor = '--color-gray-600', theme, font = '--confirm-title', messagePadding=0, messageAlign="center", messageMargin=0}) => ({
     ...theme.font[font],
     color: theme.colors[textColor],
     paddingTop: 2,
     paddingLeft: messagePadding,
     paddingRight: messagePadding,
-    textAlign: 'center',
+    textAlign: messageAlign,
+    marginTop: messageMargin
 }));
 
 const ClearIconContainer = styled.View`
@@ -89,7 +90,7 @@ const IconMessageContainer = styled.View`
     height: 128px;
     width: 100%;
     justify-content:space-between;
-    align-items: center;
+    align-items: ${({textAlign}) => textAlign};
     background-color: ${({theme}) => theme.colors['--default-shade-white']};
     margin-top : ${({theme}) => theme.space['--space-20']};
     margin-bottom : ${({theme}) => theme.space['--space-20']};
@@ -222,6 +223,7 @@ const shadows = [
 function ConfirmationComponent({
     isEditUpdate,
     textPadding=0,
+    textAlign='center',
     isError,
     isWarning,
     onCancel = () => {
@@ -261,10 +263,10 @@ function ConfirmationComponent({
         }
         if (isWarning) {
             return (<>
-                    <IconMessageContainer>
+                    <IconMessageContainer textAlign={textAlign === 'center' ? 'center' : 'end'}>
                         <IconContainer theme={theme}><WarningIcon/></IconContainer>
-                        <ModalText messagePadding={textPadding}  theme={theme} textColor="--color-gray-800" font="--text-base-regular">{message || `The insurance coverage amount provided to authorize this procedure will impact the patient's bill.`}</ModalText>
-                        <ModalText messagePadding={textPadding} theme={theme} textColor="--color-gray-800" font="--text-base-bold">{secondaryMessage || 'Do you wish to continue?'}</ModalText>
+                        <ModalText messageAlign={textAlign} messagePadding={textPadding}  theme={theme} textColor="--color-gray-800" font="--text-base-regular">{message || `The insurance coverage amount provided to authorize this procedure will impact the patient's bill.`}</ModalText>
+                        <ModalText messageMargin={textAlign === 'left' ? 10 : 0} messageAlign={textAlign} messagePadding={textPadding} theme={theme} textColor="--color-gray-800" font="--text-base-bold">{secondaryMessage || 'Do you wish to continue?'}</ModalText>
                     </IconMessageContainer>
                
 

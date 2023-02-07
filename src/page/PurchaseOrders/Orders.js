@@ -613,6 +613,7 @@ const Orders = (props) => {
             content: (
                 <ConfirmationComponent
                     textPadding={25}
+                    textAlign={'left'}
                     isWarning={true}
                     onCancel={() => {
                         modal.closeModals('ConfirmationModal');
