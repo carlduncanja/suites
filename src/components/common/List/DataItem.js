@@ -28,7 +28,7 @@ function DataItem({text = "", flex = 1, align = 'flex-start', width = {width}, f
     return (
         <DataItemWrapper flex={flex} theme={theme}>
             <DataItemContainer align={align}>
-                <DataText numberOfLines={1} fontStyle={fontStyle} color={color} theme={theme}>{text}</DataText>
+                <DataText numberOfLines={2} fontStyle={fontStyle} color={color} theme={theme}>{text}</DataText>
             </DataItemContainer>
         </DataItemWrapper>
     );
