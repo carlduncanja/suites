@@ -199,6 +199,7 @@ const CreateEquipmentTypeDialogContainer = ({
                 </FieldContainer>
             </Row>
             <Row>
+            <FieldContainer maxWidth={"50%"}>
                 <MultipleSelectionsField
                         label={"Category"}
                         onOptionsSelected={(value) => handleCategorySelected(value)}
@@ -212,6 +213,7 @@ const CreateEquipmentTypeDialogContainer = ({
                         height={125}
                         
                     />
+                </FieldContainer>
             </Row>
         </View>
     );

@@ -105,7 +105,7 @@ const ScheduleItemContainer = styled.TouchableOpacity`
 `;
 
 const AppointmentColorIdentifier = styled.View`
-  align-self: center;
+  align-self: end;
   background-color: ${({theme, color}) => color || theme.colors['--theme-gray-200']};
   height: 12px;
   width: 12px;
