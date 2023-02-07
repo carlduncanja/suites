@@ -732,8 +732,8 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, removeDraft, route}
                 <HeaderContainer theme={theme}>
                     <PageTitle>{title}</PageTitle>
 
-                    <TouchableOpacity style={styles.closeButton} onPress={onClose}>
-                        <Text style={{color: '#718096'}}>Close</Text>
+                    <TouchableOpacity style={[styles.closeButton, {backgroundColor: theme.colors["--color-blue-500"]}]} onPress={onClose}>
+                        <Text style={{color: 'white'}}>Close</Text>
                     </TouchableOpacity>
 
                 </HeaderContainer>
@@ -856,7 +856,6 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         width: 64,
         height: 26,
-        backgroundColor: '#E3E8EF'
     },
     footerText: {
         fontSize: 16,
