@@ -23,7 +23,7 @@ import MultipleSelectionsField from '../common/Input Fields/MultipleSelectionsFi
 
 const InputWrapper = styled.View`
 height:30px;
-width:260px;
+width:380px;
 margin-right:30px;
 
 `;
@@ -194,20 +194,6 @@ function AssignEquipmentDetailsTab({
                             enabled={false}
                         />
                     </InputWrapper>
-
-                    <InputWrapper>
-                        {/*<MultipleSelectionsField*/}
-                        {/*    disabled={true}*/}
-                        {/*    labelWidth={80}*/}
-                        {/*    onOptionsSelected={() => {*/}
-                        {/*    }}*/}
-                        {/*    label="Category"*/}
-                        {/*    value={!equipmentDetails?.categories ? '--' : equipmentDetails.categories}*/}
-
-                        {/*/>*/}
-                    </InputWrapper>
-                </Row>
-                <Row zIndex={2}>
                     <InputWrapper>
                         <OptionsField
                             key={data.assignment}
@@ -229,7 +215,8 @@ function AssignEquipmentDetailsTab({
 
                         />
                     </InputWrapper>
-
+                </Row>
+                <Row>
                     <InputWrapper>
                         <SearchableOptionsField
                             label="Assigned"
@@ -264,8 +251,6 @@ function AssignEquipmentDetailsTab({
                         />
                     </InputWrapper>
 
-                </Row>
-                <Row>
                     {
                         data.assignment !== 'Location' && <InputWrapper>
                             <DateInputField
@@ -285,12 +270,13 @@ function AssignEquipmentDetailsTab({
                             />
                         </InputWrapper>
                     }
-
+                </Row>
+                <Row>
                     {
                         data.assignment !== 'Location' && <InputWrapper>
                             <InputUnitField
                                 label="Duration"
-                                labelWidth={70}
+                                labelWidth={80}
                                 hasError={errors['duration']}
                                 errorMessage={errors['duration']}
                                 onChangeText={value => {
@@ -304,7 +290,6 @@ function AssignEquipmentDetailsTab({
                             />
                         </InputWrapper>
                     }
-
                 </Row>
 
             </View>
