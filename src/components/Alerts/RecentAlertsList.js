@@ -12,6 +12,7 @@ import ListItem from '../common/List/ListItem';
 import DataItem from '../common/List/DataItem';
 import ResolveIcon from '../../../assets/svg/resolveIcon';
 import ConfirmationComponent from '../ConfirmationComponent';
+import { red100 } from 'react-native-paper/src/styles/colors';
 
 const RenderListItemWrapper = styled.View`
     width: 100%;
@@ -57,6 +58,7 @@ const TitleSection = styled.View`
 flex-direction: row;
 flex: 0.4;  
 justify-content: flex-start;
+height: 100%
 `;
 
 const HiddentAction = styled.TouchableOpacity`
@@ -192,8 +194,8 @@ function RecentAlertsList({ data = [], updateAlerts = () => { } }) {
             <ListItemContainer>
                 <TittleContianer>
                     <TitleSection>
-                        <TextItem color="--color-gray-800" flex={1}>{` ${title}`}</TextItem>
-                        <View style={[styles.holder,{backgroundColor:background}]}>
+                        <TextItem color="--color-gray-800" flex={1}>{`${title}`}</TextItem>
+                        <View style={[styles.holder,{backgroundColor:background}, {marginRight: 20}]}>
                             <TextItem
                                 color={text}
                                 fontStyle="--text-sm-medium"
@@ -311,6 +313,7 @@ const styles = StyleSheet.create({
         //heigth: 18,
         maxHeight: 20,
         width: 48,
+        marginLeft: 1,
         justifyContent:'center',
         textAlign: 'center',
         alignItems:'center'
