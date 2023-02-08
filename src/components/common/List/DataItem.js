@@ -19,6 +19,7 @@ const DataText = styled.Text( ({theme, fontStyle, color}) => ({
     ...theme.font[fontStyle],
     color: theme.colors[color],
     paddingTop: 2,
+    paddingRight: '11%',
     width: '100%'
 }));
 
@@ -28,7 +29,7 @@ function DataItem({text = "", flex = 1, align = 'flex-start', width = {width}, f
     return (
         <DataItemWrapper flex={flex} theme={theme}>
             <DataItemContainer align={align}>
-                <DataText numberOfLines={2} fontStyle={fontStyle} color={color} theme={theme}>{text}</DataText>
+                <DataText numberOfLines={1} fontStyle={fontStyle} color={color} theme={theme}>{text}</DataText>
             </DataItemContainer>
         </DataItemWrapper>
     );
