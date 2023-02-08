@@ -19,6 +19,7 @@ const DataText = styled.Text( ({theme, fontStyle, color}) => ({
     ...theme.font[fontStyle],
     color: theme.colors[color],
     paddingTop: 2,
+    paddingRight: '11%',
     width: '100%'
 }));
 
