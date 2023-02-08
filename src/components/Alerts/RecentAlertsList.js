@@ -16,7 +16,7 @@ import { red100 } from 'react-native-paper/src/styles/colors';
 
 const RenderListItemWrapper = styled.View`
     width: 100%;
-    height: 96px;
+    height: 80px;
     margin-bottom : ${({ theme }) => theme.space['--space-12']};
 `;
 const RenderListItemContainer = styled.View`
@@ -43,7 +43,7 @@ const ItemWrapper = styled.View`
 
 const RenderHiddenItemWrapper = styled.View`
     width: 100%;
-    height: 96px;
+    height: 80px;
 `;
 const RenderHiddenItemContainer = styled.View`
     flex: 1; 
@@ -58,7 +58,6 @@ const TitleSection = styled.View`
 flex-direction: row;
 flex: 0.4;  
 justify-content: flex-start;
-height: 100%
 `;
 
 const HiddentAction = styled.TouchableOpacity`
