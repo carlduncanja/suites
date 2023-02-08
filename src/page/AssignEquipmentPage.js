@@ -48,7 +48,7 @@ const CloseButtonWrapper = styled.View`
 //     width:540px;
     `;
 const CloseButtonContainer = styled.TouchableOpacity`
-    background-color:${({theme}) => theme.colors['--color-gray-300']};
+    background-color:${({theme}) => theme.colors['--color-blue-500']};
     width:68px;
     height:26px;
     padding:4px 14px;
@@ -56,7 +56,7 @@ const CloseButtonContainer = styled.TouchableOpacity`
     justify-content:center;
     `;
 const CloseText = styled.Text`
-    color:${({theme}) => theme.colors['--color-gray-600']};
+    color: white;
     font:${({theme}) => theme.font['--text-sm-bold']};
     `;
 
