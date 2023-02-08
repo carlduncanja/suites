@@ -343,7 +343,7 @@ function CreateStorageDialogContainer({ onCancel, onCreated, addStorageLocation 
                     <View style={{width: 10, height: 35}}>
                     </View>
                     <Row>
-                        <FieldContainer>
+                        <FieldContainer maxWidth='50%'>
                             <MultipleSelectionsField
                                     setOpen={setIsOpen}
                                     label={"Category"}

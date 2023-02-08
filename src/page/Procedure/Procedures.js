@@ -31,6 +31,7 @@ import TouchableDataItem from '../../components/common/List/TouchableDataItem';
 import { PageSettingsContext } from '../../contexts/PageSettingsContext';
 import ExportIcon from "../../../assets/svg/exportIcon";
 import FileUploadComponent from "../../components/FileUploadComponent";
+import ConfirmationCheckBoxComponent from '../../components/ConfirmationCheckBoxComponent';
 
 const Procedures = props => {
     // ############# Const data
@@ -349,7 +350,7 @@ const Procedures = props => {
         modal.openModal(
             'ConfirmationModal',
             {
-                content: <ConfirmationComponent
+                content: <ConfirmationCheckBoxComponent
                     isError={false}
                     isEditUpdate={true}
                     onCancel={() => modal.closeModals('ConfirmationModal')}

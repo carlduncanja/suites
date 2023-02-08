@@ -57,11 +57,11 @@ const listHeaders = [
     {
         name: "Status",
         alignment: "flex-start",
-        flex: 1,
+        flex: 1.1,
     },
     {
         name: "Type",
-        alignment: "center",
+        alignment: "flex-start",
         flex: 1.5,
     },
     {
@@ -394,7 +394,7 @@ const Orders = (props) => {
         return (
             <>
                 <RightBorderDataItem text={purchaseOrderNumber} fontStyle="--text-sm-medium" flex={1.5} />
-                <DataItem text={transformToTitleCase(status, '_')} fontStyle="--text-sm-medium" flex={1} color={statusColor} />
+                <DataItem text={transformToTitleCase(status, '_')} fontStyle="--text-sm-medium" flex={1.2} color={statusColor} />
                 <DataItem text={transformToTitleCase(type, '_')} fontStyle="--text-sm-medium" flex={1.5} align={"center"} />
                 <DataItem text={name} fontStyle="--text-sm-medium" flex={1.5} color="--color-blue-600" />
             </>
