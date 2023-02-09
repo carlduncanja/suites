@@ -53,7 +53,7 @@ import ListItem from '../../components/common/List/ListItem';
 import {LONG_PRESS_TIMER} from '../../const';
 import ConfirmationComponent from '../../components/ConfirmationComponent';
 import { PageSettingsContext } from '../../contexts/PageSettingsContext';
-
+import ConfirmationCheckBoxComponent from '../../components/ConfirmationCheckBoxComponent';
 const QuantityWrapper = styled.View`
     flex:1.5;
     align-items: center; 
@@ -657,7 +657,7 @@ const Equipment = props => {
             .openModal(
                 'ConfirmationModal',
                 {
-                    content: <ConfirmationComponent
+                    content: <ConfirmationCheckBoxComponent
                         isError={false}
                         isEditUpdate={true}
                         onCancel={() => modal.closeModals('ConfirmationModal')}

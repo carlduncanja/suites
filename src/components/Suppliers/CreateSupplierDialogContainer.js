@@ -330,7 +330,7 @@ function CreateSupplierDialogContainer({ onCancel, onCreated, addSupplier, onUpd
 
             <Row>
 
-                <FieldContainer>
+                <FieldContainer maxWidth='50%'>
                     <InputField2
                         label={"Rep. Email"}
                         onChangeText={handleRepresentative('email')}
