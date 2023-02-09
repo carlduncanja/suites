@@ -355,7 +355,6 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, removeDraft, route}
         }
 
         if (!isValid) {
-            console.log("freckles")
             return;
         }
 
@@ -432,6 +431,10 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, removeDraft, route}
                 // validate the fields on the details tab that are required
                 requiredFields = ['firstName', 'surname'];
 
+                const {trn, passport, national} = patientFields
+                if (!trn) {
+                    requiredFields.push('passport', 'national')
+                }
                 break;
             }
             case PATIENT_TABS.ADDRESS: {
@@ -470,7 +473,7 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, removeDraft, route}
                     isValid = false;
                     updateErrors = {
                         ...updateErrors,
-                        [requiredField]: 'Invalid DOB',
+                        [requiredField]: 'DOB Required',
                     };
                 }
             } else if (patientFields[requiredField] || (tab === PATIENT_TABS.ADDRESS && patientFields.addressInfo && patientFields.addressInfo[requiredField])) {

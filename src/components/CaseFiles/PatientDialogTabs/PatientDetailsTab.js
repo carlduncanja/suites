@@ -127,25 +127,7 @@ const PatientDetailsTab = ({onFieldChange, fields, errors}) => {
                 </InputWrapper>
                 <Space theme={theme}/>
 
-                <InputWrapper style={styles.inputWrapper}>
-                    <InputField2
-                        label="TRN"
-                        labelWidth={98}
-                        onChangeText={value => {
-                            handleTrnValidation(value);
-                        }}
-                        value={fields.trn}
-                        onClear={() => onFieldChange('trn')('')}
-                        keyboardType="number-pad"
-                        hasError={errors.trn}
-                        errorMessage={errors.trn}
-                    />
-                </InputWrapper>
-
-            </RowWrapper>
-
-            <RowWrapper theme={theme} zIndex={-3}>
-
+                
                 <InputWrapper style={styles.inputWrapper}>
                     <DateInputField
                         label="Date of Birth"
@@ -163,10 +145,79 @@ const PatientDetailsTab = ({onFieldChange, fields, errors}) => {
                         errorMessage={errors.dob}
                     />
                 </InputWrapper>
+            </RowWrapper>
+
+            <RowWrapper theme={theme} zIndex={-3}>
+                            
+                <InputWrapper style={styles.inputWrapper}>
+                    <InputField2
+                        label="TRN"
+                        labelWidth={98}
+                        onChangeText={value => {
+                            handleTrnValidation(value);
+                        }}
+                        value={fields.trn}
+                        onClear={() => onFieldChange('trn')('')}
+                        keyboardType="number-pad"
+                        hasError={errors.trn}
+                        errorMessage={errors.trn}
+                    />
+                </InputWrapper>
+                
+                <Space/>
+
+                <InputWrapper style={styles.inputWrapper}>
+                    <InputField2
+                        label="Passport"
+                        labelWidth={98}
+                        onChangeText={value => {
+                            //handleTrnValidation(value);
+                            onFieldChange('passport')(value)
+                        }}
+                        value={fields.passport}
+                        onClear={() => onFieldChange('passport')('')}
+                        keyboardType="number-pad"
+                        hasError={errors.passport}
+                        errorMessage={errors.passport}
+                    />
+                </InputWrapper>
+
+            </RowWrapper>
+
+            <RowWrapper theme={theme} zIndex={-3}>
+                <InputWrapper style={styles.inputWrapper}>
+                        <InputField2
+                            label="National ID"
+                            labelWidth={98}
+                            onChangeText={value => {
+                                //handleTrnValidation(value);
+                                onFieldChange('national')(value)
+                            }}
+                            value={fields.national}
+                            onClear={() => onFieldChange('national')('')}
+                            keyboardType="number-pad"
+                            hasError={errors.national}
+                            errorMessage={errors.national}
+                        />
+                </InputWrapper>
 
                 <Space/>
-                <InputWrapper/>
-
+                
+                <InputWrapper style={styles.inputWrapper}>
+                        <InputField2
+                            label="Other ID"
+                            labelWidth={98}
+                            onChangeText={value => {
+                                //handleTrnValidation(value);
+                                onFieldChange('national')(value)
+                            }}
+                            value={fields.national}
+                            onClear={() => onFieldChange('national')('')}
+                            keyboardType="number-pad"
+                            hasError={errors.national}
+                            errorMessage={errors.national}
+                        />
+                </InputWrapper>
             </RowWrapper>
 
         </View>
