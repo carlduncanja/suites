@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {View, Text, StyleSheet, Button} from 'react-native';
 import {MenuOptions, MenuOption} from 'react-native-popup-menu';
 import moment from 'moment';
@@ -31,6 +31,15 @@ const InputWrapper = styled.View`
 
 const PatientDetailsTab = ({onFieldChange, fields, errors}) => {
     const theme = useTheme();
+    const [isPopulated, setIsPopulated] = useState(false);
+    useEffect(() => {
+        if (fields?.passport || fields?.trn || fields?.national || fields.other) {
+            setIsPopulated(true);
+        }
+        else {
+            setIsPopulated(false);
+        }
+    }, [fields]);
 
     const handleTrnValidation = trnValue => {
         if (trnValue.toString().length > 9) return;
@@ -159,7 +168,7 @@ const PatientDetailsTab = ({onFieldChange, fields, errors}) => {
                         value={fields.trn}
                         onClear={() => onFieldChange('trn')('')}
                         keyboardType="number-pad"
-                        hasError={errors.trn}
+                        hasError={fields.trn ? errors.trn : errors.trn && !isPopulated}
                         errorMessage={errors.trn}
                     />
                 </InputWrapper>
@@ -177,7 +186,7 @@ const PatientDetailsTab = ({onFieldChange, fields, errors}) => {
                         value={fields.passport}
                         onClear={() => onFieldChange('passport')('')}
                         keyboardType="number-pad"
-                        hasError={errors.passport}
+                        hasError={errors.passport && !isPopulated}
                         errorMessage={errors.passport}
                     />
                 </InputWrapper>
@@ -196,7 +205,7 @@ const PatientDetailsTab = ({onFieldChange, fields, errors}) => {
                             value={fields.national}
                             onClear={() => onFieldChange('national')('')}
                             keyboardType="number-pad"
-                            hasError={errors.national}
+                            hasError={errors.national && !isPopulated}
                             errorMessage={errors.national}
                         />
                 </InputWrapper>
@@ -209,13 +218,13 @@ const PatientDetailsTab = ({onFieldChange, fields, errors}) => {
                             labelWidth={98}
                             onChangeText={value => {
                                 //handleTrnValidation(value);
-                                onFieldChange('national')(value)
+                                onFieldChange('other')(value)
                             }}
-                            value={fields.national}
-                            onClear={() => onFieldChange('national')('')}
+                            value={fields.other}
+                            onClear={() => onFieldChange('other')('')}
                             keyboardType="number-pad"
-                            hasError={errors.national}
-                            errorMessage={errors.national}
+                            hasError={errors.other && !isPopulated}
+                            errorMessage={errors.other}
                         />
                 </InputWrapper>
             </RowWrapper>

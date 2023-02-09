@@ -429,12 +429,42 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, removeDraft, route}
         switch (tab) {
             case PATIENT_TABS.DETAILS: {
                 // validate the fields on the details tab that are required
-                requiredFields = ['firstName', 'surname'];
+                requiredFields = ['firstName', 'surname', 'trn', 'passport', 'national', 'other'];
 
-                const {trn, passport, national} = patientFields
-                if (!trn) {
-                    requiredFields.push('passport', 'national')
+                const {trn, passport, national, other} = patientFields
+                
+                if(trn) {
+                    requiredFields = requiredFields.filter(item => (
+                        item !== 'passport' &&
+                        item !== 'national' &&
+                        item !== 'other'
+                    ));
                 }
+
+                if (passport) {
+                    requiredFields = requiredFields.filter(item => (
+                        item !== 'trn' &&
+                        item !== 'national' &&
+                        item !== 'other'
+                    ));
+                }
+
+                if (national) {
+                    requiredFields = requiredFields.filter(item => (
+                        item !== 'passport' &&
+                        item !== 'trn' &&
+                        item !== 'other'
+                    ));
+                }
+
+                if (other) {
+                    requiredFields = requiredFields.filter(item => (
+                        item !== 'passport' &&
+                        item !== 'national' &&
+                        item !== 'trn'
+                    ));
+                }
+                
                 break;
             }
             case PATIENT_TABS.ADDRESS: {
@@ -447,9 +477,8 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, removeDraft, route}
 
         let updateErrors = {...patientFieldErrors};
 
-        console.log(patientFields);
-
         for (const requiredField of requiredFields) {
+
             if (requiredField === 'trn') {
                 // check if trn field is 9
 
@@ -459,7 +488,7 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, removeDraft, route}
 
                     updateErrors = {
                         ...updateErrors,
-                        [requiredField]: 'Invalid TRN',
+                        [requiredField]: `Valid TRN of adult, child or child's parent is required`,
                     };
                 }
             } else if (requiredField === 'dob') {
@@ -492,8 +521,15 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, removeDraft, route}
             }
         }
 
+        if (patientFields['trn']?.length !== 9 && patientFields['trn']) {
+            isValid = false;
+
+            updateErrors = {
+                ...updateErrors,
+                ['trn']: `Valid TRN of adult, child or child's parent is required`,
+            };
+        }
         setPatientErrors(updateErrors);
-        console.log(patientFieldErrors);
 
         return isValid;
     };

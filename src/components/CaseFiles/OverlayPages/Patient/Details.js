@@ -88,10 +88,14 @@ const Details = ({
         bloodType,
         nextVisit,
         contactInfo = {},
+        passport,
+        other,
+        national,
         address: addresses = []
     } = tabDetails;
     const {phones = [], emails = [], emergencyContact: emergencyContacts = []} = contactInfo;
 
+    
     const [fields, setFields] = useState({
         firstName,
         middleName,
@@ -107,7 +111,10 @@ const Details = ({
         phones,
         emails,
         address: addresses,
-        emergencyContact: emergencyContacts
+        emergencyContact: emergencyContacts,
+        passport,
+        other,
+        national
     });
 
     const {pageState, setPageState} = useContext(PageContext);
