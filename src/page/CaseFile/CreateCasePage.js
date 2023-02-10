@@ -488,7 +488,7 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, removeDraft, route}
 
                     updateErrors = {
                         ...updateErrors,
-                        [requiredField]: `Valid TRN of adult, child or child's parent is required`,
+                        [requiredField]: `Valid TRN of an adult, child or child's parent is required`,
                     };
                 }
             } else if (requiredField === 'dob') {
@@ -526,7 +526,7 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, removeDraft, route}
 
             updateErrors = {
                 ...updateErrors,
-                ['trn']: `Valid TRN of adult, child or child's parent is required`,
+                ['trn']: `Valid TRN of an adult, child or child's parent is required`,
             };
         }
         setPatientErrors(updateErrors);

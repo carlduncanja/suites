@@ -576,6 +576,47 @@ const Details = ({
                         )}
                     />
                 </Row>
+                    {/*here*/}
+                <Row>
+                    <Record
+                        recordTitle="Passport"
+                        recordValue={defaultRecordValue(fields, 'passport', passport)}
+                        onClearValue={() => onFieldChange('passport')('')}
+                        onRecordUpdate={value => {
+                            const val = handleNumberValidation(value, 9);
+                            if (val || val === '') onFieldChange('passport')(val);
+                        }}
+                        editMode={isEditMode}
+                        editable={true}
+                        keyboardType="number-pad"
+                    />
+
+                    <Record
+                        recordTitle="National ID"
+                        recordValue={defaultRecordValue(fields, 'national', national)}
+                        onClearValue={() => onFieldChange('national')('')}
+                        onRecordUpdate={value => {
+                            const val = handleNumberValidation(value, 9);
+                            if (val || val === '') onFieldChange('national')(val);
+                        }}
+                        editMode={isEditMode}
+                        editable={true}
+                        keyboardType="number-pad"
+                    />
+
+                    <Record
+                        recordTitle="Other ID"
+                        recordValue={defaultRecordValue(fields, 'other', other)}
+                        onClearValue={() => onFieldChange('other')('')}
+                        onRecordUpdate={value => {
+                            const val = handleNumberValidation(value, 9);
+                            if (val || val === '') onFieldChange('other')(val);
+                        }}
+                        editMode={isEditMode}
+                        editable={true}
+                        keyboardType="number-pad"
+                    />
+                </Row>
 
                 <Row>
                     <Record
