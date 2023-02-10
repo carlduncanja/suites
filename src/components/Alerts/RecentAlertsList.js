@@ -12,10 +12,11 @@ import ListItem from '../common/List/ListItem';
 import DataItem from '../common/List/DataItem';
 import ResolveIcon from '../../../assets/svg/resolveIcon';
 import ConfirmationComponent from '../ConfirmationComponent';
+import { red100 } from 'react-native-paper/src/styles/colors';
 
 const RenderListItemWrapper = styled.View`
     width: 100%;
-    height: 96px;
+    height: 80px;
     margin-bottom : ${({ theme }) => theme.space['--space-12']};
 `;
 const RenderListItemContainer = styled.View`
@@ -42,7 +43,7 @@ const ItemWrapper = styled.View`
 
 const RenderHiddenItemWrapper = styled.View`
     width: 100%;
-    height: 96px;
+    height: 80px;
 `;
 const RenderHiddenItemContainer = styled.View`
     flex: 1; 
@@ -77,7 +78,7 @@ const TextItem = styled.Text(({ theme, flex = 1, color = '--color-gray-800', fon
     ...theme.font[font],
     color: theme.colors[color],
     paddingTop: 2,
-    flex
+    paddingRight: 10
 }));
 
 const TittleContianer = styled.View` 
@@ -192,12 +193,12 @@ function RecentAlertsList({ data = [], updateAlerts = () => { } }) {
             <ListItemContainer>
                 <TittleContianer>
                     <TitleSection>
-                        <TextItem color="--color-gray-800" flex={1}>{` ${title}`}</TextItem>
+                        <TextItem color="--color-gray-800" flex={1}>{`${title}`}</TextItem>
                         <View style={[styles.holder,{backgroundColor:background}]}>
                             <TextItem
                                 color={text}
                                 fontStyle="--text-sm-medium"
-                            flex={1}
+                                flex={1}
                             >
                                 {transformToSentence(priority)}
                             </TextItem>
@@ -311,6 +312,7 @@ const styles = StyleSheet.create({
         //heigth: 18,
         maxHeight: 20,
         width: 48,
+        marginLeft: 1,
         justifyContent:'center',
         textAlign: 'center',
         alignItems:'center'
