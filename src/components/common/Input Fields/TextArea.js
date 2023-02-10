@@ -76,7 +76,9 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         backgroundColor: 'white',
-
+        borderWidth: 2,
+        borderColor: '#E3E8EF',
+        borderRadius: 4,
     },
     textLabel: {
         fontSize: 12,
@@ -86,6 +88,7 @@ const styles = StyleSheet.create({
     inputWrapper: {
         flex: 1,
         // height: 32,
+        justifyContent:"center",
     },
     inputWithPlaceholder:
     {
@@ -101,16 +104,16 @@ const styles = StyleSheet.create({
         padding: 10,
         paddingTop: 10,
         paddingBottom: 2,
-        borderWidth: 1,
-        borderColor: '#E3E8EF',
-        borderRadius: 4,
         height: '100%'
         // height: 32,
     },
     clearIcon: {
-        position: 'absolute',
+        //position: 'absolute',
+        justifyContent:"center",
         right: 0,
         margin: 10,
+        
+
     },
     errorView: {
         paddingTop: 3,

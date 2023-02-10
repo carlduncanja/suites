@@ -27,6 +27,7 @@ function Calendar ({screenDimensions, appointments, selectedDay, month, onDayPre
     `;
     const CalendarContainer = styled.View`
         align-self: flex-start;
+        justify-content:center:
         flex-direction: column;
     `
     return (
