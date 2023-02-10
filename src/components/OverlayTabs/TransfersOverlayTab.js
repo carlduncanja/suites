@@ -378,9 +378,9 @@ function TransfersOverlayTab({ transferItems = [], transferObj, groupId, variant
             <>
                 <DataItem flex={1.5} fontStyle="--text-base-medium" color="--color-blue-600" text={to?.locationName} />
                 <DataItem fontStyle="--text-base-regular" color="--color-gray-800" text={from?.inventoryName} />
-                <DataItem fontStyle="--text-base-regular" color="--color-gray-800"
+                <DataItem flex={1.34}fontStyle="--text-base-regular" color="--color-gray-800"
                     text={formatDate(dateGenerated, 'DD/MM/YYYY')} />
-                <DataItem align="center" fontStyle="--text-base-medium" color="--color-green-600" text={`+ ${amount}`} />
+                <DataItem flex={0.6} align="center" fontStyle="--text-base-medium" color="--color-green-600" text={`+ ${amount}`} />
             </>
         );
     };
