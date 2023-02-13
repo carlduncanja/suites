@@ -197,12 +197,14 @@ function DialogDetailsTab({onFieldChange, fields, handlePopovers, popoverList, e
     return (
         <>
             <Row>
-
-                <AutoFillField
+            <FieldContainer maxWidth='100%'>
+            <AutoFillField
                     label="Reference"
                     value={fields.procedureReferenceName || '--'}
                     flex={2}
                 />
+            </FieldContainer>
+                
                 {/* <SearchableOptionsField
                         label={"Reference"}
                         text={searchProcedureValue}
@@ -268,17 +270,6 @@ function DialogDetailsTab({onFieldChange, fields, handlePopovers, popoverList, e
                     />
                 </FieldContainer>
                 <FieldContainer>
-                    {/*<InputField2*/}
-                    {/*    label="Category"*/}
-                    {/*    onChangeText={onFieldChange('category')}*/}
-                    {/*    value={fields.category}*/}
-                    {/*    onClear={() => onFieldChange('category')('')}*/}
-                    {/*/>*/}
-                </FieldContainer>
-            </Row>
-
-            <Row zIndex={-2}>
-                <FieldContainer>
                     <OptionsField
                         label="Recovery"
                         text={templateText[fields.hasRecovery] || 'No'}
@@ -291,7 +282,9 @@ function DialogDetailsTab({onFieldChange, fields, handlePopovers, popoverList, e
                         )}
                     />
                 </FieldContainer>
-                <FieldContainer>
+            </Row>
+            <Row zIndex={-2}>
+                <FieldContainer maxWidth='50%'>
                     <InputField2
                         label="Service Fee"
                         onChangeText={value => handlePrice(value)}

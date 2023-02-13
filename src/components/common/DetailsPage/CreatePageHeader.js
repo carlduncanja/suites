@@ -29,7 +29,7 @@ const HeaderText = styled.Text`
 const CloseButtonContainer = styled.View`
     height : 26px;
     width : 64px;
-    background-color : ${({ theme }) => theme.colors["--color-gray-300"]};
+    background-color : ${({ theme }) => theme.colors['--color-blue-500']};
     align-items : center;
     justify-content : center;
     border-radius : 6px;
@@ -44,9 +44,9 @@ function CreatePageHeader({ title = "", onClose = () => { } }) {
                 <HeaderText theme={theme}>{title}</HeaderText>
                 <CloseButtonContainer theme={theme}>
                     <Button
-                        backgroundColor="--color-gray-300"
+                        backgroundColor='--color-blue-500'
                         buttonPress={onClose}
-                        color={theme.colors["--color-gray-600"]}
+                        color={theme.colors['--default-shade-white']}
                         title="Close"
                         font='--text-sm-bold'
                     />
