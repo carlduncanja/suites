@@ -14,7 +14,6 @@ import ConfirmationComponent from "../ConfirmationComponent";
 import {useModal} from "react-native-modalfy";
 import LoadingComponent from "../LoadingComponent";
 import Footer from '../common/Page/Footer';
-import FieldContainer from '../common/FieldContainerComponent';
 
 
 const InputWrapper = styled.View`
@@ -166,7 +165,6 @@ function UserDetailsComponent({user, onUserUpdated = () => {}, onResetPassword =
         <>
             <>
                 <Row>
-                <FieldContainer maxWidth='50%'>
                     <Record
                         recordValue={userFields['first_name']}
                         recordTitle='First Name'
@@ -175,9 +173,6 @@ function UserDetailsComponent({user, onUserUpdated = () => {}, onResetPassword =
                         onClearValue={onFieldChange('first_name')}
                     />
 
-                </FieldContainer>
-
-                <FieldContainer maxWidth='50%'>
                     <Record
                         recordValue={userFields['last_name']}
                         recordTitle='Last Name'
@@ -185,13 +180,9 @@ function UserDetailsComponent({user, onUserUpdated = () => {}, onResetPassword =
                         onRecordUpdate={onFieldChange('last_name')}
                         onClearValue={onFieldChange('last_name')}
                     />
-
-                </FieldContainer>
                 </Row>
 
                 <Row>
-                    <FieldContainer maxWidth='50%'>
-
                     <Record
                         recordValue={userFields['email']}
                         recordTitle='Email'
@@ -199,13 +190,10 @@ function UserDetailsComponent({user, onUserUpdated = () => {}, onResetPassword =
                         onRecordUpdate={onFieldChange('email')}
                         onClearValue={onFieldChange('email')}
                     />
-                    </FieldContainer>
 
                     {
                         isEditMode
-                            ? 
-                            <FieldContainer maxWidth='50%'>
-                            <InputWrapper>
+                            ? <InputWrapper>
                                 <InputLabelComponent label={"Role"}/>
                                 <OptionsField
                                     text={userFields['role'].name}
@@ -221,10 +209,7 @@ function UserDetailsComponent({user, onUserUpdated = () => {}, onResetPassword =
                                     )}
                                 />
                             </InputWrapper>
-                            </FieldContainer>
-                            : 
-                            
-                            <Record
+                            : <Record
                                 recordValue={userFields['role'].name}
                                 recordTitle='Role'
                             />
