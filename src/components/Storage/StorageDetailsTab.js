@@ -296,7 +296,7 @@ function StorageDetailsTab({
                 /> :
                 <Record
                         recordTitle="Categories"
-                        recordValue={categories.map(x => x.name).join(', ')}
+                        recordValue={categories.length > 0 ? categories.map(x => x.name).join(', ') : '--'}
                         flex={0.8}
                     />
                 }
