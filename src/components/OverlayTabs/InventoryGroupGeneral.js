@@ -169,7 +169,7 @@ function InventoryGroupGeneral({
                     useTextArea={true}
                     editMode={isEditMode}
                     editable={true}
-                    flex={0.8}
+                    flex={1}
                 />
 
             </Row>
@@ -187,6 +187,8 @@ function InventoryGroupGeneral({
                     onClear={() => { setCategorySearchValue('') }}
                     handlePopovers={() => { }}
                     isPopoverOpen={true}
+                    boxDirection={'column'}
+                    boxAlign={''}
                 /> :
                 <Record
                         recordTitle="Categories"
