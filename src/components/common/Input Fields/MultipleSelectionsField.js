@@ -24,8 +24,9 @@ const InputFieldWrapper = styled.View`
 
 const InputFieldContainer = styled.View`
     width : 100%;
-    flex-direction: row;
-    align-items: center;
+    flex-direction: ${({boxDirection}) => boxDirection};
+    align-items: ${({boxAlign}) => boxAlign};
+    height: 65px;
 `;
 
 const TextInputWrapper = styled.View`
@@ -58,7 +59,9 @@ function MultipleSelectionsField({
     isPopoverOpen,
     hasError = false,
     height,
-    setOpen = () => {}
+    setOpen = () => {},
+    boxDirection = 'row',
+    boxAlign='center'
 }) {
 
     // console.log("Category options: ", options)
@@ -90,7 +93,7 @@ function MultipleSelectionsField({
 
     return (
         <InputFieldWrapper>
-            <InputFieldContainer>
+            <InputFieldContainer boxDirection={boxDirection} boxAlign={boxAlign}>
 
                 {
                     label && <InputLabelComponent label={label} />
@@ -143,7 +146,7 @@ function MultipleSelectionsField({
 
                 {isDisplay && isPopoverOpen &&
 
-                    <View style={[styles.menuOptionsContainer, {height: height} ]}>
+                    <View style={[styles.menuOptionsContainer, {height: height}, {top: boxDirection === 'column' ? 66 : 32} ]}>
 
                         <SearchableContainer
                             options={options}
@@ -221,7 +224,7 @@ const styles = StyleSheet.create({
         // borderRadius: 4,
         paddingRight: 4,
         paddingLeft: 4,
-        height: 32,
+        height: 32
     },
     menuOptionsContainer: {
         position: 'absolute',
