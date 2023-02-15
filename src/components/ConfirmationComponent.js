@@ -52,7 +52,7 @@ const ModalText = styled.Text(({textColor = '--color-gray-600', theme, font = '-
     paddingLeft: messagePadding,
     paddingRight: messagePadding,
     textAlign: messageAlign,
-    marginTop: messageMargin
+    marginTop: messageMargin,
 }));
 
 const ClearIconContainer = styled.View`
@@ -247,8 +247,8 @@ function ConfirmationComponent({
                 </MessageWrapper>
 
                 <ButtonView theme={theme}>
-                    <ButtonContainer onPress={onCancel} theme={theme} background='--color-gray-300'>
-                        <ModalText theme={theme} textColor="--color-gray-500" font="--text-base-bold">{type === 'binary' ? 'NO' : 'CANCEL'}</ModalText>
+                    <ButtonContainer onPress={onCancel} theme={theme} background='--default-shade-white' borderColor='--color-blue-600'>
+                        <ModalText theme={theme} textColor="--color-blue-600" font="--text-base-bold">{type === 'binary' ? 'NO' : 'CANCEL'}</ModalText>
 
                     </ButtonContainer>
                     <ButtonContainer
