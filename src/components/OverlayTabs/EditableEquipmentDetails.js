@@ -46,7 +46,7 @@ const EditableEquipmentDetails = ({ fields, onFieldChange, handlePopovers, popov
             keyboardVerticalOffset={300}
             behavior={'padding'}
         >
-            <View style={{ height: 220, width: 620 }}>
+            <View style={{ height: 220, width: 620, marginLeft:20 }}>
                 <Row>
                     <LabelText theme={theme}>Description</LabelText>
                 </Row>
