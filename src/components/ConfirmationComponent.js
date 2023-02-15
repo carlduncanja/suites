@@ -52,7 +52,7 @@ const ModalText = styled.Text(({textColor = '--color-gray-600', theme, font = '-
     paddingLeft: messagePadding,
     paddingRight: messagePadding,
     textAlign: messageAlign,
-    marginTop: messageMargin
+    marginTop: messageMargin,
 }));
 
 const ClearIconContainer = styled.View`
@@ -242,7 +242,7 @@ function ConfirmationComponent({
             return (<>
                 <MessageWrapper>
                     <MessageContainer theme={theme}>
-                        <ModalText theme={theme} color="--color-gray-700" font="--confirm-message">{message}</ModalText>
+                        <ModalText messageAlign={textAlign} messagePadding={textPadding} theme={theme} color="--color-gray-700" font="--confirm-message">{message}</ModalText>
                     </MessageContainer>
                 </MessageWrapper>
 
@@ -290,7 +290,7 @@ function ConfirmationComponent({
                 <>
                     <IconMessageContainer>
                         <IconContainer theme={theme}><TickIcon/></IconContainer>
-                        <ModalText theme={theme} textColor="--color-gray-800" font="--confirm-message"> {message || 'Completed Successfully!'} </ModalText>
+                        <ModalText  messageAlign={textAlign} messagePadding={textPadding} theme={theme} textColor="--color-gray-800" font="--confirm-message"> {message || 'Completed Successfully!'} </ModalText>
                     </IconMessageContainer>
 
                     <ButtonView>
