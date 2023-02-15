@@ -53,7 +53,7 @@ const Physicians = props => {
         },
         {
             name: 'Cases',
-            alignment: 'center'
+            alignment: 'flex-start'
         },
         {
             name: 'Status',

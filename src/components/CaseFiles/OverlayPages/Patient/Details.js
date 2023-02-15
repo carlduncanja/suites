@@ -25,6 +25,7 @@ import {PageContext} from '../../../../contexts/PageContext';
 import ConfirmationComponent from '../../../ConfirmationComponent';
 import {updatePatient} from '../../../../api/network';
 import {calculateBmi} from '../../../../helpers/calculations';
+import FieldContainer from '../../../common/FieldContainerComponent';
 
 const bmiScale = [
     {
@@ -462,36 +463,42 @@ const Details = ({
             <>
                 <Row>
                     {/* I concede; fields attributes not being instantiated like EVERYWHERE else so I give up. 'fields.<attribute>' || '<attribute>' defaulting it is */}
-                    <Record
-                        recordTitle="First Name"
-                        recordValue={defaultRecordValue(fields, 'firstName', firstName)}
-                        onClearValue={() => onFieldChange('firstName')('')}
-                        onRecordUpdate={onFieldChange('firstName')}
-                        editMode={isEditMode}
-                        editable={true}
-                    />
+                    <FieldContainer>
+                        <Record
+                            recordTitle="First Name"
+                            recordValue={defaultRecordValue(fields, 'firstName', firstName)}
+                            onClearValue={() => onFieldChange('firstName')('')}
+                            onRecordUpdate={onFieldChange('firstName')}
+                            editMode={isEditMode}
+                            editable={true}
+                            />
+                    </FieldContainer>
 
-                    <Record
-                        recordTitle="Middle Name"
-                        recordValue={defaultRecordValue(fields, 'middleName', middleName)}
-                        onClearValue={() => onFieldChange('middleName')('')}
-                        onRecordUpdate={onFieldChange('middleName')}
-                        editMode={isEditMode}
-                        editable={true}
-                    />
+                    <FieldContainer>
+                        <Record
+                            recordTitle="Middle Name"
+                            recordValue={defaultRecordValue(fields, 'middleName', middleName)}
+                            onClearValue={() => onFieldChange('middleName')('')}
+                            onRecordUpdate={onFieldChange('middleName')}
+                            editMode={isEditMode}
+                            editable={true}
+                        />
+                    </FieldContainer>
 
-                    <Record
-                        recordTitle="Surname"
-                        recordValue={defaultRecordValue(fields, 'surname', surname)}
-                        onClearValue={() => onFieldChange('surname')('')}
-                        onRecordUpdate={onFieldChange('surname')}
-                        editMode={isEditMode}
-                        editable={true}
-                    />
+                    <FieldContainer>
+                        <Record
+                            recordTitle="Surname"
+                            recordValue={defaultRecordValue(fields, 'surname', surname)}
+                            onClearValue={() => onFieldChange('surname')('')}
+                            onRecordUpdate={onFieldChange('surname')}
+                            editMode={isEditMode}
+                            editable={true}
+                        />
+                    </FieldContainer>
                 </Row>
 
                 <Row>
-
+                <FieldContainer>
                     <Record
                         recordTitle="Height (cm)"
                         recordValue={defaultRecordValue(fields, 'height', height)}
@@ -501,7 +508,9 @@ const Details = ({
                         editable={true}
                         keyboardType="decimal-pad"
                     />
+                </FieldContainer>
 
+                <FieldContainer>
                     <Record
                         recordTitle="Weight (kg)"
                         recordValue={defaultRecordValue(fields, 'weight', weight)}
@@ -511,7 +520,9 @@ const Details = ({
                         editable={true}
                         keyboardType="decimal-pad"
                     />
+                </FieldContainer>
 
+                <FieldContainer>
                     <ContentResponsiveRecord
                         recordTitle="BMI"
                         content={(
@@ -523,7 +534,7 @@ const Details = ({
                         )}
                         handleRecordPress={() => handleBMIPress(bmi)}
                     />
-
+                </FieldContainer>
                     {/* <TouchableOpacity
                         style={styles.rowItem}
                         activeOpactiy={1}
@@ -539,6 +550,7 @@ const Details = ({
                 </Row>
 
                 <Row>
+                <FieldContainer>
                     <Record
                         recordTitle="Date of Birth"
                         recordValue={isEditMode ? defaultRecordValue(fields, 'dob', dob) : (dateOfBirth || '--')}
@@ -549,6 +561,9 @@ const Details = ({
                         onClearValue={() => onFieldChange('dob')('')}
                         onRecordUpdate={date => onFieldChange('dob')(date)}
                     />
+                </FieldContainer>
+
+                <FieldContainer>
                     <Record
                         recordTitle="TRN"
                         recordValue={defaultRecordValue(fields, 'trn', trn)}
@@ -561,6 +576,9 @@ const Details = ({
                         editable={true}
                         keyboardType="number-pad"
                     />
+                </FieldContainer>
+
+                <FieldContainer>
                     <Record
                         recordTitle="Gender"
                         recordValue={defaultRecordValue(fields, 'gender', gender)}
@@ -575,9 +593,12 @@ const Details = ({
                             </MenuOptions>
                         )}
                     />
+                </FieldContainer>
+
                 </Row>
                     {/*here*/}
                 <Row>
+                <FieldContainer>
                     <Record
                         recordTitle="Passport"
                         recordValue={defaultRecordValue(fields, 'passport', passport)}
@@ -590,6 +611,9 @@ const Details = ({
                         editable={true}
                         keyboardType="number-pad"
                     />
+                </FieldContainer>
+                
+                <FieldContainer>
 
                     <Record
                         recordTitle="National ID"
@@ -602,7 +626,10 @@ const Details = ({
                         editMode={isEditMode}
                         editable={true}
                         keyboardType="number-pad"
-                    />
+                        />
+                </FieldContainer>
+
+                <FieldContainer>
 
                     <Record
                         recordTitle="Other ID"
@@ -615,52 +642,62 @@ const Details = ({
                         editMode={isEditMode}
                         editable={true}
                         keyboardType="number-pad"
-                    />
+                        />
+                </FieldContainer>
+
                 </Row>
 
                 <Row>
-                    <Record
-                        recordTitle="Ethnicity"
-                        recordValue={defaultRecordValue(fields, 'ethnicity', ethnicity)}
-                        editMode={isEditMode}
-                        editable={true}
-                        useDropdown={true}
-                        onRecordUpdate={onFieldChange('ethnicity')}
-                        options={(
-                            <MenuOptions>
-                                <MenuOption value="Black / African American" text="Black / African American"/>
-                                <MenuOption value="White / Caucasian" text="White / Caucasian"/>
-                                <MenuOption value="Indian" text="Indian"/>
-                                <MenuOption value="Asian" text="Asian"/>
-                                <MenuOption value="Hispanic" text="Hispanic"/>
-                                <MenuOption value="Other" text="Other"/>
-                            </MenuOptions>
-                        )}
-                    />
-                    <Record
-                        recordTitle="Blood Type"
-                        recordValue={defaultRecordValue(fields, 'bloodType', bloodType)}
-                        editMode={isEditMode}
-                        editable={true}
-                        useDropdown={true}
-                        onRecordUpdate={onFieldChange('bloodType')}
-                        options={(
-                            <MenuOptions>
-                                <MenuOption value="A+" text="A+"/>
-                                <MenuOption value="A-" text="A-"/>
-                                <MenuOption value="B+" text="B+"/>
-                                <MenuOption value="B-" text="B-"/>
-                                <MenuOption value="O+" text="O+"/>
-                                <MenuOption value="O-" text="O-"/>
-                                <MenuOption value="AB+" text="AB+"/>
-                                <MenuOption value="AB-" text="AB-"/>
-                            </MenuOptions>
-                        )}
-                    />
-                    <PersonalRecord
-                        recordTitle="Next Visit"
-                        recordValue={formatDate(nextVisit, 'MMM DD, YYYY') || 'n/a'}
-                    />
+                    <FieldContainer>
+                        <Record
+                            recordTitle="Ethnicity"
+                            recordValue={defaultRecordValue(fields, 'ethnicity', ethnicity)}
+                            editMode={isEditMode}
+                            editable={true}
+                            useDropdown={true}
+                            onRecordUpdate={onFieldChange('ethnicity')}
+                            options={(
+                                <MenuOptions>
+                                    <MenuOption value="Black / African American" text="Black / African American"/>
+                                    <MenuOption value="White / Caucasian" text="White / Caucasian"/>
+                                    <MenuOption value="Indian" text="Indian"/>
+                                    <MenuOption value="Asian" text="Asian"/>
+                                    <MenuOption value="Hispanic" text="Hispanic"/>
+                                    <MenuOption value="Other" text="Other"/>
+                                </MenuOptions>
+                            )}
+                            />
+                    </FieldContainer>
+
+                    <FieldContainer>
+                        <Record
+                            recordTitle="Blood Type"
+                            recordValue={defaultRecordValue(fields, 'bloodType', bloodType)}
+                            editMode={isEditMode}
+                            editable={true}
+                            useDropdown={true}
+                            onRecordUpdate={onFieldChange('bloodType')}
+                            options={(
+                                <MenuOptions>
+                                    <MenuOption value="A+" text="A+"/>
+                                    <MenuOption value="A-" text="A-"/>
+                                    <MenuOption value="B+" text="B+"/>
+                                    <MenuOption value="B-" text="B-"/>
+                                    <MenuOption value="O+" text="O+"/>
+                                    <MenuOption value="O-" text="O-"/>
+                                    <MenuOption value="AB+" text="AB+"/>
+                                    <MenuOption value="AB-" text="AB-"/>
+                                </MenuOptions>
+                            )}
+                            />
+                    </FieldContainer>
+
+                    <FieldContainer>
+                        <PersonalRecord
+                            recordTitle="Next Visit"
+                            recordValue={formatDate(nextVisit, 'MMM DD, YYYY') || 'n/a'}
+                        />
+                    </FieldContainer>
                 </Row>
             </>
             <Divider/>
@@ -668,75 +705,87 @@ const Details = ({
                 <Row>
                     {
                         isEditMode ? (
-                            <Record
-                                recordTitle="Cell Phone Number"
-                                recordValue={editCellPhoneValue}
-                                onClearValue={() => handlePhoneChange('', 'cell')}
-                                onRecordUpdate={value => {
-                                    const val = handleNumberValidation(value, 10);
-                                    if (val || val === '') handlePhoneChange(value, 'cell');
-                                }}
-                                editMode={isEditMode}
-                                editable={true}
-                                keyboardType="number-pad"
-                            />
+                            <FieldContainer>
+                                <Record
+                                    recordTitle="Cell Phone Number"
+                                    recordValue={editCellPhoneValue}
+                                    onClearValue={() => handlePhoneChange('', 'cell')}
+                                    onRecordUpdate={value => {
+                                        const val = handleNumberValidation(value, 10);
+                                        if (val || val === '') handlePhoneChange(value, 'cell');
+                                    }}
+                                    editMode={isEditMode}
+                                    editable={true}
+                                    keyboardType="number-pad"
+                                />
+                            </FieldContainer>
                         ) : (
-                            <ResponsiveRecord
-                                recordTitle="Cell Phone Number"
-                                isPhone={true}
-                                recordValue={formatPhoneNumber(cellPhoneRecordValue)}
-                                handleRecordPress={() => {
-                                }}
-                            />
+                            <FieldContainer>
+                                <ResponsiveRecord
+                                    recordTitle="Cell Phone Number"
+                                    isPhone={true}
+                                    recordValue={formatPhoneNumber(cellPhoneRecordValue)}
+                                    handleRecordPress={() => {
+                                    }}
+                                />
+                            </FieldContainer>
                         )
                     }
 
                     {
                         isEditMode ? (
-                            <Record
-                                recordTitle="Home Phone Number"
-                                recordValue={editHomePhoneValue}
-                                onClearValue={() => handlePhoneChange('', 'home')}
-                                onRecordUpdate={value => {
-                                    const val = handleNumberValidation(value, 10);
-                                    if (val || val === '') handlePhoneChange(value, 'home');
-                                }}
-                                editMode={isEditMode}
-                                editable={true}
-                                keyboardType="number-pad"
-                            />
+                            <FieldContainer>
+                                <Record
+                                    recordTitle="Home Phone Number"
+                                    recordValue={editHomePhoneValue}
+                                    onClearValue={() => handlePhoneChange('', 'home')}
+                                    onRecordUpdate={value => {
+                                        const val = handleNumberValidation(value, 10);
+                                        if (val || val === '') handlePhoneChange(value, 'home');
+                                    }}
+                                    editMode={isEditMode}
+                                    editable={true}
+                                    keyboardType="number-pad"
+                                />
+                            </FieldContainer>
                         ) : (
-                            <ResponsiveRecord
-                                recordTitle="Home Phone Number"
-                                isPhone={true}
-                                recordValue={formatPhoneNumber(homePhoneRecordValue)}
-                                handleRecordPress={() => {
-                                }}
-                            />
+                            <FieldContainer>
+                                <ResponsiveRecord
+                                    recordTitle="Home Phone Number"
+                                    isPhone={true}
+                                    recordValue={formatPhoneNumber(homePhoneRecordValue)}
+                                    handleRecordPress={() => {
+                                    }}
+                                />
+                            </FieldContainer>
                         )
                     }
 
                     {
                         isEditMode ? (
-                            <Record
-                                recordTitle="Work Phone Number"
-                                recordValue={editWorkPhoneValue}
-                                onClearValue={() => handlePhoneChange('', 'work')}
-                                onRecordUpdate={value => {
-                                    const val = handleNumberValidation(value, 10);
-                                    if (val || val === '') handlePhoneChange(value, 'work');
-                                }}
-                                editMode={isEditMode}
-                                editable={true}
-                                keyboardType="number-pad"
-                            />
+                            <FieldContainer>
+                                <Record
+                                    recordTitle="Work Phone Number"
+                                    recordValue={editWorkPhoneValue}
+                                    onClearValue={() => handlePhoneChange('', 'work')}
+                                    onRecordUpdate={value => {
+                                        const val = handleNumberValidation(value, 10);
+                                        if (val || val === '') handlePhoneChange(value, 'work');
+                                    }}
+                                    editMode={isEditMode}
+                                    editable={true}
+                                    keyboardType="number-pad"
+                                />
+                            </FieldContainer>
                         ) : (
-                            <ResponsiveRecord
-                                recordTitle="Work Phone Number"
-                                recordValue={formatPhoneNumber(workPhoneRecordValue)}
-                                handleRecordPress={() => {
-                                }}
-                            />
+                            <FieldContainer>
+                                <ResponsiveRecord
+                                    recordTitle="Work Phone Number"
+                                    recordValue={formatPhoneNumber(workPhoneRecordValue)}
+                                    handleRecordPress={() => {
+                                    }}
+                                />
+                            </FieldContainer>
                         )
                     }
                 </Row>
@@ -744,6 +793,7 @@ const Details = ({
                 <Row>
                     {
                         isEditMode ? (
+                            <FieldContainer>
                             <Record
                                 recordTitle="Primary Email"
                                 recordValue={editPrimaryEmailValue}
@@ -754,7 +804,9 @@ const Details = ({
                                 keyboardType="email-address"
                                 autoCapitalize="none"
                             />
+                            </FieldContainer>
                         ) : (
+                            <FieldContainer>
                             <ResponsiveRecord
                                 recordTitle="Primary Email"
                                 isEmail={true}
@@ -762,11 +814,13 @@ const Details = ({
                                 handleRecordPress={() => {
                                 }}
                             />
+                            </FieldContainer>
                         )
                     }
 
                     {
                         isEditMode ? (
+                            <FieldContainer>
                             <Record
                                 recordTitle="Alternate Email"
                                 recordValue={editOtherEmailValue}
@@ -777,18 +831,22 @@ const Details = ({
                                 keyboardType="email-address"
                                 autoCapitalize="none"
                             />
+                            </FieldContainer>
                         ) : (
-                            <ResponsiveRecord
-                                recordTitle="Alternate Email"
-                                recordValue={otherEmailRecordValue}
-                                handleRecordPress={() => {
-                                }}
-                            />
+                            <FieldContainer>
+                                <ResponsiveRecord
+                                    recordTitle="Alternate Email"
+                                    recordValue={otherEmailRecordValue}
+                                    handleRecordPress={() => {
+                                    }}
+                                />
+                            </FieldContainer>
                         )
                     }
 
                     {
                         isEditMode ? (
+                            <FieldContainer>
                             <Record
                                 recordTitle="Work Email"
                                 recordValue={editWorkEmailValue}
@@ -799,14 +857,17 @@ const Details = ({
                                 keyboardType="email-address"
                                 autoCapitalize="none"
                             />
+                            </FieldContainer>
                         ) : (
-                            <ResponsiveRecord
-                                recordTitle="Work Email"
-                                isEmail={true}
-                                recordValue={workEmailRecordValue}
-                                handleRecordPress={() => {
-                                }}
-                            />
+                            <FieldContainer>
+                                <ResponsiveRecord
+                                    recordTitle="Work Email"
+                                    isEmail={true}
+                                    recordValue={workEmailRecordValue}
+                                    handleRecordPress={() => {
+                                    }}
+                                />
+                            </FieldContainer>
                         )
                     }
                 </Row>
@@ -815,41 +876,48 @@ const Details = ({
                     isEditMode ? (
                         addressValues?.map((item, index) => (
                             <Row key={index}>
-                                <View style={{flex: 2}}>
+                                    <FieldContainer>
+                                        <Record
+                                            recordTitle="Address 1"
+                                            recordValue={item?.line1}
+                                            onClearValue={() => updateAddress('', 'line1', item._id)}
+                                            onRecordUpdate={value => updateAddress(value, 'line1', item._id)}
+                                            editMode={isEditMode}
+                                            editable={true}
+                                        />
+                                    </FieldContainer>
+                                
+
+                                <FieldContainer>
                                     <Record
-                                        recordTitle="Address 1"
-                                        recordValue={item?.line1}
-                                        onClearValue={() => updateAddress('', 'line1', item._id)}
-                                        onRecordUpdate={value => updateAddress(value, 'line1', item._id)}
+                                        recordTitle="Address 2"
+                                        recordValue={item.line2}
+                                        onClearValue={() => updateAddress('', 'line2', item._id)}
+                                        onRecordUpdate={value => updateAddress(value, 'line2', item._id)}
                                         editMode={isEditMode}
                                         editable={true}
                                     />
-                                </View>
-
-                                <Record
-                                    recordTitle="Address 2"
-                                    recordValue={item.line2}
-                                    onClearValue={() => updateAddress('', 'line2', item._id)}
-                                    onRecordUpdate={value => updateAddress(value, 'line2', item._id)}
-                                    editMode={isEditMode}
-                                    editable={true}
-                                />
+                                </FieldContainer>
                             </Row>
                         ))
                     ) : (
                         addresses?.map((item, index) => (
                             <Row key={index}>
                                 <View style={{ flex: 2 }}>
-                                    <PersonalRecord
-                                        recordTitle="Address 1"
-                                        recordValue={item?.line1}
-                                    />
+                                    <FieldContainer>
+                                        <PersonalRecord
+                                            recordTitle="Address 1"
+                                            recordValue={item?.line1}
+                                        />
+                                    </FieldContainer>
                                 </View>
 
-                                <PersonalRecord
-                                    recordTitle="Address 2"
-                                    recordValue={item?.line2}
-                                />
+                                <FieldContainer>
+                                    <PersonalRecord
+                                        recordTitle="Address 2"
+                                        recordValue={item?.line2}
+                                    />
+                                </FieldContainer>
                             </Row>
                         ))
                     )
@@ -864,49 +932,57 @@ const Details = ({
                             return (
                                 <React.Fragment key={index}>
                                     <Row>
-                                        <Record
-                                            recordTitle="Emergency Contact Name"
-                                            recordValue={name}
-                                            onClearValue={() => handleEmergencyChange('', 'name', index)}
-                                            onRecordUpdate={value => handleEmergencyChange(value, 'name', index)}
-                                            editMode={isEditMode}
-                                            editable={true}
-                                        />
+                                        <FieldContainer>
+                                            <Record
+                                                recordTitle="Emergency Contact Name"
+                                                recordValue={name}
+                                                onClearValue={() => handleEmergencyChange('', 'name', index)}
+                                                onRecordUpdate={value => handleEmergencyChange(value, 'name', index)}
+                                                editMode={isEditMode}
+                                                editable={true}
+                                            />
+                                        </FieldContainer>
 
-                                        <Record
-                                            recordTitle="Emergency Contact Relation"
-                                            recordValue={relation}
-                                            onClearValue={() => handleEmergencyChange('', 'relation', index)}
-                                            onRecordUpdate={value => handleEmergencyChange(value, 'relation', index)}
-                                            editMode={isEditMode}
-                                            editable={true}
-                                        />
+                                        <FieldContainer>
+                                            <Record
+                                                recordTitle="Emergency Contact Relation"
+                                                recordValue={relation}
+                                                onClearValue={() => handleEmergencyChange('', 'relation', index)}
+                                                onRecordUpdate={value => handleEmergencyChange(value, 'relation', index)}
+                                                editMode={isEditMode}
+                                                editable={true}
+                                            />
+                                        </FieldContainer>
                                     </Row>
 
                                     <Row>
-                                        <Record
-                                            recordTitle="Emergency Contact Phone"
-                                            recordValue={phone}
-                                            onClearValue={() => handleEmergencyChange('', 'phone', index)}
-                                            onRecordUpdate={value => {
-                                                const val = handleNumberValidation(value, 10);
-                                                if (val || val === '') handleEmergencyChange(value, 'phone', index);
-                                            }}
-                                            editMode={isEditMode}
-                                            editable={true}
-                                            keyboardType="number-pad"
-                                        />
+                                        <FieldContainer>
+                                            <Record
+                                                recordTitle="Emergency Contact Phone"
+                                                recordValue={phone}
+                                                onClearValue={() => handleEmergencyChange('', 'phone', index)}
+                                                onRecordUpdate={value => {
+                                                    const val = handleNumberValidation(value, 10);
+                                                    if (val || val === '') handleEmergencyChange(value, 'phone', index);
+                                                }}
+                                                editMode={isEditMode}
+                                                editable={true}
+                                                keyboardType="number-pad"
+                                            />
+                                        </FieldContainer>
 
-                                        <Record
-                                            recordTitle="Emergency Contact Email"
-                                            recordValue={email}
-                                            onClearValue={() => handleEmergencyChange('', 'email', index)}
-                                            onRecordUpdate={value => handleEmergencyChange(value, 'email', index)}
-                                            editMode={isEditMode}
-                                            editable={true}
-                                            keyboardType="email-address"
-                                            autoCapitalize="none"
-                                        />
+                                        <FieldContainer>
+                                            <Record
+                                                recordTitle="Emergency Contact Email"
+                                                recordValue={email}
+                                                onClearValue={() => handleEmergencyChange('', 'email', index)}
+                                                onRecordUpdate={value => handleEmergencyChange(value, 'email', index)}
+                                                editMode={isEditMode}
+                                                editable={true}
+                                                keyboardType="email-address"
+                                                autoCapitalize="none"
+                                            />
+                                        </FieldContainer>
                                     </Row>
                                 </React.Fragment>
                             );
@@ -916,19 +992,24 @@ const Details = ({
                             const {relation = '', email = '', phone = '', name = ''} = contact;
                             return (
                                 <Row key={index}>
-                                    <Record
-                                        recordTitle="Emergency Contact Name"
-                                        recordValue={`${name && relation ? `${name} (${relation})` : name || '--'}`}
-                                    />
+                                    <FieldContainer>
+                                        <Record
+                                            recordTitle="Emergency Contact Name"
+                                            recordValue={`${name && relation ? `${name} (${relation})` : name || '--'}`}
+                                        />
+                                    </FieldContainer>
 
-                                    <ResponsiveRecord
-                                        recordTitle="Emergency Contact Phone"
-                                        recordValue={formatPhoneNumber(phone)}
-                                        handleRecordPress={() => {
-                                        }}
-                                        isPhone={true}
-                                    />
-
+                                    <FieldContainer>
+                                        <ResponsiveRecord
+                                            recordTitle="Emergency Contact Phone"
+                                            recordValue={formatPhoneNumber(phone)}
+                                            handleRecordPress={() => {
+                                            }}
+                                            isPhone={true}
+                                        />
+                                    </FieldContainer>
+                                    
+                                    <FieldContainer>
                                     <ResponsiveRecord
                                         recordTitle="Emergency Contact Email"
                                         recordValue={email}
@@ -936,6 +1017,7 @@ const Details = ({
                                         }}
                                         isEmail={true}
                                     />
+                                    </FieldContainer>
                                 </Row>
                             );
                         })

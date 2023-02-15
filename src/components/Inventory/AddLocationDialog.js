@@ -249,7 +249,7 @@ import { css } from '@emotion/native';
         <>
             <Row>
 
-                <FieldContainer>
+                <FieldContainer maxWidth='100%'>
                     <SearchableOptionsField
                         label={"Storage"}
                         text={storageSearchValue}
@@ -349,7 +349,7 @@ import { css } from '@emotion/native';
             </Row>
 
             <Row>
-                <FieldContainer>
+                <FieldContainer maxWidth='50%'>
                     <InputField2
                         label={"In-Stock"}
                         onChangeText={ (value) => {
