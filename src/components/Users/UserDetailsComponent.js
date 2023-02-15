@@ -230,7 +230,7 @@ function UserDetailsComponent({user, onUserUpdated = () => {}, onResetPassword =
                             />
                     }
                 </Row>
-
+                <FieldContainer>
                 <Row>
                     <ResponsiveRecord
                         recordTitle="Password"
@@ -242,6 +242,7 @@ function UserDetailsComponent({user, onUserUpdated = () => {}, onResetPassword =
                         recordTitle='Password'
                     /> */}
                 </Row>
+                </FieldContainer>
 
                 {
                     isLoading && <LoadingComponent/>
