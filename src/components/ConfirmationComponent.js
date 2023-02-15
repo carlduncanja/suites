@@ -242,13 +242,13 @@ function ConfirmationComponent({
             return (<>
                 <MessageWrapper>
                     <MessageContainer theme={theme}>
-                        <ModalText theme={theme} color="--color-gray-700" font="--confirm-message">{message}</ModalText>
+                        <ModalText messageAlign={textAlign} messagePadding={textPadding} theme={theme} color="--color-gray-700" font="--confirm-message">{message}</ModalText>
                     </MessageContainer>
                 </MessageWrapper>
 
                 <ButtonView theme={theme}>
-                    <ButtonContainer onPress={onCancel} theme={theme} background='--default-shade-white' borderColor='--color-blue-600'>
-                        <ModalText theme={theme} textColor="--color-blue-600" font="--text-base-bold">{type === 'binary' ? 'NO' : 'CANCEL'}</ModalText>
+                    <ButtonContainer onPress={onCancel} theme={theme} background='--default-shade-white' borderColor='--color-blue-500'>
+                        <ModalText theme={theme} textColor="--color-blue-500" font="--text-base-bold">{type === 'binary' ? 'NO' : 'CANCEL'}</ModalText>
 
                     </ButtonContainer>
                     <ButtonContainer
@@ -290,7 +290,7 @@ function ConfirmationComponent({
                 <>
                     <IconMessageContainer>
                         <IconContainer theme={theme}><TickIcon/></IconContainer>
-                        <ModalText theme={theme} textColor="--color-gray-800" font="--confirm-message"> {message || 'Completed Successfully!'} </ModalText>
+                        <ModalText  messageAlign={textAlign} messagePadding={textPadding} theme={theme} textColor="--color-gray-800" font="--confirm-message"> {message || 'Completed Successfully!'} </ModalText>
                     </IconMessageContainer>
 
                     <ButtonView>
