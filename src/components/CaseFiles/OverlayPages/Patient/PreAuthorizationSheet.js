@@ -398,8 +398,6 @@ function PreAuthorizationSheet({
 
     const CloseButtonContainer = styled.TouchableOpacity`
     align-items: center;
-    padding: 10px;
-    padding-top : 12px;
     border-radius: 6px;
     border-width: 1px;
     background-color: #FFFFFFF;
@@ -407,6 +405,10 @@ function PreAuthorizationSheet({
     height: 40px;
     border-color:#0CB0E7;
     /* margin-left:5px; */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 `;
 
     const ButtonContainer = styled.TouchableOpacity`
@@ -561,7 +563,7 @@ function PreAuthorizationSheet({
                         </View>
 
                         <View style={{ flexDirection: 'row' }}>
-                            <View style={{ width: 532 }}>
+                            <View style={{ flex: 1}}>
                                 <InputField2
                                     labelWidth={98}
                                     value={`$ ${coverage.toString()}`}
@@ -582,7 +584,6 @@ function PreAuthorizationSheet({
 
                         <CloseButtonContainer theme={theme} background='--color-gray-300' onPress={() => handleClose()}>
                             <ModalText theme={theme} textColor="--accent-button" font="--text-base-bold">Close</ModalText>
-
                         </CloseButtonContainer>
 
                         {!appointmentDetails.preAuthStatus ?
@@ -727,11 +728,11 @@ const styles = StyleSheet.create({
         borderRadius: 8,
         paddingTop: 16,
         paddingLeft: 16,
-        paddingRight: 16,
+        paddingRight: 5,
         borderWidth: 1,
         marginTop: 10,
         marginBottom: 20,
-        backgroundColor: '#F7FAFC',
+        backgroundColor: '#F7FAFC'
     },
     iconContainer: {
         height: 40,
