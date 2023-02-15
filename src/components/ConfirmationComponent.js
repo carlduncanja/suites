@@ -249,7 +249,7 @@ function ConfirmationComponent({
                 <ButtonView theme={theme}>
                     <ButtonContainer onPress={onCancel} theme={theme} background='--default-shade-white' borderColor='--color-blue-500'>
                         <ModalText theme={theme} textColor="--color-blue-500" font="--text-base-bold">{type === 'binary' ? 'NO' : 'CANCEL'}</ModalText>
-                       
+
                     </ButtonContainer>
                     <ButtonContainer
                         onPress={onAction}
