@@ -333,7 +333,9 @@ function TransferItemDialog({onCancel, onCreated, selectedLocation, variant}) {
 
             <Row zIndex={-1}>
 
-                <FieldContainer>
+                <FieldContainer 
+                maxWidth='100%'
+                >
                     <SearchableOptionsField
                         label={'Destination'}
                         text={storageSearchValue}
