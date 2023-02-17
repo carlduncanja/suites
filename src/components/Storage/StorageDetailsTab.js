@@ -264,25 +264,27 @@ function StorageDetailsTab({
                     useTextArea={true}
                     editMode={isEditMode}
                     editable={true}
-                    flex={0.8}
+                    flex={1}
                 />
             </Row>
 
             <Row>
                 <Record
                     recordTitle="Room Name"
-                    recordValue={fields.name}
+                    recordValue={fields.name === '' && !isEditMode ? '--' : fields.name}
                     editMode={isEditMode}
                     editable={true}
                     onRecordUpdate={onFieldChange('name')}
                     onClearValue={() => onFieldChange('name')('')}
-                    flex={0.5}
+                    flex={1}
                 />
             </Row>
 
             <Row>
                 {isEditMode ? 
                     <MultipleSelectionsField
+                    boxDirection={'column'}
+                    boxAlign={''}
                     label={"Categories"}
                     value={categories.map(x=> x.name)}
                     onOptionsSelected={(value) => handleCategorySelected(value)}
@@ -297,7 +299,7 @@ function StorageDetailsTab({
                 <Record
                         recordTitle="Categories"
                         recordValue={categories.length > 0 ? categories.map(x => x.name).join(', ') : '--'}
-                        flex={0.8}
+                        flex={1}
                     />
                 }
                 

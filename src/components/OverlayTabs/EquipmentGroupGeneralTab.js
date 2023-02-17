@@ -136,7 +136,7 @@ function EquipmentGroupGeneralTab({ equipmentGroup = {}, equipments = [], suppli
             <Row>
                 <Record
                     recordTitle="Description"
-                    recordValue={description}
+                    recordValue={description || '--'}
                     flex={0.8}
 
                 />
