@@ -53,7 +53,7 @@ const Procedures = props => {
         },
         {
             name: 'Duration',
-            alignment: 'center',
+            alignment: 'flex-start',
             flex: 1
         }
     ];
