@@ -331,7 +331,7 @@ function TransferItemDialog({onCancel, onCreated, selectedLocation, variant}) {
                 </FieldContainer>
             </Row>
 
-            <Row zIndex={-1}>
+            <Row zIndex={-1} >
 
                 <FieldContainer 
                 maxWidth='100%'
