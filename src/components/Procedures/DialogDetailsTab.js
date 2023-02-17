@@ -227,6 +227,7 @@ function DialogDetailsTab({onFieldChange, fields, handlePopovers, popoverList, e
                 <FieldContainer>
                     <InputField2
                         label="Procedure"
+                        procedure={true}
                         onChangeText={onFieldChange('name')}
                         value={fields.name}
                         onClear={() => onFieldChange('name')('')}
@@ -234,6 +235,7 @@ function DialogDetailsTab({onFieldChange, fields, handlePopovers, popoverList, e
                         errorMessage="Name must be assigned"
                     />
                 </FieldContainer>
+
                 <FieldContainer>
                     <SearchableOptionsField
                         label="Physician"
