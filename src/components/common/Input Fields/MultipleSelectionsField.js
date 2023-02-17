@@ -26,7 +26,7 @@ const InputFieldContainer = styled.View`
     width : 100%;
     flex-direction: ${({boxDirection}) => boxDirection};
     align-items: ${({boxAlign}) => boxAlign};
-    height: 65px;
+    height: 30px;
 `;
 
 const TextInputWrapper = styled.View`
