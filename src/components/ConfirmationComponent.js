@@ -306,7 +306,7 @@ function ConfirmationComponent({
                 <>
                     <IconMessageContainer>
                         <IconContainer theme={theme}><ErrorIcon/></IconContainer>
-                        <ModalText theme={theme} textColor="--color-gray-800" font="--confirm-message">{message || 'There was an issue performing this action.'}</ModalText>
+                        <ModalText messageAlign={textAlign} messagePadding={textPadding} theme={theme} textColor="--color-gray-800" font="--confirm-message">{message || 'There was an issue performing this action.'}</ModalText>
                     </IconMessageContainer>
                     <ButtonView>
                         <ButtonContainer onPress={onCancel} theme={theme} background="--color-blue-500" fullWidth={true}>
