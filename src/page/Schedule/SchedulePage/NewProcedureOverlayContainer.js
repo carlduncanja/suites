@@ -179,17 +179,16 @@ function NewProcedureOverlayContainer({ appointment = {}, editMode = false, pass
         setErrors(true)
     }
 
-    const addProcedureAppointment = (caseId, procedureAppointment) => {
-        addProcedureAppointmentCall(caseId, procedureAppointment)
+    const addProcedureAppointment = async (caseId, procedureAppointment) => {
+        // here
+        await addProcedureAppointmentCall(caseId, procedureAppointment)
             .then(data => {
                 handleConfirm()
             })
-            .catch(
-                err => {
-                    console.log(err)
-                    hanadleErrorModal()
-                }
-            )
+            .catch(res => {
+                
+                hanadleErrorModal(res?.response?.data[0]?.message)
+            })
     }
 
     const getCaseData = async (patientID) => {
@@ -211,6 +210,9 @@ function NewProcedureOverlayContainer({ appointment = {}, editMode = false, pass
         let patientId = patientValue._id
         let procedure = caseFileData.caseProcedures[0]
         let caseId=patientCase[0]._id
+        procedure.staff = caseFileData.staff
+        procedure.patient = patientCase[0].patient
+
         addProcedureAppointment(caseId,procedure)
     }
 
@@ -394,12 +396,13 @@ function NewProcedureOverlayContainer({ appointment = {}, editMode = false, pass
     }
 
 
-    const hanadleErrorModal = () => {
-
+    const hanadleErrorModal = (error='') => {
         modal.openModal(
             'ConfirmationModal',
             {
                 content: <ConfirmationComponent
+                    textPadding={15}
+                    message={error}
                     isError={true}
                     isEditUpdate={false}
                     onCancel={() => modal.closeModals('ConfirmationModal')}
@@ -415,7 +418,6 @@ function NewProcedureOverlayContainer({ appointment = {}, editMode = false, pass
     }
 
     const handleConfirm = () => {
-        console.log("just a test", errors)
         modal.openModal('ConfirmationModal',
             {
                 content: <ConfirmationComponent
