@@ -7,7 +7,7 @@ import DropdownInputField from '../common/Input Fields/DropdownInputField';
 import InputUnitField from '../common/Input Fields/InputUnitFields';
 import SearchableOptionsField from '../common/Input Fields/SearchableOptionsField';
 import Row from '../common/Row';
-import {getPhysicians, getTheatres, getProcedures, getCategories} from '../../api/network';
+import {getPhysicians, getTheatres, getProcedures, getCategories, createPhysician} from '../../api/network';
 import OptionSearchableField from '../common/InputFields/OptionSearchableField';
 import OptionsField from '../common/Input Fields/OptionsField';
 import MultipleSelectionsField from '../common/Input Fields/MultipleSelectionsField';
@@ -44,12 +44,6 @@ function DialogDetailsTab({onFieldChange, fields, handlePopovers, popoverList, e
 
     // Handle physicians search
     useEffect(() => {
-        if (!searchValue) {
-            // empty search values and cancel any out going request.
-            setSearchResult([]);
-            if (searchQuery.cancel) searchQuery.cancel();
-            return;
-        }
 
         // wait 300ms before search. cancel any prev request before executing current.
 
@@ -115,17 +109,19 @@ function DialogDetailsTab({onFieldChange, fields, handlePopovers, popoverList, e
         getPhysicians(searchValue, 5)
             .then((physicianResult = {}) => {
                 const {data = [], pages = 0} = physicianResult;
-                const results = data.map(item => ({
-                    name: `Dr. ${item.surname}`,
-                    ...item
-                }));
-                console.log('Results: ', results);
-                setSearchResult(results || []);
+                const container =[];
+                const results = data.map(item => 
+                    {
+                        container.push(`Dr. ${item.surname}`)
+                    });
+                setSearchResult(container || []);
+                console.log("resultssss", container)
             })
+            //`Dr. ${item.surname}`
             .catch(error => {
                 // TODO handle error
-                console.log('failed to get theatres');
-                setSearchValue([]);
+                console.log('failed to get physicians');
+                setSearchResult([]);
             });
     };
 
@@ -160,6 +156,60 @@ function DialogDetailsTab({onFieldChange, fields, handlePopovers, popoverList, e
             });
     };
 
+    const handlePhysicianSelected = (checkPhysicians) => {
+        const physicianIds = [];
+        checkPhysicians.map((name) => {
+            const value = searchValue.find(item => item.name[0] === name[0]);
+            value && physicianIds.push(value._id);
+        })
+        onFieldChange('physicians')(physicianIds)
+    }
+
+
+    const createnewPhysician = (name) => {
+        if(!name) return;
+        console.log("nameeeeeeee", name)
+        createPhysician({ firstName: " ", surname: name})
+            .then(_ => {
+                searchQuery([]);
+                setSearchValue('');
+                fetchPhysicians();
+                modal.openModal('ConfirmationModal', {
+                    content: <ConfirmationComponent
+                        isEditUpdate={false}
+                        isError={false}
+                        onCancel={() => {
+                            modal.closeModals('ConfirmationModal');
+                        }}
+                        onAction={() => {
+                            modal.closeModals('ConfirmationModal');
+                        }}
+                    />,
+                    onClose: () => {
+                        modal.closeModals('ConfirmationModal');
+                    },
+                });
+            })
+            .catch(error => {
+                modal.openModal('ConfirmationModal', {
+                    content: <ConfirmationComponent
+                        isEditUpdate={false}
+                        isError={true}
+                        onCancel={() => {
+                            modal.closeModals('ConfirmationModal');
+                        }}
+                        onAction={() => {
+                            modal.closeModals('ConfirmationModal');
+                        }}
+                    />,
+                    onClose: () => {
+                        modal.closeModals('ConfirmationModal');
+                    },
+                });
+                console.log(error);
+            })
+    }
+
     const handlePrice = price => {
         const updatedPrice = price.replace(/[^0-9.]/g, '');
         // console.log("Price: ", price.replace(/[^0-9.]/g, ""))
@@ -173,10 +223,8 @@ function DialogDetailsTab({onFieldChange, fields, handlePopovers, popoverList, e
     };
 
     const handlePhysician = value => {
-        const physician = value ? {
-            _id: value._id,
-            name: value.name
-        } : value;
+        console.log("i am phy", value)
+        const physician = [ '63ecffece7f6de1fd96a5ac6', '63ed000c5f6c3ae018247524'];
 
         if (value === undefined || null) {
             delete fields.physician;
@@ -186,8 +234,8 @@ function DialogDetailsTab({onFieldChange, fields, handlePopovers, popoverList, e
         }
 
         // setSearchValue()
-        setSearchResult([]);
-        setSearchQuery(undefined);
+       // setSearchResult([]);
+        //setSearchQuery(undefined);
     };
 
     const refPop = popoverList.filter(item => item.name === 'reference');
@@ -237,17 +285,17 @@ function DialogDetailsTab({onFieldChange, fields, handlePopovers, popoverList, e
                 </FieldContainer>
 
                 <FieldContainer>
-                    <SearchableOptionsField
+                    <MultipleSelectionsField
                         label="Physician"
-                        value={fields.physician}
-                        text={searchValue}
-                        oneOptionsSelected={item => handlePhysician(item)}
-                        onChangeText={value => setSearchValue(value)}
-                        onClear={handlePhysician}
+                        searchText={searchValue}
+                        createNew={() => createnewPhysician(searchValue)}
+                        onOptionsSelected={item => handlePhysician(item)}
+                        onSearchChangeText={(value )=> setSearchValue(value)}
+                        onClear={() => handlePhysician(" ")}
                         options={searchResults}
                         handlePopovers={() => {
-                        }}
-                        isPopoverOpen={searchQuery}
+                        }} 
+                        isPopoverOpen={true}
                         hasError={errors.physician}
                         errorMessage="Physician must be assigned"
                     />

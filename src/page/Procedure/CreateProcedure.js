@@ -203,7 +203,7 @@ function CreateProcedure({addProcedure, navigation, route}) {
             ...updatedFields,
             [fieldName]: value
         });
-
+        console.log("i am herrererer", fields)
         const updatedErrors = {...errors};
         delete updatedErrors[fieldName];
         console.log('Update error: ', errors);
@@ -290,7 +290,7 @@ function CreateProcedure({addProcedure, navigation, route}) {
 
             updatedFields = {
                 ...fields,
-                physician: fields.physician._id,
+                physician: fields.physician,
                 duration: parseInt(fields.duration),
                 supportedRooms: updatedLocations,
                 inventories: updatedConsumables,
@@ -380,6 +380,7 @@ function CreateProcedure({addProcedure, navigation, route}) {
     };
 
     const createProcedureCall = updatedFields => {
+        console.log("physician field test!", updatedFields.physician)
         const data = {
             name: updatedFields.name,
             duration: updatedFields.duration,
