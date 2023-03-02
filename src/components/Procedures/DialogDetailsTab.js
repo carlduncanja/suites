@@ -25,7 +25,7 @@ function DialogDetailsTab({onFieldChange, fields, handlePopovers, popoverList, e
     // Physicians Search
     const [searchValue, setSearchValue] = useState();
     const [searchResults, setSearchResult] = useState([]);
-    const [searchQuery, setSearchQuery] = useState({});
+    const [searchQuery, setSearchQuery] = useState([]);
 
     // Procedures Search
     const [searchProcedureValue, setSearchProcedureValue] = useState();
@@ -110,12 +110,21 @@ function DialogDetailsTab({onFieldChange, fields, handlePopovers, popoverList, e
             .then((physicianResult = {}) => {
                 const {data = [], pages = 0} = physicianResult;
                 const container =[];
+                const temp =[]
                 const results = data.map(item => 
                     {
-                        container.push(`Dr. ${item.surname}`)
+                        container.push(
+                           `Dr. ${item.surname}`
+                        )
+                        temp.push({
+                            name: `Dr. ${item.surname}`,
+                            ...item
+                        })
                     });
                 setSearchResult(container || []);
                 console.log("resultssss", container)
+                searchQuery.length == 0 && setSearchQuery(temp);
+
             })
             //`Dr. ${item.surname}`
             .catch(error => {
@@ -158,11 +167,13 @@ function DialogDetailsTab({onFieldChange, fields, handlePopovers, popoverList, e
 
     const handlePhysicianSelected = (checkPhysicians) => {
         const physicianIds = [];
-        checkPhysicians.map((name) => {
-            const value = searchValue.find(item => item.name[0] === name[0]);
-            value && physicianIds.push(value._id);
+        searchQuery.map((name) => {
+            if(name.name == checkPhysicians.slice(-1)[0]){
+                physicianIds.push(name._id);
+            }
         })
         onFieldChange('physicians')(physicianIds)
+        console.log("phy idssssssss!", physicianIds)
     }
 
 
@@ -224,7 +235,10 @@ function DialogDetailsTab({onFieldChange, fields, handlePopovers, popoverList, e
 
     const handlePhysician = value => {
         console.log("i am phy", value)
-        const physician = [ '63ecffece7f6de1fd96a5ac6', '63ed000c5f6c3ae018247524'];
+        const physician = value ? {
+            _id: value._id,
+            name: value.name
+        } : value;
 
         if (value === undefined || null) {
             delete fields.physician;
@@ -289,7 +303,7 @@ function DialogDetailsTab({onFieldChange, fields, handlePopovers, popoverList, e
                         label="Physician"
                         searchText={searchValue}
                         createNew={() => createnewPhysician(searchValue)}
-                        onOptionsSelected={item => handlePhysician(item)}
+                        onOptionsSelected={item => handlePhysicianSelected(item)}
                         onSearchChangeText={(value )=> setSearchValue(value)}
                         onClear={() => handlePhysician(" ")}
                         options={searchResults}
