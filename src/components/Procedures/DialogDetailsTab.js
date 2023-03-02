@@ -23,6 +23,7 @@ function DialogDetailsTab({onFieldChange, fields, handlePopovers, popoverList, e
     const {serviceFee = 0} = fields;
 
     // Physicians Search
+    const [physicians, setPhysicians] = useState([]);
     const [searchValue, setSearchValue] = useState();
     const [searchResults, setSearchResult] = useState([]);
     const [searchQuery, setSearchQuery] = useState([]);
@@ -38,7 +39,6 @@ function DialogDetailsTab({onFieldChange, fields, handlePopovers, popoverList, e
     const [categorySearchQuery, setCategorySearchQuery] = useState({});
 
     const [fee, setFee] = useState(serviceFee);
-    const [selectedPhysician, setSelectedPhysician] = useState();
 
     // ######
 
@@ -105,28 +105,31 @@ function DialogDetailsTab({onFieldChange, fields, handlePopovers, popoverList, e
         search();
     }, [categorySearchValue]);
 
+    const [physicianIdContianers, setPhysicianIdContainers] = useState([]);
+
     const fetchPhysicians = () => {
         getPhysicians(searchValue, 5)
             .then((physicianResult = {}) => {
                 const {data = [], pages = 0} = physicianResult;
                 const container =[];
                 const temp =[]
+                const physicianIds=[]
                 const results = data.map(item => 
                     {
                         container.push(
-                           `Dr. ${item.surname}`
+                            `Dr. ${item.surname}`
                         )
+                        physicianIds.push(item._id)
                         temp.push({
                             name: `Dr. ${item.surname}`,
                             ...item
                         })
                     });
                 setSearchResult(container || []);
-                console.log("resultssss", container)
-                searchQuery.length == 0 && setSearchQuery(temp);
+                setPhysicians(temp || []);
+                setPhysicianIdContainers(physicianIds)
 
             })
-            //`Dr. ${item.surname}`
             .catch(error => {
                 // TODO handle error
                 console.log('failed to get physicians');
@@ -167,15 +170,15 @@ function DialogDetailsTab({onFieldChange, fields, handlePopovers, popoverList, e
 
     const handlePhysicianSelected = (checkPhysicians) => {
         const physicianIds = [];
-        searchQuery.map((name) => {
-            if(name.name == checkPhysicians.slice(-1)[0]){
-                physicianIds.push(name._id);
-            }
+       
+        checkPhysicians.map((name) => {
+            const value = physicians.find(item => item.name === name);
+            value && physicianIds.push(value._id);
         })
+       
         onFieldChange('physicians')(physicianIds)
-        console.log("phy idssssssss!", physicianIds)
-    }
 
+    }
 
     const createnewPhysician = (name) => {
         if(!name) return;
@@ -303,7 +306,7 @@ function DialogDetailsTab({onFieldChange, fields, handlePopovers, popoverList, e
                         label="Physician"
                         searchText={searchValue}
                         createNew={() => createnewPhysician(searchValue)}
-                        onOptionsSelected={item => handlePhysicianSelected(item)}
+                        onOptionsSelected={(item) => handlePhysicianSelected(item)}
                         onSearchChangeText={(value )=> setSearchValue(value)}
                         onClear={() => handlePhysician(" ")}
                         options={searchResults}
