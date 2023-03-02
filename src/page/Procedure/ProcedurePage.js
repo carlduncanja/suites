@@ -29,7 +29,7 @@ function ProcedurePage({route, navigation}) {
     // const { isEditMode } = pageState;
 
     const {procedure, isOpenEditable, onUpdate} = route.params;
-
+    console.log("procedur information", procedure)
     const {
         _id = '',
         name,
@@ -37,7 +37,7 @@ function ProcedurePage({route, navigation}) {
         hasRecovery,
         duration,
         custom = false,
-        physician = {},
+        physicians = [],
     } = procedure;
 
     // ##### States
@@ -53,15 +53,13 @@ function ProcedurePage({route, navigation}) {
         duration,
         hasRecovery,
         custom,
-        physician: {
-            ...physician,
-            name: formatPhysician(physician)
-        }
+        physicians: physicians
+        
     });
 
     const [popoverList, setPopoverList] = useState([
         {
-            name: 'physician',
+            name: 'physicians',
             status: false
         }
     ]);
@@ -456,7 +454,7 @@ function ProcedurePage({route, navigation}) {
                 return false;
         }
     };
-    const physicianName = formatPhysician(physician);
+    const physicianName = formatPhysician(physicians);
 
     return (
         <PageContext.Provider value={{

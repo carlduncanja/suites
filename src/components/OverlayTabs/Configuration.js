@@ -15,6 +15,8 @@ import Row from '../common/Row';
 import TextArea from '../common/Input Fields/TextArea';
 import {PageContext} from '../../contexts/PageContext';
 import {formatPhysician} from "../../utils";
+import MultipleSelectionsField from '../common/Input Fields/MultipleSelectionsField';
+import FieldContainer from '../common/FieldContainerComponent';
 
 const Configuration = ({procedure, fields, onFieldChange, onDetailsUpdate}) => {
     const {pageState, setPageState} = useContext(PageContext);
@@ -30,14 +32,15 @@ const Configuration = ({procedure, fields, onFieldChange, onDetailsUpdate}) => {
         duration,
         hasRecovery,
         custom = false,
-        physician = {},
+        physicians = {},
         description
     } = procedure;
 
-    const {
-        firstName = '',
-        surname = ''
-    } = physician || {};
+    console.log("procedure dataaa", physicians)
+    // const {
+    //     firstName = '',
+    //     surname = ''
+    // } = physician || {};
 
     const BOOLOBJECT = {
         false: 'No',
@@ -48,13 +51,18 @@ const Configuration = ({procedure, fields, onFieldChange, onDetailsUpdate}) => {
     const [searchResults, setSearchResults] = useState([]);
     const [searchQuery, setSearchQuery] = useState({});
 
+
+    const [physiciansInfo, setPhysicians] = useState(procedure?.physicians || [])
+    const [physicianSearchValue, setPhysicianSearchValue] = useState();
+    const [physicianSearchResults, setPhysicianSearchResult] = useState([]);
+
     useEffect(() => {
-        if (!searchValue) {
-            // empty search values and cancel any out going request.
-            setSearchResults([]);
-            if (searchQuery.cancel) searchQuery.cancel();
-            return;
-        }
+        // if (!searchValue) {
+        //     // empty search values and cancel any out going request.
+        //     setSearchResults([]);
+        //     if (searchQuery.cancel) searchQuery.cancel();
+        //     return;
+        // }
 
         // wait 300ms before search. cancel any prev request before executing current.
 
@@ -74,11 +82,32 @@ const Configuration = ({procedure, fields, onFieldChange, onDetailsUpdate}) => {
         getPhysicians(searchValue, 5)
             .then(physicianResults => {
                 const {data = [], pages = 0} = physicianResults;
-                const refinedResults = data.map(item => ({
-                    name: `Dr. ${item.firstName} ${item.surname}`,
-                    ...item
-                }));
-                setSearchResults(refinedResults || []);
+                const container=[]
+                // const refinedResults = data.map(item => ({
+                //     name: `Dr. ${item.firstName} ${item.surname}`
+
+                //     container.push({
+                //         name: `Dr. ${item.surname}`,
+                //         ...item
+                //     })
+                    
+                // }));
+
+                const temp=[]
+                const results = data.map(item => 
+                    {
+                        container.push(
+                            `Dr. ${item.firstName} ${item.surname}`
+                        )
+                        
+                        temp.push({
+                            name: `Dr. ${item.firstName} ${item.surname}`,
+                            ...item
+                        })
+                    });
+                setSearchResults(container || []);
+                setPhysicians(temp||[])
+
             })
             .catch(error => {
                 // TODO handle error
@@ -89,9 +118,21 @@ const Configuration = ({procedure, fields, onFieldChange, onDetailsUpdate}) => {
 
     const [isUpdated, setUpdated] = useState(false);
 
+    const handlePhysicianSelected = (checkPhysicians) => {
+        const physicianIds = [];
+       
+        checkPhysicians.map((name) => {
+            const value = physicians.find(item => item.name === name);
+            value && physicianIds.push(value._id);
+        })
+       
+        onFieldChange('physicians')(physicianIds)
+
+    }
+
     const recovery = BOOLOBJECT[fields.hasRecovery];
     const customStatus = BOOLOBJECT[fields.custom];
-    const physicianName = formatPhysician(fields.physician);
+    const physicianName = formatPhysician(fields.physicians);
 
     useEffect(() => {
         baseStateRef.current = {
@@ -100,7 +141,7 @@ const Configuration = ({procedure, fields, onFieldChange, onDetailsUpdate}) => {
             duration,
             hasRecovery,
             custom,
-            physician
+            physicians
         };
         return () => {
             baseStateRef.current = {};
@@ -189,23 +230,27 @@ const Configuration = ({procedure, fields, onFieldChange, onDetailsUpdate}) => {
 
                 />
 
+                {isEditMode ? 
+                    <MultipleSelectionsField
+                    label={"Physicians"}
+                    value={fields?.['physicians']?.map(x=> x.name)}
+                    isPopoverOpen={true}
+                    options={searchResults}
+                    onOptionsSelected={(value) => handlePhysicianSelected(value)}
+                    onSearchChangeText={(value) => setSearchValue(value)}
+                    boxDirection={'column'}
+                    boxAlign={''}
+                    onClear={() => { setSearchValue('') }}
+                    handlePopovers={() => { }}
+                    
+                /> :
                 <Record
-                    recordTitle="Assigned to"
-                    recordValue={isEditMode ? fields.physician : physicianName}
-                    valueColor="--color-blue-600"
-                    editMode={isEditMode}
-                    editable={true}
-                    useSearchable={true}
-                    searchQuery={searchQuery}
-                    searchResults={searchResults}
-                    searchText={searchValue}
-                    onRecordUpdate={onFieldChange('physician')}
-                    onClearValue={() => {
-                        setSearchValue('');
-                    }}
-                    onSearchChange={value => setSearchValue(value)}
-                />
-
+                        recordTitle="physicians"
+                        recordValue={fields?.['physicians']?.map(x => x.name).join(', ')}
+                        flex={0.8}
+                    />
+                }   
+                
                 <Record
                     recordValue=" "
                 />
