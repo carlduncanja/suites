@@ -203,11 +203,12 @@ function CreateProcedure({addProcedure, navigation, route}) {
             ...updatedFields,
             [fieldName]: value
         });
-
         const updatedErrors = {...errors};
         delete updatedErrors[fieldName];
         console.log('Update error: ', errors);
         setErrors(updatedErrors);
+        console.log("i am herrererer", fields)
+
     };
 
     const onTabPress = newTab => {
@@ -216,6 +217,8 @@ function CreateProcedure({addProcedure, navigation, route}) {
             return;
         }
         setTabIndex(dialogTabs.indexOf(newTab));
+
+        console.log("field after tab", fields)
 
         // const newIndex = dialogTabs.findIndex( tab => tab === newTab)
         // if (newIndex === dialogTabs.length - 1)
@@ -245,8 +248,8 @@ function CreateProcedure({addProcedure, navigation, route}) {
 
     const validateProcedure = () => {
         let isValid = true;
-        const requiredFields = ['name', 'duration', 'physician'];
-
+        const requiredFields = ['name', 'duration', 'physicians'];
+        console.log("physician field here,", fields['physicians'])
         const errorObj = {...errors} || {};
 
         for (const requiredField of requiredFields) {
@@ -258,6 +261,7 @@ function CreateProcedure({addProcedure, navigation, route}) {
                 delete errorObj[requiredField];
             }
         }
+        console.log("procedure fields", fields)
 
         setErrors(errorObj);
         console.log('Error obj: ', errorObj);
@@ -287,10 +291,11 @@ function CreateProcedure({addProcedure, navigation, route}) {
                 equipment: item?._id,
                 amount: item?.amount
             })) || [];
-
+        
+            console.log("updated physician gereee", fields.physicians)
             updatedFields = {
                 ...fields,
-                physician: fields.physician._id,
+                physicians: fields.physicians,
                 duration: parseInt(fields.duration),
                 supportedRooms: updatedLocations,
                 inventories: updatedConsumables,
@@ -301,7 +306,7 @@ function CreateProcedure({addProcedure, navigation, route}) {
             // console.log("Updated consumables:" , updatedConsumables);
             // console.log("Updated Loations:" , updatedLocations);
             // console.log("Updated Equipments:" , updatedEquipments);
-            console.log('Fields: ', updatedFields);
+            console.log('updated Fields: ', updatedFields);
             createProcedureCall(updatedFields);
 
             // let isNameError = errorFields['name']
@@ -380,10 +385,11 @@ function CreateProcedure({addProcedure, navigation, route}) {
     };
 
     const createProcedureCall = updatedFields => {
+        console.log("physician field test!", updatedFields.physician)
         const data = {
             name: updatedFields.name,
             duration: updatedFields.duration,
-            physician: updatedFields.physician,
+            physicians: updatedFields.physicians,
             serviceFee: updatedFields.serviceFee,
             hasRecovery: updatedFields.hasRecovery,
             supportedRooms: updatedFields.supportedRooms,
@@ -391,7 +397,7 @@ function CreateProcedure({addProcedure, navigation, route}) {
             equipments: updatedFields.equipments,
             procedureReference: updatedFields.procedureReference
         };
-
+        console.log("procedure data !", data)
         createNewProcedure(data)
             .then(procedureData => {
                 addProcedure(procedureData);
