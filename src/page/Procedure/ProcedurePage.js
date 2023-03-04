@@ -304,7 +304,7 @@ function ProcedurePage({route, navigation}) {
     };
 
     const updateProcedureCall = updatedFields => {
-        // console.log("Fields: ", updatedFields);
+        console.log("updatedFields: ", updatedFields);
         updateProcedure(_id, updatedFields)
             .then(data => {
                 // getProcedures()

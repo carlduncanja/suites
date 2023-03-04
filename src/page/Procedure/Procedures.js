@@ -20,7 +20,7 @@ import AddIcon from '../../../assets/svg/addIcon';
 import {useNextPaginator, usePreviousPaginator, checkboxItemPress, selectAll, handleUnauthorizedError} from '../../helpers/caseFilesHelpers';
 
 import {setProcedures} from '../../redux/actions/proceduresActions';
-import {bulkUploadProcedureRequest, getProcedures, removeProcedures} from '../../api/network';
+import {bulkUploadProcedureRequest, getAllPhysicianById, getProcedures, removeProcedures} from '../../api/network';
 
 import {DISABLED_COLOR, LONG_PRESS_TIMER} from '../../const';
 import ConfirmationComponent from '../../components/ConfirmationComponent';
@@ -79,6 +79,8 @@ const Procedures = props => {
     const [selectedProcedures, setSelectedProcedures] = useState([]);
 
     const [pageSettingState, setPageSettingState] = useState({});
+
+    const [allPhysicians, setAllPhysicians]= useState([]);
 
 
     // const routeName = route.name;
@@ -239,17 +241,38 @@ const Procedures = props => {
         />
     );
 
-    const procedureItem = item => {
-        const {physician = {}} = item;
-        const {firstName = '', surname = ''} = physician;
-        const physicianName = firstName && surname ? `Dr. ${firstName} ${surname}` : 'Unassigned';
-        return (
-            <>
-                <RightBorderDataItem flex={1.5} fontStyle="--text-base-regular" color="--color-gray-800" text={item?.name}/>
-                <TouchableDataItem flex={1} fontStyle="--text-base-regular" text={`${physicianName}`} isDisabled={true}/>
-                <DataItem flex={1} fontStyle="--text-base-regular" align="center" color="--color-blue-600" text={`${item.duration || 1} hours`}/>
-            </>
-        );
+    const getdata =async(physicians) =>{
+        try {
+            await getAllPhysicianById({"ids": physicians}).then((info) => {
+                setAllPhysicians(info);
+                return info;
+            });
+        } catch (error) {
+            console.log("err", error)
+        }
+    }
+    const procedureItem = (item )=> {
+        const {physicians = []} = item;
+        console.log("i am hereee", physicians)
+        console.log('api data', {"ids": physicians})
+        //get physician data by id array 
+        getdata(physicians)
+        console.log("this is meeeeeee" , allPhysicians)
+        
+        // .then((info) => {
+        //     console.log("njndsjldsjl", info)
+        // })
+        //console.log("i am physicians data array heree bkankdnskjn", data);
+
+        // const {firstName = '', surname = ''} = physician;
+        // const physicianName = firstName && surname ? `Dr. ${firstName} ${surname}` : 'Unassigned';
+        // return (
+        //     <>
+        //         <RightBorderDataItem flex={1.5} fontStyle="--text-base-regular" color="--color-gray-800" text={item?.name}/>
+        //         <TouchableDataItem flex={1} fontStyle="--text-base-regular" text={`${physicianName}`} isDisabled={true}/>
+        //         <DataItem flex={1} fontStyle="--text-base-regular" align="center" color="--color-blue-600" text={`${item.duration || 1} hours`}/>
+        //     </>
+        // );
     };
 
     const openUploadProceduresModal = () => {

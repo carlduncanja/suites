@@ -10,7 +10,7 @@ import ColumnSection from '../common/ColumnSection';
 import FloatingActionButton from '../common/FloatingAction/FloatingActionButton';
 import ActionContainer from '../common/FloatingAction/ActionContainer';
 
-import {getPhysicians, updateProcedure} from '../../api/network';
+import {createPhysician, getPhysicians, updateProcedure} from '../../api/network';
 import Row from '../common/Row';
 import TextArea from '../common/Input Fields/TextArea';
 import {PageContext} from '../../contexts/PageContext';
@@ -25,18 +25,18 @@ const Configuration = ({procedure, fields, onFieldChange, onDetailsUpdate}) => {
     const baseStateRef = useRef();
     const modal = useModal();
 
-    console.log('Fields: ', fields);
+    console.log('Fields: hete ', fields);
 
     const {
         name,
         duration,
         hasRecovery,
         custom = false,
-        physicians = {},
+        physician = {},
         description
     } = procedure;
 
-    console.log("procedure dataaa", physicians)
+    console.log("procedure dataaa", physician)
     // const {
     //     firstName = '',
     //     surname = ''
@@ -52,7 +52,7 @@ const Configuration = ({procedure, fields, onFieldChange, onDetailsUpdate}) => {
     const [searchQuery, setSearchQuery] = useState({});
 
 
-    const [physiciansInfo, setPhysicians] = useState(procedure?.physicians || [])
+    const [physiciansInfo, setPhysicians] = useState(procedure?.physician || [])
     const [physicianSearchValue, setPhysicianSearchValue] = useState();
     const [physicianSearchResults, setPhysicianSearchResult] = useState([]);
 
@@ -83,17 +83,8 @@ const Configuration = ({procedure, fields, onFieldChange, onDetailsUpdate}) => {
             .then(physicianResults => {
                 const {data = [], pages = 0} = physicianResults;
                 const container=[]
-                // const refinedResults = data.map(item => ({
-                //     name: `Dr. ${item.firstName} ${item.surname}`
-
-                //     container.push({
-                //         name: `Dr. ${item.surname}`,
-                //         ...item
-                //     })
-                    
-                // }));
-
                 const temp=[]
+
                 const results = data.map(item => 
                     {
                         container.push(
@@ -104,9 +95,12 @@ const Configuration = ({procedure, fields, onFieldChange, onDetailsUpdate}) => {
                             name: `Dr. ${item.firstName} ${item.surname}`,
                             ...item
                         })
+
+                        console.log("123333",temp)
                     });
                 setSearchResults(container || []);
-                setPhysicians(temp||[])
+                setPhysicians(temp)
+                console.log("temp me", physiciansInfo)
 
             })
             .catch(error => {
@@ -120,11 +114,12 @@ const Configuration = ({procedure, fields, onFieldChange, onDetailsUpdate}) => {
 
     const handlePhysicianSelected = (checkPhysicians) => {
         const physicianIds = [];
-       
+       console.log("idsss", checkPhysicians)
         checkPhysicians.map((name) => {
-            const value = physicians.find(item => item.name === name);
+            const value = physiciansInfo.find(item => item.name === name);
             value && physicianIds.push(value._id);
         })
+        console.log("yessss", physicianIds)
        
         onFieldChange('physicians')(physicianIds)
 
@@ -141,7 +136,7 @@ const Configuration = ({procedure, fields, onFieldChange, onDetailsUpdate}) => {
             duration,
             hasRecovery,
             custom,
-            physicians
+            physician
         };
         return () => {
             baseStateRef.current = {};
@@ -152,6 +147,71 @@ const Configuration = ({procedure, fields, onFieldChange, onDetailsUpdate}) => {
         setFields(baseStateRef.current);
         // setUpdated(false);
     };
+
+
+    const createnewPhysician = (name) => {
+        if(!name) return;
+        console.log("nameeeeeeee", name)
+        createPhysician({ firstName: " ", surname: name})
+            .then(_ => {
+                searchQuery([]);
+                setSearchValue('');
+                fetchPhysicians();
+                modal.openModal('ConfirmationModal', {
+                    content: <ConfirmationComponent
+                        isEditUpdate={false}
+                        isError={false}
+                        onCancel={() => {
+                            modal.closeModals('ConfirmationModal');
+                        }}
+                        onAction={() => {
+                            modal.closeModals('ConfirmationModal');
+                        }}
+                    />,
+                    onClose: () => {
+                        modal.closeModals('ConfirmationModal');
+                    },
+                });
+            })
+            .catch(error => {
+                modal.openModal('ConfirmationModal', {
+                    content: <ConfirmationComponent
+                        isEditUpdate={false}
+                        isError={true}
+                        onCancel={() => {
+                            modal.closeModals('ConfirmationModal');
+                        }}
+                        onAction={() => {
+                            modal.closeModals('ConfirmationModal');
+                        }}
+                    />,
+                    onClose: () => {
+                        modal.closeModals('ConfirmationModal');
+                    },
+                });
+                console.log(error);
+            })
+    }
+
+    const handlePhysician = value => {
+        console.log("i am phy", value)
+        const physician = value ? {
+            _id: value._id,
+            name: value.name
+        } : value;
+
+        if (value === undefined || null) {
+            delete fields.physician;
+        } else {
+            onFieldChange('physician')(physician);
+            setSearchValue(value.name);
+        }
+
+        // setSearchValue()
+       // setSearchResult([]);
+        //setSearchQuery(undefined);
+    };
+
 
     return (
         <>
@@ -233,20 +293,23 @@ const Configuration = ({procedure, fields, onFieldChange, onDetailsUpdate}) => {
                 {isEditMode ? 
                     <MultipleSelectionsField
                     label={"Physicians"}
-                    value={fields?.['physicians']?.map(x=> x.name)}
+                    value={fields?.['physician']?.map(x=> x.name)}
+                    searchText={searchValue}
                     isPopoverOpen={true}
+                    createNew={() => createnewPhysician(searchValue)}
                     options={searchResults}
                     onOptionsSelected={(value) => handlePhysicianSelected(value)}
                     onSearchChangeText={(value) => setSearchValue(value)}
                     boxDirection={'column'}
                     boxAlign={''}
+                    handlePopovers={() => {
+                    }} 
                     onClear={() => { setSearchValue('') }}
-                    handlePopovers={() => { }}
                     
                 /> :
                 <Record
-                        recordTitle="physicians"
-                        recordValue={fields?.['physicians']?.map(x => x.name).join(', ')}
+                        recordTitle="Physicians"
+                        recordValue={fields?.['physician']?.map(x => x.name).join(', ')}
                         flex={0.8}
                     />
                 }   
