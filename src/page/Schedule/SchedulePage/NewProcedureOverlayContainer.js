@@ -211,8 +211,10 @@ function NewProcedureOverlayContainer({ appointment = {}, editMode = false, pass
         let procedure = caseFileData.caseProcedures[0]
         let caseId=patientCase[0]._id
         procedure.staff = caseFileData.staff
-        procedure.patient = patientCase[0].patient
-
+        procedure.patient = patientId
+        procedure.roleKeys = caseFileData.roleKeys
+        procedure.subject = caseFileData.staff.leadPhysician.name
+        
         addProcedureAppointment(caseId,procedure)
     }
 
