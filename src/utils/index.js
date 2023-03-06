@@ -47,7 +47,7 @@ export const getDaysInRange = (startDate, endDate) => {
 export const formatPhysician = (physician = {}, showFull = true, defaultString = 'Unassigned') => {
     const {firstName = '', surname = ''} = physician.length > 0 ? physician[0] : [];
 
-    if (!firstName && !surname) return defaultString;
+    if (!firstName && !surname) return " ";
     else if (firstName && surname) return showFull ? `Dr. ${firstName} ${surname}` : `Dr. ${firstName[0]}. ${surname}`
     else if (firstName) return `Dr. ${firstName}`
     else return `Dr. ${surname}`
