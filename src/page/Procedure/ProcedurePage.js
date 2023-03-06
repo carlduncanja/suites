@@ -122,9 +122,10 @@ function ProcedurePage({route, navigation}) {
 
     const onConfirmCancel = () => {
         modal.closeModals('ConfirmationModal');
+        fetchProcedure(_id);
         setPageState({
             ...pageState,
-            isEditMode: true
+            isEditMode: false
         });
     };
 
@@ -169,6 +170,7 @@ function ProcedurePage({route, navigation}) {
         getProcedureById(id)
             .then(data => {
                 setSelectedProcedure(data);
+                setFields({...fields, physicians: data?.physicians || []})
                 console.log('Fetched data: ', data);
                 // setProcedure(data)
             })
@@ -304,7 +306,7 @@ function ProcedurePage({route, navigation}) {
     };
 
     const updateProcedureCall = updatedFields => {
-        console.log("updatedFields: ", updatedFields);
+        console.log("updatedFields hereeee: ", updatedFields);
         updateProcedure(_id, updatedFields)
             .then(data => {
                 // getProcedures()
@@ -331,7 +333,6 @@ function ProcedurePage({route, navigation}) {
                         console.log('Modal closed');
                     },
                 });
-
                 // modal.closeAllModals();
                 // setTimeout(() => {onCreated(data)}, 200);
             })
@@ -402,6 +403,7 @@ function ProcedurePage({route, navigation}) {
                     procedure={selectedProcedure}
                     onDetailsUpdate={onDetailsUpdate}
                     fields={fields}
+                    setFields ={setFields}
                     onFieldChange={onFieldChange}
                 />;
             case 'Consumables':

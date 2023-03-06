@@ -18,14 +18,11 @@ import {formatPhysician} from "../../utils";
 import MultipleSelectionsField from '../common/Input Fields/MultipleSelectionsField';
 import FieldContainer from '../common/FieldContainerComponent';
 
-const Configuration = ({procedure, fields, onFieldChange, onDetailsUpdate}) => {
+const Configuration = ({procedure, fields, onFieldChange, onDetailsUpdate, setFields}) => {
     const {pageState, setPageState} = useContext(PageContext);
     const {isEditMode} = pageState;
-
     const baseStateRef = useRef();
     const modal = useModal();
-
-    console.log('Fields: hete ', fields);
 
     const {
         name,
@@ -68,12 +65,12 @@ const Configuration = ({procedure, fields, onFieldChange, onDetailsUpdate}) => {
 
         const search = _.debounce(fetchPhysician, 300);
 
-        setSearchQuery(prevSearch => {
-            if (prevSearch && prevSearch.cancel) {
-                prevSearch.cancel();
-            }
-            return search;
-        });
+        // setSearchQuery(prevSearch => {
+        //     if (prevSearch && prevSearch.cancel) {
+        //         prevSearch.cancel();
+        //     }
+        //     return search;
+        // });
 
         search();
     }, [searchValue]);
@@ -100,7 +97,6 @@ const Configuration = ({procedure, fields, onFieldChange, onDetailsUpdate}) => {
                     });
                 setSearchResults(container || []);
                 setPhysicians(temp)
-                console.log("temp me", physiciansInfo)
 
             })
             .catch(error => {
@@ -110,19 +106,16 @@ const Configuration = ({procedure, fields, onFieldChange, onDetailsUpdate}) => {
             });
     };
 
-    const [isUpdated, setUpdated] = useState(false);
-
     const handlePhysicianSelected = (checkPhysicians) => {
         const physicianIds = [];
-       console.log("idsss", checkPhysicians)
+       // lastSelected = checkPhysicians.slice(-1);
+       console.log("idsss meeeee plz", checkPhysicians , physiciansInfo)
         checkPhysicians.map((name) => {
             const value = physiciansInfo.find(item => item.name === name);
             value && physicianIds.push(value._id);
         })
-        console.log("yessss", physicianIds)
        
         onFieldChange('physicians')(physicianIds)
-
     }
 
     const recovery = BOOLOBJECT[fields.hasRecovery];
@@ -151,7 +144,6 @@ const Configuration = ({procedure, fields, onFieldChange, onDetailsUpdate}) => {
 
     const createnewPhysician = (name) => {
         if(!name) return;
-        console.log("nameeeeeeee", name)
         createPhysician({ firstName: " ", surname: name})
             .then(_ => {
                 searchQuery([]);
@@ -212,8 +204,6 @@ const Configuration = ({procedure, fields, onFieldChange, onDetailsUpdate}) => {
         //setSearchQuery(undefined);
     };
 
-    console.log('gutter')
-    console.log(fields?.['physicians'])
     return (
         <>
             <Row>
@@ -294,7 +284,7 @@ const Configuration = ({procedure, fields, onFieldChange, onDetailsUpdate}) => {
                 {isEditMode ? 
                     <MultipleSelectionsField
                     label={"Physicians"}
-                    value={fields?.['physicians']?.map(x=> `Dr. ${x.surname}`)}
+                    value={fields?.['physicians']?.map(x=> `Dr. ${x.firstName} ${x.surname}`)}
                     searchText={searchValue}
                     isPopoverOpen={true}
                     createNew={() => createnewPhysician(searchValue)}
@@ -303,14 +293,13 @@ const Configuration = ({procedure, fields, onFieldChange, onDetailsUpdate}) => {
                     onSearchChangeText={(value) => setSearchValue(value)}
                     boxDirection={'column'}
                     boxAlign={''}
-                    handlePopovers={() => {
-                    }} 
+                    handlePopovers={() => {}} 
                     onClear={() => { setSearchValue('') }}
                     
                 /> :
                 <Record
                         recordTitle="Physicians"
-                        recordValue={fields?.['physicians']?.map(x => `Dr. ${x.surname}`).join(', ')}
+                        recordValue={fields?.['physicians']?.map((x) => x?.firstName && x?.surname !== undefined ? `Dr. ${x.firstName} ${x.surname}` : ' ').join(', ')}
                         flex={0.8}
                     />
                 }   
