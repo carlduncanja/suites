@@ -243,7 +243,6 @@ const Procedures = props => {
 
         const firstName = physicians[0]?.firstName || '';
         const surname = physicians[0]?.surname || '';
-        console.log("find me", firstName, surname)
         let physicianName = `${firstName} ${surname}`;
 
         if (firstName === '' || surname === '') {

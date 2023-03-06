@@ -109,7 +109,6 @@ const Configuration = ({procedure, fields, onFieldChange, onDetailsUpdate, setFi
     const handlePhysicianSelected = (checkPhysicians) => {
         const physicianIds = [];
        // lastSelected = checkPhysicians.slice(-1);
-       console.log("idsss meeeee plz", checkPhysicians , physiciansInfo)
         checkPhysicians.map((name) => {
             const value = physiciansInfo.find(item => item.name === name);
             value && physicianIds.push(value._id);
