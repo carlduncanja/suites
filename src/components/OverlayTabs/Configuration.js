@@ -32,11 +32,11 @@ const Configuration = ({procedure, fields, onFieldChange, onDetailsUpdate}) => {
         duration,
         hasRecovery,
         custom = false,
-        physician = {},
+        physicians = {},
         description
     } = procedure;
 
-    console.log("procedure dataaa", physician)
+
     // const {
     //     firstName = '',
     //     surname = ''
@@ -52,7 +52,7 @@ const Configuration = ({procedure, fields, onFieldChange, onDetailsUpdate}) => {
     const [searchQuery, setSearchQuery] = useState({});
 
 
-    const [physiciansInfo, setPhysicians] = useState(procedure?.physician || [])
+    const [physiciansInfo, setPhysicians] = useState(procedure?.physicians || [])
     const [physicianSearchValue, setPhysicianSearchValue] = useState();
     const [physicianSearchResults, setPhysicianSearchResult] = useState([]);
 
@@ -136,7 +136,7 @@ const Configuration = ({procedure, fields, onFieldChange, onDetailsUpdate}) => {
             duration,
             hasRecovery,
             custom,
-            physician
+            physicians
         };
         return () => {
             baseStateRef.current = {};
@@ -201,9 +201,9 @@ const Configuration = ({procedure, fields, onFieldChange, onDetailsUpdate}) => {
         } : value;
 
         if (value === undefined || null) {
-            delete fields.physician;
+            delete fields.physicians
         } else {
-            onFieldChange('physician')(physician);
+            onFieldChange('physician')(physicians);
             setSearchValue(value.name);
         }
 
@@ -212,7 +212,8 @@ const Configuration = ({procedure, fields, onFieldChange, onDetailsUpdate}) => {
         //setSearchQuery(undefined);
     };
 
-
+    console.log('gutter')
+    console.log(fields?.['physicians'])
     return (
         <>
             <Row>
@@ -293,7 +294,7 @@ const Configuration = ({procedure, fields, onFieldChange, onDetailsUpdate}) => {
                 {isEditMode ? 
                     <MultipleSelectionsField
                     label={"Physicians"}
-                    value={fields?.['physician']?.map(x=> x.name)}
+                    value={fields?.['physicians']?.map(x=> `Dr. ${x.surname}`)}
                     searchText={searchValue}
                     isPopoverOpen={true}
                     createNew={() => createnewPhysician(searchValue)}
@@ -309,7 +310,7 @@ const Configuration = ({procedure, fields, onFieldChange, onDetailsUpdate}) => {
                 /> :
                 <Record
                         recordTitle="Physicians"
-                        recordValue={fields?.['physician']?.map(x => x.name).join(', ')}
+                        recordValue={fields?.['physicians']?.map(x => `Dr. ${x.surname}`).join(', ')}
                         flex={0.8}
                     />
                 }   
