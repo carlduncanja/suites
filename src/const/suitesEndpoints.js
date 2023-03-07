@@ -47,6 +47,7 @@ export const inventoryGroupVariantTransferState = (groupId, variantId, transferI
 // ##### PHYSICIANS
 export const physiciansEndpoint = '/physicians';
 export const physicianEndpoint = id => `/physicians/${id}`;
+export const getAllById = 'physicians/all/physicians';
 
 // ##### PROCEDURES
 export const proceduresEndpoint = '/procedures';
@@ -135,6 +136,7 @@ export const editFamilyHistoryEndpoint = id => `/patients/${id}/edit_family`;
 export const deleteFamilyHistoryEndpoint = id => `/patients/${id}/delete_family`;
 export const allPatientsEndpoint = '/patients'
 export const updatePatientRiskEndpoint = id => `/patients/${id}/risk`
+
 
 // ##### ALERTS
 export const alertsEndpoint = '/alerts';

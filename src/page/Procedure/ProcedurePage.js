@@ -29,7 +29,7 @@ function ProcedurePage({route, navigation}) {
     // const { isEditMode } = pageState;
 
     const {procedure, isOpenEditable, onUpdate} = route.params;
-
+    console.log("procedur information", procedure)
     const {
         _id = '',
         name,
@@ -37,7 +37,7 @@ function ProcedurePage({route, navigation}) {
         hasRecovery,
         duration,
         custom = false,
-        physician = {},
+        physicians = [],
     } = procedure;
 
     // ##### States
@@ -53,15 +53,13 @@ function ProcedurePage({route, navigation}) {
         duration,
         hasRecovery,
         custom,
-        physician: {
-            ...physician,
-            name: formatPhysician(physician)
-        }
+        physicians: physicians
+        
     });
 
     const [popoverList, setPopoverList] = useState([
         {
-            name: 'physician',
+            name: 'physicians',
             status: false
         }
     ]);
@@ -124,9 +122,10 @@ function ProcedurePage({route, navigation}) {
 
     const onConfirmCancel = () => {
         modal.closeModals('ConfirmationModal');
+        fetchProcedure(_id);
         setPageState({
             ...pageState,
-            isEditMode: true
+            isEditMode: false
         });
     };
 
@@ -171,6 +170,7 @@ function ProcedurePage({route, navigation}) {
         getProcedureById(id)
             .then(data => {
                 setSelectedProcedure(data);
+                setFields({...fields, physicians: data?.physicians || []})
                 console.log('Fetched data: ', data);
                 // setProcedure(data)
             })
@@ -306,7 +306,6 @@ function ProcedurePage({route, navigation}) {
     };
 
     const updateProcedureCall = updatedFields => {
-        // console.log("Fields: ", updatedFields);
         updateProcedure(_id, updatedFields)
             .then(data => {
                 // getProcedures()
@@ -333,7 +332,6 @@ function ProcedurePage({route, navigation}) {
                         console.log('Modal closed');
                     },
                 });
-
                 // modal.closeAllModals();
                 // setTimeout(() => {onCreated(data)}, 200);
             })
@@ -404,6 +402,7 @@ function ProcedurePage({route, navigation}) {
                     procedure={selectedProcedure}
                     onDetailsUpdate={onDetailsUpdate}
                     fields={fields}
+                    setFields ={setFields}
                     onFieldChange={onFieldChange}
                 />;
             case 'Consumables':
@@ -456,7 +455,7 @@ function ProcedurePage({route, navigation}) {
                 return false;
         }
     };
-    const physicianName = formatPhysician(physician);
+    const physicianName = formatPhysician(physicians);
 
     return (
         <PageContext.Provider value={{

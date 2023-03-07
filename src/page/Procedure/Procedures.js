@@ -20,7 +20,7 @@ import AddIcon from '../../../assets/svg/addIcon';
 import {useNextPaginator, usePreviousPaginator, checkboxItemPress, selectAll, handleUnauthorizedError} from '../../helpers/caseFilesHelpers';
 
 import {setProcedures} from '../../redux/actions/proceduresActions';
-import {bulkUploadProcedureRequest, getProcedures, removeProcedures} from '../../api/network';
+import {bulkUploadProcedureRequest, getAllPhysicianById, getPhysicians, getProcedures, removeProcedures} from '../../api/network';
 
 import {DISABLED_COLOR, LONG_PRESS_TIMER} from '../../const';
 import ConfirmationComponent from '../../components/ConfirmationComponent';
@@ -79,7 +79,6 @@ const Procedures = props => {
     const [selectedProcedures, setSelectedProcedures] = useState([]);
 
     const [pageSettingState, setPageSettingState] = useState({});
-
 
     // const routeName = route.name;
     // ############# Lifecycle methods
@@ -229,20 +228,27 @@ const Procedures = props => {
             });
     };
 
-    const renderProcedureFn = item => (
-        <ListItem
+    const renderProcedureFn = item => {
+        return <ListItem
             hasCheckBox={true}
             isChecked={selectedProcedures.includes(item._id)}
             onCheckBoxPress={handleOnCheckBoxPress(item)}
             onItemPress={handleOnItemPress(item, false)}
             itemView={procedureItem(item)}
         />
-    );
+    };
 
-    const procedureItem = item => {
-        const {physician = {}} = item;
-        const {firstName = '', surname = ''} = physician;
-        const physicianName = firstName && surname ? `Dr. ${firstName} ${surname}` : 'Unassigned';
+    const procedureItem = (item)=> {
+        const {physicians = []} = item;
+
+        const firstName = physicians[0]?.firstName || '';
+        const surname = physicians[0]?.surname || '';
+        let physicianName = `${firstName} ${surname}`;
+
+        if (firstName === '' || surname === '') {
+            physicianName = 'Unassigned'
+        }
+
         return (
             <>
                 <RightBorderDataItem flex={1.5} fontStyle="--text-base-regular" color="--color-gray-800" text={item?.name}/>
