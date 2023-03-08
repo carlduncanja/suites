@@ -58,7 +58,7 @@ function FrameContentItem(props) {
         setAddMode(value)
     }
 
-    const editSateToggle = (value) => {
+    const editStateToggle = (value) => {
         setEditPress(value)
     }
 
@@ -78,10 +78,10 @@ function FrameContentItem(props) {
                     deleteMode={true}
                     onDelete={() => {
                         onDelete(idArray[index])
-                        editSateToggle(false)
+                        editStateToggle(false)
                     }}
                     onCancel={() => {
-                        editSateToggle(false)
+                        editStateToggle(false)
                     }}
                     onEdit={onEdit}
                     onAction={(name) => {
@@ -100,7 +100,7 @@ function FrameContentItem(props) {
                     icon={isEditMode ? <RemoveIcon /> : null}
                     onPressButton={() => {
                         handleEdit()
-                        editSateToggle(true)
+                        editStateToggle(true)
                         toogleAddOption(false)
                         //isInEditMode=true
 
