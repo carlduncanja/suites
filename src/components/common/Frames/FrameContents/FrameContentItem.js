@@ -78,6 +78,7 @@ function FrameContentItem(props) {
                     deleteMode={true}
                     onDelete={() => {
                         onDelete(idArray[index])
+                        editSateToggle(false)
                     }}
                     onCancel={() => {
                         editSateToggle(false)
