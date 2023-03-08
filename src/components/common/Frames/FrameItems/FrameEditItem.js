@@ -9,7 +9,7 @@ import InputField2 from '../../../common/Input Fields/InputField2'
 import _, { reduce, set } from "lodash";
 import Row from '../../../common/Row';
 import SearchableOptionsField from '../../../common/Input Fields/SearchableOptionsField'
-import { getPhysicians, getUsersCall } from '../../../../api/network'
+import { createPhysician, getPhysicians, getUsersCall } from '../../../../api/network'
 
 const FrameItemWrapper = styled.View`
     width: 100%;
@@ -181,18 +181,24 @@ function FrameEditItem({
         let result = {};
         const token = item.split(" ");
         item = {
-            "firstName": token[0],
-            "surname": token[1]
-        },
-            await createPhysician(item).then(res => {
-                result = {
-                    _id: res._id,
-                    name: `${res.firstName} ${res.surname}`
-                }
-            }).then(res => {
-                handlePatientFunc(result);
-                setSelectedValueFunc(result);
-            })
+            "firstName": token[0] || '--',
+            "surname": token[1] || '--'
+        }
+
+        await createPhysician(item).then(res => {
+            result = {
+                _id: res._id,
+                name: `${res.firstName} ${res.surname}`,
+                type: "Physician",
+                type: "Physician",
+                tag: "Lead Surgeon"
+            }
+        }).then(res => {
+            onStaffChange(result);
+            activateButton(true);
+            handlePatientFunc(result);
+            setSelectedValueFunc(result);
+        })
     }
 
     const fetchNurses = () => {
