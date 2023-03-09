@@ -48,7 +48,7 @@ function Table({
     hasBanner = false,
     bannerText = '',
     
-    keyExtractor = (item) => ((item?.id || "") || (item?._id || ""))
+    keyExtractor = (item) => (Math.random())
  }) {
     // const {
     //     data = [],

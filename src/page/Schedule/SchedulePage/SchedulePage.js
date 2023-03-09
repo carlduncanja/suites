@@ -212,7 +212,7 @@ const SchedulePage = props => {
     useEffect(() => {
         if(flag) {
             modal.openModal('BottomSheetModal', {
-                content: <NewProcedureOverlayContainer appointment={currentAppointment} editMode={true} />,
+                content: <NewProcedureOverlayContainer  appointment={currentAppointment} editMode={true} />,
                 initialSnap: 2,
                 snapPoints: [600, 500, 0]
             });
@@ -222,7 +222,7 @@ const SchedulePage = props => {
 
     const handleNewProcedurePress= procedure => {
         modal.openModal('BottomSheetModal', {
-            content: <NewProcedureOverlayContainer passedDate={selectedDay}/>,
+            content: <NewProcedureOverlayContainer handleScheduleRefresh={handleScheduleRefresh} passedDate={selectedDay}/>,
             initialSnap: 2,
             snapPoints: [680, 500, 0]
         });
@@ -251,6 +251,7 @@ const SchedulePage = props => {
     // updates schedule
     const handleScheduleRefresh = (successCallback = emptyFn) => {
         // fetch the schedule
+        console.log('muda')
         setScheduleRefreshing(true);
         getAppointments()
             .then(data => {
