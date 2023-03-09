@@ -268,7 +268,7 @@ const AppointmentFields = ({isEdit, fields, onFieldsUpdated, isRecovery = false}
                         enabled={isEdit}
                         label="Time"
                         labelWidth={70}
-                        value={moment(startTime).toDate()}
+                        value={fields.startTime}
                         format={"h:mm A"}
                         mode={"time"}
                         onDateChange={onStartTimeUpdated}
