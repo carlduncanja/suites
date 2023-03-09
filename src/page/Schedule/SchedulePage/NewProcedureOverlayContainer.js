@@ -20,8 +20,8 @@ import AddIcon from '../../../../assets/svg/addIcon';
 import { appointments } from '../../../../data/Appointments';
 import { handleError } from '../../../api/apiUtils';
 
-function NewProcedureOverlayContainer({ appointment = {}, editMode = false, passedDate = new Date() }) {
-
+function NewProcedureOverlayContainer({ handleScheduleRefresh=()=> {}, appointment = {}, editMode = false, passedDate = new Date() }) {
+    
     const theme = useTheme();
     const modal = useModal();
     const [patientID, setPatientID] = useState("Patient ID:--")
@@ -183,6 +183,7 @@ function NewProcedureOverlayContainer({ appointment = {}, editMode = false, pass
         // here
         await addProcedureAppointmentCall(caseId, procedureAppointment)
             .then(data => {
+                handleScheduleRefresh();
                 handleConfirm()
             })
             .catch(res => {
@@ -430,7 +431,6 @@ function NewProcedureOverlayContainer({ appointment = {}, editMode = false, pass
                     }}
                     onAction={() => {
                         modal.closeAllModals();
-
                     }}
                     message="Completed Successfully!"
                 // onAction = { () => confirmAction()}
