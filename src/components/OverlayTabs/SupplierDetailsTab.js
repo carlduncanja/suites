@@ -52,7 +52,7 @@ const RowWrapper = styled.View`
     z-index: ${({ zIndex }) => zIndex};
 `
 
-const SupplierDetailsTab = ({ supplierId, onUpdated, order }) => {
+const SupplierDetailsTab = ({ supplierId, onUpdated, order, refresh = () => {} }) => {
 
     const fieldsBaseStateRef = useRef();
     const modal = useModal();
@@ -77,7 +77,7 @@ const SupplierDetailsTab = ({ supplierId, onUpdated, order }) => {
 
 
     const [fields, setFields] = useState({});
-
+    
     useEffect(() => {
 
         if (isUpdated && !isEditMode) {
@@ -90,6 +90,7 @@ const SupplierDetailsTab = ({ supplierId, onUpdated, order }) => {
                             // resetState()
                             setPageState({ ...pageState, isEditMode: true })
                             modal.closeAllModals();
+                            
                         }}
                         onAction={() => {
                             modal.closeAllModals();
@@ -118,7 +119,8 @@ const SupplierDetailsTab = ({ supplierId, onUpdated, order }) => {
             status,
             email,
             representatives
-        })
+        });
+        
     }, [supplier])
 
     const onFieldUpdated = (field) => (value) => {
@@ -160,7 +162,6 @@ const SupplierDetailsTab = ({ supplierId, onUpdated, order }) => {
                             }}
                             onAction={() => {
                                 modal.closeAllModals();
-
                             }}
 
                             action="Yes"
@@ -170,6 +171,8 @@ const SupplierDetailsTab = ({ supplierId, onUpdated, order }) => {
                         console.log('Modal closed');
                     },
                 });
+            }).then(() => {
+                refresh();
             })
             .catch(error => {
                 console.log("Failed to update supplier", error)
