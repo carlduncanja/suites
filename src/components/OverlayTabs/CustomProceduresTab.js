@@ -67,7 +67,6 @@ const CustomProceduresTab = ({ selectedPhysician, procedures, setSelectedPhysici
     const modal = useModal();
     const theme = useTheme();
 
-
     const [totalPages, setTotalPages] = useState(0);
     const [currentPageListMin, setCurrentPageListMin] = useState(0);
     const [currentPageListMax, setCurrentPageListMax] = useState(recordsPerPage);
@@ -77,17 +76,23 @@ const CustomProceduresTab = ({ selectedPhysician, procedures, setSelectedPhysici
     const [isFloatingActionDisabled, setIsFloatingActionDisabled] = useState(false);
     const [isIndeterminate, setIsIndeterminate] = useState(false)
 
-    const [data, setData] = useState(
-        selectedPhysician.procedures.map(item => {
-            const recovery = item.hasRecovery ? "Yes" : "No";
-            return {
-                id: item._id,
-                procedure: item.name,
-                theatre: "Operating Room 1",
-                recovery: recovery,
-                duration: item.duration,
-            };
-        })
+    const [data, setData] = useState( () => {
+            const itemContainer = []
+            selectedPhysician.procedures.map(item => {
+                const recovery = item.hasRecovery ? "Yes" : "No";
+                if(item.custom) {
+                    itemContainer.push( {
+                        id: item._id,
+                        procedure: item.name,
+                        theatre: "Operating Room 1",
+                        recovery: recovery,
+                        duration: item.duration,
+                    });
+                }
+            });
+
+            return itemContainer;
+        }
     );
 
     useEffect(() => {
