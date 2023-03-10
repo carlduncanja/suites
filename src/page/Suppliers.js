@@ -61,8 +61,8 @@ color: #A0AEC0;
 
 const Suppliers = props => {
     const theme = useTheme();
-
     // ############# Const data
+    
     const recordsPerPage = 10;
     const listHeaders = [
         {
@@ -164,7 +164,8 @@ const Suppliers = props => {
             initial: false,
             supplier: item,
             isEdit: isOpenEditable,
-            floatingActions: getFabActions
+            floatingActions: getFabActions,
+            handleDataRefresh: () => handleDataRefresh()
         });
     };
 
@@ -186,6 +187,7 @@ const Suppliers = props => {
         setCurrentPageListMin(currentListMin);
         setCurrentPageListMax(currentListMax);
         fetchSuppliersData(currentPage);
+        
     };
 
     const toggleActionButton = () => {

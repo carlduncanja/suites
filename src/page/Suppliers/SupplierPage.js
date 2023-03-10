@@ -20,7 +20,7 @@ import {updateSupplierAction} from '../../redux/actions/suppliersActions';
 import LoadingIndicator from '../../components/common/LoadingIndicator';
 
 function SupplierPage({route, navigation, updateSupplierAction}) {
-    const {supplier, isOpenEditable, floatingActions} = route.params;
+    const {supplier, isOpenEditable, floatingActions, handleDataRefresh} = route.params;
     const modal = useModal();
     const currentTabs = ['Details', 'Products', 'Purchase Orders'];
     const {
@@ -74,8 +74,12 @@ function SupplierPage({route, navigation, updateSupplierAction}) {
         if (!isEditMode) setCurrentTab(selectedTab);
     };
 
+    // console.log('dom')
+    // console.log(navigation.getState())
     const backTapped = () => {
+        // here
         navigation.navigate('Suppliers');
+        
     };
 
     const handlePopovers = popoverValue => popoverItem => {
@@ -153,6 +157,8 @@ function SupplierPage({route, navigation, updateSupplierAction}) {
     const fetchSupplier = id => {
         setFetching(true);
         setPageLoading(true);
+        handleDataRefresh();
+        
         getSupplierById(id)
             .then(data => {
                 // console.log('Supplier Products: ', data.products);
@@ -209,6 +215,7 @@ function SupplierPage({route, navigation, updateSupplierAction}) {
                     supplierId={_id}
                     onUpdated={supplierInfoUpdated}
                     isEditMode={isEditMode}
+                    refresh={() => { setPageLoading(true); fetchSupplier(_id)}}
                 />;
             case 'Products':
                 return pageState.isLoading ?
