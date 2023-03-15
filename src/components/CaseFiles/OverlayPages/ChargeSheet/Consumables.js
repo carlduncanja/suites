@@ -185,7 +185,7 @@ function Consumables({
                 ? {...updatedObj}
                 : {...item}
         })
-        
+        // here
         onConsumablesUpdate(sectionIndex, updatedData);
     }
 
@@ -274,6 +274,7 @@ function Consumables({
                         <View style={{flex: 1, margin: 5, marginLeft: 10, borderColor: "#E3E8EF", borderWidth: .5}}/>
                     }
                 />
+
 
             </CollapsibleListItem>
         )
