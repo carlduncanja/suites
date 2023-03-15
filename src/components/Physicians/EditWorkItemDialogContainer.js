@@ -281,7 +281,6 @@ const EditWorkItemDialogContainer = ({ onCancel, onCreated, appiontment, refresh
         }
         // check if removeEmpty is length 0
     };
-    // 5ea05969a75843f64322d913
     async function updateProcedureDB(item, handlePatientFunc, setSelectedValueFunc) {
         let inputUpdate = {};
         let doctor = '';

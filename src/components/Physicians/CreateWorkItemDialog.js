@@ -267,6 +267,12 @@ const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem, detai
     async function updateProcedureDB(item, handlePatientFunc, setSelectedValueFunc) {
         let inputUpdate = {};
 
+        let doctor = '';
+
+        await getPhysicians(' ', 1).then(result => { 
+            doctor = result.data[0]?._id
+        });
+
         const result = {
             // reference :'',
             name: item,
@@ -274,17 +280,7 @@ const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem, detai
             // notes:'',
             // isTemplate : false,
             hasRecovery: false,
-            physician: {
-                "_id": addWorkItem.id,
-                "active": "active",
-                "address": Array[
-                    {
-                        "_id": "5ea05969a75843f64322d913",
-                        "line1": "Barbican Road, Kingston",
-                        "line2": "Apartment 23",
-                    }
-                ],
-            }
+            physicians: [doctor],
             // supportedRooms: [], *
             // inventories:[],
             // equipments:[],
