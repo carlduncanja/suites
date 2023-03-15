@@ -821,17 +821,8 @@ function NewProcedureOverlayContainer({ handleScheduleRefresh=()=> {}, appointme
             // notes:'',
             // isTemplate : false,
             hasRecovery: false,
-            physician: {
-                "_id": "5ea05a3886d32b41d5b291e6",
-                "active": "active",
-                "address": Array[
-                    {
-                        "_id": "5ea05969a75843f64322d913",
-                        "line1": "Barbican Road, Kingston",
-                        "line2": "Apartment 23",
-                    }
-                ],
-            }
+            // todo remove hard code
+            physicians: ["5ea05a3886d32b41d5b291e6"]
             // supportedRooms: [], *
             // inventories:[],
             // equipments:[],
