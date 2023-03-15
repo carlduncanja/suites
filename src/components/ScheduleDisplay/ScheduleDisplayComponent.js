@@ -66,9 +66,14 @@ function ScheduleDisplayComponent({
 
     const onCheckBoxPress = item => {
         const { _id } = item;
-
-        setSelected(_id)
-        idData([_id])
+        if (selected === _id) {
+            setSelected('')
+            idData([])
+        } else {
+            setSelected(_id)
+            idData([_id])
+        }
+        
     }
 
     return (
