@@ -17,6 +17,7 @@ function ScheduleDisplayComponent({
     const timelineDate = [];
     const [currentTime, setCurrentTime] = useState(moment);
     const [selectedIds, setSelectedIds] = useState([])
+    const [selected, setSelected] = useState();
 
     useEffect(() => {
         updateTime()
@@ -66,10 +67,8 @@ function ScheduleDisplayComponent({
     const onCheckBoxPress = item => {
         const { _id } = item;
 
-        const updateInvioces = checkboxItemPress(_id, selectedIds);
-
-        setSelectedIds(updateInvioces);
-
+        setSelected(_id)
+        idData([_id])
     }
 
     return (
@@ -115,9 +114,8 @@ function ScheduleDisplayComponent({
                                     <Event {...item}
                                         onPress={ event => {
                                             onCheckBoxPress(item)
-                                            idData(selectedIds)
                                         }}
-                                        isSelected={selectedIds.includes(item._id)} />
+                                        isSelected={selected === item._id} />
                                 </View>
                             )
                         })
