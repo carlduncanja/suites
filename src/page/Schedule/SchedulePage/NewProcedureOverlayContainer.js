@@ -813,6 +813,11 @@ function NewProcedureOverlayContainer({ handleScheduleRefresh=()=> {}, appointme
 
     async function updateProcedureDB(item, handlePatientFunc, setSelectedValueFunc) {
         let inputUpdate = {};
+        let doctor = '';
+
+        await getPhysicians(' ', 1).then(result => { 
+            doctor = result.data[0]?._id
+        });
 
         const result = {
             // reference :'',
@@ -822,7 +827,7 @@ function NewProcedureOverlayContainer({ handleScheduleRefresh=()=> {}, appointme
             // isTemplate : false,
             hasRecovery: false,
             // todo remove hard code
-            physicians: ["5ea05a3886d32b41d5b291e6"]
+            physicians: [doctor]
             // supportedRooms: [], *
             // inventories:[],
             // equipments:[],
