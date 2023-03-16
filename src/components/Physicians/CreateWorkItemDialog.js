@@ -685,7 +685,7 @@ const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem, detai
                             <SearchableOptionsField
                                 emptyAfterSubmit={attemptedSubmit && location === undefined ? true : false}
                                 updateDB={updateTheatreDB}
-                                showActionButton={false}
+                                showActionButton={true}
                                 value={location}
                                 placeholder="Select Location"
                                 text={searchLocationValue}
