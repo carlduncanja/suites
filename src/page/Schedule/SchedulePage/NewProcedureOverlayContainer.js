@@ -6,7 +6,7 @@ import { MenuOptions, MenuOption } from 'react-native-popup-menu';
 import InputField2 from '../../../components/common/Input Fields/InputField2';
 import DateInputField from '../../../components/common/Input Fields/DateInputField';
 import OptionsField from '../../../components/common/Input Fields/OptionsField';
-import { getTheatres, createPhysician, createTheatre, createNewProcedure, updateCaseFile, updateAppointmentById, updatePatient as patientUpdater, getUsersCall, addProcedureAppointmentCall, getCaseFileByPatientId, registrationCall } from '../../../api/network';
+import { getTheatres, createPhysician, createTheatre, createNewProcedure, updateCaseFile, updateAppointmentById, updatePatient as patientUpdater, getUsersCall, addProcedureAppointmentCall, getCaseFileByPatientId, registrationCall, getRole, getRolesCall } from '../../../api/network';
 import styled, { css } from '@emotion/native';
 import { useTheme } from 'emotion-theming';
 import { createCaseFile } from '../../../api/network'
@@ -956,6 +956,11 @@ function NewProcedureOverlayContainer({ handleScheduleRefresh=()=> {}, appointme
         const generatedEmailAddon = uuidv4().toString();
         const firstName = token[0] || "--";
         const lastName = token[1] || "--";
+        let role = ''
+        await getRolesCall().then(res => {
+            const response = res.filter(item => item?.name.toLowerCase() === "Nurse".toLowerCase());
+            role = response[0]._id
+        })
 
         const payload = {
             first_name: firstName,
@@ -963,7 +968,7 @@ function NewProcedureOverlayContainer({ handleScheduleRefresh=()=> {}, appointme
             email: `generatedsEmail${generatedEmailAddon}@suites.com`,
             password: "password1",
             confirm_password: "password1",
-            role: "5ec2ed03bfd5c07e5792e84f"
+            role: role
         }
         
         
