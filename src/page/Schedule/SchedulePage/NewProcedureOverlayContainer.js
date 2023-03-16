@@ -281,7 +281,6 @@ function NewProcedureOverlayContainer({ handleScheduleRefresh=()=> {}, appointme
             }
             let leadDoc = "";
             let leadObj = {};
-            console.log('strange')
             staffInfo.filter(item => {
                 if (item.tag === "Lead Surgeon") {
                     leadDoc = item.name;
@@ -477,12 +476,6 @@ function NewProcedureOverlayContainer({ handleScheduleRefresh=()=> {}, appointme
         ])
         
     }
-
-    const handleNurse = (value) => {
-        console.log('fight')
-        console.log(value)
-    }
-
 
     const handleProcedure = (value) => {
         setProcedure(value
@@ -725,7 +718,6 @@ function NewProcedureOverlayContainer({ handleScheduleRefresh=()=> {}, appointme
     };
 
     const onStaffChange = (value) => {
-        console.log(value)
         setStaffInfo([
             ...staffInfo,
             value
