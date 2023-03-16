@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, Text } from 'react-native';
+import 'react-native-get-random-values';
+import { v4 as uuidv4 } from 'uuid'
 import { MenuOptions, MenuOption } from 'react-native-popup-menu';
 import InputField2 from '../../../components/common/Input Fields/InputField2';
 import DateInputField from '../../../components/common/Input Fields/DateInputField';
 import OptionsField from '../../../components/common/Input Fields/OptionsField';
-import { getTheatres, createPhysician, createTheatre, createNewProcedure, updateCaseFile, updateAppointmentById, updatePatient as patientUpdater, getUsersCall, addProcedureAppointmentCall, getCaseFileByPatientId } from '../../../api/network';
+import { getTheatres, createPhysician, createTheatre, createNewProcedure, updateCaseFile, updateAppointmentById, updatePatient as patientUpdater, getUsersCall, addProcedureAppointmentCall, getCaseFileByPatientId, registrationCall } from '../../../api/network';
 import styled, { css } from '@emotion/native';
 import { useTheme } from 'emotion-theming';
 import { createCaseFile } from '../../../api/network'
@@ -279,6 +281,7 @@ function NewProcedureOverlayContainer({ handleScheduleRefresh=()=> {}, appointme
             }
             let leadDoc = "";
             let leadObj = {};
+            console.log('strange')
             staffInfo.filter(item => {
                 if (item.tag === "Lead Surgeon") {
                     leadDoc = item.name;
@@ -473,6 +476,11 @@ function NewProcedureOverlayContainer({ handleScheduleRefresh=()=> {}, appointme
             staff
         ])
         
+    }
+
+    const handleNurse = (value) => {
+        console.log('fight')
+        console.log(value)
     }
 
 
@@ -950,6 +958,41 @@ function NewProcedureOverlayContainer({ handleScheduleRefresh=()=> {}, appointme
         return staffInfo.filter(item => item.tag === tag);
     }
 
+    async function updateNurseDB(item, handlePatientFunc, setSelectedValueFunc) {
+        let result = {};
+        const token = item.split(" ");
+        const generatedEmailAddon = uuidv4().toString();
+        const firstName = token[0] || "--";
+        const lastName = token[1] || "--";
+
+        const payload = {
+            first_name: firstName,
+            last_name: lastName,
+            email: `generatedsEmail${generatedEmailAddon}@suites.com`,
+            password: "password1",
+            confirm_password: "password1",
+            role: "5ec2ed03bfd5c07e5792e84f"
+        }
+        
+        
+
+        await registrationCall(payload).then(res => {
+            result = {
+                _id: res._id,
+                name: `${res.first_name} ${res.last_name}`,
+                tag: "Nurse",
+                type: "Nurse"
+            }            
+        }).then(res => {
+            handlePatientFunc(result);
+            setSelectedValueFunc(result);
+            setStaffInfo([
+                ...staffInfo,
+                result
+            ])
+        })
+    }
+
     return (
         <>
             <View style={styles.container}>
@@ -1241,7 +1284,7 @@ function NewProcedureOverlayContainer({ handleScheduleRefresh=()=> {}, appointme
                                 emptyAfterSubmit={findStaffByTag("Nurse").length < 1 && attemptedSubmit ? true : false}
                                 value={generatedNurse}
                                 handlePatient={handleSurgeon}
-                                updateDB={updatePhysicianDB}
+                                updateDB={updateNurseDB}
                                 showActionButton={true}
                                 placeholder="Select Staff"
                                 text={currentIndex === 4 ? searchValue : ''}
