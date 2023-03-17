@@ -143,11 +143,11 @@ const Configuration = ({procedure, fields, onFieldChange, onDetailsUpdate, setFi
 
     const createnewPhysician = (name) => {
         if(!name) return;
-        createPhysician({ firstName: " ", surname: name})
+        createPhysician({firstName: "---", surname: name})
             .then(_ => {
-                searchQuery([]);
-                setSearchValue('');
-                fetchPhysicians();
+                //searchQuery([]);
+                //hsetSearchValue('');
+                fetchPhysician();
                 modal.openModal('ConfirmationModal', {
                     content: <ConfirmationComponent
                         isEditUpdate={false}
