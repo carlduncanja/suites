@@ -785,7 +785,7 @@ function NewProcedureOverlayContainer({ handleScheduleRefresh=()=> {}, appointme
         const token = item.split(" ");
 
         item = {
-            name: `${token[0]} ${token[1]}`,
+            name: `${token[0]} ${token[1] || ''}`,
             isRecovery: false
         }
         await createTheatre(item).then(res => {
