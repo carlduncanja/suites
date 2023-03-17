@@ -185,11 +185,10 @@ function NewProcedureOverlayContainer({ handleScheduleRefresh=()=> {}, appointme
         // here
         await addProcedureAppointmentCall(caseId, procedureAppointment)
             .then(data => {
-                handleScheduleRefresh();
+                handleScheduleRefresh({});
                 handleConfirm()
             })
             .catch(res => {
-                
                 hanadleErrorModal(res?.response?.data[0]?.message)
             })
     }
