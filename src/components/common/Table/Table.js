@@ -48,7 +48,7 @@ function Table({
     hasBanner = false,
     bannerText = '',
     
-    keyExtractor = (item) => (Math.random())
+    keyExtractor = (item, i) => item.caseProcedureId ? i : Math.random()
  }) {
     // const {
     //     data = [],

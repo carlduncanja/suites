@@ -22,6 +22,7 @@ import ConfirmationCheckBoxComponent from './ConfirmationCheckBoxComponent';
 import _ from 'lodash'
 
 function PaginatedSchedule({ ID, details, isPhysician = false, isTheatre = false }) {
+
     console.log("theare oage? ", isTheatre)
     const weekday = new Array(7);
     weekday[0] = 'Sunday';
@@ -92,13 +93,9 @@ function PaginatedSchedule({ ID, details, isPhysician = false, isTheatre = false
         let fromDate = formatDate(datePassed, 'YYYY/MM/DD');
         let toDate = formatDate(tommorrow, 'YYYY/MM/DD')
 
-        console.log("date passed", fromDate, toDate, id)
-
-
         getAppointments("", isTheatre ? id : "", fromDate, fromDate, '', isTheatre ? "" : id)
             .then(data => {
                 //console.log("Objected values:", Object.values(data));
-                console.log('The appointment data received is:', data);
                 relevantAppointment.length = 0;
                 //console.log("data visualization", relevantAppointment)
 
@@ -110,14 +107,12 @@ function PaginatedSchedule({ ID, details, isPhysician = false, isTheatre = false
                     const end = moment(modifiedAppointment.endTime);
                     const isActive = moment().isBetween(start, end);
                     if (end < today) {
-                        console.log("appointment has passed");
                         modifiedAppointment.type = 3;
                     } else (isActive) ? (modifiedAppointment.type = 0) : (modifiedAppointment.type = 1);
 
                     return { ...modifiedAppointment, }
                 })
 
-                console.log("schedule appointments", appointmentData)
                 setrelevantApppointments(relevantAppointment.concat(appointmentData));
             })
             .catch(error => {
@@ -324,30 +319,7 @@ function PaginatedSchedule({ ID, details, isPhysician = false, isTheatre = false
     }
 
     const updateIDs = ids => {
-
-        //console.log("before", selectedIds)
-        let updatedList = [...selectedIds]
-
-        ids.map((id) => {
-            let test = updatedList.includes(id)
-            test ?
-                updatedList = removeIdFromArray(id)
-                :
-                updatedList.push(id)
-
-            console.log("During", updatedList)
-        })
-        setSelectedIds(updatedList)
-        //console.log('after', selectedIds)
-
-        /*console.log('before', selectedIds)
-        setSelectedIds(selectedIds.concat(ids))
-        console.log('after', selectedIds)*/
-        // setSelectedIds(updatedList)
-        //console.log('after',selectedIds)
-
-
-
+        setSelectedIds(ids)
     }
 
     return (

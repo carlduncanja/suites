@@ -240,7 +240,6 @@ const ChargeSheet = React.forwardRef(({
     // region Event Handlers
 
     const handleConsumableUpdate = (index, procedureInventories) => {
-        console.log('onConsumablesUpdate', index, procedureInventories);
         const updatedCaseProcedures = [...caseProcedures];
         if (updatedCaseProcedures[index]) {
             updatedCaseProcedures[index].inventories = procedureInventories;

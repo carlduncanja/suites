@@ -251,7 +251,6 @@ function PhysicianPage({route, navigation}) {
         getPhysicianById(id)
             .then(data => {
                 setSelectedPhysician(data);
-                console.log('lore')
                 const {firstName, surname} = data;
                 setName(`Dr. ${firstName} ${surname}`);
                 // setPhysician(data)
