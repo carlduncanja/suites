@@ -23,6 +23,7 @@ import _ from 'lodash'
 
 function PaginatedSchedule({ ID, details, isPhysician = false, isTheatre = false }) {
 
+    console.log("theare oage? ", isTheatre)
     const weekday = new Array(7);
     weekday[0] = 'Sunday';
     weekday[1] = 'Monday';
@@ -104,7 +105,6 @@ function PaginatedSchedule({ ID, details, isPhysician = false, isTheatre = false
                     // const mm = moment(item.startTime);
                     const start = moment(modifiedAppointment.startTime);
                     const end = moment(modifiedAppointment.endTime);
-
                     const isActive = moment().isBetween(start, end);
                     if (end < today) {
                         modifiedAppointment.type = 3;
@@ -223,7 +223,9 @@ function PaginatedSchedule({ ID, details, isPhysician = false, isTheatre = false
                 <EditWorkItemDialogContainer
                     onCancel={() => setFloatingAction(false)}
                     appiontment={{ "id": selectedIds[0] }}
-                    refreshShedule={onRefesh()}
+                    physicianInfo ={ID}
+                    refreshShedule={onRefesh}
+                    
                 />
             ),
             onClose: () => setFloatingAction(false)
