@@ -713,7 +713,7 @@ const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem, detai
                                     <CustomSearchableOptionsField
                                         emptyAfterSubmit={attemptedSubmit && caseItem === undefined ? true : false}
                                         updateDB={updateCaseDB}
-                                        showActionButton={true}
+                                        showActionButton={false}
                                         value={caseItem}
                                         placeholder="Select Case"
                                         text={searchCaseValue}
@@ -851,7 +851,7 @@ const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem, detai
                                     <CustomSearchableOptionsField
                                         emptyAfterSubmit={attemptedSubmit && caseItem === undefined ? true : false}
                                         updateDB={updateCaseDB}
-                                        showActionButton={true}
+                                        showActionButton={false}
                                         value={caseItem}
                                         placeholder="Select Case"
                                         text={searchCaseValue}
