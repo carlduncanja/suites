@@ -183,10 +183,10 @@ function DialogDetailsTab({onFieldChange, fields, handlePopovers, popoverList, e
     const createnewPhysician = (name) => {
         if(!name) return;
         console.log("nameeeeeeee", name)
-        createPhysician({ firstName: " ", surname: name})
+        createPhysician({ firstName: "---", surname: name})
             .then(_ => {
                 searchQuery([]);
-                setSearchValue('');
+                //setSearchValue('');
                 fetchPhysicians();
                 modal.openModal('ConfirmationModal', {
                     content: <ConfirmationComponent
