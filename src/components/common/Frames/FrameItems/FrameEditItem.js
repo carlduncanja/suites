@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import 'react-native-get-random-values';
+import { v4 as uuidv4 } from 'uuid'
 import IconButton from '../../Buttons/IconButton';
 import styled, { css } from '@emotion/native';
 import { useTheme } from 'emotion-theming';
@@ -9,7 +11,7 @@ import InputField2 from '../../../common/Input Fields/InputField2'
 import _, { reduce, set } from "lodash";
 import Row from '../../../common/Row';
 import SearchableOptionsField from '../../../common/Input Fields/SearchableOptionsField'
-import { createPhysician, getPhysicians, getUsersCall } from '../../../../api/network'
+import { createPhysician, getPhysicians, getRolesCall, getUsersCall, registrationCall } from '../../../../api/network'
 
 const FrameItemWrapper = styled.View`
     width: 100%;
@@ -247,6 +249,48 @@ function FrameEditItem({
         setActionButton(value)
     }
 
+    async function updateNurseDB(item, handlePatientFunc, setSelectedValueFunc) {
+        let result = {};
+        const token = item.split(" ");
+        const generatedEmailAddon = uuidv4().toString();
+        const firstName = token[0] || "--";
+        const lastName = token[1] || "--";
+        let role = ''
+        await getRolesCall().then(res => {
+            const response = res.filter(item => item?.name.toLowerCase() === "Nurse".toLowerCase());
+            role = response[0]._id
+        })
+
+        const payload = {
+            first_name: firstName,
+            last_name: lastName,
+            email: `generatedsEmail${generatedEmailAddon}@suites.com`,
+            password: "password1",
+            confirm_password: "password1",
+            role: role
+        }
+        
+        
+
+        await registrationCall(payload).then(res => {
+            result = {
+                _id: res._id,
+                name: `${res.first_name} ${res.last_name}`,
+                tag: "Nurse",
+                type: "Nurse"
+            }            
+        }).then(res => {
+            handlePatientFunc(result);
+            setSelectedValueFunc(result);
+            setStaffInfo([
+                ...staffInfo,
+                result
+            ]);
+            activateButton(true)
+            setSearchValue('')          
+        })
+    }
+
     return (
         <FrameItemWrapper theme={theme}>
             <FrameItemContainer theme={theme}>
@@ -323,7 +367,7 @@ function FrameEditItem({
                                                 emptyAfterSubmit={false}
                                                 value={generatedNurse}
                                                 handlePatient={handleSurgeon}
-                                                updateDB={updatePhysicianDB}
+                                                updateDB={updateNurseDB}
                                                 showActionButton={true}
                                                 placeholder={physicianName}
                                                 text={currentIndex === 4 ? searchValue : ''}
@@ -347,7 +391,7 @@ function FrameEditItem({
                                                 options={searchResult}
                                                 onClear={() => {
                                                     setSearchValue('')
-                                                    deleteSurgeonTag("Nurse")
+                                                    // deleteSurgeonTag("Nurse")
                                                     activateButton(false)
                                                 }}
 
