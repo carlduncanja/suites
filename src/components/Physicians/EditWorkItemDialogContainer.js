@@ -11,7 +11,7 @@ import SearchableOptionsField from '../common/Input Fields/SearchableOptionsFiel
 import CustomSearchableOptionsField from '../common/Input Fields/CustomSearchableOptionsField';
 import DateInputField from '../common/Input Fields/DateInputField';
 import { connect } from 'react-redux';
-import { getTheatres, createTheatre, createNewProcedure, updateCaseFile, updateAppointmentById, updatePatient as patientUpdater, getUsersCall, getProcedures, getCaseFiles, createCaseFile, createAppointment, getAppointmentById } from '../../api/network';
+import { getTheatres, createTheatre, createNewProcedure, updateCaseFile, updateAppointmentById, updatePatient as patientUpdater, getUsersCall, getProcedures, getCaseFiles, createCaseFile, createAppointment, getAppointmentById, getPhysicians } from '../../api/network';
 import _, { reduce, set } from "lodash";
 import moment from 'moment';
 import { formatDate } from '../../utils/formatter';
@@ -281,9 +281,13 @@ const EditWorkItemDialogContainer = ({ onCancel, onCreated, appiontment, refresh
         }
         // check if removeEmpty is length 0
     };
-
     async function updateProcedureDB(item, handlePatientFunc, setSelectedValueFunc) {
         let inputUpdate = {};
+        let doctor = '';
+
+        await getPhysicians(' ', 1).then(result => { 
+            doctor = result.data[0]?._id
+        });
 
         const result = {
             // reference :'',
@@ -292,17 +296,7 @@ const EditWorkItemDialogContainer = ({ onCancel, onCreated, appiontment, refresh
             // notes:'',
             // isTemplate : false,
             hasRecovery: false,
-            physician: {
-                "_id": addWorkItem.id,
-                "active": "active",
-                "address": Array[
-                    {
-                        "_id": "5ea05969a75843f64322d913",
-                        "line1": "Barbican Road, Kingston",
-                        "line2": "Apartment 23",
-                    }
-                ],
-            }
+            physicians: [doctor],
             // supportedRooms: [], *
             // inventories:[],
             // equipments:[],
