@@ -435,6 +435,13 @@ const EditWorkItemDialogContainer = ({ onCancel, onCreated, appiontment, refresh
                 .date(newDate.date())
             : undefined;
 
+        const newEndTime = endTime
+            ? moment(endTime)
+                .year(newDate.year())
+                .month(newDate.month())
+                .date(newDate.date())
+            : undefined;
+
         setDate(newDate)
         onFieldChange("selectedDate")(newDate);
         // update procedure
@@ -442,6 +449,7 @@ const EditWorkItemDialogContainer = ({ onCancel, onCreated, appiontment, refresh
             ...procedure,
             date: date,
             startTime: newStartTime && newStartTime.toDate(),
+            endTime: newEndTime && newEndTime.toDate()
         });
     };
 
@@ -507,9 +515,10 @@ const EditWorkItemDialogContainer = ({ onCancel, onCreated, appiontment, refresh
         const validateAllFields = validateFields();
         if (!validateAllFields) { return }
         if (validateAllFields) {
+            console.log("jbabkjdhks", procedure.endTime, procedure.startTime)
             let workItem = {
-                "startTime": startTime,
-                "endTime": endTime,
+                "startTime": procedure?.startTime,
+                "endTime": procedure?.endTime,
                 "location": location._id,
                 "item":{'case':caseItem._id},
                 "title": procedure.name,
@@ -518,6 +527,7 @@ const EditWorkItemDialogContainer = ({ onCancel, onCreated, appiontment, refresh
                 "authInfo": physicianId 
                 
             } 
+            console.log("updated work item", appiontmentId, workItem)
 
             updateAppointmentById(appiontmentId, workItem)
                 .then(data => {
@@ -539,8 +549,8 @@ const EditWorkItemDialogContainer = ({ onCancel, onCreated, appiontment, refresh
                     );
                     setTimeout(() => {
                         modal.closeAllModals();
-                        refreshShedule()
                     }, 2000);
+                    refreshShedule()
                 })
                 .catch(error => {
                     modal.openModal(
@@ -728,7 +738,7 @@ const EditWorkItemDialogContainer = ({ onCancel, onCreated, appiontment, refresh
 
                             <DateInputField
                                 onDateChange={onTimeUpdate("startTime")}
-                                value={startTime}
+                                value={formatDate(startTime, 'hh:mm a')}
                                 mode={"time"}
                                 format={"hh:mm A"}
                                 onClear={() => {
@@ -750,7 +760,7 @@ const EditWorkItemDialogContainer = ({ onCancel, onCreated, appiontment, refresh
 
                             <DateInputField
                                 onDateChange={EndTimeUpdate("endTime")}
-                                value={endTime}
+                                value={formatDate(endTime, 'hh:mm a')}
                                 mode={"time"}
                                 format={"hh:mm A"}
                                 keyboardType="number-pad"
