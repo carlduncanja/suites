@@ -11,7 +11,7 @@ import SearchableOptionsField from '../../components/common/Input Fields/Searcha
 import CustomSearchableOptionsField from '../../components/common/Input Fields/CustomSearchableOptionsField';
 import DateInputField from '../../components/common/Input Fields/DateInputField';
 import { connect } from 'react-redux';
-import { getTheatres, createTheatre, createNewProcedure, updatePatient as patientUpdater, getUsersCall, getProcedures, getCaseFiles, createCaseFile, createAppointment, addProcedureAppointmentCall, getPhysicians } from '../../api/network';
+import { getTheatres, createTheatre, createNewProcedure, updatePatient as patientUpdater, getUsersCall, getProcedures, getCaseFiles, createCaseFile, createAppointment, addProcedureAppointmentCall, getPhysicians, createPhysician } from '../../api/network';
 import _, { reduce, set } from "lodash";
 import moment, { duration } from 'moment';
 import { formatDate, dateDifferenceToHours } from '../../utils/formatter';
@@ -301,6 +301,24 @@ const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem, detai
         })
     }
 
+    async function updatePhysicianDB(item, handlePatientFunc, setSelectedValueFunc) {
+        let result = {};
+        const token = item.split(" ");
+        item = {
+            "firstName": token[0],
+            "surname": token[1] || '--'
+        },
+            await createPhysician(item).then(res => {
+                result = {
+                    _id: res._id,
+                    name: `${res.firstName} ${res.surname}`
+                }
+            }).then(res => {
+                handlePatientFunc(result);
+                setSelectedValueFunc(result);
+            })
+    }
+    
     async function updateTheatreDB(item, handlePatientFunc, setSelectedValueFunc) {
         let result = {};
         const token = item.split(" ");
@@ -741,7 +759,7 @@ const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem, detai
 
                                     <SearchableOptionsField
                                         emptyAfterSubmit={attemptedSubmit && physicianInfo === undefined ? true : false}
-                                        updateDB={updateTheatreDB}
+                                        updateDB={updatePhysicianDB}
                                         showActionButton={true}
                                         value={physicianInfo}
                                         placeholder="Select physician"
