@@ -78,7 +78,6 @@ const TextItem = styled.Text(({ theme, flex = 1, color = '--color-gray-800', fon
     ...theme.font[font],
     color: theme.colors[color],
     paddingTop: 2,
-    paddingRight: 10
 }));
 
 const TittleContianer = styled.View` 
@@ -193,7 +192,7 @@ function RecentAlertsList({ data = [], updateAlerts = () => { } }) {
             <ListItemContainer>
                 <TittleContianer>
                     <TitleSection>
-                        <TextItem color="--color-gray-800" flex={1}>{`${title}`}</TextItem>
+                        <TextItem color="--color-gray-800" flex={1}>{`${title}   `}</TextItem>
                         <View style={[styles.holder,{backgroundColor:background}]}>
                             <TextItem
                                 color={text}
