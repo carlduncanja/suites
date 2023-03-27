@@ -58,15 +58,17 @@ const SuitesNavigator = createSuitesSidebarNavigator();
 export const SuitesNavigationStack = ({ auth = {} }) => {
     const isAdmin = auth.user.role_name === ROLES.ADMIN;
 
-    // console.log('auth suites navigator', auth); 
-    <SuitesNavigator.Screen
+    // console.log('auth suites navigator', auth);  
+
+    // the invioces section was removed becuase of the changes to the purchase order section 
+   /* <SuitesNavigator.Screen
                 name="Invoices"
                 component={InvoicesNavigationStack}
                 initialParams={{
                     icon: InvoiceIcon,
                     tabName: 'Invoices',
                 }}
-            />
+            />*/ 
 
     return (
         <SuitesNavigator.Navigator
