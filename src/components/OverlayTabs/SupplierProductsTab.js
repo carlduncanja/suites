@@ -71,11 +71,11 @@ const headers = [
     },
     {
         name: 'SKU',
-        alignment: 'flex-start'
+        alignment: 'center'
     },
     {
         name: 'Price',
-        alignment: 'flex-start'
+        alignment: 'flex-end'
     }
 ];
 

@@ -424,8 +424,7 @@ const SupplierPurchaseOrders = ({
     const listItemFormat = item => {
         const { invoice = {}, purchaseOrderNumber = '', status = '', nextOrderDate = '', deliveryDate = '', } = item;
         const invoiceColor = invoice === '' ? '--color-gray-500' : '--color-blue-600';
-        console.log("statuss", status);
-        const statusColor = status === 'Request Sent' ? '--color-teal-600' : status == 'approved' ? "--color-green-500" : '--color-red-700';
+        const statusColor = status === 'Request Sent' ? '--color-teal-600' : '--color-red-700';
         return (
             <>
                 <DataItem
