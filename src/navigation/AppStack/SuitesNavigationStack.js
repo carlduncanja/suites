@@ -58,7 +58,15 @@ const SuitesNavigator = createSuitesSidebarNavigator();
 export const SuitesNavigationStack = ({ auth = {} }) => {
     const isAdmin = auth.user.role_name === ROLES.ADMIN;
 
-    // console.log('auth suites navigator', auth);
+    // console.log('auth suites navigator', auth); 
+    <SuitesNavigator.Screen
+                name="Invoices"
+                component={InvoicesNavigationStack}
+                initialParams={{
+                    icon: InvoiceIcon,
+                    tabName: 'Invoices',
+                }}
+            />
 
     return (
         <SuitesNavigator.Navigator
@@ -131,15 +139,6 @@ export const SuitesNavigationStack = ({ auth = {} }) => {
                     icon: DeliveryIcon,
                     tabName: 'Suppliers',
                     isAdmin
-                }}
-            />
-
-            <SuitesNavigator.Screen
-                name="Invoices"
-                component={InvoicesNavigationStack}
-                initialParams={{
-                    icon: InvoiceIcon,
-                    tabName: 'Invoices',
                 }}
             />
 
