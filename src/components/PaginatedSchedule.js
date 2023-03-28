@@ -324,7 +324,7 @@ function PaginatedSchedule({ ID, details, isPhysician = false, isTheatre = false
 
     return (
         <>
-            <ScheduleDisplayComponent appointments={Array.from(relevantAppointment)} date={alteredDate} idData={updateIDs} />
+            <ScheduleDisplayComponent onPress={handleNewProcedurePress} appointments={Array.from(relevantAppointment)} date={alteredDate} idData={updateIDs}  />
 
             <SchedulePaginator date={formatDate(dateObj, 'dddd MMM / D / YYYY')}
                 goToPreviousDay={goToPreviousDayApp}
