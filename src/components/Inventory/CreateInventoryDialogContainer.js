@@ -1,12 +1,12 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import {View, StyleSheet, Text, Switch, Picker, Alert, TouchableOpacity} from 'react-native';
-import {useModal} from 'react-native-modalfy';
-import {connect} from 'react-redux';
+import { View, StyleSheet, Text, Switch, Picker, Alert, TouchableOpacity } from 'react-native';
+import { useModal } from 'react-native-modalfy';
+import { connect } from 'react-redux';
 import { MenuOptions, MenuOption } from 'react-native-popup-menu';
 import _ from 'lodash';
-import styled, {css} from '@emotion/native';
-import {useTheme} from 'emotion-theming';
+import styled, { css } from '@emotion/native';
+import { useTheme } from 'emotion-theming';
 import OverlayDialog from '../common/Dialog/OverlayDialog';
 import DialogTabs from '../common/Dialog/DialogTabs';
 import InputField2 from '../common/Input Fields/InputField2';
@@ -19,7 +19,7 @@ import MultipleSelectionsField from '../common/Input Fields/MultipleSelectionsFi
 import ConfirmationComponent from '../ConfirmationComponent';
 import OptionsField from '../common/Input Fields/OptionsField';
 import ArrowRightIcon from '../../../assets/svg/arrowRightIcon';
-import {createInventoryVariant, getInventoriesGroup, getCategories, getSuppliers, } from '../../api/network';
+import { createInventoryVariant, getInventoriesGroup, getCategories, getSuppliers, } from '../../api/network';
 import { addInventory } from '../../redux/actions/InventorActions';
 import CreatePageHeader from '../common/DetailsPage/CreatePageHeader';
 import CreatePreviousDoneFooter from '../common/DetailsPage/CreatePreviousDoneFooter';
@@ -39,17 +39,17 @@ import LineDivider from '../common/LineDivider';
 const PageWrapper = styled.View`
     height : 100%;
     width : 100%;
-    background-color : ${ ({theme}) => theme.colors['--default-shade-white']}; 
+    background-color : ${({ theme }) => theme.colors['--default-shade-white']}; 
 `;
 const TabsContainer = styled.View`
     height : 58px;
     justify-content : flex-end;
-    background-color: ${ ({theme}) => theme.colors['--color-gray-200']};
+    background-color: ${({ theme }) => theme.colors['--color-gray-200']};
 `;
 
 const ContentWrapper = styled.View`
     height : 800px;
-    padding : ${ ({theme}) => theme.space['--space-28']};
+    padding : ${({ theme }) => theme.space['--space-28']};
 `;
 const ContentContainer = styled.View`
     height : 100%;
@@ -65,12 +65,12 @@ const FooterWrapper = styled.View`
 
 const Divider = styled.View`
     border-width : 1px;
-    border-color : ${ ({theme}) => theme.colors['--color-gray-300']};
-    margin-top : ${ ({theme}) => theme.space['--space-20']};
-    margin-bottom : ${ ({theme}) => theme.space['--space-32']};
+    border-color : ${({ theme }) => theme.colors['--color-gray-300']};
+    margin-top : ${({ theme }) => theme.space['--space-20']};
+    margin-bottom : ${({ theme }) => theme.space['--space-32']};
 `;
 
-function CreateInventoryDialogContainer({navigation, route, addInventory}) {
+function CreateInventoryDialogContainer({ navigation, route, addInventory }) {
     // ########## CONST
     const modal = useModal();
     const theme = useTheme();
@@ -189,7 +189,7 @@ function CreateInventoryDialogContainer({navigation, route, addInventory}) {
             .then((inventoryResults = {}) => {
                 const { data = [], pages = 0 } = inventoryResults;
                 console.log('Data: ', data);
-                const results = data.map(item => ({...item}));
+                const results = data.map(item => ({ ...item }));
 
                 setInventorySearchResult(results || []);
             })
@@ -203,9 +203,9 @@ function CreateInventoryDialogContainer({navigation, route, addInventory}) {
     const fetchSuppliers = () => {
         getSuppliers(supplierSearchValue, 5)
             .then(supplierData => {
-                const { data = [], pages = 0} = supplierData;
+                const { data = [], pages = 0 } = supplierData;
                 console.log('Data: ', data);
-                const results = data.map(item => ({...item}));
+                const results = data.map(item => ({ ...item }));
 
                 setSupplierSearchResult(results || []);
             })
@@ -242,7 +242,7 @@ function CreateInventoryDialogContainer({navigation, route, addInventory}) {
             setPopoverList(updatedPopovers);
         } else {
             const objIndex = popoverList.findIndex(obj => obj.name === popoverItem);
-            const updatedObj = { ...popoverList[objIndex], status: popoverValue};
+            const updatedObj = { ...popoverList[objIndex], status: popoverValue };
             const updatedPopovers = [
                 ...popoverList.slice(0, objIndex),
                 updatedObj,
@@ -287,13 +287,13 @@ function CreateInventoryDialogContainer({navigation, route, addInventory}) {
     };
 
     const onFieldChange = fieldName => value => {
-        const updatedFields = {...fields};
+        const updatedFields = { ...fields };
         setFields({
             ...updatedFields,
             [fieldName]: value
         });
 
-        const updatedErrors = {...errorFields};
+        const updatedErrors = { ...errorFields };
         delete updatedErrors[fieldName];
         setErrorFields(updatedErrors);
     };
@@ -303,7 +303,7 @@ function CreateInventoryDialogContainer({navigation, route, addInventory}) {
         let requiredFields = ['name', 'product', 'supplier'];
         selectedIndex === 0 ? requiredFields = requiredFields : requiredFields = [...requiredFields, 'unitCost'];
 
-        const errorObj = {...errorFields} || {};
+        const errorObj = { ...errorFields } || {};
 
         for (const requiredField of requiredFields) {
             if (!fields[requiredField]) {
@@ -448,7 +448,7 @@ function CreateInventoryDialogContainer({navigation, route, addInventory}) {
             case 'Details':
                 return detailsTab;
             default:
-                return <View/>;
+                return <View />;
         }
     };
 
@@ -497,22 +497,6 @@ function CreateInventoryDialogContainer({navigation, route, addInventory}) {
 
             <Row zIndex={-1}>
 
-                <FieldContainer>
-                    {/*<MultipleSearchableOptionsField*/}
-                    {/*    label={"Category"}*/}
-                    {/*    text={categorySearchValue}*/}
-                    {/*    oneOptionsSelected={(item) => {onCategorySelect(item);}}*/}
-                    {/*    onChangeText={value => {setCategorySearchValue(value)}}*/}
-                    {/*    onClear={() => {*/}
-                    {/*        setCategorySearchValue('');*/}
-                    {/*    }}*/}
-                    {/*    onSelectShownIten = {onSelectShownIten}*/}
-                    {/*    selectedItems = {categories}*/}
-                    {/*    options={categorySearchResults}*/}
-                    {/*    handlePopovers = {()=>{}}*/}
-                    {/*    isPopoverOpen = {categorySearchQuery}*/}
-                    {/*/>*/}
-                </FieldContainer>
 
                 <FieldContainer>
                     <SearchableOptionsField
@@ -535,6 +519,11 @@ function CreateInventoryDialogContainer({navigation, route, addInventory}) {
                     />
 
                 </FieldContainer>
+
+                <FieldContainer>
+                    {/*feild used to as place holder to keep the feilds even*/}
+                </FieldContainer>
+
 
             </Row>
 
@@ -668,6 +657,6 @@ const styles = StyleSheet.create({
 
 });
 
-const mapDispatcherToProps = {addInventory};
+const mapDispatcherToProps = { addInventory };
 
 export default connect(null, mapDispatcherToProps)(CreateInventoryDialogContainer);
