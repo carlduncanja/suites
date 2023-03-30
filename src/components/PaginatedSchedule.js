@@ -35,9 +35,13 @@ function PaginatedSchedule({ ID, details, isPhysician = false, isTheatre = false
 
     console.log('treue', tab)
 
-    useEffect(() => {
-       handleNewProcedurePress()
-    }, [tab]);
+    
+    if(tab){
+        useEffect(() => {
+            handleNewProcedurePress()
+         }, [tab]);
+     
+    }
 
     const dateFormatter = item => {
         const datetobePassed =
