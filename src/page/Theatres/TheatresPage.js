@@ -39,12 +39,12 @@ function TheatresPage({route, navigation}) {
     const {isEditMode} = pageState;
     // ##### Lifecycle Methods
 
-    useEffect(() => {
+    tab ? useEffect(() => {
         setTimeout(() => {
             fetchTheatre(theatre._id);
         }, 200);
         setCurrentTab(currentTabs[4])
-    }, [tab]);
+    }, [tab]) : ''
 
 
     useEffect(() => {
@@ -273,7 +273,7 @@ function TheatresPage({route, navigation}) {
                 return <EquipmentsTab equipments={equipments}/>;
             }
             case 'Schedule':
-                return <PaginatedSchedule tab = {true} ID={theatre._id} details = {theatre} isTheatre = {true} isPhysician={false}/>;
+                return <PaginatedSchedule tab = {tab} ID={theatre._id} details = {theatre} isTheatre = {true} isPhysician={false}/>;
             default:
                 return <View/>;
         }

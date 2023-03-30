@@ -21,7 +21,7 @@ import ConfirmationComponent from './ConfirmationComponent';
 import ConfirmationCheckBoxComponent from './ConfirmationCheckBoxComponent';
 import _ from 'lodash'
 
-function PaginatedSchedule({ ID, details, isPhysician = false, isTheatre = false, tab }) {
+function PaginatedSchedule({ ID, details, isPhysician = false, isTheatre = false, tab = false }) {
 
     console.log("theare oage? ", isTheatre)
     const weekday = new Array(7);
@@ -35,13 +35,9 @@ function PaginatedSchedule({ ID, details, isPhysician = false, isTheatre = false
 
     console.log('treue', tab)
 
-    
-    if(tab){
-        useEffect(() => {
-            handleNewProcedurePress()
-         }, [tab]);
-     
-    }
+    tab ? useEffect(() => {
+       handleNewProcedurePress()
+    }, [tab]): ''
 
     const dateFormatter = item => {
         const datetobePassed =
