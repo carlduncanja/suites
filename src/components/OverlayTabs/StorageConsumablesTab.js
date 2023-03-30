@@ -27,11 +27,13 @@ const headers = [
     },
     {
         name: "Type",
-        alignment: "flex-start"
+        alignment: "flex-start",
+        flex:2
     },
     {
         name: "On-Hand",
-        alignment: "flex-start"
+        alignment: "flex-start",
+        flex:2
     },
     {
         name: "Unit Price",
@@ -60,9 +62,9 @@ const StorageConsumablesTab = ({consumables = [], storageLocation, onUpdateItem}
         return (
             <>
                 <DataItem flex={2} color="--color-blue-600" fontStyle="--text-base-medium" text={inventoryName}/>
-                <DataItem align="center" color="--color-gray-600" fontStyle="--text-base-regular"
+                <DataItem flex={2} align="center" color="--color-gray-600" fontStyle="--text-base-regular"
                           text={inventoryGroup?.name}/>
-                <DataItem align="center" color="--color-gray-600" fontStyle="--text-base-regular" text={stock}/>
+                <DataItem flex={2} align="center" color="--color-gray-600" fontStyle="--text-base-regular" text={stock}/>
                 <DataItem align="flex-end" color="--color-gray-600" fontStyle="--text-base-regular"
                           text={`$ ${currencyFormatter(unitCost)}`}/>
 
