@@ -46,10 +46,10 @@ const EditableEquipmentGroupTab = ({ onFieldChange, fields, handlePopovers, popo
     //Description
     const [descriptionValue, setDescriptionValue] = useState('');
 
-    const values = 
-    useEffect(() => {
-        fetchCategories();
-    }, [categorySearchValue])
+    const values =
+        useEffect(() => {
+            fetchCategories();
+        }, [categorySearchValue])
 
     const fetchCategories = () => {
         getCategories("equipment", 1000, categorySearchValue)
@@ -125,10 +125,12 @@ const EditableEquipmentGroupTab = ({ onFieldChange, fields, handlePopovers, popo
                 <View style={{ width: "100%", flexDirection: "column", marginBottom: 30 }}>
                     <>
 
-                        <View style={{ height: 220, width: 620, marginBottom: 20 }}>
-                            <Row>
-                                <LabelText theme={theme}>Description</LabelText>
-                            </Row>
+                        <View style={{ height: 220, width: 600, marginBottom: 20 }}>
+                            <View style={styles.descriptionTittleView}>
+                                <Row>
+                                    <LabelText theme={theme}>Description</LabelText>
+                                </Row>
+                            </View>
                             <TextArea
                                 value={fields['description']}
                                 onChangeText={onFieldChange('description')}
@@ -136,6 +138,7 @@ const EditableEquipmentGroupTab = ({ onFieldChange, fields, handlePopovers, popo
                                 multiline={true}
                                 numberOfLines={4}
                             />
+
                         </View>
                         <Row>
                             <InputWrapper>
@@ -169,7 +172,7 @@ const EditableEquipmentGroupTab = ({ onFieldChange, fields, handlePopovers, popo
                         <Row>
                             <MultipleSelectionsField
                                 label={"Category"}
-                                value={fields['categories'].map(x=> x.name)}
+                                value={fields['categories'].map(x => x.name)}
                                 onOptionsSelected={(value) => handleCategorySelected(value)}
                                 options={categorySearchResults}
                                 createNew={() => createCategory(categorySearchValue)}
@@ -214,5 +217,9 @@ const styles = StyleSheet.create({
         color: '#718096',
         fontSize: 16,
         // marginBottom:5
-    },
+    }, 
+
+    descriptionTittleView:{
+        marginBottom:-28
+    }
 })
