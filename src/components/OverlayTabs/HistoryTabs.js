@@ -34,17 +34,17 @@ const headers = [
     },
     {
         name: 'Recovery',
-        alignment: 'center',
+        alignment: 'flex-start',
         flex:1,
     },
     {
         name: 'Duration',
-        alignment: 'center',
+        alignment: 'flex-start',
         flex:1,
     },
     {
         name: 'Date',
-        alignment: 'flex-end',
+        alignment: 'flex-start',
         flex:1
     }, 
 ];

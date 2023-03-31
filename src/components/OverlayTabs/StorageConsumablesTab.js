@@ -27,15 +27,15 @@ const headers = [
     },
     {
         name: "Type",
-        alignment: "center"
+        alignment: "flex-start"
     },
     {
         name: "On-Hand",
-        alignment: "center"
+        alignment: "flex-start"
     },
     {
         name: "Unit Price",
-        alignment: "flex-end"
+        alignment: "flex-start"
     }
 ];
 

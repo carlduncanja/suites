@@ -38,12 +38,12 @@ const listHeaders = [
     },
     {
         name: 'Stored Items',
-        alignment: 'center',
+        alignment: 'flex-start',
         flex: 1,
     },
     {
         name: 'Pending Transfers',
-        alignment: 'center',
+        alignment: 'flex-start',
         flex: 1
     }
 ];

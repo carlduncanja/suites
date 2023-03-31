@@ -384,10 +384,18 @@ function Theatres(props) {
 
         // console.log("Formatted Item: ", formattedItem)
 
-        const onActionClick = () => {
+        const onActionClick = (isOpenEditable) => {
+            console.log('click')
+            props.navigation.navigate('TheatresPage', {
+                initial: false,
+                theatre: item,
+                isEdit: isOpenEditable,
+                reloadTheatres: () => fetchTheatres(currentPagePosition),
+                tab: 4
+            });
         };
 
-        const itemView = theatreItem(formattedItem, onActionClick);
+        const itemView = theatreItem(formattedItem, () => onActionClick(false));
 
         return (
             <ListItem
