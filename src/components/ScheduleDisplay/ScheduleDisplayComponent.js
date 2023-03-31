@@ -6,6 +6,7 @@ import moment from 'moment';
 function ScheduleDisplayComponent({
     appointments = [],
     date = new Date(),
+    onPress,  
     idData
 
 }) {
@@ -99,7 +100,7 @@ function ScheduleDisplayComponent({
 
                 {/* TIME LINE*/}
                 {
-                    timelineDate.map((item, index) => <TimeBlock key={index} time={item} />)
+                    timelineDate.map((item, index) => <TimeBlock key={index} time={item} onPress ={onPress} />)
                 }
 
 
@@ -199,14 +200,14 @@ const CurrentTimeIndicator = () => (
     </View>
 )
 
-const TimeBlock = ({ time }) => {
+const TimeBlock = ({ time, onPress }) => {
 
     const timeToDisplay = moment(time).format('h: mm')
     const hour = moment(time).hour();
 
     const isEven = (hour % 2 === 0)
 
-    return <View style={{
+    return <TouchableOpacity onPress={onPress} style={{
         flexDirection: "row",
         justifyContent: "flex-start"
     }}>
@@ -245,7 +246,7 @@ const TimeBlock = ({ time }) => {
             backgroundColor: isEven ? '#F8FAFB' : '#FFFFFF',
         }} />
 
-    </View>
+    </TouchableOpacity>
 }
 
 
