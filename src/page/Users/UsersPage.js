@@ -37,7 +37,7 @@ const listHeaders = [
     },
     {
         name: "User Group",
-        alignment: "center",
+        alignment: "flex-start",
         flex: 1,
     },
     {
@@ -180,8 +180,8 @@ function UsersPage() {
         });
     };
 
-    const onActionPress = () => {
-
+    const onActionPress = (item) => {
+        navigation.navigate("UserPage", {user: item, onUserUpdate: handleUserUpdate, editMode: true})
     }
 
     const onDeleteUsers = () => {
@@ -233,7 +233,7 @@ function UsersPage() {
 
     // region Helper Methods
 
-    const userItem = (name, email, groupName, onActions) => (
+    const userItem = (name, email, groupName, item) => (
         <>
             <DataItem flex={1.3} text={name} theme={theme}/>
             <DataItem flex={2} text={email} theme={theme}/>
@@ -244,7 +244,8 @@ function UsersPage() {
                 content={
                     <IconButton
                         Icon={<EditIcon/>}
-                        onPress={onActionPress}
+                        onPress={()=> {onActionPress(item)}}
+                        
                     />
                 }
             />
@@ -356,7 +357,7 @@ function UsersPage() {
         const userName = `${item['first_name']} ${item['last_name']}`
         const group = item.role?.name
 
-        const itemView = userItem(userName, item.email, group, onActionClick);
+        const itemView = userItem(userName, item.email, group, item);
 
         // selectedIds.includes() checks if an id is within the array
         // the below component seems to handle box ticks

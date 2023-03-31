@@ -28,7 +28,9 @@ function TheatresPage({route, navigation}) {
         'Equipment',
         'Schedule',
     ];
-    const {theatre, reloadTheatres} = route.params;
+    const {theatre, reloadTheatres, tab} = route.params;
+
+    console.log('tabbbb', tab)
     // ##### States
     const [currentTab, setCurrentTab] = useState(currentTabs[0]);
     const [selectedTheatre, setTheatre] = useState(theatre);
@@ -36,6 +38,14 @@ function TheatresPage({route, navigation}) {
 
     const {isEditMode} = pageState;
     // ##### Lifecycle Methods
+
+    tab ? useEffect(() => {
+        setTimeout(() => {
+            fetchTheatre(theatre._id);
+        }, 200);
+        setCurrentTab(currentTabs[4])
+    }, [tab]) : ''
+
 
     useEffect(() => {
         setTimeout(() => {
@@ -263,7 +273,7 @@ function TheatresPage({route, navigation}) {
                 return <EquipmentsTab equipments={equipments}/>;
             }
             case 'Schedule':
-                return <PaginatedSchedule ID={theatre._id} details = {theatre} isTheatre = {true} isPhysician={false}/>;
+                return <PaginatedSchedule tab = {tab} ID={theatre._id} details = {theatre} isTheatre = {true} isPhysician={false}/>;
             default:
                 return <View/>;
         }
