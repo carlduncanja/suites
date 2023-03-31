@@ -33,7 +33,7 @@ const headers = [
     {
         name: 'Item Name',
         alignment: 'flex-start',
-        flex: 2,
+        flex: 1.5,
     },
     {
         name: 'Status',
@@ -57,7 +57,7 @@ const headers = [
     },
     {
         name: 'Unit Price',
-        alignment: 'flex-end',
+        alignment: 'flex-start',
         flex: 1,
     },
 ];
@@ -181,14 +181,14 @@ const OrderItemTab = ({
 
         return (
             <>
-                <DataItem text={name} flex={2} fontStyle="--text-base-medium" color="--color-blue-600"/>
+                <DataItem text={name} flex={1.8} fontStyle="--text-base-medium" color="--color-blue-600"/>
                 <DataItem text={status ? transformToTitleCase(status) : 'Pending'} align="center" flex={1} fontStyle="--text-base-medium" color="--color-gray-800"/>
-                <DataItem text={sku === '' ? 'n/a' : sku} align="center" flex={1} fontStyle="--text-base-medium" color="--color-gray-800"/>
+                <DataItem text={sku === '' ? 'n/a' : sku} align="center" flex={1} fontStyle="--text-base-medium" color="--color-gray-800" />
                 {
-                    <DataItem text={amount} align="center" flex={1} fontStyle="--text-base-medium" color="--color-gray-800" width = '100%'/>
+                    <DataItem text={amount} align="center" flex={1} fontStyle="--text-base-medium" color="--color-gray-800" width = '100%' />
 
                 }
-                <DataItem text={ item.unit &&transformToTitleCase(item.unit)} align="center" flex={1} fontStyle="--text-base-medium" color="--color-gray-800"/>
+                <DataItem text={ item.unit &&transformToTitleCase(item.unit)} align="center" flex={0.5} fontStyle="--text-base-medium" color="--color-gray-800"/>
                 <DataItem text={`$ ${currencyFormatter(unitPrice)}`} align="flex-end" flex={1} fontStyle="--text-base-medium" color="--color-gray-800"/>
 
             </>
