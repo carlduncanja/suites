@@ -198,7 +198,7 @@ function InventoryStorageLocationsTab({
                 <Text style={styles.itemText}>
                     {stock}
                 </Text>
-            </View> */}
+             </View> */}
 
         </>;
     };
