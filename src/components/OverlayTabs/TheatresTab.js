@@ -24,19 +24,22 @@ const headers = [
     {
         name: 'Theatre',
         alignment: 'flex-start',
-        flex: 2
+        flex: 1.6
     },
     {
         name: 'Status',
-        alignment: 'center'
+        alignment: 'center',
+        flex: 1.5
     },
     {
         name: 'Recovery',
-        alignment: 'center'
+        alignment: 'center',
+        flex: 2.2
     },
     {
         name: 'Availability',
-        alignment: 'flex-end'
+        alignment: 'center',
+        flex: 1
     }
 ]
 
@@ -93,9 +96,9 @@ const TheatresTab = ({ modal, theatresData, onAddTheatre }) => {
         const recoveryColor = isRecovery ? '--color-green-600' : '--color-red-600';
         return (
             <>
-                <TouchableDataItem flex={2} fontStyle="--text-base-medium" text={name} isDisabled={true} />
-                <DataItem flex={1} fontStyle="--text-sm-medium" align="center" color="--color-orange-600" text={status} />
-                <DataItem flex={1} fontStyle="--text-sm-medium" align="center" color={recoveryColor} text={isRecovery ? 'Yes' : 'No'} />
+                <TouchableDataItem flex={3} fontStyle="--text-base-medium" text={name} isDisabled={true} />
+                <DataItem flex={2.4} fontStyle="--text-sm-medium" align="center" color="--color-orange-600" text={status} />
+                <DataItem flex={2} fontStyle="--text-sm-medium" align="center" color={recoveryColor} text={isRecovery ? 'Yes' : 'No'} />
                 <DataItem flex={1} fontStyle="--text-sm-regular" align="flex-end" color="--color-gray-800" text={`${availability} slots`} />
 
                 {/* <View style={{flexDirection: 'row', borderBottomColor:'#E3E8EF', borderBottomWidth:1, marginBottom:15, paddingBottom:15}}>
