@@ -53,9 +53,10 @@ function ProcedureScheduleContent({
 
     useEffect(() => {
         getUserCall(createdBy).then(res => {
+            console.log("owndreor", res.data[0].first_name)
             setOwner({
-                firstName: res.first_name,
-                lastName: res.last_name
+                firstName: res.data[0].first_name,
+                lastName: res.data[0].last_name
             });
         });
 
@@ -96,12 +97,13 @@ function ProcedureScheduleContent({
     const labels = ["Lead Surgeon", "Anaesthesiologist", "Assistant Surgeon"]; 
 
     const staffItem = (key, name, position, isBold, isSupporting) => (
-        
         <View
             style={[styles.doctorContainer]}
             key={key}
         >
+            
             {
+                
                 name !== null ? (
                     <View style={{marginRight: 10}}>
                         <SvgIcon iconName="doctorArrow" strokeColor="#718096"/>
@@ -111,6 +113,7 @@ function ProcedureScheduleContent({
             <View style={{flex: 1, justifyContent: 'space-between', flexDirection: 'row'}}>
 
                 {
+                    
                     name !== null ? (
                         <Text
                             style={
@@ -124,6 +127,7 @@ function ProcedureScheduleContent({
                                 ]
                             }
                         > 
+                        
                             {name}
                         </Text>
                     ) : (
@@ -173,6 +177,7 @@ function ProcedureScheduleContent({
         <View style={styles.box}>
             {
                 nurses.map((item, index) => {
+                    console.log("yhyjhjkhdks sdkdls",item.name)
                     const name = `${item.name}` || "No Data";
                     const position = `Nurse`;
                     return staffItem(index, name, position, false, false);
