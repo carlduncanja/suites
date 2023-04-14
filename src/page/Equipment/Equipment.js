@@ -107,12 +107,12 @@ const Equipment = props => {
         {
             name: 'Status',
             alignment: 'flex-start',
-            flex: 1.2,
+            flex: 2.4,
         },
         {
             name: 'In Stock',
-            alignment: 'center',
-            flex: 1.5,
+            
+            flex: 1.3,
         },
 
         {
@@ -471,8 +471,8 @@ const Equipment = props => {
     const equipmentItemView = ({equipmentName, quantity, status, assignment}, onActionPress) => (
         <>
             <DataItem text={equipmentName} flex={2} color="--color-blue-600" fontStyle="--text-sm-medium"/>
-            <DataItem text={status} flex={1.2} color="--color-gray-800" fontStyle="--text-sm-regular"/>
-            <DataItem text={quantity} flex={1.5} color="--color-gray-800" fontStyle="--text-sm-regular" align="center"/>
+            <DataItem text={status} flex={2.4} color="--color-gray-800" fontStyle="--text-sm-regular"/>
+            <DataItem text={quantity} flex={1.2} color="--color-gray-800" fontStyle="--text-sm-regular" align="flex-end"/>
             <DataItem text={assignment} flex={2} color="--color-gray-800" fontStyle="--text-sm-regular"/>
         </>
     );
