@@ -28,19 +28,23 @@ import {LONG_PRESS_TIMER} from '../../const';
 const headers = [
     {
         name :"Item Name",
-        alignment: "flex-start"
+        alignment: "flex-start",
+        flex: 1.5
     },
     {
         name :"Type",
-        alignment: "center"
+        alignment: "center",
+        flex: 1.6
     },
     {
         name :"Quantity",
-        alignment: "center"
+        alignment: "center",
+        flex: 2.2
     },
     {
         name :"Unit Price",
-        alignment: "flex-end"
+        alignment: "center",
+        flex: 1.1
     }
 ];
 
@@ -115,8 +119,8 @@ const ProceduresConsumablesTab = ({consumablesData, procedureId, onAddInventory,
 
         return (
             <>
-                <DataItem text = {name} color = {'--color-blue-600'} fontStyle = {'--text-base-medium'}/>
-                <DataItem text = {type} align = "center" fontStyle = {'--text-base-regular'}/>
+                <DataItem flex={3} text = {name} color = {'--color-blue-600'} fontStyle = {'--text-base-medium'}/>
+                <DataItem flex={2.4} text = {type} align = "center" fontStyle = {'--text-base-regular'}/>
 
                 { isEditMode ?
 
@@ -128,10 +132,10 @@ const ProceduresConsumablesTab = ({consumablesData, procedureId, onAddInventory,
                         />
                     </View>
                     :
-                    <DataItem text = {amount} align = "center" fontStyle = {'--text-base-regular'}/>
+                    <DataItem flex={2} text = {amount} align = "center" fontStyle = {'--text-base-regular'}/>
                 }
 
-                <DataItem text = {`$ ${currencyFormatter(unitCost)}`} align = "flex-end" fontStyle = {'--text-base-regular'}/>
+                <DataItem flex={1} text = {`$ ${currencyFormatter(unitCost)}`} align = "flex-end" fontStyle = {'--text-base-regular'}/>
             </>
         )
 
