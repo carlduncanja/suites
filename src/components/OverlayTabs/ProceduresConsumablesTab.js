@@ -120,7 +120,15 @@ const ProceduresConsumablesTab = ({consumablesData, procedureId, onAddInventory,
         return (
             <>
                 <DataItem flex={3} text = {name} color = {'--color-blue-600'} fontStyle = {'--text-base-medium'}/>
-                <DataItem flex={2.4} text = {type} align = "center" fontStyle = {'--text-base-regular'}/>
+                
+                { isEditMode ?
+                
+                    <DataItem flex={0.9} text = {type} align = "center" fontStyle = {'--text-base-regular'}/>
+
+                 :
+                    <DataItem flex={2.4} text = {type} align = "center" fontStyle = {'--text-base-regular'}/>
+
+                 }
 
                 { isEditMode ?
 
@@ -134,8 +142,12 @@ const ProceduresConsumablesTab = ({consumablesData, procedureId, onAddInventory,
                     :
                     <DataItem flex={2} text = {amount} align = "center" fontStyle = {'--text-base-regular'}/>
                 }
-
+            
+            { isEditMode ? 
+            
+                <DataItem flex={1} text = {`$ ${currencyFormatter(unitCost)}`} align = "flex-end" fontStyle = {'--text-base-regular'}/> :
                 <DataItem flex={1} text = {`$ ${currencyFormatter(unitCost)}`} align = "flex-end" fontStyle = {'--text-base-regular'}/>
+            }
             </>
         )
 
@@ -323,7 +335,7 @@ export default withModal(ProceduresConsumablesTab)
 
 const styles = StyleSheet.create({
     item:{
-        flex:1,
+        flex:3.7,
     },
     itemText:{
         fontSize:16,
