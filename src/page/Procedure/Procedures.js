@@ -452,15 +452,17 @@ const Procedures = props => {
         modal.closeModals('ActionContainerModal');
 
         const procedureCopy = {...item};
-
+        //console.log("this is jus a maker",item )
+        
         // modify copy object to manage attributes which can be copied
         procedureCopy.procedureReferenceName = procedureCopy.name;
         procedureCopy.procedureReference = procedureCopy._id;
         procedureCopy.name = `${procedureCopy.name} - Copy`;
-        procedureCopy.physician = {
+        procedureCopy.physician = procedureCopy.physicians
+        /*{
             _id: procedureCopy.physician._id,
             name: `Dr. ${procedureCopy.physician.surname}`
-        };
+        };*/
 
         navigation.navigate('CreateProcedure', {
             screen: 'CreateProcedure',
@@ -477,7 +479,8 @@ const Procedures = props => {
                 setTimeout(() => {
                     handleOnItemPress(createdItem, false)();
                 }, 300);
-            },
+            }, 
+           
         });
 
         // navigation.navigate('Procedures List', {
@@ -495,8 +498,10 @@ const Procedures = props => {
         //             setFloatingAction(false);
         //         }
         //     },
-        // });
-    };
+        // }); 
+
+         
+    }; 
 
     // ############# Prepare list data
 

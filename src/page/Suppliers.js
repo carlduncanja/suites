@@ -444,7 +444,7 @@ const Suppliers = props => {
                     onLongPress={handleRemoveSupplier}
                 >
                     <ActionItem
-                        title="Hold to Delete Case"
+                        title="Hold to Delete Supplier"
                         icon={(
                             <WasteIcon
                                 strokeColor={!!isEmpty(selectedSuppliers) ? theme.colors['--color-gray-600'] : theme.colors['--color-red-700']}
