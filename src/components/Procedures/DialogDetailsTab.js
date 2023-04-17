@@ -238,7 +238,7 @@ function DialogDetailsTab({onFieldChange, fields, handlePopovers, popoverList, e
 
     const handlePhysician = value => {
         console.log("i am phy", value)
-        const physician = value ? {
+        const physicians = value ? {
             _id: value._id,
             name: value.name
         } : value;
@@ -246,7 +246,7 @@ function DialogDetailsTab({onFieldChange, fields, handlePopovers, popoverList, e
         if (value === undefined || null) {
             delete fields.physician;
         } else {
-            onFieldChange('physician')(physician);
+            onFieldChange('physician')(physicians);
             setSearchValue(value.name);
         }
 
@@ -303,7 +303,7 @@ function DialogDetailsTab({onFieldChange, fields, handlePopovers, popoverList, e
 
                 <FieldContainer>
                     <MultipleSelectionsField
-                        label="Physician"
+                        label="Physicians"
                         searchText={searchValue}
                         createNew={() => createnewPhysician(searchValue)}
                         onOptionsSelected={(item) => handlePhysicianSelected(item)}
