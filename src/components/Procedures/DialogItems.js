@@ -307,6 +307,7 @@ function DialogItems({
                     text={item?.name}
                     color="--color-blue-600"
                     fontStyle="--text-base-medium"
+                    flex={2.5}
                 />
 
                 <DataItem
@@ -314,7 +315,7 @@ function DialogItems({
                     align="flex-end"
                     color={recoveryColor}
                     fontStyle="--text-sm-medium"
-                    // flex = {0.2}
+                    flex = {0.1}
                 />
             </ItemWrapper>
         );
