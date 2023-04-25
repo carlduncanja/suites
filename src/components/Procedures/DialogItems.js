@@ -326,11 +326,12 @@ function DialogItems({
         // console.log('Item: ', item);
         return (
             <ItemWrapper theme={theme} style={css`margin-right: 0;`}>
-                <DataItem text={name} flex={1} fontStyle="--text-base-medium" color="--color-blue-600"/>
+                <DataItem text={name} flex={0.9} fontStyle="--text-base-medium" color="--color-blue-600"/>
                 <NumberChangeField
                     onChangePress={onQuantityChange(item)}
                     onAmountChange={onAmountChange(item)}
                     value={amount.toString()}
+                    flex={1.8}
                 />
                 <DataItem text={`$ ${currencyFormatter(price)}`} flex={1} align="center" fontStyle="--text-sm-regular" color="--color-gray-800"/>
                 <ContentDataItem
