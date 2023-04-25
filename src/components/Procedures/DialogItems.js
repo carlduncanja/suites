@@ -380,7 +380,7 @@ function DialogItems({
                     data={dataToDisplay}
                     currentListMin={currentPageListMin}
                     currentListMax={currentPageListMax}
-                    listItemFormat={itemType === 'Locations' ? listLocationsItem : listConsumblesEquipmentItem}
+                     listItemFormat={itemType === 'Locations' ? listLocationsItem : listConsumblesEquipmentItem}
                     headers={headers}
                     isCheckbox={false}
                 />
