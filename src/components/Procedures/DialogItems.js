@@ -393,7 +393,7 @@ function DialogItems({
                         totalPages={totalPages}
                         goToNextPage={goToNextPage}
                         goToPreviousPage={goToPreviousPage}
-                        hasNumberBorder={false}
+                         hasNumberBorder={false}
                     />
                 </PaginatorContainer>
 
