@@ -398,8 +398,8 @@ function DialogItems({
                 </PaginatorContainer>
 
                 <ClearListContainer onPress={onClearPress}>
-                    <ClearListText theme={theme}>Clear List</ClearListText>
-                    <ClearList strokeColor={theme.colors['--color-blue-600']}/>
+                     <ClearListText theme={theme}>Clear List</ClearListText>
+                     <ClearList strokeColor={theme.colors['--color-blue-600']}/>
                 </ClearListContainer>
 
             </FooterWrapper>
