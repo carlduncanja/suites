@@ -6,7 +6,7 @@
     "platforms": [
       "ios"
     ],
-    "version": "1.0.4",
+    "version": "2.1.0",
     "orientation": "portrait",
     "icon": "./assets/MedopsLogo.png",
     "splash": {
@@ -15,7 +15,8 @@
       "backgroundColor": "#1866C8"
     },
     "updates": {
-      "fallbackToCacheTimeout": 0
+      "fallbackToCacheTimeout": 0,
+      "url": "https://u.expo.dev/36952d6f-ced1-4294-bfa8-2e20e9226601"
     },
     "assetBundlePatterns": [
       "**/*"
@@ -23,15 +24,16 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.smsja.suites",
-      "buildNumber": "1.4.1",
-      "config": {
-        "usesNonExemptEncryption": false
-      }
+      "buildNumber": "1.4.3"
     },
     "extra": {
       "eas": {
-        "projectId": "244161a8-3381-46b7-90ca-3dddf52aabfe"
+        "projectId": "36952d6f-ced1-4294-bfa8-2e20e9226601"
       }
-    }
+    },
+    "runtimeVersion": {
+      "policy": "sdkVersion"
+    },
+    "android": {}
   }
 }
