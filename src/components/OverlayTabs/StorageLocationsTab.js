@@ -195,6 +195,7 @@ function StorageLocationsTab({storageLocations = []}) {
 
             <ContentDataItem
                 align="center"
+                flex={1.3}
                 content={(
                     <LevelIndicator
                         max={levels.max}
