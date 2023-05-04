@@ -27,7 +27,7 @@ const headers = [
     {
         name: 'Procedure',
         alignment: 'flex-start',
-        flex: 2
+        flex: 2.5
     },
     {
         name: 'Theatre',
@@ -165,10 +165,10 @@ const CustomProceduresTab = ({ selectedPhysician, procedures, setSelectedPhysici
 
     const listItemFormat = item => (
         <>
-            <DataItem flex={2} align="flex-start" text={item?.procedure} color="--color-blue-600" fontStyle="--text-base-medium" />
-            <DataItem flex={1.5} align="flex-start" text={item?.theatre} color="--color-blue-600" fontStyle="--text-base-medium" />
-            <DataItem flex={1} align="center" text={item.recovery} color={RECOVERY_COLORS[item.recovery]} fontStyle="--text-base-medium" />
-            <DataItem flex={1} align="flex-end" text={`${item.duration} hrs`} color="--color-gray-800" fontStyle="--text-base-regular" />
+            <DataItem flex={2.5}  text={item?.procedure} color="--color-blue-600" fontStyle="--text-base-medium" />
+            <DataItem flex={1.8}  text={item?.theatre} color="--color-blue-600" fontStyle="--text-base-medium" />
+            <DataItem flex={1.24}  text={item.recovery} color={RECOVERY_COLORS[item.recovery]} fontStyle="--text-base-medium" />
+            <DataItem flex={0.5}  text={`${item.duration} hrs`} color="--color-gray-800" fontStyle="--text-base-regular" />
 
            
         </>
