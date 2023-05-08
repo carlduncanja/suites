@@ -11,8 +11,8 @@ function ScheduleDisplayComponent({
 
 }) {
     const timerRef = useRef(0); // using ref to keep track of timer.
-
-    const startOfDate = moment(date).startOf('day') // set to 12:00 am
+    const isoDate = date.toISOString;
+    const startOfDate = moment(isoDate).startOf('day') // set to 12:00 am
     const isToday = moment().isSame(date, 'day');
 
     const timelineDate = [];
@@ -204,6 +204,10 @@ const TimeBlock = ({ time, onPress }) => {
 
     const timeToDisplay = moment(time).format('h: mm')
     const hour = moment(time).hour();
+
+    console.log("i am time", time)
+
+    console.log("time to display", timeToDisplay)
 
     const isEven = (hour % 2 === 0)
 
