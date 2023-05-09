@@ -591,6 +591,9 @@ const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem, detai
                 "authInfo": isTheatre ? physicianInfo.id : addWorkItem.id
             }
 
+            console.log('work item', workItem)
+            console.log("hskj", startTime, endTime)
+
             addProcedure()
             createAppointment(workItem)
                 .then(data => {

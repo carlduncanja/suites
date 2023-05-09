@@ -10,10 +10,14 @@ function ScheduleDisplayComponent({
     idData
 
 }) {
+
+    console.log("jksjd", date)
     const timerRef = useRef(0); // using ref to keep track of timer.
-    const isoDate = date.toISOString;
-    const startOfDate = moment(isoDate).startOf('day') // set to 12:00 am
-    const isToday = moment().isSame(date, 'day');
+    //const isoDate = date.toISOString;
+    const startOfDate = moment().startOf('day') // set to 12:00 am
+    const isToday = moment().isSame(date.split()[1], 'day');
+
+    console.log('todat', isToday)
 
     const timelineDate = [];
     const [currentTime, setCurrentTime] = useState(moment);
@@ -204,10 +208,6 @@ const TimeBlock = ({ time, onPress }) => {
 
     const timeToDisplay = moment(time).format('h: mm')
     const hour = moment(time).hour();
-
-    console.log("i am time", time)
-
-    console.log("time to display", timeToDisplay)
 
     const isEven = (hour % 2 === 0)
 
