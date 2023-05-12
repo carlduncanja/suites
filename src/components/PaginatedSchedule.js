@@ -90,14 +90,17 @@ function PaginatedSchedule({ ID, details, isPhysician = false, isTheatre = false
         setalteredDate(dateFormatter(dateObj));
     };
 
-    const fetchAppointments = (id, datePassed = new Date()) => {
+    const fetchAppointments = (id, datePassed) => {
+
         setFetchingAppointment(true);
+        const newDate = datePassed.split(" ")[1]
+        
+        let tommorrow = new Date(formatDate(newDate, "YYYY-MM-DD"));
 
-        let tommorrow = new Date(datePassed);
         tommorrow = tommorrow.setDate(tommorrow.getDate() + 1)
-
-        let fromDate = formatDate(datePassed, 'YYYY/MM/DD');
+        let fromDate = newDate;
         let toDate = formatDate(tommorrow, 'YYYY/MM/DD')
+
 
         getAppointments("", isTheatre ? id : "", fromDate, fromDate, '', isTheatre ? "" : id)
             .then(data => {
@@ -214,6 +217,8 @@ function PaginatedSchedule({ ID, details, isPhysician = false, isTheatre = false
                     addWorkItem={{ "id": ID }}
                     details={details} 
                     isTheatre={isTheatre}
+                    refreshShedule={onRefesh}
+                    
                 />
             ),
             onClose: () => setFloatingAction(false)

@@ -25,7 +25,7 @@ import { formatDate, dateDifferenceToHours } from '../../utils/formatter';
  * @constructor
  */
 
-const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem, details, isTheatre }) => {
+const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem, details, isTheatre, refreshShedule = () => { } }) => {
 
     const modal = useModal();
     const dialogTabs = ['Details'];
@@ -590,7 +590,7 @@ const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem, detai
                 "isRecovery": false,
                 "authInfo": isTheatre ? physicianInfo.id : addWorkItem.id
             }
-
+            
             addProcedure()
             createAppointment(workItem)
                 .then(data => {
@@ -613,7 +613,8 @@ const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem, detai
                     );
                     setTimeout(() => {
                         modal.closeAllModals();
-                    }, 5000);
+                    }, 1000);
+                    refreshShedule()
                 })
                 .catch(error => {
                     setTimeout(() => {
@@ -814,6 +815,7 @@ const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem, detai
                                     </View>
 
                                     <DateInputField
+                                         enabled = {selectedDate === undefined ? false : true}
                                         onDateChange={onTimeUpdate("startTime")}
                                         value={startTime}
                                         mode={"time"}
@@ -841,6 +843,7 @@ const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem, detai
                                     </View>
 
                                     <DateInputField
+                                        enabled = {selectedDate === undefined ? false : true}
                                         onDateChange={EndTimeUpdate("endTime")}
                                         value={endTime}
                                         mode={"time"}
@@ -922,6 +925,7 @@ const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem, detai
                                     </View>
 
                                     <DateInputField
+                                        enabled = {selectedDate === undefined ? false : true}
                                         onDateChange={onTimeUpdate("startTime")}
                                         value={startTime}
                                         mode={"time"}
@@ -943,6 +947,7 @@ const CreateWorkItemDialogContainer = ({ onCancel, onCreated, addWorkItem, detai
                                     </View>
 
                                     <DateInputField
+                                        enabled = {selectedDate === undefined ? false : true}
                                         onDateChange={EndTimeUpdate("endTime")}
                                         value={endTime}
                                         mode={"time"}

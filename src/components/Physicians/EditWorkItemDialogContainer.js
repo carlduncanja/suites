@@ -704,7 +704,7 @@ const EditWorkItemDialogContainer = ({ onCancel, onCreated, appiontment, refresh
 
                             <DateInputField
                                 value={formatDate(selectedDate, 'DD/MM/YYYY')}
-                                minDate={new Date(today)}
+                                //minDate={new Date(today)}
                                 onClear={() => {
                                     onFieldChange("selectedDate")('');
                                     setDate(undefined)

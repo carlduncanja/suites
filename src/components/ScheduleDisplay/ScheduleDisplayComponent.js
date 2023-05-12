@@ -10,10 +10,11 @@ function ScheduleDisplayComponent({
     idData
 
 }) {
-    const timerRef = useRef(0); // using ref to keep track of timer.
 
-    const startOfDate = moment(date).startOf('day') // set to 12:00 am
-    const isToday = moment().isSame(date, 'day');
+    const timerRef = useRef(0); // using ref to keep track of timer.
+    //const isoDate = date.toISOString;
+    const startOfDate = moment().startOf('day') // set to 12:00 am
+    const isToday = moment().isSame(date.split()[1], 'day');
 
     const timelineDate = [];
     const [currentTime, setCurrentTime] = useState(moment);
