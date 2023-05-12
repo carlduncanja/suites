@@ -195,6 +195,7 @@ function StorageLocationsTab({storageLocations = []}) {
 
             <ContentDataItem
                 align="center"
+                flex={1.3}
                 content={(
                     <LevelIndicator
                         max={levels.max}
@@ -205,9 +206,9 @@ function StorageLocationsTab({storageLocations = []}) {
                     />
                 )}
             />
+            <DataItem flex={0.4}/>
 
             <DataItem flex={1} text={stock} color="--color-blue-600" fontStyle="--text-base-medium" align="center"/>
-            <DataItem flex={0.4}/>
         </>
     );
 

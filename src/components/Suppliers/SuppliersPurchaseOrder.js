@@ -30,17 +30,17 @@ const headers = [
     {
         name: 'Product',
         alignment: 'flex-start',
-        flex: 2,
+        flex: 2.5,
     },
     {
         name: 'Quantity',
         alignment: 'center',
-        flex: 1
+        flex: 1.2
     },
     {
         name: 'Unit',
         alignment: 'center',
-        flex: 1
+        flex: 2
     },
     {
         name: 'Actions',
@@ -203,10 +203,12 @@ const SuppliersPurchaseOrder = ({ details, onUpdateItems, onClearPress, onListFo
                     onAmountChange={onChangeField(item?._id)}
                     value={item.amount.toString()}
                     align="center"
+                    flex={2}
                 />
 
                 <ContentDataItem
                     align="flex-end"
+                    flex={1}
                     content={(
                         <InputFieldContainer>
                             <OptionsField
@@ -229,6 +231,7 @@ const SuppliersPurchaseOrder = ({ details, onUpdateItems, onClearPress, onListFo
 
                 <ContentDataItem
                     align="flex-end"
+                    flex={1.3}
                     content={(
                         <IconButton
                             Icon={<DeleteIcon />}
