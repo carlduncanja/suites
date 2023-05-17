@@ -245,11 +245,12 @@ function AddItemContainer({supplierId = "", onAddProductItems = ()=>{}, orders =
             <Row theme = {theme}>
                 <DataItem text = {name} flex = {1} fontStyle = "--text-base-medium" color = "--color-blue-600" />
                 <NumberChangeField
+                    flex={2}
                     onChangePress = {onQuantityChange(item)}
                     onAmountChange = {onAmountChange(item)}
                     value = {amount.toString()}
                 />
-                <DataItem text = {unit} flex = {1}  align = "center" fontStyle = "--text-sm-regular" color = "--color-gray-800" />
+                <DataItem text = {unit}  align = "center" fontStyle = "--text-sm-regular" color = "--color-gray-800" />
                 <ContentDataItem
                     align = "flex-end"
                     content = {

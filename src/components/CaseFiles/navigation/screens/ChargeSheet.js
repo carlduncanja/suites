@@ -54,22 +54,26 @@ const headers = [
     {
         name: 'Item Name',
         alignment: 'flex-start',
+        flex: 1,
         hasSort: true
 
     },
     {
         name: 'Category',
         alignment: 'center',
+        flex: 2,
         hasSort: true
 
     },
     {
         name: 'Quantity',
         alignment: 'center',
+        flex: 1.1,
     },
     {
         name: 'Unit Price',
-        alignment: 'flex-end'
+        alignment: 'center',
+        flex: 1,
     }
 ];
 
