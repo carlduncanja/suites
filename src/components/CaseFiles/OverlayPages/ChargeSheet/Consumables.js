@@ -203,11 +203,31 @@ function Consumables({
 
         return (
             <>
-                <DataItem text={name} fontStyle={'--text-sm-medium'} color="--color-blue-600"/>
-                <DataItem text={type} align="center" fontStyle={'--text-base-regular'} color="--color-gray-700"/>
+            {
+                isEditMode === true ? 
+
+                <DataItem text={name} flex={2.8} fontStyle={'--text-sm-medium'} color="--color-blue-600"/>
+                :
+
+                <DataItem text={name} flex={2.2} fontStyle={'--text-sm-medium'} color="--color-blue-600"/>
+
+            }
+                
+                {
+                    isEditMode === true ? 
+
+                <DataItem text={type} flex={2} align="center" fontStyle={'--text-base-regular'} color="--color-gray-700"/>
+
+                : 
+                <DataItem text={type} flex={2.1} align="center" fontStyle={'--text-base-regular'} color="--color-gray-700"/>
+                
+
+                }
+                
                 {
                     isEditMode === true ?
                         <ContentDataItem
+                            flex={3}
                             align="center"
                             content={
                                 <NumberChangeField
@@ -219,11 +239,23 @@ function Consumables({
                             }
                         />
                         :
-                        <DataItem text={amount} align="center" fontStyle={'--text-base-regular'}
+                        <DataItem flex={1} text={amount} align="center" fontStyle={'--text-base-regular'}
                                   color="--color-gray-700"/>
                 }
-                <DataItem text={`$ ${currencyFormatter(cost)}`} align="center" fontStyle={'--text-base-regular'}
-                          color="--color-gray-700"/>
+
+                {
+                    isEditMode === true ?
+
+                    <DataItem flex={1} text={`$ ${currencyFormatter(cost)}`} align="center" fontStyle={'--text-base-regular'}
+                    color="--color-gray-700"/>
+
+                    :
+
+                    <DataItem flex={1} text={`$ ${currencyFormatter(cost)}`} align="center" fontStyle={'--text-base-regular'}
+                    color="--color-gray-700"/>
+                    
+                }
+               
             </>
         )
     }
