@@ -20,7 +20,8 @@ function ScheduleDisplayComponent({
     const [currentTime, setCurrentTime] = useState(moment);
     const [selectedIds, setSelectedIds] = useState([])
     const [selected, setSelected] = useState();
-
+     
+    console.log("the dater that is sent ",date)
     useEffect(() => {
         updateTime()
 
