@@ -20,7 +20,7 @@ const ProcedureStep = ({onProcedureUpdate, procedures, patient = "--", selectedT
     }, [selectedTabIndex])
 
     useEffect(() => {
-        updateValuesForScheduleAssistant().then(r => {
+         updateValuesForScheduleAssistant().then(r => {
         })
     }, [currentProcedure])
 
