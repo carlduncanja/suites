@@ -666,6 +666,7 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, removeDraft, route}
             .finally(_ => {
                 setLoading(false)
             });
+
     };
 
     const createDraft = () => {
