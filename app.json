@@ -3,10 +3,8 @@
     "name": "Suites",
     "slug": "smsja-suites",
     "privacy": "public",
-    "platforms": [
-      "ios"
-    ],
-    "version": "2.1.2",
+    "platforms": ["ios"],
+    "version": "2.1.3",
     "orientation": "portrait",
     "icon": "./assets/MedopsLogo.png",
     "splash": {
@@ -17,13 +15,11 @@
     "updates": {
       "fallbackToCacheTimeout": 0
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.smsja.suites",
-      "buildNumber": "1.4.6",
+      "buildNumber": "1.4.9",
       "config": {
         "usesNonExemptEncryption": false
       }
