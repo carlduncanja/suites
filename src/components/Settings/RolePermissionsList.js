@@ -253,6 +253,33 @@ const ROLE_GROUPS = [
             }
         ]
     },
+    {
+        group: 'alerts',
+        name: 'Alerts',
+        actions: [
+          
+            {
+                key: 'read',
+                title: 'View Alerts'
+            },
+            {
+                key: 'update',
+                title: 'Update Alerts'
+            }
+        ]
+    },
+    {
+        group: 'settings',
+        name: 'Settings',
+        actions: [
+          
+            {
+                key: 'read',
+                title: 'View Settings'
+            },
+           
+        ]
+    },
 ];
 
 function RolePermissionsList({
