@@ -85,20 +85,20 @@ const EquipmentsTab = ({equipments = []}) => {
                 isCollapsed ? (
                     <DataItem
                         text={equipmentTypeName}
-                        flex={1.5}
+                        flex={2.1}
                         color="--color-gray-800"
                         fontStyle="--text-base-regular"
                     />
                 ) : (
                     <RightBorderDataItem
                         text={equipmentTypeName}
-                        flex={1.5}
+                        flex={2.35}
                         color="--color-gray-800"
                         fontStyle="--text-base-regular"
                     />
                 )
             }
-            <DataItem flex={1} text={equipments.length} color="--color-gray-800" fontStyle="--text-base-regular" align="center"/>
+            <DataItem flex={1.6} text={equipments.length} color="--color-gray-800" fontStyle="--text-base-regular" align="center"/>
             <DataItem flex={1} text="--" color="--color-purple-700" fontStyle="--text-base-regular" align="center"/>
             <DataItem flex={1} text={availableOn} color="--color-gray-700" fontStyle="--text-base-regular" align="center"/>
             <ContentDataItem
@@ -132,15 +132,15 @@ const EquipmentsTab = ({equipments = []}) => {
             <>
                 <RightBorderDataItem
                     text={equipmentTitle}
-                    flex={1.5}
+                    flex={2.4}
                     color="--color-blue-600"
                     fontStyle="--text-sm-medium"
                 />
-                <DataItem flex={1} text="1" color="--color-gray-800" fontStyle="--text-sm-regular" align="center"/>
+                <DataItem flex={1.4} text="1" color="--color-gray-800" fontStyle="--text-sm-regular" align="center"/>
                 {/* TODO: Eval different colors to show based on status */}
-                <DataItem flex={1} text={status} color={evaluateColor()} fontStyle="--text-sm-regular" align="center"/>
-                <DataItem flex={1} text={formatDate(endTime, 'DD/MM/YYYY')} color="--color-gray-800" fontStyle="--text-sm-regular" align="center"/>
-                <DataItem flex={0.5}/>
+                <DataItem flex={1} text={status} color={evaluateColor()} fontStyle="--text-sm-regular"  />
+                <DataItem flex={1.8} text={formatDate(endTime, 'DD/MM/YYYY')} color="--color-gray-800" fontStyle="--text-sm-regular" align="center" textAlign='center'/>
+                
             </>
         );
     };
