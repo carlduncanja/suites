@@ -1,6 +1,5 @@
 import { createAppContainer } from 'react-navigation';
-import React from 'react';
-import { useEffect,useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { createSuitesSidebarNavigator } from '../SuiteNavigator';
 
@@ -52,12 +51,14 @@ import UsersNavigationStack from './UsersNavigationStack';
 import ScheduleNavigationStack from "./ScheduleNavigationStack";
 import InvoicesNavigationStack from './InvoicesNavigationStack';
 import ConnectionIcon from '../../../assets/svg/lostConnection';
+import { getUserCall } from '../../api/network';
 
 
 const SuitesNavigator = createSuitesSidebarNavigator();
 
 export const SuitesNavigationStack = ({ auth = {} }) => {
     const isAdmin = auth.user.role_name === ROLES.ADMIN;
+    // fetchUser(auth?.user.user_id);
 
     const [userPermissions, setUserPermissions] = useState({});
 
@@ -76,8 +77,10 @@ export const SuitesNavigationStack = ({ auth = {} }) => {
         fetchUser(auth.user.user_id);
     }, [auth]);
 
-    const ViewCase = userPermissions?.['cases']?.['read'];
+    
     const ViewProcedures = userPermissions?.['procedures']?.['read'];
+    const ViewCase =userPermissions?.['cases']?.['read'];
+    const ViewEquipment =userPermissions?.['equipment_type']?.['read'];
 
     // the invioces section was removed becuase of the changes to the purchase order section 
     /* <SuitesNavigator.Screen
@@ -102,8 +105,8 @@ export const SuitesNavigationStack = ({ auth = {} }) => {
                     tabName: 'schedule',
                 }}
             />
-
-            {ViewCase &&
+            
+            {ViewCase && 
                 <SuitesNavigator.Screen
                     name="CaseFiles"
                     component={CaseFileNavigationStack}
@@ -134,17 +137,19 @@ export const SuitesNavigationStack = ({ auth = {} }) => {
                     isAdmin
                 }}
             />
-
-            <SuitesNavigator.Screen
-                name="Equipment"
-                component={EquipmentNavigationStack}
-                initialParams={{
-                    icon: EquipmentIcon,
-                    tabName: 'Equipment',
-                    isAdmin
-                }}
-            />
-
+            {
+                ViewEquipment && 
+        
+                <SuitesNavigator.Screen
+                    name="Equipment"
+                    component={EquipmentNavigationStack}
+                    initialParams={{
+                        icon: EquipmentIcon,
+                        tabName: 'Equipment',
+                        isAdmin
+                    }}
+                />
+            }
             <SuitesNavigator.Screen
                 name="Orders"
                 component={OrderNavigationStack}
@@ -247,6 +252,6 @@ export const SuitesNavigationStack = ({ auth = {} }) => {
     );
 };
 
-const mapStateToProps = (state) => ({ auth: state.auth });
+const mapStateToProps = (state ) => ({ auth: state.auth });
 
 export default connect(mapStateToProps)(SuitesNavigationStack);
