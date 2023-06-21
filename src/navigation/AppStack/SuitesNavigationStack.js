@@ -77,8 +77,9 @@ export const SuitesNavigationStack = ({ auth = {} }) => {
         fetchUser(auth.user.user_id);
     }, [auth]);
 
+    
+    const ViewProcedures = userPermissions?.['procedures']?.['read'];
     const ViewCase =userPermissions?.['cases']?.['read'];
-
     const ViewEquipment =userPermissions?.['equipment_type']?.['read'];
 
     const ViewTheatre = userPermissions?.['theatres']?.['read'];
@@ -90,14 +91,14 @@ export const SuitesNavigationStack = ({ auth = {} }) => {
     const ViewPhysicians = userPermissions?.['physicians']?.['read'];
 
     // the invioces section was removed becuase of the changes to the purchase order section 
-   /* <SuitesNavigator.Screen
-                name="Invoices"
-                component={InvoicesNavigationStack}
-                initialParams={{
-                    icon: InvoiceIcon,
-                    tabName: 'Invoices',
-                }}
-            />*/ 
+    /* <SuitesNavigator.Screen
+                 name="Invoices"
+                 component={InvoicesNavigationStack}
+                 initialParams={{
+                     icon: InvoiceIcon,
+                     tabName: 'Invoices',
+                 }}
+             />*/
 
     return (
         <SuitesNavigator.Navigator
@@ -202,18 +203,17 @@ export const SuitesNavigationStack = ({ auth = {} }) => {
                     isAdmin
                 }}
             />
+            {ViewProcedures &&
+                <SuitesNavigator.Screen
+                    name="Procedures List"
+                    component={ProcedureNavigationStack}
+                    initialParams={{
+                        icon: ProcedureIcon,
+                        tabName: 'Procedures',
+                        isAdmin
+                    }}
+                />
             }
-
-            <SuitesNavigator.Screen
-                name="Procedures List"
-                component={ProcedureNavigationStack}
-                initialParams={{
-                    icon: ProcedureIcon,
-                    tabName: 'Procedures',
-                    isAdmin
-                }}
-            />
-
             {
                 isAdmin &&
                 <SuitesNavigator.Screen
@@ -248,7 +248,7 @@ export const SuitesNavigationStack = ({ auth = {} }) => {
             {/*        tabName: 'Help',*/}
             {/*    }}*/}
             {/*/>*/}
-           {/* <SuitesNavigator.Screen
+            {/* <SuitesNavigator.Screen
                 name="Lost Connection"
                 component={LostConnectionPage}
                 initialParams={{
