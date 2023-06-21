@@ -81,6 +81,8 @@ export const SuitesNavigationStack = ({ auth = {} }) => {
 
     const ViewEquipment =userPermissions?.['equipment_type']?.['read'];
 
+    const ViewTheatre = userPermissions?.['theatres']?.['read'];
+
     // the invioces section was removed becuase of the changes to the purchase order section 
    /* <SuitesNavigator.Screen
                 name="Invoices"
@@ -117,15 +119,19 @@ export const SuitesNavigationStack = ({ auth = {} }) => {
                 />
             }
 
-            <SuitesNavigator.Screen
-                name="Theatres"
-                component={TheatreNavigationStack}
-                initialParams={{
-                    icon: TheatreIcon,
-                    tabName: 'Theatres',
-                    isAdmin
-                }}
-            />
+            {
+                ViewTheatre && 
+            
+                <SuitesNavigator.Screen
+                    name="Theatres"
+                    component={TheatreNavigationStack}
+                    initialParams={{
+                        icon: TheatreIcon,
+                        tabName: 'Theatres',
+                        isAdmin
+                    }}
+                />
+            }
 
             <SuitesNavigator.Screen
                 name="Inventory"
