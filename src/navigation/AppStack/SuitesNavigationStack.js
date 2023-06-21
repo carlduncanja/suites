@@ -203,6 +203,8 @@ export const SuitesNavigationStack = ({ auth = {} }) => {
                     isAdmin
                 }}
             />
+            }
+            
             {ViewProcedures &&
                 <SuitesNavigator.Screen
                     name="Procedures List"
