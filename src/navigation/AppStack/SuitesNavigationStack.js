@@ -83,6 +83,12 @@ export const SuitesNavigationStack = ({ auth = {} }) => {
 
     const ViewTheatre = userPermissions?.['theatres']?.['read'];
 
+    const ViewAlerts = userPermissions?.['alerts']?.['read'];
+
+    const ViewSettings = userPermissions?.['settings']?.['read'];
+
+    const ViewPhysicians = userPermissions?.['physicians']?.['read'];
+
     // the invioces section was removed becuase of the changes to the purchase order section 
    /* <SuitesNavigator.Screen
                 name="Invoices"
@@ -185,6 +191,8 @@ export const SuitesNavigationStack = ({ auth = {} }) => {
                 }}
             />
 
+            {ViewPhysicians && 
+
             <SuitesNavigator.Screen
                 name="Physicians"
                 component={PhysicianNavigationStack}
@@ -194,6 +202,7 @@ export const SuitesNavigationStack = ({ auth = {} }) => {
                     isAdmin
                 }}
             />
+            }
 
             <SuitesNavigator.Screen
                 name="Procedures List"
@@ -217,15 +226,19 @@ export const SuitesNavigationStack = ({ auth = {} }) => {
                 />
             }
 
-            <SuitesNavigator.Screen
-                name="Alerts"
-                component={Alerts}
-                initialParams={{
-                    icon: NotificationIcon,
-                    tabName: 'Alerts',
-                    isAdmin
-                }}
-            />
+            {ViewAlerts && 
+
+                <SuitesNavigator.Screen
+                    name="Alerts"
+                    component={Alerts}
+                    initialParams={{
+                        icon: NotificationIcon,
+                        tabName: 'Alerts',
+                        isAdmin
+                    }}
+                />
+
+            }
 
             {/*<SuitesNavigator.Screen*/}
             {/*    name="Help"*/}
@@ -244,6 +257,8 @@ export const SuitesNavigationStack = ({ auth = {} }) => {
                 }}
             />*/}
 
+            {ViewSettings && 
+
             <SuitesNavigator.Screen
                 name="Settings"
                 component={SettingsNavigationStack}
@@ -252,6 +267,8 @@ export const SuitesNavigationStack = ({ auth = {} }) => {
                     tabName: 'Settings',
                 }}
             />
+
+            }
 
         </SuitesNavigator.Navigator>
     );
