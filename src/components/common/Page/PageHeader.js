@@ -18,12 +18,13 @@ function PageHeader({
                         isArchive: isEditDisabled = false,
                         headerChildren = [],
                         separator = null,
+                        updatePhysician,
                         editMessage = 'now in edit mode'
                     }) {
     const theme = useTheme();
 
     const {pageState, setPageState} = useContext(PageContext);
-
+    console.log('gjdashjs', updatePhysician)
     const onEditPress = () => {
         if (locked) {
             // todo show user locked messaged
@@ -162,7 +163,7 @@ function PageHeader({
                         </EditModeContainer>
                     }
 
-                    <EditButtonWrapper theme={theme}>
+                  {updatePhysician &&   <EditButtonWrapper theme={theme}>
                         <EditButtonContainer
                             theme={theme}
                             backgroundColor={getEditBtnBackground()}
@@ -178,6 +179,7 @@ function PageHeader({
 
                         </EditButtonContainer>
                     </EditButtonWrapper>
+                    }
 
                     {/* {
                         !isEditDisabled ? (

@@ -41,7 +41,6 @@ import { PageSettingsContext } from '../contexts/PageSettingsContext';
 const Physicians = props => {
     // ############# Const data
     const userPermissions = props.route.params.permissions;
-    console.log('skdlsk', userPermissions.create, userPermissions.delete, (userPermissions.create||userPermissions.delete) == false )
     const recordsPerPage = 10;
     const listHeaders = [
         {
@@ -153,6 +152,7 @@ const Physicians = props => {
         props.navigation.navigate('PhysicianPage', {
             initial: false,
             physician: item,
+            updatePhysician: userPermissions.update,
             isEdit: isOpenEditable,
             reloadPhysicians: () => fetchPhysiciansData(currentPagePosition)
         });

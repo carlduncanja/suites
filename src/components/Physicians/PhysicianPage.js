@@ -19,7 +19,7 @@ import TabsContainer from '../common/Tabs/TabsContainerComponent';
 import ConfirmationComponent from '../ConfirmationComponent';
 
 function PhysicianPage({route, navigation}) {
-    const {physician, isOpenEditable, reloadPhysicians} = route.params;
+    const {physician, isOpenEditable, reloadPhysicians, updatePhysician} = route.params;
     const currentTabs = ['Details', 'Case Files', 'Custom Procedures', 'Schedule'];
     const modal = useModal();
     const {
@@ -306,6 +306,7 @@ function PhysicianPage({route, navigation}) {
             <PageContext.Provider value={{pageState, setPageState}}>
                 <DetailsPage
                     title={name}
+                    updatePhysician = {updatePhysician}
                     subTitle=""
                     headerChildren={[name]}
                     onBackPress={backTapped}
