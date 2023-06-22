@@ -93,7 +93,8 @@ const SchedulePaginator = ({
     date = new Date(),
     goToNextDay,
     goToPreviousDay,
-    toggleActionButton = () => { }
+    toggleActionButton = () => { },
+    updatePhysician
 }) => {
     const [state] = useContext(SuitesContext);
     const theme = useTheme();
@@ -120,13 +121,16 @@ const SchedulePaginator = ({
                     </PaginatorContainer>
                 </MultipleShadowsContainer>
                  
-                <FloatingActionButton
+              { updatePhysician &&  <FloatingActionButton
+                
                     isDisabled={false}
                     hasActions={true}
                     toggleActionButton={toggleActionButton}
-                />
-            </FooterContainer>
+                /> 
+                }
+            </FooterContainer> 
         </FooterWrapper>
+               
     );
 };
 

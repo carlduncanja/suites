@@ -227,11 +227,11 @@ function PhysicianPage({route, navigation}) {
                     />
                 ) : <PhysiciansDetailsTab physician={selectedPhysician}/>;
             case 'Case Files':
-                return <CaseFilesTab setSelectedPhysician={setSelectedPhysician} selectedPhysician={selectedPhysician} cases={cases}/>;
+                return <CaseFilesTab  updatePhysician = {updatePhysician} setSelectedPhysician={setSelectedPhysician} selectedPhysician={selectedPhysician} cases={cases}/>;
             case 'Custom Procedures':
-                return <CustomProceduresTab selectedPhysician={selectedPhysician} procedures={procedures} id = {_id} fetchPhysician = {fetchPhysician} setSelectedPhysician={setSelectedPhysician} />;
+                return <CustomProceduresTab updatePhysician = {updatePhysician} selectedPhysician={selectedPhysician} procedures={procedures} id = {_id} fetchPhysician = {fetchPhysician} setSelectedPhysician={setSelectedPhysician} />;
             case 'Schedule':
-                return <PaginatedSchedule ID={physician._id} isPhysician={true}/>;
+                return <PaginatedSchedule ID={physician._id} isPhysician={true} updatePhysician = {updatePhysician}/>;
             default:
                 return <View/>;
         }
