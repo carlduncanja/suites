@@ -77,10 +77,10 @@ export const SuitesNavigationStack = ({ auth = {} }) => {
         fetchUser(auth.user.user_id);
     }, [auth]);
 
-    
+
     const ViewProcedures = userPermissions?.['procedures']?.['read'];
-    const ViewCase =userPermissions?.['cases']?.['read'];
-    const ViewEquipment =userPermissions?.['equipment_type']?.['read'];
+    const ViewCase = userPermissions?.['cases']?.['read'];
+    const ViewEquipment = userPermissions?.['equipment_type']?.['read'];
 
     const ViewTheatre = userPermissions?.['theatres']?.['read'];
 
@@ -89,6 +89,17 @@ export const SuitesNavigationStack = ({ auth = {} }) => {
     const ViewSettings = userPermissions?.['settings']?.['read'];
 
     const ViewPhysicians = userPermissions?.['physicians']?.['read'];
+
+    const ViewUsers = userPermissions?.['users']?.['read'];
+
+    const ViewPurchaseOrders = userPermissions?.['purchase_orders']?.['read'];
+
+    const ViewInventory = userPermissions?.['inventory_groups']?.['read'];
+
+    const ViewStrorageLocation = userPermissions?.['storage_locations']?.['read']
+
+    const ViewSuppliers = userPermissions?.['suppliers']?.['read']
+
 
     // the invioces section was removed becuase of the changes to the purchase order section 
     /* <SuitesNavigator.Screen
@@ -107,14 +118,14 @@ export const SuitesNavigationStack = ({ auth = {} }) => {
 
             <SuitesNavigator.Screen
                 name="SchedulePage"
-                component={ScheduleNavigationStack}
+                 component={ScheduleNavigationStack}
                 initialParams={{
                     icon: ScheduleIcon,
                     tabName: 'schedule',
                 }}
             />
-            
-            {ViewCase && 
+
+            {ViewCase &&
                 <SuitesNavigator.Screen
                     name="CaseFiles"
                     component={CaseFileNavigationStack}
@@ -127,8 +138,8 @@ export const SuitesNavigationStack = ({ auth = {} }) => {
             }
 
             {
-                ViewTheatre && 
-            
+                ViewTheatre &&
+
                 <SuitesNavigator.Screen
                     name="Theatres"
                     component={TheatreNavigationStack}
@@ -139,19 +150,20 @@ export const SuitesNavigationStack = ({ auth = {} }) => {
                     }}
                 />
             }
-
-            <SuitesNavigator.Screen
-                name="Inventory"
-                component={InventoryNavigationStack}
-                initialParams={{
-                    icon: InventoryIcon,
-                    tabName: 'Inventory',
-                    isAdmin
-                }}
-            />
+            {ViewInventory &&
+                <SuitesNavigator.Screen
+                    name="Inventory"
+                    component={InventoryNavigationStack}
+                    initialParams={{
+                        icon: InventoryIcon,
+                        tabName: 'Inventory',
+                        isAdmin
+                    }}
+                />
+            }
             {
-                ViewEquipment && 
-        
+                ViewEquipment &&
+
                 <SuitesNavigator.Screen
                     name="Equipment"
                     component={EquipmentNavigationStack}
@@ -162,49 +174,52 @@ export const SuitesNavigationStack = ({ auth = {} }) => {
                     }}
                 />
             }
-            <SuitesNavigator.Screen
-                name="Orders"
-                component={OrderNavigationStack}
-                initialParams={{
-                    icon: OrdersIcon,
-                    tabName: 'Orders',
-                    isAdmin
-                }}
-            />
-
-            <SuitesNavigator.Screen
-                name="Suppliers"
-                component={SupplierNavigationStack}
-                initialParams={{
-                    icon: DeliveryIcon,
-                    tabName: 'Suppliers',
-                    isAdmin
-                }}
-            />
-
-            <SuitesNavigator.Screen
-                name="Storage"
-                component={StorageNavigationStack}
-                initialParams={{
-                    icon: StorageIcon,
-                    tabName: 'Storage',
-                    isAdmin
-                }}
-            />
-
-            {ViewPhysicians && 
-
-            <SuitesNavigator.Screen
-                name="Physicians"
-                component={PhysicianNavigationStack}
-                initialParams={{
-                    icon: PhysiciansIcon,
-                    tabName: 'Physicians',
-                    isAdmin
-                }}
-            />
+            {ViewPurchaseOrders &&
+                <SuitesNavigator.Screen
+                    name="Orders"
+                    component={OrderNavigationStack}
+                    initialParams={{
+                        icon: OrdersIcon,
+                        tabName: 'Orders',
+                        isAdmin
+                    }}
+                />
             }
-            
+            {ViewSuppliers &&
+                <SuitesNavigator.Screen
+                    name="Suppliers"
+                    component={SupplierNavigationStack}
+                    initialParams={{
+                        icon: DeliveryIcon,
+                        tabName: 'Suppliers',
+                        isAdmin
+                    }}
+                />
+            }
+            {ViewStrorageLocation &&
+                <SuitesNavigator.Screen
+                    name="Storage"
+                    component={StorageNavigationStack}
+                    initialParams={{
+                        icon: StorageIcon,
+                        tabName: 'Storage',
+                        isAdmin
+                    }}
+                />
+            }
+            {ViewPhysicians &&
+
+                <SuitesNavigator.Screen
+                    name="Physicians"
+                    component={PhysicianNavigationStack}
+                    initialParams={{
+                        icon: PhysiciansIcon,
+                        tabName: 'Physicians',
+                        isAdmin
+                    }}
+                />
+            }
+
             {ViewProcedures &&
                 <SuitesNavigator.Screen
                     name="Procedures List"
@@ -217,7 +232,7 @@ export const SuitesNavigationStack = ({ auth = {} }) => {
                 />
             }
             {
-                isAdmin &&
+                isAdmin && ViewUsers &&
                 <SuitesNavigator.Screen
                     name="Users"
                     component={UsersNavigationStack}
@@ -226,9 +241,10 @@ export const SuitesNavigationStack = ({ auth = {} }) => {
                         tabName: 'Users',
                     }}
                 />
+
             }
 
-            {ViewAlerts && 
+            {ViewAlerts &&
 
                 <SuitesNavigator.Screen
                     name="Alerts"
@@ -259,16 +275,16 @@ export const SuitesNavigationStack = ({ auth = {} }) => {
                 }}
             />*/}
 
-            {ViewSettings && 
+            {ViewSettings &&
 
-            <SuitesNavigator.Screen
-                name="Settings"
-                component={SettingsNavigationStack}
-                initialParams={{
-                    icon: SettingsIcon,
-                    tabName: 'Settings',
-                }}
-            />
+                <SuitesNavigator.Screen
+                    name="Settings"
+                    component={SettingsNavigationStack}
+                    initialParams={{
+                        icon: SettingsIcon,
+                        tabName: 'Settings',
+                    }}
+                />
 
             }
 
@@ -276,6 +292,6 @@ export const SuitesNavigationStack = ({ auth = {} }) => {
     );
 };
 
-const mapStateToProps = (state ) => ({ auth: state.auth });
+const mapStateToProps = (state) => ({ auth: state.auth });
 
 export default connect(mapStateToProps)(SuitesNavigationStack);
