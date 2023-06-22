@@ -52,7 +52,6 @@ import ScheduleNavigationStack from "./ScheduleNavigationStack";
 import InvoicesNavigationStack from './InvoicesNavigationStack';
 import ConnectionIcon from '../../../assets/svg/lostConnection';
 import { getUserCall } from '../../api/network';
-import { usePermissions } from 'expo-notifications';
 
 
 const SuitesNavigator = createSuitesSidebarNavigator();
@@ -276,7 +275,7 @@ export const SuitesNavigationStack = ({ auth = {} }) => {
                 }}
             />*/}
 
-            {isAdmin &&
+            {ViewSettings &&
 
                 <SuitesNavigator.Screen
                     name="Settings"
