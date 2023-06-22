@@ -12,7 +12,7 @@ const Stack = createStackNavigator();
 
 export default (props) => {
     const isAdmin = props.route.params.isAdmin || false;
-
+    const permissions = props.route.params.userPermissions.physicians;
     return (
         <Stack.Navigator
             initialRouteName="Physicians"
@@ -23,7 +23,7 @@ export default (props) => {
                 options={{
                     headerShown: false
                 }}
-                initialParams={{ isAdmin }}
+                initialParams={{ isAdmin , permissions}}
             />
 
 

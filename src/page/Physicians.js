@@ -40,7 +40,7 @@ import { PageSettingsContext } from '../contexts/PageSettingsContext';
 
 const Physicians = props => {
     // ############# Const data
-
+    const userPermissions = props.route.params.permissions;
     const recordsPerPage = 10;
     const listHeaders = [
         {
@@ -323,6 +323,7 @@ const Physicians = props => {
         //     />
         // );
         const createActionPhysician = (
+            
             <ActionItem
                 title="Add Physician"
                 icon={<AddIcon />}
@@ -334,7 +335,7 @@ const Physicians = props => {
             floatingActions={[
                 deleteAction,
                 // assignActionCase,
-                createActionPhysician,
+                createActionPhysician && userPermissions.create,
                 // createActionWorkItem
             ]}
             title="PHYSICIAN ACTIONS"

@@ -132,7 +132,8 @@ export const SuitesNavigationStack = ({ auth = {} }) => {
                     initialParams={{
                         icon: CaseFileIcon,
                         tabName: 'Case Files',
-                        isAdmin
+                        isAdmin,
+                        userPermissions
                     }}
                 />
             }
@@ -215,7 +216,8 @@ export const SuitesNavigationStack = ({ auth = {} }) => {
                     initialParams={{
                         icon: PhysiciansIcon,
                         tabName: 'Physicians',
-                        isAdmin
+                        isAdmin,
+                        userPermissions
                     }}
                 />
             }
