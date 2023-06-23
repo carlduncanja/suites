@@ -152,7 +152,6 @@ const Physicians = props => {
         props.navigation.navigate('PhysicianPage', {
             initial: false,
             physician: item,
-            updatePhysician: userPermissions.update,
             isEdit: isOpenEditable,
             reloadPhysicians: () => fetchPhysiciansData(currentPagePosition)
         });
@@ -295,7 +294,7 @@ const Physicians = props => {
 
     const getFabActions = () => {
         const deleteAction = (
-         userPermissions.delete && <LongPressWithFeedback
+            <LongPressWithFeedback
                 pressTimer={LONG_PRESS_TIMER.MEDIUM}
                 onLongPress={removePhysiciansLongPress}
             >
@@ -325,7 +324,7 @@ const Physicians = props => {
         // );
         const createActionPhysician = (
             
-           userPermissions.create && <ActionItem
+            <ActionItem
                 title="Add Physician"
                 icon={<AddIcon />}
                 onPress={openCreatePhysicians}
@@ -336,7 +335,7 @@ const Physicians = props => {
             floatingActions={[
                 deleteAction,
                 // assignActionCase,
-                createActionPhysician,
+                createActionPhysician && userPermissions.create,
                 // createActionWorkItem
             ]}
             title="PHYSICIAN ACTIONS"
@@ -491,7 +490,7 @@ const Physicians = props => {
                 isDisabled={isFloatingActionDisabled}
                 toggleActionButton={toggleActionButton}
                 hasPaginator={true}
-                hasActionButton={( (userPermissions.create||userPermissions.delete) == false) ? false : true}
+                hasActionButton={true}
                 hasActions={true}
                 isNextDisabled={isNextDisabled}
                 isPreviousDisabled={isPreviousDisabled}
