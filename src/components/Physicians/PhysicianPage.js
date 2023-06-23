@@ -19,7 +19,7 @@ import TabsContainer from '../common/Tabs/TabsContainerComponent';
 import ConfirmationComponent from '../ConfirmationComponent';
 
 function PhysicianPage({route, navigation}) {
-    const {physician, isOpenEditable, reloadPhysicians} = route.params;
+    const {physician, isOpenEditable, reloadPhysicians, updatePhysician} = route.params;
     const currentTabs = ['Details', 'Case Files', 'Custom Procedures', 'Schedule'];
     const modal = useModal();
     const {
@@ -227,11 +227,11 @@ function PhysicianPage({route, navigation}) {
                     />
                 ) : <PhysiciansDetailsTab physician={selectedPhysician}/>;
             case 'Case Files':
-                return <CaseFilesTab setSelectedPhysician={setSelectedPhysician} selectedPhysician={selectedPhysician} cases={cases}/>;
+                return <CaseFilesTab  updatePhysician = {updatePhysician} setSelectedPhysician={setSelectedPhysician} selectedPhysician={selectedPhysician} cases={cases}/>;
             case 'Custom Procedures':
-                return <CustomProceduresTab selectedPhysician={selectedPhysician} procedures={procedures} id = {_id} fetchPhysician = {fetchPhysician} setSelectedPhysician={setSelectedPhysician} />;
+                return <CustomProceduresTab updatePhysician = {updatePhysician} selectedPhysician={selectedPhysician} procedures={procedures} id = {_id} fetchPhysician = {fetchPhysician} setSelectedPhysician={setSelectedPhysician} />;
             case 'Schedule':
-                return <PaginatedSchedule ID={physician._id} isPhysician={true}/>;
+                return <PaginatedSchedule ID={physician._id} isPhysician={true} updatePhysician = {updatePhysician}/>;
             default:
                 return <View/>;
         }
@@ -306,6 +306,7 @@ function PhysicianPage({route, navigation}) {
             <PageContext.Provider value={{pageState, setPageState}}>
                 <DetailsPage
                     title={name}
+                    updatePhysician = {updatePhysician}
                     subTitle=""
                     headerChildren={[name]}
                     onBackPress={backTapped}

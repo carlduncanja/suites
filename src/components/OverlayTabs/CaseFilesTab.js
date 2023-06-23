@@ -60,7 +60,7 @@ const testData = [
     }
 ]
 
-const CaseFilesTab = ({ setSelectedPhysician, selectedPhysician, cases }) => {
+const CaseFilesTab = ({ setSelectedPhysician, selectedPhysician, cases, updatePhysician }) => {
 
     const recordsPerPage = 10;
     const modal = useModal();
@@ -328,6 +328,7 @@ const CaseFilesTab = ({ setSelectedPhysician, selectedPhysician, cases }) => {
             <Footer
                 hasActions={true}
                 hasPaginator={false}
+                hasActionButton={updatePhysician}
                 toggleActionButton={toggleActionButton}
             />
             
