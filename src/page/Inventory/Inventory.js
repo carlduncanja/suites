@@ -57,6 +57,8 @@ function Inventory(props) {
         navigation
     } = props;
 
+    const inventoryPermissions = route.params.inventoryPermissions
+    console.log('hajhska', inventoryPermissions.create)
     const pageTitle = 'Inventory';
     const modal = useModal();
     const theme = useTheme();
@@ -312,8 +314,8 @@ function Inventory(props) {
             </View>
         );
 
-        const createAction = <ActionItem title="Add Item" icon={<AddIcon />} onPress={openCreateInventoryModel} />;
-        const createGroup = <ActionItem title="Create Item Group" icon={<AddIcon />} onPress={openCreateGroupDialog} />;
+        const createAction =  <ActionItem title="Add Item" icon={<AddIcon />} onPress={openCreateInventoryModel} />;
+        const createGroup =   <ActionItem title="Create Item Group" icon={<AddIcon />} onPress={openCreateGroupDialog} />;
         const itemTransfer = (
             <ActionItem
                 title="Item Transfer"
@@ -337,8 +339,8 @@ function Inventory(props) {
                 deleteAction,
                 deleteInventoryItemAction,
                 uploadInventory,
-                createAction,
-                createGroup,
+                createAction && inventoryPermissions.create,
+                createGroup && inventoryPermissions.create,
             ]}
             title="INVENTORY ACTIONS"
         />;
