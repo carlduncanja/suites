@@ -336,8 +336,8 @@ function Inventory(props) {
 
         return <ActionContainer
             floatingActions={[
-                deleteAction,
-                deleteInventoryItemAction,
+                deleteAction && inventoryPermissions.delete,
+                deleteInventoryItemAction && inventoryPermissions.delete,
                 uploadInventory,
                 createAction && inventoryPermissions.create,
                 createGroup && inventoryPermissions.create,
