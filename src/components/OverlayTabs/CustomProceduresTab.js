@@ -61,7 +61,7 @@ const testData = [
     }
 ];
 
-const CustomProceduresTab = ({ selectedPhysician, updatePhysician,procedures, setSelectedPhysician, id, fetchPhysician = () => {}}) => {
+const CustomProceduresTab = ({ selectedPhysician, procedures, setSelectedPhysician, id, fetchPhysician = () => {}}) => {
 
     const recordsPerPage = 10;
     const modal = useModal();
@@ -357,7 +357,6 @@ const CustomProceduresTab = ({ selectedPhysician, updatePhysician,procedures, se
             />
             <Footer
                 hasActions={true}
-                hasActionButton={updatePhysician}
                 totalPages={totalPages}
                 currentPage={currentPagePosition}
                 goToNextPage={goToNextPage}
