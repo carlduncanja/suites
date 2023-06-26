@@ -18,6 +18,7 @@ function DetailsPage({
     title = '__',
     inventoryUpdate,
     updatePhysician,
+    updateStorage,
     inventoryVariantUpdate,
     subTitle = '__',
     headerChildren,
@@ -48,6 +49,7 @@ function DetailsPage({
                         isArchive={isArchive}
                         updatePhysician = {updatePhysician}
                         inventoryUpdate = {inventoryUpdate}
+                        updateStorage = {updateStorage}
                         inventoryVariantUpdate = {inventoryVariantUpdate}
                         headerChildren={headerChildren || [title, subTitle]}
                         separator={<BreadCrumbIcon/>}

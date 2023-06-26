@@ -20,6 +20,7 @@ function PageHeader({
                         separator = null,
                         updatePhysician,
                         inventoryUpdate,
+                        updateStorage,
                         inventoryVariantUpdate,
                         editMessage = 'now in edit mode'
                     }) {
@@ -165,7 +166,7 @@ function PageHeader({
                         </EditModeContainer>
                     }
 
-                   { (updatePhysician || inventoryUpdate || inventoryVariantUpdate) && <EditButtonWrapper theme={theme}>
+                   { (updatePhysician || inventoryUpdate || inventoryVariantUpdate || updateStorage) && <EditButtonWrapper theme={theme}>
                         <EditButtonContainer
                             theme={theme}
                             backgroundColor={getEditBtnBackground()}
