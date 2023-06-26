@@ -571,8 +571,8 @@ function CaseFiles(props) {
                                 strokeColor={disabled ? theme.colors['--color-gray-600'] : theme.colors['--color-red-700']}
                             />
                         )}
-                        touchable={false}
-                        disabled={disabled}
+                         touchable={false}
+                         disabled={disabled}
                     />
                 </LongPressWithFeedback>
             </View>
@@ -585,7 +585,7 @@ function CaseFiles(props) {
                 userPermissions.delete && deleteAction,
                 userPermissions.create && createNewCase
             ]}
-            title="CASE ACTIONS"
+             title="CASE ACTIONS"
         />;
     };
 
