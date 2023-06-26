@@ -54,6 +54,7 @@ function Storage(props) {
         setStorage,
     } = props;
 
+    storagePermissions = props.route.params.storagePermissions
     const pageTitle = 'Storage';
     const recordsPerPage = 10;
     const modal = useModal();
@@ -291,7 +292,7 @@ function Storage(props) {
         );
 
         const createAction = (
-            <ActionItem
+           storagePermissions.create && <ActionItem
                 title="New Location"
                 icon={<AddIcon />}
                 onPress={
