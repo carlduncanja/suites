@@ -57,6 +57,7 @@ function Inventory(props) {
         navigation
     } = props;
 
+    const inventoryPermissions = route.params.inventoryPermissions
     const pageTitle = 'Inventory';
     const modal = useModal();
     const theme = useTheme();
@@ -130,7 +131,9 @@ function Inventory(props) {
             // params : {
             data: item,
             isGroup: true,
-            isEdit: false
+            isEdit: false,
+            inventoryPermissions: inventoryPermissions.update
+
             // }
         });
     };
@@ -149,7 +152,8 @@ function Inventory(props) {
             initial: false,
             // params : {
             data: updatedItem,
-            isEdit: false
+            isEdit: false,
+            inventoryPermissions: inventoryPermissions.update
             // }
         });
     };
@@ -312,8 +316,8 @@ function Inventory(props) {
             </View>
         );
 
-        const createAction = <ActionItem title="Add Item" icon={<AddIcon />} onPress={openCreateInventoryModel} />;
-        const createGroup = <ActionItem title="Create Item Group" icon={<AddIcon />} onPress={openCreateGroupDialog} />;
+        const createAction =  <ActionItem title="Add Item" icon={<AddIcon />} onPress={openCreateInventoryModel} />;
+        const createGroup =   <ActionItem title="Create Item Group" icon={<AddIcon />} onPress={openCreateGroupDialog} />;
         const itemTransfer = (
             <ActionItem
                 title="Item Transfer"
@@ -334,11 +338,11 @@ function Inventory(props) {
 
         return <ActionContainer
             floatingActions={[
-                deleteAction,
-                deleteInventoryItemAction,
+                deleteAction && inventoryPermissions.delete,
+                deleteInventoryItemAction && inventoryPermissions.delete,
                 uploadInventory,
-                createAction,
-                createGroup,
+                createAction && inventoryPermissions.create,
+                createGroup && inventoryPermissions.create,
             ]}
             title="INVENTORY ACTIONS"
         />;

@@ -15,7 +15,7 @@ const Stack = createStackNavigator();
 
 export default (props) => {
     const isAdmin = props.route.params.isAdmin || false;
-
+    const inventoryPermissions = props.route.params.userPermissions.inventory_groups;
     return (
         <Stack.Navigator
             initialRouteName="Inventory"
@@ -26,7 +26,7 @@ export default (props) => {
                 options={{
                     headerShown: false
                 }}
-                initialParams={{ isAdmin }}
+                initialParams={{ isAdmin,inventoryPermissions}}
             />
 
 
