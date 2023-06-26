@@ -214,8 +214,8 @@ function Theatres(props) {
 
     const getFabActions = () => {
         const deleteAction = (
-            <View style={{borderRadius: 6, flex: 1, overflow: 'hidden'}}>
-                <LongPressWithFeedback
+            theatrePermissions.delete && <View style={{borderRadius: 6, flex: 1, overflow: 'hidden'}}>
+               <LongPressWithFeedback
                     pressTimer={LONG_PRESS_TIMER.LONG}
                     onLongPress={removeTheatresLongPress}
                 >
@@ -509,7 +509,7 @@ function Theatres(props) {
                 isDisabled={isFloatingActionDisabled}
                 toggleActionButton={toggleActionButton}
                 hasPaginator={true}
-                hasActionButton={true}
+                hasActionButton={theatrePermissions.delete && theatrePermissions.create}
                 hasActions={true}
                 isNextDisabled={isNextDisabled}
                 isPreviousDisabled={isPreviousDisabled}
