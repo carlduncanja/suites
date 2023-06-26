@@ -158,8 +158,7 @@ export const SuitesNavigationStack = ({ auth = {} }) => {
                     initialParams={{
                         icon: InventoryIcon,
                         tabName: 'Inventory',
-                        isAdmin,
-                        userPermissions
+                        isAdmin
                     }}
                 />
             }
@@ -205,7 +204,8 @@ export const SuitesNavigationStack = ({ auth = {} }) => {
                     initialParams={{
                         icon: StorageIcon,
                         tabName: 'Storage',
-                        isAdmin
+                        isAdmin,
+                        userPermissions
                     }}
                 />
             }
