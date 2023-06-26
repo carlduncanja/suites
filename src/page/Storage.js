@@ -273,7 +273,7 @@ function Storage(props) {
     const getFabActions = () => {
         const isDisabled = selectedIds.length === 0;
         const deleteAction = (
-            <View style={{ borderRadius: 6, flex: 1, overflow: 'hidden' }}>
+            storagePermissions.delete && <View style={{ borderRadius: 6, flex: 1, overflow: 'hidden' }}>
                 <LongPressWithFeedback
                     pressTimer={LONG_PRESS_TIMER.LONG}
                     onLongPress={removeStorageLocationsLongPress}
@@ -438,7 +438,7 @@ function Storage(props) {
                 isDisabled={isFloatingActionDisabled}
                 toggleActionButton={toggleActionButton}
                 hasPaginator={true}
-                hasActionButton={true}
+                hasActionButton={storagePermissions.create || storagePermissions.delete}
                 hasActions={true}
                 isNextDisabled={isNextDisabled}
                 isPreviousDisabled={isPreviousDisabled}
