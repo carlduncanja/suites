@@ -580,9 +580,9 @@ function CaseFiles(props) {
 
         return <ActionContainer
             floatingActions={[
-                archiveCase,
-                deleteDraftAction,
-                deleteAction,
+                userPermissions.update && archiveCase,
+                userPermissions.delete && deleteDraftAction,
+                userPermissions.delete && deleteAction,
                 userPermissions.create && createNewCase
             ]}
             title="CASE ACTIONS"
