@@ -147,7 +147,8 @@ export const SuitesNavigationStack = ({ auth = {} }) => {
                     initialParams={{
                         icon: TheatreIcon,
                         tabName: 'Theatres',
-                        isAdmin
+                        isAdmin,
+                        userPermissions
                     }}
                 />
             }

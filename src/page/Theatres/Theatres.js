@@ -73,6 +73,7 @@ function Theatres(props) {
     const emptyTitle = 'No Theatres Found';
     const modal = useModal();
     const recordsPerPage = 10;
+    const theatrePermissions =   props.route.params.theatrePermissions;
     //const hasEmpty = true
 
     // ##### States 
@@ -230,7 +231,7 @@ function Theatres(props) {
         );
 
         const createAction = (
-            <ActionItem
+            theatrePermissions.create && <ActionItem
                 title="Create Theatre"
                 icon={<AddIcon/>}
                 onPress={openCreateTheatreModel}
