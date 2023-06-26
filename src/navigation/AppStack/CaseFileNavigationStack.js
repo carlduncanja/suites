@@ -13,8 +13,8 @@ import CasePage from "../../page/CaseFile/CasePage";
 const Stack = createStackNavigator();
 
 export default (props) => {
-    const isAdmin = props.route.params.isAdmin || false;
-
+    const isAdmin = props.route.params.isAdmin || false; 
+    const permissions = props.route.params.userPermissions.cases 
     return (
         <Stack.Navigator
             initialRouteName="CaseFiles"
@@ -25,7 +25,10 @@ export default (props) => {
                 options={{
                     headerShown: false
                 }}
-                initialParams={{ isAdmin }}
+                initialParams={{ 
+                    isAdmin,
+                    permissions
+                }}
             />
 
             <Stack.Screen

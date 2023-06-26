@@ -36,6 +36,7 @@ import WasteIcon from "../../../assets/svg/wasteIcon";
 import { removeDraft } from "../../redux/actions/draftActions";
 import Button from '../../components/common/Buttons/Button';
 import ConfirmationComponent from '../../components/ConfirmationComponent';
+import { userPassword } from '../../const/suitesEndpoints';
 
 // controls the title headers for case
 const listHeaders = [
@@ -71,6 +72,7 @@ function CaseFiles(props) {
     //######## const
     const modal = useModal();
     const theme = useTheme();
+    const userPermissions = props.route.params.permissions;
 
     // const router = useRouter
     const recordsPerPage = 10;
@@ -510,6 +512,8 @@ function CaseFiles(props) {
     };
 
     const getFabActions = () => {
+
+        console.log("this is to check the user permissions", userPermissions)
         const disabled = !!isEmpty(selectedCaseIds);
         const archiveCase = (
             <ActionItem
@@ -545,7 +549,9 @@ function CaseFiles(props) {
         </View>
         );
 
+
         const createNewCase = <ActionItem title="New Case" icon={<AddIcon />} onPress={openCreateCaseFile} />;
+
         const deleteAction = (
             <View style={{
                 borderRadius: 6,
@@ -577,7 +583,7 @@ function CaseFiles(props) {
                 archiveCase,
                 deleteDraftAction,
                 deleteAction,
-                createNewCase
+                userPermissions.create && createNewCase
             ]}
             title="CASE ACTIONS"
         />;
