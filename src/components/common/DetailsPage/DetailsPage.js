@@ -52,8 +52,7 @@ function DetailsPage({
                         updatePhysician = {updatePhysician}
                         inventoryUpdate = {inventoryUpdate} 
                         updateStorage = {updateStorage}
-                        isEditable={isEditable}
-                        inventoryVariantUpdate = {inventoryVariantUpdate}
+                        isEditable={isEditable}                        inventoryVariantUpdate = {inventoryVariantUpdate}
                         headerChildren={headerChildren || [title, subTitle]}
                         separator={<BreadCrumbIcon/>}
                         onBack={onBackPress}

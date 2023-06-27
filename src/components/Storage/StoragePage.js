@@ -148,7 +148,7 @@ function StoragePage({route, navigation}) {
             <PageContext.Provider value={{pageState, setPageState}}>
                 <DetailsPage
                     headerChildren={[name]}
-                    updateStorage={updateStorage}
+                    isEditable={updateStorage}
                     onBackPress={backTapped}
                     pageTabs={(
                         <TabsContainer
