@@ -45,7 +45,7 @@ export default (props) => {
                     //     height: 100,
                     // },
                     // headerTitle: ""
-                }}
+                }} 
             />
 
             <Stack.Screen
@@ -53,17 +53,18 @@ export default (props) => {
                 component={CasePage}
                 options={{
                     headerShown: false,
-                    // headerLeft: (props) => (
-                    //     <HeaderBackComponent
-                    //         {...props}
-                    //     />
-                    // ),
-                    // headerStyle: {
-                    //     height: 100,
-                    //
-                    // },
-                    // headerTitle: ""
+                    headerLeft: (props) => (
+                        <HeaderBackComponent
+                            {...props}
+                        />
+                    ),
+                    headerStyle: {
+                        height: 100,
+
+                    },
+                    headerTitle: ""
                 }}
+                initialParams={{permissions}}
             />
             <Stack.Screen
                 name="AddAppointmentPage"
