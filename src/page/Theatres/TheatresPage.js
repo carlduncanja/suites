@@ -30,7 +30,7 @@ function TheatresPage({route, navigation}) {
     ];
     const {theatre, reloadTheatres, tab} = route.params;
 
-    console.log('tabbbb', tab)
+    const updateTheatre =  route.params.updateTheatre;
     // ##### States
     const [currentTab, setCurrentTab] = useState(currentTabs[0]);
     const [selectedTheatre, setTheatre] = useState(theatre);
@@ -273,7 +273,7 @@ function TheatresPage({route, navigation}) {
                 return <EquipmentsTab equipments={equipments}/>;
             }
             case 'Schedule':
-                return <PaginatedSchedule tab = {tab} ID={theatre._id} details = {theatre} isTheatre = {true} isPhysician={false}/>;
+                return <PaginatedSchedule updateTheatre={updateTheatre} tab = {tab} ID={theatre._id} details = {theatre} isTheatre = {true} isPhysician={false}/>;
             default:
                 return <View/>;
         }
@@ -323,6 +323,7 @@ function TheatresPage({route, navigation}) {
                 <DetailsPage
                     headerChildren={[name, `${theatreNumber}`]}
                     onBackPress={onBackTapped}
+                    updateTheatre = {updateTheatre}
                     isArchive={getIsEditable()}
                     pageTabs={(
                         <TabsContainer

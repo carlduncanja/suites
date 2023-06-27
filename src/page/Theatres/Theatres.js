@@ -392,10 +392,11 @@ function Theatres(props) {
                 theatre: item,
                 isEdit: isOpenEditable,
                 reloadTheatres: () => fetchTheatres(currentPagePosition),
-                tab: 4
+                tab: 4,
+                updateTheatre : theatrePermissions.update,
+
             });
         };
-
         const itemView = theatreItem(formattedItem, () => onActionClick(false));
 
         return (
@@ -500,7 +501,6 @@ function Theatres(props) {
                 onRefresh={onRefresh}
                 isFetchingData={isFetchingData}
                 onSelectAll={onSelectAll}
-
                 totalPages={totalPages}
                 currentPage={currentPagePosition}
                 goToNextPage={goToNextPage}
@@ -509,7 +509,7 @@ function Theatres(props) {
                 isDisabled={isFloatingActionDisabled}
                 toggleActionButton={toggleActionButton}
                 hasPaginator={true}
-                hasActionButton={theatrePermissions.delete && theatrePermissions.create}
+                hasActionButton={theatrePermissions.delete || theatrePermissions.create}
                 hasActions={true}
                 isNextDisabled={isNextDisabled}
                 isPreviousDisabled={isPreviousDisabled}
