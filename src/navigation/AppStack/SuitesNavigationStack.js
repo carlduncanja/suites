@@ -235,13 +235,14 @@ export const SuitesNavigationStack = ({ auth = {} }) => {
                 />
             }
             {
-                isAdmin && ViewUsers &&
+                ViewUsers &&
                 <SuitesNavigator.Screen
                     name="Users"
                     component={UsersNavigationStack}
                     initialParams={{
                         icon: UserPageIcon,
                         tabName: 'Users',
+                        userPermissions
                     }}
                 />
 

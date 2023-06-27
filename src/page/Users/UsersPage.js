@@ -47,7 +47,9 @@ const listHeaders = [
     },
 ];
 
-function UsersPage() {
+function UsersPage(props) {
+
+    const usersPermissions = props.route.params.usersPermissions;
 
     const theme = useTheme();
     // affects page title top left
@@ -328,7 +330,8 @@ function UsersPage() {
 
         // button apart of the popup
         // at the bottom right
-        const CreateUserAction = <ActionItem
+        const CreateUserAction = 
+        usersPermissions.create && <ActionItem
             title="New User"
             icon={<AddIcon/>}
             onPress={onNewUserPress}
