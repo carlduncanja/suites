@@ -13,8 +13,8 @@ import CasePage from "../../page/CaseFile/CasePage";
 const Stack = createStackNavigator();
 
 export default (props) => {
-    const isAdmin = props.route.params.isAdmin || false;
-
+    const isAdmin = props.route.params.isAdmin || false; 
+    const permissions = props.route.params.userPermissions.cases 
     return (
         <Stack.Navigator
             initialRouteName="CaseFiles"
@@ -25,7 +25,10 @@ export default (props) => {
                 options={{
                     headerShown: false
                 }}
-                initialParams={{ isAdmin }}
+                initialParams={{ 
+                    isAdmin,
+                    permissions
+                }}
             />
 
             <Stack.Screen
@@ -42,7 +45,7 @@ export default (props) => {
                     //     height: 100,
                     // },
                     // headerTitle: ""
-                }}
+                }} 
             />
 
             <Stack.Screen
@@ -50,17 +53,18 @@ export default (props) => {
                 component={CasePage}
                 options={{
                     headerShown: false,
-                    // headerLeft: (props) => (
-                    //     <HeaderBackComponent
-                    //         {...props}
-                    //     />
-                    // ),
-                    // headerStyle: {
-                    //     height: 100,
-                    //
-                    // },
-                    // headerTitle: ""
+                    headerLeft: (props) => (
+                        <HeaderBackComponent
+                            {...props}
+                        />
+                    ),
+                    headerStyle: {
+                        height: 100,
+
+                    },
+                    headerTitle: ""
                 }}
+                initialParams={{permissions}}
             />
             <Stack.Screen
                 name="AddAppointmentPage"

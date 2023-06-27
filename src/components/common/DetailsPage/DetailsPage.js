@@ -20,6 +20,7 @@ function DetailsPage({
     updatePhysician,
     updateStorage,
     inventoryVariantUpdate,
+    isEditable,
     subTitle = '__',
     headerChildren,
     isSpecialHeader = false,
@@ -48,7 +49,8 @@ function DetailsPage({
                     <PageHeader
                         isArchive={isArchive}
                         updatePhysician = {updatePhysician}
-                        inventoryUpdate = {inventoryUpdate}
+                        inventoryUpdate = {inventoryUpdate} 
+                        isEditable={isEditable}
                         updateStorage = {updateStorage}
                         inventoryVariantUpdate = {inventoryVariantUpdate}
                         headerChildren={headerChildren || [title, subTitle]}
