@@ -52,7 +52,6 @@ function DetailsPage({
                         updatePhysician = {updatePhysician}
                         inventoryUpdate = {inventoryUpdate} 
                         updateStorage = {updateStorage}
-                        updateTheatre = {updateTheatre}
                         isEditable={isEditable}
                         inventoryVariantUpdate = {inventoryVariantUpdate}
                         headerChildren={headerChildren || [title, subTitle]}

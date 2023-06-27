@@ -323,7 +323,7 @@ function TheatresPage({route, navigation}) {
                 <DetailsPage
                     headerChildren={[name, `${theatreNumber}`]}
                     onBackPress={onBackTapped}
-                    updateTheatre = {updateTheatre}
+                    isEditable={updateTheatre}
                     isArchive={getIsEditable()}
                     pageTabs={(
                         <TabsContainer

@@ -136,6 +136,7 @@ function Theatres(props) {
             initial: false,
             theatre: item,
             isEdit: isOpenEditable,
+            updateTheatre : theatrePermissions.update,
             reloadTheatres: () => fetchTheatres(currentPagePosition)
         });
     };
