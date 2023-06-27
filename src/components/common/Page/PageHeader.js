@@ -18,12 +18,7 @@ function PageHeader({
                         isArchive: isEditDisabled = false,
                         headerChildren = [],
                         separator = null,
-                        updatePhysician,
                         isEditable,
-                        inventoryUpdate,
-                        updateStorage,
-                        updateTheatre,
-                        inventoryVariantUpdate,
                         editMessage = 'now in edit mode'
                     }) {
     const theme = useTheme();
@@ -168,7 +163,7 @@ function PageHeader({
                         </EditModeContainer>
                     }
 
-                   { (updatePhysician || inventoryUpdate || inventoryVariantUpdate ||isEditable || updateStorage || updateTheatre) && <EditButtonWrapper theme={theme}>
+                   { isEditable  && <EditButtonWrapper theme={theme}>
                         <EditButtonContainer
                             theme={theme}
                             backgroundColor={getEditBtnBackground()}

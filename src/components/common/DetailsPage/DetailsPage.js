@@ -16,12 +16,7 @@ function DetailsPage({
     isArchive = false,
     hasIcon = null,
     title = '__',
-    inventoryUpdate,
-    updatePhysician,
-    updateStorage,
-    updateTheatre ,
-    inventoryVariantUpdate,
-     isEditable,
+    isEditable,
     subTitle = '__',
     headerChildren,
     isSpecialHeader = false,
@@ -49,10 +44,7 @@ function DetailsPage({
                 <>
                     <PageHeader
                         isArchive={isArchive}
-                        updatePhysician = {updatePhysician}
-                        inventoryUpdate = {inventoryUpdate} 
-                        updateStorage = {updateStorage}
-                        isEditable={isEditable}                        inventoryVariantUpdate = {inventoryVariantUpdate}
+                        isEditable={isEditable}                  
                         headerChildren={headerChildren || [title, subTitle]}
                         separator={<BreadCrumbIcon/>}
                         onBack={onBackPress}

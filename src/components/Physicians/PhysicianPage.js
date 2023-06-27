@@ -307,7 +307,7 @@ function PhysicianPage({route, navigation}) {
                 <DetailsPage
                     title={name}
                     subTitle=""
-                    updatePhysician = {updatePhysicians}
+                    isEditable={updatePhysician}
                     headerChildren={[name]}
                     onBackPress={backTapped}
                     isArchive={getIsEditable()}

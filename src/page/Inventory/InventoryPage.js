@@ -193,7 +193,7 @@ function InventoryPage({ route, navigation }) {
         <PageContext.Provider value={{ pageState, setPageState }}>
             <DetailsPage
                 headerChildren={[selectedInventory?.name]}
-                inventoryUpdate = {inventoryUpdate}
+                isEditable={inventoryUpdate}
                 onBackPress={() => navigation.navigate('Inventory')}
                 pageTabs={(
                     <TabsContainerComponent
