@@ -19,6 +19,7 @@ import MultipleSelectionsField from '../common/Input Fields/MultipleSelectionsFi
 function StorageDetailsTab({
     storageLocationId,
     name = '--',
+    updateStorage,
     description = '',
     storageCategories = [],
     onUpdated = () => {
