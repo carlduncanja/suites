@@ -16,7 +16,9 @@ function DetailsPage({
     isArchive = false,
     hasIcon = null,
     title = '__',
+    inventoryUpdate,
     updatePhysician,
+    inventoryVariantUpdate,
     subTitle = '__',
     headerChildren,
     isSpecialHeader = false,
@@ -45,6 +47,8 @@ function DetailsPage({
                     <PageHeader
                         isArchive={isArchive}
                         updatePhysician = {updatePhysician}
+                        inventoryUpdate = {inventoryUpdate}
+                        inventoryVariantUpdate = {inventoryVariantUpdate}
                         headerChildren={headerChildren || [title, subTitle]}
                         separator={<BreadCrumbIcon/>}
                         onBack={onBackPress}

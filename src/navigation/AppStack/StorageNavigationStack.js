@@ -12,7 +12,7 @@ const Stack = createStackNavigator();
 
 export default (props) => {
     const isAdmin = props.route.params.isAdmin || false;
-
+    const storagePermissions =  props.route.params.userPermissions.storage_locations
     return (
         <Stack.Navigator
             initialRouteName="Storage"
@@ -23,7 +23,7 @@ export default (props) => {
                 options={{
                     headerShown: false
                 }}
-                initialParams={{ isAdmin }}
+                initialParams={{ isAdmin, storagePermissions }}
             />
 
 

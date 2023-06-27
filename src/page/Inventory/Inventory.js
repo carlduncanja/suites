@@ -58,7 +58,6 @@ function Inventory(props) {
     } = props;
 
     const inventoryPermissions = route.params.inventoryPermissions
-    console.log('hajhska', inventoryPermissions.create)
     const pageTitle = 'Inventory';
     const modal = useModal();
     const theme = useTheme();
@@ -132,7 +131,9 @@ function Inventory(props) {
             // params : {
             data: item,
             isGroup: true,
-            isEdit: false
+            isEdit: false,
+            inventoryPermissions: inventoryPermissions.update
+
             // }
         });
     };
@@ -151,7 +152,8 @@ function Inventory(props) {
             initial: false,
             // params : {
             data: updatedItem,
-            isEdit: false
+            isEdit: false,
+            inventoryPermissions: inventoryPermissions.update
             // }
         });
     };
@@ -336,8 +338,8 @@ function Inventory(props) {
 
         return <ActionContainer
             floatingActions={[
-                deleteAction,
-                deleteInventoryItemAction,
+                deleteAction && inventoryPermissions.delete,
+                deleteInventoryItemAction && inventoryPermissions.delete,
                 uploadInventory,
                 createAction ,
                 createGroup,

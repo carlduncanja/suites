@@ -13,6 +13,7 @@ import InventorySuppliersTab from '../../components/OverlayTabs/InventorySupplie
 
 function InventoryVariantPage({ route, navigation }) {
     const { data = {} } = route.params;
+    const inventoryVariantUpdate = route.params.inventoryPermissions
     const modal = useModal();
     // console.log("Data: ", data)
     const { name = '', _id = '', groupName = '', groupId = '' } = data;
@@ -249,6 +250,7 @@ function InventoryVariantPage({ route, navigation }) {
             <DetailsPage
                 headerChildren={[groupName, selectedVariant?.name]}
                 onBackPress={() => navigation.navigate('Inventory')}
+                inventoryVariantUpdate = {inventoryVariantUpdate}
                 isArchive={getIsEditable()}
                 pageTabs={(
                     <TabsContainerComponent
