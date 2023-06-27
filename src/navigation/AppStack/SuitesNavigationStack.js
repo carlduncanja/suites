@@ -193,7 +193,8 @@ export const SuitesNavigationStack = ({ auth = {} }) => {
                     initialParams={{
                         icon: DeliveryIcon,
                         tabName: 'Suppliers',
-                        isAdmin
+                        isAdmin,
+                        userPermissions
                     }}
                 />
             }
