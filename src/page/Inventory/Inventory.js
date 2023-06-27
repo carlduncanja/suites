@@ -314,8 +314,8 @@ function Inventory(props) {
             </View>
         );
 
-        const createAction =  <ActionItem title="Add Item" icon={<AddIcon />} onPress={openCreateInventoryModel} />;
-        const createGroup =   <ActionItem title="Create Item Group" icon={<AddIcon />} onPress={openCreateGroupDialog} />;
+        const createAction =   inventoryPermissions.create &&  <ActionItem title="Add Item" icon={<AddIcon />} onPress={openCreateInventoryModel} />;
+        const createGroup =    inventoryPermissions.create && <ActionItem title="Create Item Group" icon={<AddIcon />} onPress={openCreateGroupDialog} />;
         const itemTransfer = (
             <ActionItem
                 title="Item Transfer"
@@ -339,8 +339,8 @@ function Inventory(props) {
                 deleteAction,
                 deleteInventoryItemAction,
                 uploadInventory,
-                createAction && inventoryPermissions.create,
-                createGroup && inventoryPermissions.create,
+                createAction ,
+                createGroup,
             ]}
             title="INVENTORY ACTIONS"
         />;
