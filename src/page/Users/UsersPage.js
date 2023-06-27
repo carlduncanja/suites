@@ -308,7 +308,7 @@ function UsersPage(props) {
         const isUsersSelected = selectedIds?.length;
         const deleteColor = !isUsersSelected ? theme.colors['--color-gray-600'] : theme.colors['--color-red-700']
 
-        const DeleteUserAction = <View style={{
+        const DeleteUserAction = usersPermissions.delete && <View style={{
             borderRadius: 6,
             flex: 1,
             overflow: 'hidden'
@@ -342,7 +342,7 @@ function UsersPage(props) {
         // on users page
         // used to create and delete users
         return (
-            <ActionContainer
+             <ActionContainer
                 floatingActions={[DeleteUserAction, CreateUserAction]}
                 title={"USERS ACTIONS"}
             />
@@ -427,7 +427,7 @@ function UsersPage(props) {
             isDisabled={isFloatingActionDisabled}
             toggleActionButton={toggleActionButton}
             hasPaginator={true}
-            hasActionButton={true}
+            hasActionButton={usersPermissions.delete || usersPermissions.create}
             hasActions={true}
             isNextDisabled={isNextDisabled}
             isPreviousDisabled={isPreviousDisabled}
