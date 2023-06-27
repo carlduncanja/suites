@@ -36,6 +36,7 @@ import WasteIcon from "../../../assets/svg/wasteIcon";
 import { removeDraft } from "../../redux/actions/draftActions";
 import Button from '../../components/common/Buttons/Button';
 import ConfirmationComponent from '../../components/ConfirmationComponent';
+import { userPassword } from '../../const/suitesEndpoints';
 
 // controls the title headers for case
 const listHeaders = [
@@ -71,6 +72,7 @@ function CaseFiles(props) {
     //######## const
     const modal = useModal();
     const theme = useTheme();
+    const userPermissions = props.route.params.permissions;
 
     // const router = useRouter
     const recordsPerPage = 10;
@@ -510,6 +512,8 @@ function CaseFiles(props) {
     };
 
     const getFabActions = () => {
+
+        console.log("this is to check the user permissions", userPermissions)
         const disabled = !!isEmpty(selectedCaseIds);
         const archiveCase = (
             <ActionItem
@@ -545,7 +549,9 @@ function CaseFiles(props) {
         </View>
         );
 
+
         const createNewCase = <ActionItem title="New Case" icon={<AddIcon />} onPress={openCreateCaseFile} />;
+
         const deleteAction = (
             <View style={{
                 borderRadius: 6,
@@ -565,8 +571,8 @@ function CaseFiles(props) {
                                 strokeColor={disabled ? theme.colors['--color-gray-600'] : theme.colors['--color-red-700']}
                             />
                         )}
-                        touchable={false}
-                        disabled={disabled}
+                         touchable={false}
+                         disabled={disabled}
                     />
                 </LongPressWithFeedback>
             </View>
@@ -574,12 +580,12 @@ function CaseFiles(props) {
 
         return <ActionContainer
             floatingActions={[
-                archiveCase,
-                deleteDraftAction,
-                deleteAction,
-                createNewCase
+                userPermissions.update && archiveCase,
+                userPermissions.delete && deleteDraftAction,
+                userPermissions.delete && deleteAction,
+                userPermissions.create && createNewCase
             ]}
-            title="CASE ACTIONS"
+             title="CASE ACTIONS"
         />;
     };
 

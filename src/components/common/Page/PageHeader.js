@@ -19,6 +19,7 @@ function PageHeader({
                         headerChildren = [],
                         separator = null,
                         updatePhysician,
+                        isEditable,
                         inventoryUpdate,
                         updateStorage,
                         updateTheatre,
@@ -167,7 +168,7 @@ function PageHeader({
                         </EditModeContainer>
                     }
 
-                   { (updatePhysician || inventoryUpdate || inventoryVariantUpdate || updateStorage || updateTheatre) && <EditButtonWrapper theme={theme}>
+                   { (updatePhysician || inventoryUpdate || inventoryVariantUpdate ||isEditable || updateStorage || updateTheatre) && <EditButtonWrapper theme={theme}>
                         <EditButtonContainer
                             theme={theme}
                             backgroundColor={getEditBtnBackground()}
