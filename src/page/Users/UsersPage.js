@@ -109,10 +109,9 @@ function UsersPage(props) {
 
     // endregion
 
-
     // region Event Handlers
     const onItemPress = (item, isOpenEditable) => () => {
-        navigation.navigate("UserPage", {user: item, onUserUpdate: handleUserUpdate})
+        navigation.navigate("UserPage", {user: item, onUserUpdate: handleUserUpdate, updateUser : usersPermissions.update})
     };
 
     const onSearchInputChange = (input) => {

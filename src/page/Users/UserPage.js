@@ -13,9 +13,8 @@ import ResetPasswordComponent from './ResetPasswordComponent';
 function UserPage({route, ...props}) {
 
     const navigation = useNavigation();
-    const {user, onUserUpdate, editMode} = route.params;
+    const {user, onUserUpdate, editMode, updateUser} = route.params;
     const modal = useModal();
-
     const [pageState, setPageState] = useState({});
     const [selectedUser, setUser] = useState(user);
     const [currentTab, setCurrentTab] = useState('Details')
