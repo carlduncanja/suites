@@ -19,7 +19,7 @@ function DetailsPage({
     inventoryUpdate,
     updatePhysician,
     inventoryVariantUpdate,
-    isEditable,
+     isEditable,
     subTitle = '__',
     headerChildren,
     isSpecialHeader = false,
