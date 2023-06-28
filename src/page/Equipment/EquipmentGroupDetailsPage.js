@@ -19,7 +19,7 @@ function EquipmentGroupDetailsPage(props) {
     const modal = props.modal;
     const {
         data = {}, onCreated = () => {
-        }
+        }, updatesEquipment
     } = props.route.params;
     const {name = "", _id = "", equipments = [], suppliers = [], description = '', categories = [], unitPrice = 0} = data
     const tabs = ["Details", "Items"];
@@ -224,6 +224,7 @@ function EquipmentGroupDetailsPage(props) {
                     />
                     :
                     <EquipmentGroupGeneralTab
+                        updateEquipment = {updatesEquipment}
                         goToAddEquipment={goToAddEquipment}
                         equipmentGroup={selectedEquipment}
                         equipments={equipments}
@@ -241,6 +242,7 @@ function EquipmentGroupDetailsPage(props) {
         <PageContext.Provider value={{pageState, setPageState}}>
             <DetailsPage
                 headerChildren={[name]}
+                isEditable={updatesEquipment}
                 onBackPress={() => props.navigation.navigate("Equipment")}
                 pageTabs={
                     <TabsContainerComponent

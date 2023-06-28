@@ -16,8 +16,8 @@ import TabsContainer from '../common/Tabs/TabsContainerComponent';
 import SvgIcon from '../../../assets/SvgIcon';
 
 function EquipmentItemPage({route, navigation, modal}) {
-    const {equipment, isOpenEditable, group, onCreated} = route.params;
-
+    const {equipment, isOpenEditable, group, onCreated, updatesEquipment} = route.params;
+    console.log('jksjdks', updatesEquipment)
     const currentTabs = ['Details'];
 
     // ##### States
@@ -228,6 +228,7 @@ function EquipmentItemPage({route, navigation, modal}) {
                     hasIcon={<SvgIcon iconName="paginationNext" strokeColor="#718096"/>}
                     headerChildren={[group.name, name]}
                     onBackPress={backTapped}
+                    isEditable={updatesEquipment}
 
                     pageTabs={(
                         <TabsContainer
