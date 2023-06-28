@@ -71,6 +71,7 @@ function UserPage({route, ...props}) {
         <PageContext.Provider value={{pageState, setPageState}}>
             <DetailsPage
                 editMode = {editMode}
+                isEditable={updateUser}
                 headerChildren={[`${selectedUser?.first_name || '--'} ${selectedUser?.last_name || '__'} `]}
                 onBackPress={onBackTapped}
                 pageTabs={(

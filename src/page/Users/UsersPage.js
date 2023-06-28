@@ -182,7 +182,7 @@ function UsersPage(props) {
     };
 
     const onActionPress = (item) => {
-        navigation.navigate("UserPage", {user: item, onUserUpdate: handleUserUpdate, editMode: true})
+        navigation.navigate("UserPage", {user: item, onUserUpdate: handleUserUpdate, editMode: true, updateUser : usersPermissions.update})
     }
 
     const onDeleteUsers = () => {
@@ -244,6 +244,7 @@ function UsersPage(props) {
                 flex={1}
                 content={
                     <IconButton
+                        disabled={!usersPermissions.update}
                         Icon={<EditIcon/>}
                         onPress={()=> {onActionPress(item)}}
                         
