@@ -260,10 +260,10 @@ export const SuitesNavigationStack = ({ auth = {} }) => {
                     name="Alerts"
                     component={Alerts}
                     initialParams={{
-                        icon: NotificationIcon,
-                        tabName: 'Alerts',
-                        isAdmin,
-                        userPermissions
+                          icon: NotificationIcon,
+                          tabName: 'Alerts',
+                          isAdmin,
+                          userPermissions
                     }}
                 />
 
