@@ -67,7 +67,7 @@ border-radius:0px 0px 6px 6px;
 
 `
 
-function EquipmentGroupGeneralTab({ equipmentGroup = {}, equipments = [], suppliers = [], modal, goToAddEquipment }) {
+function EquipmentGroupGeneralTab({ equipmentGroup = {}, updateEquipment, equipments = [], suppliers = [], modal, goToAddEquipment }) {
 
 
     const theme = useTheme();
@@ -98,9 +98,7 @@ function EquipmentGroupGeneralTab({ equipmentGroup = {}, equipments = [], suppli
         return (
             <ActionContainer
                 floatingActions={[
-                    editGroup,
                     assignEquipment,
-
                 ]}
                 title={"EQUIPMENT ACTIONS"}
             />
@@ -166,7 +164,7 @@ function EquipmentGroupGeneralTab({ equipmentGroup = {}, equipments = [], suppli
                 />
             </Row>
             <Footer
-                hasActionButton={true}
+                hasActionButton={updateEquipment}
                 hasPaginator={false}
                 toggleActionButton={toggleActionButton}
             />
