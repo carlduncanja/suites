@@ -208,7 +208,7 @@ function Theatres(props) {
                 </Text>
             </View>
             <View style={[styles.item, {flex: 1, justifyContent: 'center'}]}>
-                <IconButton Icon={<AssignIcon/>} onPress={onActionPress}/>
+                <IconButton Icon={<AssignIcon/>} disabled={!theatrePermissions.update} onPress={onActionPress}/>
             </View>
         </>
     );
