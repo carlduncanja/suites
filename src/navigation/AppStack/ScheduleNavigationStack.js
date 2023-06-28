@@ -8,7 +8,9 @@ const Stack = createStackNavigator();
 
 export default (props) => {
     const isAdmin = props.route.params.isAdmin || false;
+    const userPermissions = props.route.params.userPermissions 
 
+    console.log("we are them ",userPermissions)
     return (
         <Stack.Navigator
             initialRouteName="SchedulePage"

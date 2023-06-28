@@ -41,10 +41,12 @@ const Space = styled.View`
     height: 20px;
 `;
 
-function Alerts() {
+function Alerts(props) {
+
     const theme = useTheme();
     const modal = useModal();
-    const recordsPerPage = 4;
+    const recordsPerPage = 4;  
+    const alertsPermissions = props.route.params.userPermissions.alerts
 
     const [isCollapsed, setIsCollapsed] = useState([]);
     const [isFetchingData, setFetchingData] = useState(false);
@@ -227,13 +229,16 @@ function Alerts() {
                 startDate={recentStartDate}
                 endDate={recentEndDate}
                 onClearCalendarDates={() => { setRecentEndDate(''); setRecentStartDate(''); fetchOpenAlert(1, '', ''); }}
-                onClearList={() => { openClearConfirm() }}
+                onClearList={() => { openClearConfirm() }} 
+                showClearList={alertsPermissions.update}
                 content={(
                     <RecentAlertsList
                         data={recentAlerts}
-                        updateAlerts={() => { setFetchingData(true); fetchClosedAlert(1); fetchOpenAlert(1); }}
+                        updateAlerts={() => { setFetchingData(true); fetchClosedAlert(1); fetchOpenAlert(1); }} 
+                        permissions={alertsPermissions}
                     />
-                )}
+                )} 
+                permissions={alertsPermissions}
             />
 
             <Space />
@@ -364,7 +369,7 @@ function Alerts() {
         getAlerts('open', recordsPerPage, page, recentSearchValue, start.toString(), end.toString())
             .then(results => {
                 const { data = [], totalPages = 0 } = results;
-                console.log("Recent data: ", data);
+               
                 setRecentAlerts(data);
                 setRecentTotalPages(totalPages);
 
@@ -380,7 +385,8 @@ function Alerts() {
     useEffect(() => {
         setFetchingData(true);
         fetchClosedAlert(closedPagePosition);
-        fetchOpenAlert(recentPagePosition);
+        fetchOpenAlert(recentPagePosition); 
+        console.log("wewewewewewe",alertsPermissions)
     }, []);
 
     useEffect(() => {

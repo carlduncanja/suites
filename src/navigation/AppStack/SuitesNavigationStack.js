@@ -122,6 +122,7 @@ export const SuitesNavigationStack = ({ auth = {} }) => {
                 initialParams={{
                     icon: ScheduleIcon,
                     tabName: 'schedule',
+                    userPermissions
                 }}
             />
 
@@ -260,7 +261,8 @@ export const SuitesNavigationStack = ({ auth = {} }) => {
                     initialParams={{
                         icon: NotificationIcon,
                         tabName: 'Alerts',
-                        isAdmin
+                        isAdmin,
+                        userPermissions
                     }}
                 />
 

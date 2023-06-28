@@ -85,7 +85,7 @@ const TittleContianer = styled.View`
     justify-content: space-between;
 `
 
-function RecentAlertsList({ data = [], updateAlerts = () => { } }) {
+function RecentAlertsList({ data = [], updateAlerts = () => { } , permissions }) {
     const theme = useTheme();
     const modal = useModal();
 
@@ -294,7 +294,7 @@ function RecentAlertsList({ data = [], updateAlerts = () => { } }) {
         <SwipeListView
             data={data}
             renderItem={renderItem}
-            renderHiddenItem={renderHiddenItem}
+            renderHiddenItem={ permissions.update && renderHiddenItem}
             leftOpenValue={0}
             disableRightSwipe={true}
             rightOpenValue={-100}
