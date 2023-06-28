@@ -250,7 +250,7 @@ function InventoryVariantPage({ route, navigation }) {
             <DetailsPage
                 headerChildren={[groupName, selectedVariant?.name]}
                 onBackPress={() => navigation.navigate('Inventory')}
-                inventoryVariantUpdate = {inventoryVariantUpdate}
+                isEditable={inventoryVariantUpdate}
                 isArchive={getIsEditable()}
                 pageTabs={(
                     <TabsContainerComponent

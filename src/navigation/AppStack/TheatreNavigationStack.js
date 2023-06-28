@@ -11,6 +11,7 @@ const Stack = createStackNavigator();
 
 export default (props) => {
     const isAdmin = props.route.params.isAdmin || false;
+    const theatrePermissions = props.route.params.userPermissions.theatres
 
     return (
         <Stack.Navigator
@@ -22,7 +23,7 @@ export default (props) => {
                 options={{
                     headerShown: false
                 }}
-                initialParams={{ isAdmin }}
+                initialParams={{ isAdmin , theatrePermissions}}
             />
 
 

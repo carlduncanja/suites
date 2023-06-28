@@ -95,6 +95,7 @@ const SchedulePaginator = ({
     goToPreviousDay,
     toggleActionButton = () => { },
     updatePhysician,
+    updateTheatre
 }) => {
     const [state] = useContext(SuitesContext);
     const theme = useTheme();
@@ -121,7 +122,7 @@ const SchedulePaginator = ({
                     </PaginatorContainer>
                 </MultipleShadowsContainer>
                  
-                { updatePhysician  && <FloatingActionButton
+                { updatePhysician || updateTheatre && <FloatingActionButton
                     isDisabled={false}
                     hasActions={true}
                     toggleActionButton={toggleActionButton}

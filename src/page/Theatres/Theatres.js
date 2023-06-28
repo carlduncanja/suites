@@ -73,6 +73,7 @@ function Theatres(props) {
     const emptyTitle = 'No Theatres Found';
     const modal = useModal();
     const recordsPerPage = 10;
+    const theatrePermissions =   props.route.params.theatrePermissions;
     //const hasEmpty = true
 
     // ##### States 
@@ -135,6 +136,7 @@ function Theatres(props) {
             initial: false,
             theatre: item,
             isEdit: isOpenEditable,
+            updateTheatre : theatrePermissions.update,
             reloadTheatres: () => fetchTheatres(currentPagePosition)
         });
     };
@@ -206,15 +208,15 @@ function Theatres(props) {
                 </Text>
             </View>
             <View style={[styles.item, {flex: 1, justifyContent: 'center'}]}>
-                <IconButton Icon={<AssignIcon/>} onPress={onActionPress}/>
+                <IconButton Icon={<AssignIcon/>} disabled={!theatrePermissions.update} onPress={onActionPress}/>
             </View>
         </>
     );
 
     const getFabActions = () => {
         const deleteAction = (
-            <View style={{borderRadius: 6, flex: 1, overflow: 'hidden'}}>
-                <LongPressWithFeedback
+            theatrePermissions.delete && <View style={{borderRadius: 6, flex: 1, overflow: 'hidden'}}>
+               <LongPressWithFeedback
                     pressTimer={LONG_PRESS_TIMER.LONG}
                     onLongPress={removeTheatresLongPress}
                 >
@@ -230,7 +232,7 @@ function Theatres(props) {
         );
 
         const createAction = (
-            <ActionItem
+            theatrePermissions.create && <ActionItem
                 title="Create Theatre"
                 icon={<AddIcon/>}
                 onPress={openCreateTheatreModel}
@@ -391,10 +393,11 @@ function Theatres(props) {
                 theatre: item,
                 isEdit: isOpenEditable,
                 reloadTheatres: () => fetchTheatres(currentPagePosition),
-                tab: 4
+                tab: 4,
+                updateTheatre : theatrePermissions.update,
+
             });
         };
-
         const itemView = theatreItem(formattedItem, () => onActionClick(false));
 
         return (
@@ -499,7 +502,6 @@ function Theatres(props) {
                 onRefresh={onRefresh}
                 isFetchingData={isFetchingData}
                 onSelectAll={onSelectAll}
-
                 totalPages={totalPages}
                 currentPage={currentPagePosition}
                 goToNextPage={goToNextPage}
@@ -508,7 +510,7 @@ function Theatres(props) {
                 isDisabled={isFloatingActionDisabled}
                 toggleActionButton={toggleActionButton}
                 hasPaginator={true}
-                hasActionButton={true}
+                hasActionButton={theatrePermissions.delete || theatrePermissions.create}
                 hasActions={true}
                 isNextDisabled={isNextDisabled}
                 isPreviousDisabled={isPreviousDisabled}
