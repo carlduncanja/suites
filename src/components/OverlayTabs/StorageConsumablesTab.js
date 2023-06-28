@@ -42,7 +42,7 @@ const headers = [
 ];
 
 
-const StorageConsumablesTab = ({consumables = [], storageLocation, onUpdateItem}) => {
+const StorageConsumablesTab = ({consumables = [], storageLocation, onUpdateItem, updateStorage}) => {
 
     const theme = useTheme();
     const modal = useModal();
@@ -223,6 +223,7 @@ const StorageConsumablesTab = ({consumables = [], storageLocation, onUpdateItem}
                 currentPage={currentPage + 1}
                 goToNextPage={onNextPage}
                 goToPreviousPage={onPreviousPage}
+                hasActionButton = {updateStorage}
                 toggleActionButton={toggleActionButton}
             />
         </>

@@ -147,7 +147,8 @@ export const SuitesNavigationStack = ({ auth = {} }) => {
                     initialParams={{
                         icon: TheatreIcon,
                         tabName: 'Theatres',
-                        isAdmin
+                        isAdmin,
+                        userPermissions
                     }}
                 />
             }
@@ -158,7 +159,8 @@ export const SuitesNavigationStack = ({ auth = {} }) => {
                     initialParams={{
                         icon: InventoryIcon,
                         tabName: 'Inventory',
-                        isAdmin
+                        isAdmin,
+                        userPermissions
                     }}
                 />
             }
@@ -194,7 +196,8 @@ export const SuitesNavigationStack = ({ auth = {} }) => {
                     initialParams={{
                         icon: DeliveryIcon,
                         tabName: 'Suppliers',
-                        isAdmin
+                        isAdmin,
+                        userPermissions
                     }}
                 />
             }
@@ -236,13 +239,14 @@ export const SuitesNavigationStack = ({ auth = {} }) => {
                 />
             }
             {
-                isAdmin && ViewUsers &&
+                ViewUsers &&
                 <SuitesNavigator.Screen
                     name="Users"
                     component={UsersNavigationStack}
                     initialParams={{
                         icon: UserPageIcon,
                         tabName: 'Users',
+                        userPermissions
                     }}
                 />
 

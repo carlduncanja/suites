@@ -157,6 +157,7 @@ function Storage(props) {
         props.navigation.navigate('StoragePage', {
             initial: false,
             storage: item,
+            updateStorage : storagePermissions.update,
             reloadStorageLocations: () => fetchStorageData(currentPagePosition)
         });
         // modal.openModal('BottomSheetModal', {

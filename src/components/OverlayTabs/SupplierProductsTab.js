@@ -87,7 +87,8 @@ function SupplierProductsTab({
     onAddProducts,
     onProductsCreated,
     onRefresh,
-    isProductsLoading
+    isProductsLoading,
+    permissions
 }) {
     // ######## STATES
     const theme = useTheme();
@@ -120,6 +121,7 @@ function SupplierProductsTab({
             setCartItems(cart);
             setTotalPages(Math.ceil(productsState.length / recordsPerPage));
         }, 200);
+
     }, []);
 
     // ######## EVENT HANDLERS
@@ -221,7 +223,7 @@ function SupplierProductsTab({
         };
         const payload = {
             deliveryDate: deliveryDate,
-            
+
         }
 
         createPurchaseOrder(orderToCreate)
@@ -366,7 +368,7 @@ function SupplierProductsTab({
             >
                 <ActionItem
                     title="Hold to Delete"
-                    icon={<WasteIcon strokeColor={isDisabledColor}/>}
+                    icon={<WasteIcon strokeColor={isDisabledColor} />}
                     onPress={() => {
                     }}
                     touchable={false}
@@ -375,6 +377,7 @@ function SupplierProductsTab({
             </LongPressWithFeedback>
         );
         const addCart = (
+            
             <ActionItem
                 title="Add Item to Cart"
                 icon={<AddIcon
@@ -382,13 +385,14 @@ function SupplierProductsTab({
                 disabled={isDisabled}
                 touchable={!isDisabled}
                 onPress={addToCartAction}
-            />
+            /> 
+            
         );
         const addProduct = <ActionItem title="Create Product" icon={<AddIcon />} onPress={addProductAction} />;
         return <ActionContainer
             floatingActions={[
                 deleteProduct,
-                addCart,
+                permissions.create && addCart,
                 addProduct
             ]}
             title="SUPPLIER PRODUCTS ACTIONS"

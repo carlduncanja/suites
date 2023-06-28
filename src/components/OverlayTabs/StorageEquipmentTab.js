@@ -17,7 +17,7 @@ import Item from '../common/Table/Item';
 import DataItem from '../common/List/DataItem';
 import {useNextPaginator, usePreviousPaginator, checkboxItemPress, selectAll} from '../../helpers/caseFilesHelpers';
 
-const StorageEquipmentTab = ({equipments = []}) => {
+const StorageEquipmentTab = ({equipments = [], updateStorage}) => {
     const theme = useTheme();
     const modal = useModal();
 
@@ -139,6 +139,7 @@ const StorageEquipmentTab = ({equipments = []}) => {
 
             <Footer
                 toggleActionButton={toggleActionButton}
+                hasActionButton = {updateStorage}
             />
         </>
         // <Equipment

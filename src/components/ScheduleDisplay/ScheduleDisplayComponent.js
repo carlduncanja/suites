@@ -8,6 +8,7 @@ function ScheduleDisplayComponent({
     date = new Date(),
     onPress,  
     updatePhysician,
+    updateTheatre,
     idData
 
 }) {
@@ -103,7 +104,7 @@ function ScheduleDisplayComponent({
 
                 {/* TIME LINE*/}
                 {
-                    timelineDate.map((item, index) => <TimeBlock key={index} time={item} onPress ={onPress} updatePhysician={updatePhysician} />)
+                    timelineDate.map((item, index) => <TimeBlock key={index} time={item} onPress ={onPress} updatePhysician={updatePhysician}  updateTheatre={updateTheatre}/>)
                 }
 
 
@@ -203,14 +204,14 @@ const CurrentTimeIndicator = () => (
     </View>
 )
 
-const TimeBlock = ({ time, onPress, updatePhysician }) => {
+const TimeBlock = ({ time, onPress, updatePhysician, updateTheatre }) => {
 
     const timeToDisplay = moment(time).format('h: mm')
     const hour = moment(time).hour();
 
     const isEven = (hour % 2 === 0)
 
-    return <TouchableOpacity onPress={updatePhysician ? onPress : undefined} style={{
+    return <TouchableOpacity onPress={(updatePhysician || updateTheatre) ? onPress : undefined} style={{
         flexDirection: "row",
         justifyContent: "flex-start"
     }}>
