@@ -47,7 +47,9 @@ const listHeaders = [
     },
 ];
 
-function UsersPage() {
+function UsersPage(props) {
+
+    const usersPermissions = props.route.params.usersPermissions;
 
     const theme = useTheme();
     // affects page title top left
@@ -107,10 +109,9 @@ function UsersPage() {
 
     // endregion
 
-
     // region Event Handlers
     const onItemPress = (item, isOpenEditable) => () => {
-        navigation.navigate("UserPage", {user: item, onUserUpdate: handleUserUpdate})
+        navigation.navigate("UserPage", {user: item, onUserUpdate: handleUserUpdate, updateUser : usersPermissions.update})
     };
 
     const onSearchInputChange = (input) => {
@@ -181,7 +182,7 @@ function UsersPage() {
     };
 
     const onActionPress = (item) => {
-        navigation.navigate("UserPage", {user: item, onUserUpdate: handleUserUpdate, editMode: true})
+        navigation.navigate("UserPage", {user: item, onUserUpdate: handleUserUpdate, editMode: true, updateUser : usersPermissions.update})
     }
 
     const onDeleteUsers = () => {
@@ -243,6 +244,7 @@ function UsersPage() {
                 flex={1}
                 content={
                     <IconButton
+                        disabled={!usersPermissions.update}
                         Icon={<EditIcon/>}
                         onPress={()=> {onActionPress(item)}}
                         
@@ -306,7 +308,7 @@ function UsersPage() {
         const isUsersSelected = selectedIds?.length;
         const deleteColor = !isUsersSelected ? theme.colors['--color-gray-600'] : theme.colors['--color-red-700']
 
-        const DeleteUserAction = <View style={{
+        const DeleteUserAction = usersPermissions.delete && <View style={{
             borderRadius: 6,
             flex: 1,
             overflow: 'hidden'
@@ -328,7 +330,8 @@ function UsersPage() {
 
         // button apart of the popup
         // at the bottom right
-        const CreateUserAction = <ActionItem
+        const CreateUserAction = 
+        usersPermissions.create && <ActionItem
             title="New User"
             icon={<AddIcon/>}
             onPress={onNewUserPress}
@@ -339,7 +342,7 @@ function UsersPage() {
         // on users page
         // used to create and delete users
         return (
-            <ActionContainer
+             <ActionContainer
                 floatingActions={[DeleteUserAction, CreateUserAction]}
                 title={"USERS ACTIONS"}
             />
@@ -424,7 +427,7 @@ function UsersPage() {
             isDisabled={isFloatingActionDisabled}
             toggleActionButton={toggleActionButton}
             hasPaginator={true}
-            hasActionButton={true}
+            hasActionButton={usersPermissions.delete || usersPermissions.create}
             hasActions={true}
             isNextDisabled={isNextDisabled}
             isPreviousDisabled={isPreviousDisabled}
