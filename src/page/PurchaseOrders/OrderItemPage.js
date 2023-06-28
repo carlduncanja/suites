@@ -15,7 +15,8 @@ import PaymentHistoryTab from '../../components/OverlayTabs/PaymentHistoryTab';
 
 function OrderItemPage({ route, navigation }) {
 
-    const { order, isOpenEditable, updateOrders } = route.params;
+    const { order, isOpenEditable, updateOrders } = route.params; 
+    const purchaseOrderPermissions = route.params.purchaseOrderPermissions;
     const baseStateRef = useRef();
     const modal = useModal();
 
@@ -321,7 +322,8 @@ function OrderItemPage({ route, navigation }) {
                     supplierId={supplier?._id}
                     onAddProductItems={onAddProductItems}
                     onRemoveProductItems={onRemoveProductItems}
-                    onConfirmDelivery = {onConfirmDelivery}
+                    onConfirmDelivery = {onConfirmDelivery} 
+                    permissions={purchaseOrderPermissions}
                 />;
             case 'Suppliers':
                 return <SupplierDetailsTab supplierId={supplier?._id} order={selectedOrder} onUpdated={fetchOrder} />;
@@ -330,7 +332,7 @@ function OrderItemPage({ route, navigation }) {
             case 'Invoice':
                 return <RequisitionTab key={2} order={selectedOrder} onUpdate={() => fetchOrder(_id)} type={ORDER_TYPES.PURCHASE_ORDER}/>;
             case 'Payments':
-                return <PaymentHistoryTab order={selectedOrder} onUpdate={() => fetchOrder(_id)} />
+                return <PaymentHistoryTab order={selectedOrder} onUpdate={() => fetchOrder(_id)} permissions={purchaseOrderPermissions}/>
             default:
                 return <View />;
         }
@@ -340,7 +342,8 @@ function OrderItemPage({ route, navigation }) {
         <>
             <PageContext.Provider value={{ pageState, setPageState }}>
                 <DetailsPage
-                    headerChildren={[purchaseOrderNumber]}
+                    headerChildren={[purchaseOrderNumber]} 
+                    isEditable={purchaseOrderPermissions.update}
                     onBackPress={BackTapped}
                     pageTabs={
                         <TabsContainer

@@ -1,8 +1,8 @@
-import React, {useEffect, useState, useContext} from 'react';
-import {View, Text, StyleSheet} from 'react-native';
-import {useModal} from 'react-native-modalfy';
-import styled, {css} from '@emotion/native';
-import {useTheme} from 'emotion-theming';
+import React, { useEffect, useState, useContext } from 'react';
+import { View, Text, StyleSheet } from 'react-native';
+import { useModal } from 'react-native-modalfy';
+import styled, { css } from '@emotion/native';
+import { useTheme } from 'emotion-theming';
 import Table from '../common/Table/Table';
 import Item from '../common/Table/Item';
 import RoundedPaginator from '../common/Paginators/RoundedPaginator';
@@ -17,15 +17,15 @@ import WasteIcon from '../../../assets/svg/wasteIcon';
 import AddIcon from '../../../assets/svg/addIcon';
 import GenerateIcon from '../../../assets/svg/generateIcon';
 
-import {currencyFormatter} from '../../utils/formatter';
-import {useNextPaginator, usePreviousPaginator, checkboxItemPress, selectAll} from '../../helpers/caseFilesHelpers';
-import {PageContext} from '../../contexts/PageContext';
+import { currencyFormatter } from '../../utils/formatter';
+import { useNextPaginator, usePreviousPaginator, checkboxItemPress, selectAll } from '../../helpers/caseFilesHelpers';
+import { PageContext } from '../../contexts/PageContext';
 import { updateInvoiceDocumnet } from '../../api/network';
 import Footer from '../common/Page/Footer';
 import Search from '../common/Search';
 
 import DataItem from '../common/List/DataItem';
-import {LONG_PRESS_TIMER} from '../../const';
+import { LONG_PRESS_TIMER } from '../../const';
 import ConfirmationComponent from '../ConfirmationComponent';
 import { transformToTitleCase } from '../../utils/formatter';
 
@@ -71,16 +71,16 @@ const OrderItemTab = ({
     onAddProductItems = () => {
     },
     onRemoveProductItems = () => {
-    }, 
-    onConfirmDelivery = () => {
-
     },
-    handleGenerateInvoice = () => {}
+    onConfirmDelivery = () => {
+    },
+    handleGenerateInvoice = () => { },
+    permissions
 }) => {
     const modal = useModal();
     const theme = useTheme();
-    const {pageState, setPageState} = useContext(PageContext);
-    const {isEditMode, isLoading} = pageState;
+    const { pageState, setPageState } = useContext(PageContext);
+    const { isEditMode, isLoading } = pageState;
 
     const recordsPerPage = 10;
 
@@ -101,7 +101,7 @@ const OrderItemTab = ({
 
     const goToNextPage = () => {
         if (currentPagePosition < totalPages) {
-            const {currentPage, currentListMin, currentListMax} = useNextPaginator(currentPagePosition, recordsPerPage, currentPageListMin, currentPageListMax);
+            const { currentPage, currentListMin, currentListMax } = useNextPaginator(currentPagePosition, recordsPerPage, currentPageListMin, currentPageListMax);
             setCurrentPagePosition(currentPage);
             setCurrentPageListMin(currentListMin);
             setCurrentPageListMax(currentListMax);
@@ -111,7 +111,7 @@ const OrderItemTab = ({
     const goToPreviousPage = () => {
         if (currentPagePosition === 1) return;
 
-        const {currentPage, currentListMin, currentListMax} = usePreviousPaginator(currentPagePosition, recordsPerPage, currentPageListMin, currentPageListMax);
+        const { currentPage, currentListMin, currentListMax } = usePreviousPaginator(currentPagePosition, recordsPerPage, currentPageListMin, currentPageListMax);
         setCurrentPagePosition(currentPage);
         setCurrentPageListMin(currentListMin);
         setCurrentPageListMax(currentListMax);
@@ -123,7 +123,7 @@ const OrderItemTab = ({
     };
 
     const handleOnCheckBoxPress = item => () => {
-        const {_id} = item;
+        const { _id } = item;
         const updatedItems = checkboxItemPress(_id, selectedItems);
 
         setSelectedItems(updatedItems);
@@ -143,16 +143,16 @@ const OrderItemTab = ({
     };
 
     const onQuantityChange = item => action => {
-        const {amount = 0, productId = {}} = item;
+        const { amount = 0, productId = {} } = item;
         // console.log('item', action);
-        const {_id = ''} = productId;
+        const { _id = '' } = productId;
 
         const updatedObj = {
             ...item,
             amount: action === 'add' ? amount + 1 : amount === 0 ? amount : amount - 1
         };
 
-        const updatedData = orders.map(item => (item.productId?._id === _id ? {...updatedObj} : {...item}));
+        const updatedData = orders.map(item => (item.productId?._id === _id ? { ...updatedObj } : { ...item }));
 
         onItemChange(updatedData);
     };
@@ -160,8 +160,8 @@ const OrderItemTab = ({
     const onAmountChange = item => value => {
         // console.log('hello', item, value);
 
-        const {productId = {}} = item;
-        const {_id = ''} = productId;
+        const { productId = {} } = item;
+        const { _id = '' } = productId;
 
         const updatedObj = {
             ...item,
@@ -169,27 +169,27 @@ const OrderItemTab = ({
         };
 
         const updatedData = orders.map(item => (item.productId?._id === _id ?
-            {...updatedObj} :
-            {...item}));
+            { ...updatedObj } :
+            { ...item }));
 
         onItemChange(updatedData);
     };
 
     const listItemFormat = (item, index) => {
-        const {amount = 0, productId = {}, status} = item;
-        const {name = '', sku = '', unitPrice = 0, unit = ''} = productId || {};
+        const { amount = 0, productId = {}, status } = item;
+        const { name = '', sku = '', unitPrice = 0, unit = '' } = productId || {};
 
         return (
             <>
-                <DataItem text={name} flex={1.8} fontStyle="--text-base-medium" color="--color-blue-600"/>
-                <DataItem text={status ? transformToTitleCase(status) : 'Pending'} align="center" flex={1} fontStyle="--text-base-medium" color="--color-gray-800"/>
+                <DataItem text={name} flex={1.8} fontStyle="--text-base-medium" color="--color-blue-600" />
+                <DataItem text={status ? transformToTitleCase(status) : 'Pending'} align="center" flex={1} fontStyle="--text-base-medium" color="--color-gray-800" />
                 <DataItem text={sku === '' ? 'n/a' : sku} align="center" flex={1} fontStyle="--text-base-medium" color="--color-gray-800" />
                 {
-                    <DataItem text={amount} align="center" flex={1} fontStyle="--text-base-medium" color="--color-gray-800" width = '100%' />
+                    <DataItem text={amount} align="center" flex={1} fontStyle="--text-base-medium" color="--color-gray-800" width='100%' />
 
                 }
-                <DataItem text={ item.unit &&transformToTitleCase(item.unit)} align="center" flex={0.5} fontStyle="--text-base-medium" color="--color-gray-800"/>
-                <DataItem text={`$ ${currencyFormatter(unitPrice)}`} align="flex-end" flex={1} fontStyle="--text-base-medium" color="--color-gray-800"/>
+                <DataItem text={item.unit && transformToTitleCase(item.unit)} align="center" flex={0.5} fontStyle="--text-base-medium" color="--color-gray-800" />
+                <DataItem text={`$ ${currencyFormatter(unitPrice)}`} align="flex-end" flex={1} fontStyle="--text-base-medium" color="--color-gray-800" />
 
             </>
         );
@@ -202,34 +202,15 @@ const OrderItemTab = ({
             onCheckBoxPress={handleOnCheckBoxPress(item)}
             onItemPress={() => {
             }}
-            isDisabled = {item.status} 
+            isDisabled={item.status}
             itemView={listItemFormat(item, index)}
         />
     );
 
-    const floatingActions = () => {
+    const floatingActions = () => { 
+        actionsArray=[]
         const isDisabled = selectedItems.length === 0;
-        const isDisabledColor = selectedItems.length === 0 ? theme.colors['--color-gray-600'] : theme.colors['--color-red-700'];
-        const addItem = (
-            <ActionItem
-                title="Add Item"
-                icon={<AddIcon strokeColor={isEditMode ? theme.colors['--color-green-700'] : theme.colors['--color-gray-600']}/>}
-                onPress={onAddItem}
-                disabled={!isEditMode}
-                touchable={!!isEditMode}d
-            />
-        );
-
-        const cofirmDelivery = (
-            <ActionItem
-                title="Confirm Delivery"
-                icon={<AddIcon strokeColor={isEditMode ? theme.colors['--color-green-700'] : theme.colors['--color-gray-600']}/>}
-                onPress={handleConfirmDelivery}
-                disabled={!isEditMode}
-                touchable={!!isEditMode}
-            />
-
-        );
+        const isDisabledColor = selectedItems.length === 0 ? theme.colors['--color-gray-600'] : theme.colors['--color-red-700']; 
 
         const deleteItem = (
             <LongPressWithFeedback
@@ -239,21 +220,44 @@ const OrderItemTab = ({
             >
                 <ActionItem
                     title="Hold to Delete"
-                    icon={<WasteIcon strokeColor={isDisabledColor}/>}
+                    icon={<WasteIcon strokeColor={isDisabledColor} />}
                     onPress={() => {
                     }}
                     disabled={isDisabled}
                     touchable={false}
                 />
             </LongPressWithFeedback>
+        ); 
+         
+        actionsArray.push(deleteItem) 
+
+
+        const addItem = (
+            <ActionItem
+                title="Add Item"
+                icon={<AddIcon strokeColor={isEditMode ? theme.colors['--color-green-700'] : theme.colors['--color-gray-600']} />}
+                onPress={onAddItem}
+                disabled={!isEditMode}
+                touchable={!!isEditMode} d
+            />
         );
 
+        const cofirmDelivery = (
+            <ActionItem
+                title="Confirm Delivery"
+                icon={<AddIcon strokeColor={isEditMode ? theme.colors['--color-green-700'] : theme.colors['--color-gray-600']} />}
+                onPress={handleConfirmDelivery}
+                disabled={!isEditMode}
+                touchable={!!isEditMode}
+            />
+
+        );
+
+         
+        permissions.update && actionsArray.push(addItem,cofirmDelivery)
+
         return <ActionContainer
-            floatingActions={[
-                deleteItem,
-                addItem,
-                cofirmDelivery
-            ]}
+            floatingActions={actionsArray}
             title="ORDERS ACTIONS"
         />;
     };
