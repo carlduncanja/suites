@@ -94,6 +94,7 @@ const shadows = [
     },
 ];
 const Equipment = props => {
+    const equipmentPermissions = props.route.params.equipmentPermissions;
     const theme = useTheme();
     // ############# Const data
     const recordsPerPage = 10;
@@ -617,7 +618,7 @@ const Equipment = props => {
         );
 
         const createEquipmentType = (
-            <ActionItem
+            equipmentPermissions.create && <ActionItem
                 title="Create Equipment Group"
                 icon={<AddIcon/>}
                 onPress={openEquipmentTypeDialog}
@@ -625,7 +626,7 @@ const Equipment = props => {
         );
 
         const createEquipment = (
-            <ActionItem
+            equipmentPermissions.create && <ActionItem
                 title="Add Equipment"
                 icon={<AddIcon/>}
                 touchable={selectedTypesIds.length === 1}
