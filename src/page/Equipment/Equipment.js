@@ -40,7 +40,7 @@ import {
 } from '../../helpers/caseFilesHelpers';
 
 import {setEquipment} from '../../redux/actions/equipmentActions';
-import {getEquipment, getEquipmentTypes, removeEquipment, removeEquipmentTypes} from '../../api/network';
+import {getEquipment, getEquipmentTypes, removeEquipment, removeEquipmentTypes, updateEquipment} from '../../api/network';
 
 import {formatDate, numberFormatter} from '../../utils/formatter';
 
@@ -259,7 +259,8 @@ const Equipment = props => {
             equipment: item,
             isOpenEditable,
             group: type,
-            onCreated: handleDataRefresh
+            onCreated: handleDataRefresh,
+            updatesEquipment : equipmentPermissions.update
         });
     };
 
@@ -479,7 +480,7 @@ const Equipment = props => {
     );
 
     const gotoGroupDetails = item => {
-        props.navigation.navigate('EquipmentGroupDetailsPage', {data: item, onCreated: handleDataRefresh});
+        props.navigation.navigate('EquipmentGroupDetailsPage', {data: item, onCreated: handleDataRefresh, updatesEquipment : equipmentPermissions.update });
     };
 
     const equipmentGroupView = (item, onActionPress, isCollapsed) => (
@@ -545,6 +546,7 @@ const Equipment = props => {
     }
 
     const getFabActions = () => {
+        actionsArray = []
         const isGroupDeleteDisabled = !selectedTypesIds.length;
 
         const deleteAction = (
@@ -636,18 +638,13 @@ const Equipment = props => {
                 }}
             />
         );
-    
 
-
+        equipmentPermissions.delete && actionsArray.push(deleteAction, deleteEquipmentItemAction)
+        equipmentPermissions.create && actionsArray.push(createEquipmentType, createEquipment)
+        equipmentPermissions.update && actionsArray.push(assignEquipment)
         return (
             <ActionContainer
-                floatingActions={[
-                    deleteAction,
-                    deleteEquipmentItemAction,
-                    assignEquipment,
-                    createEquipmentType,
-                    createEquipment,
-                ]}
+                floatingActions={actionsArray}
                 title="EQUIPMENT ACTIONS"
             />
         );
@@ -799,7 +796,7 @@ const Equipment = props => {
                 isDisabled={isFloatingActionDisabled}
                 toggleActionButton={toggleActionButton}
                 hasPaginator={true}
-                hasActionButton={true}
+                hasActionButton={equipmentPermissions.create || equipmentPermissions.delete}
                 hasActions={true}
                 isNextDisabled={isNextDisabled}
                 isPreviousDisabled={isPreviousDisabled}
