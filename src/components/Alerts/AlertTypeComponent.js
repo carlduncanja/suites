@@ -130,7 +130,8 @@ function AlertTypeComponent({
     onChangeDate,
     onClearCalendarDates,
     onClearList,
-    showClearList = true
+    showClearList = true,
+    permission
 }) {
     const theme = useTheme();
     const date = `${(!startDate && !endDate) ? 'Select date' : `${formatDate(startDate, 'DD/MM/YYYY')} ${(startDate !== '' || endDate !== '') && '-'} ${formatDate(endDate, 'DD/MM/YYYY')}`} `;

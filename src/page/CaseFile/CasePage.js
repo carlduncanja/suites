@@ -1895,7 +1895,8 @@ function CasePage({ auth = {}, route, addNotification, navigation, ...props }) {
                     patient={patient}
                     fetchCase={() => fetchCase(caseId)}
                 />;
-            case 'Procedures':
+            case 'Procedures': 
+               
                 return <Procedures
                     procedures={caseProcedures}
                     proceduresBillableItems={proceduresBillableItems}

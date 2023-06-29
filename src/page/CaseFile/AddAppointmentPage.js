@@ -663,7 +663,7 @@ const AppointmentTab = ({ onProcedureUpdate, onProcedureSelected, procedure, pat
         }
     }
 
-    const date = currentProcedure?.date || new Date()
+    const date = moment(currentProcedure?.date).toDate().toString() || new Date().toString()
 
     return (
         <View style={{ flex: 1 }}>
