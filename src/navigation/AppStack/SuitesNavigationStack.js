@@ -119,6 +119,7 @@ export const SuitesNavigationStack = ({ auth = {} }) => {
                 initialParams={{
                     icon: ScheduleIcon,
                     tabName: 'schedule',
+                    userPermissions,
                     id : auth.user.user_id,
                 }}
             />
@@ -258,9 +259,10 @@ export const SuitesNavigationStack = ({ auth = {} }) => {
                     name="Alerts"
                     component={Alerts}
                     initialParams={{
-                        icon: NotificationIcon,
-                        tabName: 'Alerts',
-                        isAdmin
+                          icon: NotificationIcon,
+                          tabName: 'Alerts',
+                          isAdmin,
+                          userPermissions
                     }}
                 />
 
