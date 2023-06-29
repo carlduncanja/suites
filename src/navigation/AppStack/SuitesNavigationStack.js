@@ -59,7 +59,6 @@ const SuitesNavigator = createSuitesSidebarNavigator();
 export const SuitesNavigationStack = ({ auth = {} }) => {
     const isAdmin = auth.user.role_name === ROLES.ADMIN;
     // fetchUser(auth?.user.user_id);
-
     const [userPermissions, setUserPermissions] = useState({});
 
     const fetchUser = id => {
@@ -120,8 +119,7 @@ export const SuitesNavigationStack = ({ auth = {} }) => {
                 initialParams={{
                     icon: ScheduleIcon,
                     tabName: 'schedule',
-                    isAdmin,
-                    userPermissions
+                    id : auth.user.user_id,
                 }}
             />
 

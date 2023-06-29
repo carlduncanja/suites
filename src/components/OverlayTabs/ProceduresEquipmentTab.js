@@ -30,6 +30,7 @@ const ProceduresEquipmentTab = ({
     onAddEquipment,
     handleEquipmentDelete,
     navigation,
+    updateProcedure,
     onAddItems
 }) => {
     const {pageState} = useContext(PageContext);
@@ -300,7 +301,7 @@ const ProceduresEquipmentTab = ({
                 isDisabled={isFloatingActionDisabled}
                 toggleActionButton={toggleActionButton}
                 hasPaginator={true}
-                hasActionButton={true}
+                hasActionButton={updateProcedure}
                 hasActions={true}
                 isNextDisabled={false}
                 isPreviousDisabled={false}

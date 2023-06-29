@@ -202,7 +202,7 @@ const ProceduresConsumablesTab = ({consumablesData, procedureId, updateProcedure
                 <ActionItem title={"Hold to Delete"} icon={<WasteIcon/>} onPress={() => {}} touchable={false}/>
             </LongPressWithFeedback>;
         const addItem = <ActionItem title={"Add Item"} icon={<AddIcon/>} onPress={openAddItem}/>;
-        return updateProcedure && <ActionContainer
+        return <ActionContainer
             floatingActions={[
                 deleteAction,
                 addItem
@@ -321,7 +321,7 @@ const ProceduresConsumablesTab = ({consumablesData, procedureId, updateProcedure
                 isDisabled={isFloatingActionDisabled}
                 toggleActionButton={toggleActionButton}
                 hasPaginator = {true}
-                hasActionButton = {true}
+                hasActionButton = {updateProcedure}
                 hasActions = {true}
                 isNextDisabled = {false}
                 isPreviousDisabled = {false}
