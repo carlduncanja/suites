@@ -1896,7 +1896,7 @@ function CasePage({ auth = {}, route, addNotification, navigation, ...props }) {
                     fetchCase={() => fetchCase(caseId)}
                 />;
             case 'Procedures': 
-               console.log("we are the goods of this code")
+               
                 return <Procedures
                     procedures={caseProcedures}
                     proceduresBillableItems={proceduresBillableItems}
