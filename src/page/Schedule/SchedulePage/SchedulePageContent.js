@@ -22,6 +22,7 @@ function SchedulePageContent({
                                  },
                                  appointments = [],
                                  days = [],
+                                 newProcedure,
                                  month = new Date(),
                                  selectedDate = new Date(),
                                  selectedDay = new Date(),
@@ -52,6 +53,7 @@ function SchedulePageContent({
                     <LoadingIndicator/> : (
                         <ScheduleListWrapper>
                             <SchedulesList
+                                newProcedure ={newProcedure}
                                 appointments={appointments}
                                 selectedIndex={selectedIndex}
                                 onAppointmentPress={onAppointmentPress}

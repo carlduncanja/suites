@@ -16,6 +16,7 @@ const Stack = createStackNavigator();
 
 export default (props) => {
     const isAdmin = props.route.params.isAdmin || false;
+    const procedurePermissions =props.route.params.userPermissions.procedures
 
     return (
         <Stack.Navigator
@@ -27,7 +28,7 @@ export default (props) => {
                 options={{
                     headerShown: false
                 }}
-                initialParams={{ isAdmin }}
+                initialParams={{ isAdmin, procedurePermissions }}
             />
 
             <Stack.Screen
@@ -70,6 +71,7 @@ export default (props) => {
                     headerShown: false,
                     headerTitle: ""
                 })}
+                initialParams={{updatesProcedure : procedurePermissions.update}}
             />
 
 

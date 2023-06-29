@@ -99,7 +99,7 @@ const SchedulePaginator = ({
 }) => {
     const [state] = useContext(SuitesContext);
     const theme = useTheme();
-
+    console.log('hjkjkj', updatePhysician)
     return (
         <FooterWrapper>
             <FooterContainer>
@@ -122,7 +122,7 @@ const SchedulePaginator = ({
                     </PaginatorContainer>
                 </MultipleShadowsContainer>
                  
-                { updatePhysician || updateTheatre && <FloatingActionButton
+                { (updatePhysician || updateTheatre) && <FloatingActionButton
                     isDisabled={false}
                     hasActions={true}
                     toggleActionButton={toggleActionButton}

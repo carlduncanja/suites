@@ -48,7 +48,7 @@ const headers = [
     }
 ];
 
-const ProceduresConsumablesTab = ({consumablesData, procedureId, onAddInventory,modal, handleInventoryUpdate, onAddItems, handleConsumablesDelete, navigation}) => {
+const ProceduresConsumablesTab = ({consumablesData, procedureId, updateProcedure, onAddInventory,modal, handleInventoryUpdate, onAddItems, handleConsumablesDelete, navigation}) => {
 
     const { pageState } = useContext(PageContext);
     const { isEditMode } = pageState;
@@ -321,7 +321,7 @@ const ProceduresConsumablesTab = ({consumablesData, procedureId, onAddInventory,
                 isDisabled={isFloatingActionDisabled}
                 toggleActionButton={toggleActionButton}
                 hasPaginator = {true}
-                hasActionButton = {true}
+                hasActionButton = {updateProcedure}
                 hasActions = {true}
                 isNextDisabled = {false}
                 isPreviousDisabled = {false}

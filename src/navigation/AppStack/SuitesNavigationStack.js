@@ -59,7 +59,6 @@ const SuitesNavigator = createSuitesSidebarNavigator();
 export const SuitesNavigationStack = ({ auth = {} }) => {
     const isAdmin = auth.user.role_name === ROLES.ADMIN;
     // fetchUser(auth?.user.user_id);
-
     const [userPermissions, setUserPermissions] = useState({});
 
     const fetchUser = id => {
@@ -76,7 +75,6 @@ export const SuitesNavigationStack = ({ auth = {} }) => {
     useEffect(() => {
         fetchUser(auth.user.user_id);
     }, [auth]);
-
 
     const ViewProcedures = userPermissions?.['procedures']?.['read'];
     const ViewCase = userPermissions?.['cases']?.['read'];
@@ -100,7 +98,6 @@ export const SuitesNavigationStack = ({ auth = {} }) => {
 
     const ViewSuppliers = userPermissions?.['suppliers']?.['read']
 
-
     // the invioces section was removed becuase of the changes to the purchase order section 
     /* <SuitesNavigator.Screen
                  name="Invoices"
@@ -122,7 +119,8 @@ export const SuitesNavigationStack = ({ auth = {} }) => {
                 initialParams={{
                     icon: ScheduleIcon,
                     tabName: 'schedule',
-                    userPermissions
+                    userPermissions,
+                    id : auth.user.user_id,
                 }}
             />
 
@@ -236,7 +234,8 @@ export const SuitesNavigationStack = ({ auth = {} }) => {
                     initialParams={{
                         icon: ProcedureIcon,
                         tabName: 'Procedures',
-                        isAdmin
+                        isAdmin,
+                        userPermissions
                     }}
                 />
             }

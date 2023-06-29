@@ -28,7 +28,7 @@ function ProcedurePage({route, navigation}) {
     // const { pageState } = useContext(PageContext);
     // const { isEditMode } = pageState;
 
-    const {procedure, isOpenEditable, onUpdate} = route.params;
+    const {procedure, isOpenEditable, onUpdate, updatesProcedure} = route.params;
     console.log("procedur information", procedure)
     const {
         _id = '',
@@ -408,6 +408,7 @@ function ProcedurePage({route, navigation}) {
             case 'Consumables':
                 return <ProceduresConsumablesTab
                     consumablesData={inventories}
+                    updateProcedure = {updatesProcedure}
                     handleInventoryUpdate={handleInventoryUpdate}
                     handleConsumablesDelete={handleConsumablesDelete}
                     onAddInventory={onAddInventory}
@@ -417,6 +418,7 @@ function ProcedurePage({route, navigation}) {
             case 'Equipment':
                 return <ProceduresEquipmentTab
                     equipmentsData={equipments}
+                    updateProcedure = {updatesProcedure}
                     onAddEquipment={onAddEquipment}
                     handleEquipmentDelete={handleEquipmentDelete}
                     onAddItems={onAddItems}
@@ -465,6 +467,7 @@ function ProcedurePage({route, navigation}) {
         >
             <DetailsPage
                 headerChildren={[name, physicianName]}
+                isEditable={updatesProcedure}
                 onBackPress={() => {
                     navigation.navigate('Procedures');
                 }}

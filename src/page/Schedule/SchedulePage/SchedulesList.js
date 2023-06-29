@@ -64,6 +64,7 @@ function SchedulesList({
     selectedDay,
     month,
     onAppointmentPress,
+    newProcedure,
     onNewProcedurePress,
     onRefresh = emptyFn,
     isRefreshing = false,
@@ -160,6 +161,7 @@ function SchedulesList({
                     renderSectionHeader={({ section: { title, data } }) => (
                         <View style={{marginBottom: data.length > 0 ? 20 : 0}}>
                             <SectionListHeader
+                                newProcedure = {newProcedure}
                                 onNewProcedureClick={() => onNewProcedurePress()}
                                 title={title}
                             />
