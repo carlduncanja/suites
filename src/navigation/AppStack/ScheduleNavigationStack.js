@@ -8,7 +8,8 @@ const Stack = createStackNavigator();
 
 export default (props) => {
     const isAdmin = props.route.params.isAdmin || false;
-
+    const newProcedure = props.route.params.userPermissions
+    console.log('hkjkj', isAdmin)
     return (
         <Stack.Navigator
             initialRouteName="SchedulePage"
@@ -19,7 +20,7 @@ export default (props) => {
                 options={{
                     headerShown: false
                 }}
-                initialParams={{ isAdmin }}
+                initialParams={{ isAdmin, newProcedure }}
             />
 
             <Stack.Screen

@@ -48,7 +48,7 @@ const headers = [
     }
 ];
 
-const ProceduresConsumablesTab = ({consumablesData, procedureId, onAddInventory,modal, handleInventoryUpdate, onAddItems, handleConsumablesDelete, navigation}) => {
+const ProceduresConsumablesTab = ({consumablesData, procedureId, updateProcedure, onAddInventory,modal, handleInventoryUpdate, onAddItems, handleConsumablesDelete, navigation}) => {
 
     const { pageState } = useContext(PageContext);
     const { isEditMode } = pageState;
@@ -202,7 +202,7 @@ const ProceduresConsumablesTab = ({consumablesData, procedureId, onAddInventory,
                 <ActionItem title={"Hold to Delete"} icon={<WasteIcon/>} onPress={() => {}} touchable={false}/>
             </LongPressWithFeedback>;
         const addItem = <ActionItem title={"Add Item"} icon={<AddIcon/>} onPress={openAddItem}/>;
-        return <ActionContainer
+        return updateProcedure && <ActionContainer
             floatingActions={[
                 deleteAction,
                 addItem

@@ -55,6 +55,8 @@ const SchedulePage = (props) => {
     setAppointments,
   } = props;
 
+  console.log('gjhjhjh', props.route.params)
+
   const navigation = useNavigation();
 
   const modal = useModal();
