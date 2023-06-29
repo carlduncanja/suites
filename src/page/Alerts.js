@@ -46,7 +46,7 @@ function Alerts(props) {
     const theme = useTheme();
     const modal = useModal();
     const recordsPerPage = 4;  
-    const alertsPermissions = props.route.params.userPermissions.alerts
+    const alertsPermissions = props.route.params.userPermissions.alerts;
 
     const [isCollapsed, setIsCollapsed] = useState([]);
     const [isFetchingData, setFetchingData] = useState(false);
@@ -230,12 +230,12 @@ function Alerts(props) {
                 endDate={recentEndDate}
                 onClearCalendarDates={() => { setRecentEndDate(''); setRecentStartDate(''); fetchOpenAlert(1, '', ''); }}
                 onClearList={() => { openClearConfirm() }} 
-                showClearList={alertsPermissions.update}
+                 showClearList={alertsPermissions.update}
                 content={(
                     <RecentAlertsList
-                        data={recentAlerts}
-                        updateAlerts={() => { setFetchingData(true); fetchClosedAlert(1); fetchOpenAlert(1); }} 
-                        permissions={alertsPermissions}
+                          data={recentAlerts}
+                          updateAlerts={() => { setFetchingData(true); fetchClosedAlert(1); fetchOpenAlert(1); }} 
+                          permissions={alertsPermissions}
                     />
                 )} 
                 permissions={alertsPermissions}
