@@ -10,6 +10,7 @@ import ConfirmationComponent from '../../components/ConfirmationComponent';
 
 function InventoryPage({ route, navigation }) {
     const { data = {} } = route.params;
+    const inventoryUpdate = route.params.inventoryPermissions
     const {
         name = '',
         _id = '',
@@ -18,7 +19,6 @@ function InventoryPage({ route, navigation }) {
     } = data;
 
     console.log('Data: ', data);
-
     const tabs = ['Details'];
     const modal = useModal();
 
@@ -193,6 +193,7 @@ function InventoryPage({ route, navigation }) {
         <PageContext.Provider value={{ pageState, setPageState }}>
             <DetailsPage
                 headerChildren={[selectedInventory?.name]}
+                isEditable={inventoryUpdate}
                 onBackPress={() => navigation.navigate('Inventory')}
                 pageTabs={(
                     <TabsContainerComponent

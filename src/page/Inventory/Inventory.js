@@ -57,6 +57,7 @@ function Inventory(props) {
         navigation
     } = props;
 
+    const inventoryPermissions = route.params.inventoryPermissions
     const pageTitle = 'Inventory';
     const modal = useModal();
     const theme = useTheme();
@@ -130,7 +131,9 @@ function Inventory(props) {
             // params : {
             data: item,
             isGroup: true,
-            isEdit: false
+            isEdit: false,
+            inventoryPermissions: inventoryPermissions.update
+
             // }
         });
     };
@@ -149,7 +152,8 @@ function Inventory(props) {
             initial: false,
             // params : {
             data: updatedItem,
-            isEdit: false
+            isEdit: false,
+            inventoryPermissions: inventoryPermissions.update
             // }
         });
     };
@@ -258,9 +262,10 @@ function Inventory(props) {
     // ##### Helper functions
 
     const getFabActions = () => {
+        actionsArray=[]
         const isRemoveGroupsDisabled = selectedIds.length === 0;
         const deleteAction = (
-            <View style={{
+            inventoryPermissions.delete && <View style={{
                 borderRadius: 6,
                 flex: 1,
                 overflow: 'hidden'
@@ -287,7 +292,7 @@ function Inventory(props) {
 
         const isRemoveVariantsDisabled = selectedVariants.length === 0;
         const deleteInventoryItemAction = (
-            <View style={{
+            inventoryPermissions.delete &&  <View style={{
                 borderRadius: 6,
                 flex: 1,
                 overflow: 'hidden'
@@ -312,8 +317,8 @@ function Inventory(props) {
             </View>
         );
 
-        const createAction = <ActionItem title="Add Item" icon={<AddIcon />} onPress={openCreateInventoryModel} />;
-        const createGroup = <ActionItem title="Create Item Group" icon={<AddIcon />} onPress={openCreateGroupDialog} />;
+        const createAction =    <ActionItem title="Add Item" icon={<AddIcon />} onPress={openCreateInventoryModel} />;
+        const createGroup =    <ActionItem title="Create Item Group" icon={<AddIcon />} onPress={openCreateGroupDialog} />;
         const itemTransfer = (
             <ActionItem
                 title="Item Transfer"
@@ -332,14 +337,11 @@ function Inventory(props) {
         const uploadInventory = <ActionItem title="Upload Inventory" icon={<ExportIcon />}
             onPress={openUploadInventoryModal} />;
 
+        inventoryPermissions.delete && actionsArray.push(uploadInventory,deleteAction, deleteInventoryItemAction)
+        inventoryPermissions.create && actionsArray.push(uploadInventory,createAction, createGroup,)
+        
         return <ActionContainer
-            floatingActions={[
-                deleteAction,
-                deleteInventoryItemAction,
-                uploadInventory,
-                createAction,
-                createGroup,
-            ]}
+            floatingActions={actionsArray}
             title="INVENTORY ACTIONS"
         />;
     };
@@ -795,7 +797,7 @@ function Inventory(props) {
                 isDisabled={isFloatingActionDisabled}
                 toggleActionButton={toggleActionButton}
                 hasPaginator={true}
-                hasActionButton={true}
+                hasActionButton={inventoryPermissions.delete || inventoryPermissions.create}
                 hasActions={true}
                 isNextDisabled={isNextDisabled}
                 isPreviousDisabled={isPreviousDisabled}

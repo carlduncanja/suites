@@ -17,6 +17,7 @@ const Stack = createStackNavigator();
 
 export default (props) => {
     const isAdmin = props.route.params.isAdmin || false;
+    const equipmentPermissions =  props.route.params.userPermissions.equipment_type;
 
     return (
         <Stack.Navigator
@@ -28,7 +29,7 @@ export default (props) => {
                 options={{
                     headerShown: false
                 }}
-                initialParams={{ isAdmin }}
+                initialParams={{ isAdmin, equipmentPermissions }}
             />
 
 

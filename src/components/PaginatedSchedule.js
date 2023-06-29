@@ -21,7 +21,7 @@ import ConfirmationComponent from './ConfirmationComponent';
 import ConfirmationCheckBoxComponent from './ConfirmationCheckBoxComponent';
 import _ from 'lodash'
 
-function PaginatedSchedule({ ID, details, isPhysician = false, isTheatre = false, tab = false }) {
+function PaginatedSchedule({ ID, details, updatePhysician,updateTheatre, isPhysician = false, isTheatre = false, tab = false }) {
 
     console.log("theare oage? ", isTheatre)
     const weekday = new Array(7);
@@ -335,9 +335,11 @@ function PaginatedSchedule({ ID, details, isPhysician = false, isTheatre = false
 
     return (
         <>
-            <ScheduleDisplayComponent onPress={handleNewProcedurePress} appointments={Array.from(relevantAppointment)} date={alteredDate} idData={updateIDs}  />
+            <ScheduleDisplayComponent  updatePhysician = {updatePhysician} updateTheatre={updateTheatre} onPress={handleNewProcedurePress} appointments={Array.from(relevantAppointment)} date={alteredDate} idData={updateIDs}  />
 
             <SchedulePaginator date={formatDate(dateObj, 'dddd MMM / D / YYYY')}
+                updatePhysician = {updatePhysician}
+                updateTheatre={updateTheatre}
                 goToPreviousDay={goToPreviousDayApp}
                 goToNextDay={goToNextDayApp}
                 toggleActionButton={toggleActionButton}

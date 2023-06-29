@@ -116,7 +116,8 @@ const initialSelectedTab = initialCurrentTabs[0];
 function CasePage({ auth = {}, route, addNotification, navigation, ...props }) {
     const modal = useModal();
     const theme = useTheme();
-    const chargeSheetRef = useRef();
+    const chargeSheetRef = useRef(); 
+    const casePermissions = route.params.permissions;
 
     const { userToken } = auth;
     let authInfo = {};
@@ -152,7 +153,8 @@ function CasePage({ auth = {}, route, addNotification, navigation, ...props }) {
     // ############### Lifecycle Methods
     useEffect(() => {
         fetchCase(caseId);
-        fetchUser(authInfo?.user_id);
+        fetchUser(authInfo?.user_id); 
+        
     }, []);
 
     // ############### Event Handlers
@@ -1932,7 +1934,8 @@ function CasePage({ auth = {}, route, addNotification, navigation, ...props }) {
             }}
             >
                 <DetailsPage
-                    headerChildren={[name, `#${caseNumber}`]}
+                    headerChildren={[name, `#${caseNumber}`]} 
+                    updatePhysician={casePermissions.update}
                     onBackPress={() => {
                         navigation.navigate('CaseFiles');
                     }}

@@ -54,6 +54,7 @@ function Storage(props) {
         setStorage,
     } = props;
 
+    storagePermissions = props.route.params.storagePermissions
     const pageTitle = 'Storage';
     const recordsPerPage = 10;
     const modal = useModal();
@@ -156,6 +157,7 @@ function Storage(props) {
         props.navigation.navigate('StoragePage', {
             initial: false,
             storage: item,
+            updateStorage : storagePermissions.update,
             reloadStorageLocations: () => fetchStorageData(currentPagePosition)
         });
         // modal.openModal('BottomSheetModal', {
@@ -272,7 +274,7 @@ function Storage(props) {
     const getFabActions = () => {
         const isDisabled = selectedIds.length === 0;
         const deleteAction = (
-            <View style={{ borderRadius: 6, flex: 1, overflow: 'hidden' }}>
+            storagePermissions.delete && <View style={{ borderRadius: 6, flex: 1, overflow: 'hidden' }}>
                 <LongPressWithFeedback
                     pressTimer={LONG_PRESS_TIMER.LONG}
                     onLongPress={removeStorageLocationsLongPress}
@@ -291,7 +293,7 @@ function Storage(props) {
         );
 
         const createAction = (
-            <ActionItem
+           storagePermissions.create && <ActionItem
                 title="New Location"
                 icon={<AddIcon />}
                 onPress={
@@ -437,7 +439,7 @@ function Storage(props) {
                 isDisabled={isFloatingActionDisabled}
                 toggleActionButton={toggleActionButton}
                 hasPaginator={true}
-                hasActionButton={true}
+                hasActionButton={storagePermissions.create || storagePermissions.delete}
                 hasActions={true}
                 isNextDisabled={isNextDisabled}
                 isPreviousDisabled={isPreviousDisabled}

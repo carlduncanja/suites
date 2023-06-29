@@ -20,7 +20,8 @@ import {updateSupplierAction} from '../../redux/actions/suppliersActions';
 import LoadingIndicator from '../../components/common/LoadingIndicator';
 
 function SupplierPage({route, navigation, updateSupplierAction}) {
-    const {supplier, isOpenEditable, floatingActions, handleDataRefresh} = route.params;
+    const {supplier, isOpenEditable, floatingActions, handleDataRefresh} = route.params; 
+    const purchaseOrderPermissions =route.params. purchaseOrderPermissions
     const modal = useModal();
     const currentTabs = ['Details', 'Products', 'Purchase Orders'];
     const {
@@ -51,7 +52,9 @@ function SupplierPage({route, navigation, updateSupplierAction}) {
                 // fetchProducts();
                 fetchSupplier(_id);
             }
-        }, 200);
+        }, 200); 
+
+        
     }, []);
 
     // ##### Event Handlers
@@ -74,8 +77,7 @@ function SupplierPage({route, navigation, updateSupplierAction}) {
         if (!isEditMode) setCurrentTab(selectedTab);
     };
 
-    // console.log('dom')
-    // console.log(navigation.getState())
+    
     const backTapped = () => {
         // here
         navigation.navigate('Suppliers');
@@ -161,7 +163,7 @@ function SupplierPage({route, navigation, updateSupplierAction}) {
         
         getSupplierById(id)
             .then(data => {
-                // console.log('Supplier Products: ', data.products);
+                
                 setSelectedSupplier(data);
                 setProducts(data?.products || []);
             })
@@ -225,7 +227,9 @@ function SupplierPage({route, navigation, updateSupplierAction}) {
                             onAddProducts={onAddProducts}
                             onProductsCreated={() => fetchSupplier(_id)}
                             onRefresh={() => fetchSupplier(_id)}
-                            supplierId={_id}
+                            supplierId={_id} 
+                            permissions={purchaseOrderPermissions}
+
                             //onRefresh={() => { console.log("Refreshing"); setPageLoading(true); fetchSupplier(_id); }}
                         />
                     );

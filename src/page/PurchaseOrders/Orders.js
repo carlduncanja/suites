@@ -81,7 +81,10 @@ const Orders = (props) => {
         setPurchaseOrders,
         updatePurchaseOrder,
         addNotification,
+
     } = props;
+
+    const purchaseOrderPermissions = props.route.params.purchaseOrderPermissions;
     const modal = useModal();
     const theme = useTheme();
 
@@ -402,6 +405,7 @@ const Orders = (props) => {
     };
 
     const getFabActions = () => {
+        console.log("we up and we not dead ", purchaseOrderPermissions)
         let actions = [];
 
         const isOneSelected = selectedOrders.length === 1;
@@ -432,7 +436,7 @@ const Orders = (props) => {
             </View>
         );
 
-        actions.push(deleteAction);
+         purchaseOrderPermissions.delete && actions.push(deleteAction);
 
         const orderId = isOneSelected ? selectedOrders[0] : '';
         const purchaseOrder = purchaseOrders.find((item) => item._id === orderId) || {};
@@ -493,7 +497,7 @@ const Orders = (props) => {
             />
         )
 
-        actions.push(requestApproval, approveOrder, requestQuotation, sendToSupplier)
+        purchaseOrderPermissions.update && actions.push(requestApproval, approveOrder, requestQuotation, sendToSupplier)
 
 
         return (
@@ -563,18 +567,18 @@ const Orders = (props) => {
         const { _id, supplier } = purchaseOrder
         setFetchingData(true)
         requestQuotation(_id, { email: supplier.email })
-        .then(_ => {
-            showSuccessModal();
-            handleDataRefresh();
-        })
-        .catch((error) => {
-            console.log("An error has occured", error);
-            errorScreen();
-        })
-        .finally(_ => {
-            setFetchingData(false)
-        })
-        
+            .then(_ => {
+                showSuccessModal();
+                handleDataRefresh();
+            })
+            .catch((error) => {
+                console.log("An error has occured", error);
+                errorScreen();
+            })
+            .finally(_ => {
+                setFetchingData(false)
+            })
+
     }
 
     const handleSendToSupplier = (purchaseOrder) => {
@@ -582,18 +586,18 @@ const Orders = (props) => {
         const { _id, supplier } = purchaseOrder
         setFetchingData(true)
         sendToSupplier(_id, { email: supplier.email })
-        .then(_ => {
-            showSuccessModal();
-            handleDataRefresh();
-        })
-        .catch((error) => {
-            console.log("An error has occured", error);
-            errorScreen();
-        })
-        .finally(_ => {
-            setFetchingData(false)
-        })
-        
+            .then(_ => {
+                showSuccessModal();
+                handleDataRefresh();
+            })
+            .catch((error) => {
+                console.log("An error has occured", error);
+                errorScreen();
+            })
+            .finally(_ => {
+                setFetchingData(false)
+            })
+
     }
 
     const handleRequestApproval = (purchaseOrder, status) => {

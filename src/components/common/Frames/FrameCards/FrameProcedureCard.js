@@ -31,7 +31,7 @@ const ProcedureCardContent = styled.View`
 `
 
 
-const getAppointmentFields = ({location='', startTime, endTime}) => { 
+const getAppointmentFields = ({location, startTime, endTime}) => { 
 
     return {
         location,

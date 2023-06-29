@@ -7,7 +7,7 @@ import { connect } from "react-redux";
 import { useModal } from "react-native-modalfy";
 import styled from "@emotion/native";
 import { useTheme } from "emotion-theming";
-import { getAppointmentRequest, getAppointments } from "../../../api/network";
+import { getAppointmentRequest, getAppointments, getUserCall } from "../../../api/network";
 import { getDaysForMonth } from "../../../utils";
 import { formatDate } from "../../../utils/formatter";
 import { setAppointments } from "../../../redux/actions/appointmentActions";
@@ -54,6 +54,28 @@ const SchedulePage = (props) => {
     appointments,
     setAppointments,
   } = props;
+
+  const id = props.route.params.id
+
+  const [userPermissions, setUserPermissions] = useState({});
+  const newProcedure = userPermissions.procedures?.create
+
+
+    const fetchUser = id => {
+        getUserCall(id)
+            .then(data => {
+                setUserPermissions(data.role?.permissions || {});
+            })
+            .catch(error => {
+                console.error('fetch.user.failed', error);
+            })
+            .finally();
+    };
+
+    useEffect(() => {
+        fetchUser(id);
+    }, []);
+
 
   const navigation = useNavigation();
 
@@ -336,6 +358,7 @@ const SchedulePage = (props) => {
             appointments={
               checkedRadioButton === "" ? appointments : filteredAppointments
             }
+            newProcedure = {newProcedure}
             month={selectedMonth}
             days={daysList}
             selectedDate={selectedDay}

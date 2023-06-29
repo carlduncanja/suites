@@ -37,6 +37,8 @@ const Procedures = props => {
     // ############# Const data
     const recordsPerPage = 10;
 
+    const procedurePermissions = props.route.params.procedurePermissions
+
     const modal = useModal();
     const theme = useTheme();
 
@@ -296,6 +298,7 @@ const Procedures = props => {
     };
 
     const getFabActions = () => {
+        actionsArray =[]
         const isDeleteDisabled = selectedProcedures.length < 1; // displayed if no items are selected.
         const deleteAction = (
             <LongPressWithFeedback
@@ -334,14 +337,11 @@ const Procedures = props => {
 
         const uploadProcedures = <ActionItem title="Upload Procedures" icon={<ExportIcon/>}
                                             onPress={openUploadProceduresModal}/>;
-
+        
+        procedurePermissions.create && actionsArray.push(createCopy, createNewProcedure, uploadProcedures)
+        procedurePermissions.delete && actionsArray.push(deleteAction,)
         return <ActionContainer
-            floatingActions={[
-                deleteAction,
-                createCopy,
-                createNewProcedure,
-                uploadProcedures
-            ]}
+            floatingActions={actionsArray}
             title="PROCEDURES ACTIONS"
         />;
     };
@@ -533,7 +533,7 @@ const Procedures = props => {
                 isDisabled={isFloatingActionDisabled}
                 toggleActionButton={toggleActionButton}
                 hasPaginator={true}
-                hasActionButton={true}
+                hasActionButton={procedurePermissions.create || procedurePermissions.delete}
                 hasActions={true}
                 isNextDisabled={isNextDisabled}
                 isPreviousDisabled={isPreviousDisabled}

@@ -19,7 +19,7 @@ import TabsContainer from '../common/Tabs/TabsContainerComponent';
 import ConfirmationComponent from '../ConfirmationComponent';
 
 function PhysicianPage({route, navigation}) {
-    const {physician, isOpenEditable, reloadPhysicians} = route.params;
+    const {physician, isOpenEditable, reloadPhysicians, updatePhysicians} = route.params;
     const currentTabs = ['Details', 'Case Files', 'Custom Procedures', 'Schedule'];
     const modal = useModal();
     const {
@@ -227,11 +227,11 @@ function PhysicianPage({route, navigation}) {
                     />
                 ) : <PhysiciansDetailsTab physician={selectedPhysician}/>;
             case 'Case Files':
-                return <CaseFilesTab setSelectedPhysician={setSelectedPhysician} selectedPhysician={selectedPhysician} cases={cases}/>;
+                return <CaseFilesTab setSelectedPhysician={setSelectedPhysician} updatePhysician = {updatePhysicians} selectedPhysician={selectedPhysician} cases={cases}/>;
             case 'Custom Procedures':
-                return <CustomProceduresTab selectedPhysician={selectedPhysician} procedures={procedures} id = {_id} fetchPhysician = {fetchPhysician} setSelectedPhysician={setSelectedPhysician} />;
+                return <CustomProceduresTab updatePhysician = {updatePhysicians} selectedPhysician={selectedPhysician} procedures={procedures} id = {_id} fetchPhysician = {fetchPhysician} setSelectedPhysician={setSelectedPhysician} />;
             case 'Schedule':
-                return <PaginatedSchedule ID={physician._id} isPhysician={true}/>;
+                return <PaginatedSchedule updatePhysician = {updatePhysicians} ID={physician._id} isPhysician={true}/>;
             default:
                 return <View/>;
         }
@@ -307,6 +307,7 @@ function PhysicianPage({route, navigation}) {
                 <DetailsPage
                     title={name}
                     subTitle=""
+                    isEditable={updatePhysician}
                     headerChildren={[name]}
                     onBackPress={backTapped}
                     isArchive={getIsEditable()}

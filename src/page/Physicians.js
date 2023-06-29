@@ -40,7 +40,7 @@ import { PageSettingsContext } from '../contexts/PageSettingsContext';
 
 const Physicians = props => {
     // ############# Const data
-
+    const userPermissions = props.route.params.permissions;
     const recordsPerPage = 10;
     const listHeaders = [
         {
@@ -152,6 +152,7 @@ const Physicians = props => {
         props.navigation.navigate('PhysicianPage', {
             initial: false,
             physician: item,
+            updatePhysicians: userPermissions.update,
             isEdit: isOpenEditable,
             reloadPhysicians: () => fetchPhysiciansData(currentPagePosition)
         });
@@ -294,11 +295,11 @@ const Physicians = props => {
 
     const getFabActions = () => {
         const deleteAction = (
-            <LongPressWithFeedback
+            userPermissions.delete &&  <LongPressWithFeedback
                 pressTimer={LONG_PRESS_TIMER.MEDIUM}
                 onLongPress={removePhysiciansLongPress}
             >
-                <ActionItem
+                 <ActionItem
                     title="Hold to Delete"
                     icon={<WasteIcon />}
                     onPress={() => {
@@ -323,7 +324,8 @@ const Physicians = props => {
         //     />
         // );
         const createActionPhysician = (
-            <ActionItem
+            
+            userPermissions.create &&  <ActionItem
                 title="Add Physician"
                 icon={<AddIcon />}
                 onPress={openCreatePhysicians}
@@ -464,6 +466,7 @@ const Physicians = props => {
     const physiciansToDisplay = [...physicians];
     // physiciansToDisplay = physiciansToDisplay.slice(currentPageListMin, currentPageListMax);
 
+    console.log('jsljkd', (userPermissions.create||userPermissions.delete) )
     return (
         <PageSettingsContext.Provider value={{
             pageSettingState,
@@ -489,7 +492,7 @@ const Physicians = props => {
                 isDisabled={isFloatingActionDisabled}
                 toggleActionButton={toggleActionButton}
                 hasPaginator={true}
-                hasActionButton={true}
+                hasActionButton={( (userPermissions.create||userPermissions.delete) === false) ? false : true}
                 hasActions={true}
                 isNextDisabled={isNextDisabled}
                 isPreviousDisabled={isPreviousDisabled}

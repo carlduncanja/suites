@@ -95,7 +95,7 @@ const TRANSFER_STATE = {
     ERROR: 'error'
 };
 
-function TransfersOverlayTab({ transferItems = [], transferObj, groupId, variantId, onUpdateItem, actionsTitle = 'SUPPLIERS ACTIONS' }) {
+function TransfersOverlayTab({ transferItems = [], updateStorage, transferObj, groupId, variantId, onUpdateItem, actionsTitle = 'SUPPLIERS ACTIONS' }) {
 
     const theme = useTheme();
     const modal = useModal();
@@ -439,7 +439,7 @@ function TransfersOverlayTab({ transferItems = [], transferObj, groupId, variant
 
             <Footer
                 hasPaginator={false}
-                hasActionButton={true}
+                hasActionButton={updateStorage}
                 hasActions={true}
                 toggleActionButton={toggleActionButton}
             />

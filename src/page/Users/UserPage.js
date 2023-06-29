@@ -13,9 +13,8 @@ import ResetPasswordComponent from './ResetPasswordComponent';
 function UserPage({route, ...props}) {
 
     const navigation = useNavigation();
-    const {user, onUserUpdate, editMode} = route.params;
+    const {user, onUserUpdate, editMode, updateUser} = route.params;
     const modal = useModal();
-
     const [pageState, setPageState] = useState({});
     const [selectedUser, setUser] = useState(user);
     const [currentTab, setCurrentTab] = useState('Details')
@@ -72,6 +71,7 @@ function UserPage({route, ...props}) {
         <PageContext.Provider value={{pageState, setPageState}}>
             <DetailsPage
                 editMode = {editMode}
+                isEditable={updateUser}
                 headerChildren={[`${selectedUser?.first_name || '--'} ${selectedUser?.last_name || '__'} `]}
                 onBackPress={onBackTapped}
                 pageTabs={(

@@ -2,7 +2,7 @@ import React, {useEffect, useRef, useState} from 'react';
 import styled, { css } from '@emotion/native';
 import { useTheme } from 'emotion-theming';
 
-function SectionListHeader({title = "", onNewProcedureClick}){
+function SectionListHeader({title = "", onNewProcedureClick, newProcedure}){
     const theme = useTheme();
 
     const SectionListHeaderWrapper = styled.View`
@@ -58,11 +58,11 @@ function SectionListHeader({title = "", onNewProcedureClick}){
             <SectionListHeaderContainer>
                 <SectionListHeaderTitle>{title}</SectionListHeaderTitle>
                 
-                <ButtonContainer>
+                {newProcedure && <ButtonContainer>
                     <NewProcedureButton theme={theme} onPress={() => onNewProcedureClick()}>
                         <NewProcedureButtonText>New Procedure</NewProcedureButtonText>
                     </NewProcedureButton>
-                </ButtonContainer>
+                </ButtonContainer> }
 
             </SectionListHeaderContainer>
         </SectionListHeaderWrapper>

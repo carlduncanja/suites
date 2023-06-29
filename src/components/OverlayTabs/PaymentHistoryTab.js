@@ -22,6 +22,7 @@ import Item from "../common/Table/Item";
 import DataItem from "../common/List/DataItem";
 import { currencyFormatter, formatDate } from "../../utils/formatter";
 import Row from "../common/Row";
+import { add } from "react-native-reanimated";
 
 const HeaderText = styled.Text(({ theme }) => ({
     ...theme.font['--text-lg-regular'],
@@ -36,7 +37,8 @@ const SecondaryText = styled.Text(({ theme }) => ({
 
 const PaymentHistoryTab = ({
     order,
-    onUpdate
+    onUpdate,
+    permissions
 }) => {
 
     const theme = useTheme();
@@ -74,8 +76,10 @@ const PaymentHistoryTab = ({
         setListItems(itemsToDisplay)
     }, [searchValue, order])
 
-    const floatingActions = () => {
-        let active  = selectedItems.length === 1 ? true :false
+    const floatingActions = () => { 
+        let active  = selectedItems.length === 1 ? true :false 
+        let actionsArray=[]
+        
         const addItem = (
             <ActionItem
                 title="Register Payment"
@@ -84,7 +88,8 @@ const PaymentHistoryTab = ({
                 disabled={!selectedPayment}
                 touchable={selectedPayment}
             />
-        );
+        ); 
+       
         const revertPayment = (
            
             <ActionItem
@@ -94,14 +99,12 @@ const PaymentHistoryTab = ({
                 disabled={!active}
 
             />
-        )
+        )  
+        permissions.update && actionsArray.push(addItem,revertPayment)
 
 
         return <ActionContainer
-            floatingActions={[
-                addItem,
-                revertPayment
-            ]}
+            floatingActions={actionsArray}
             title="PAYMENT ACTIONS"
         />;
     };

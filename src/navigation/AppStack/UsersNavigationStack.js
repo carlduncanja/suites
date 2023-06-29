@@ -11,8 +11,8 @@ import ResetPasswordPage from '../../page/Users/ResetPasswordPage';
 
 const Stack = createStackNavigator();
 
-export default () => {
-
+export default (props) => {
+    const usersPermissions = props.route.params.userPermissions.users;
     return (
         <Stack.Navigator
             initialRouteName="Users"
@@ -23,6 +23,7 @@ export default () => {
                 options={{
                     headerShown: false
                 }}
+                initialParams={{usersPermissions}}
             />
 
 

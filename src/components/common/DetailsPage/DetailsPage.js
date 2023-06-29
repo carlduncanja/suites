@@ -16,6 +16,7 @@ function DetailsPage({
     isArchive = false,
     hasIcon = null,
     title = '__',
+    isEditable,
     subTitle = '__',
     headerChildren,
     isSpecialHeader = false,
@@ -43,6 +44,7 @@ function DetailsPage({
                 <>
                     <PageHeader
                         isArchive={isArchive}
+                        isEditable={isEditable}                  
                         headerChildren={headerChildren || [title, subTitle]}
                         separator={<BreadCrumbIcon/>}
                         onBack={onBackPress}
