@@ -436,7 +436,7 @@ const Orders = (props) => {
             </View>
         );
 
-        actions.push(deleteAction);
+         purchaseOrderPermissions.delete && actions.push(deleteAction);
 
         const orderId = isOneSelected ? selectedOrders[0] : '';
         const purchaseOrder = purchaseOrders.find((item) => item._id === orderId) || {};

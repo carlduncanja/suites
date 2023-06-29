@@ -229,7 +229,7 @@ const OrderItemTab = ({
             </LongPressWithFeedback>
         ); 
          
-        actionsArray.push(deleteItem) 
+        permissions.delete && actionsArray.push(deleteItem) 
 
 
         const addItem = (
