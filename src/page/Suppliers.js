@@ -61,6 +61,7 @@ color: #A0AEC0;
 
 const Suppliers = props => {
     const theme = useTheme();
+    const suppplierPermissions = props.route.params.suppplierPermissions;
     // ############# Const data
     
     const recordsPerPage = 10;
@@ -420,6 +421,7 @@ const Suppliers = props => {
     };
 
     const getFabActions = () => {
+        const actionArray = []
         const archiveCase = (
             <ActionItem
                 title="Archive Supplier"
@@ -456,12 +458,12 @@ const Suppliers = props => {
                 </LongPressWithFeedback>
             </View>
         );
+
+        suppplierPermissions.create && actionArray.push(createNewSupplier)
+        suppplierPermissions.delete && actionArray.push(archiveCase, deleteAction)
+
         return <ActionContainer
-            floatingActions={[
-                archiveCase,
-                createNewSupplier,
-                deleteAction
-            ]}
+            floatingActions={actionArray}
             title="SUPPLIER ACTIONS"
         />;
     };
@@ -537,7 +539,7 @@ const Suppliers = props => {
                 isDisabled={isFloatingActionDisabled}
                 toggleActionButton={toggleActionButton}
                 hasPaginator={true}
-                hasActionButton={true}
+                hasActionButton={suppplierPermissions.create || suppplierPermissions.delete}
                 hasActions={true}
                 isNextDisabled={isNextDisabled}
                 isPreviousDisabled={isPreviousDisabled}

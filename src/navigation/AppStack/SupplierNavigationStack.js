@@ -17,6 +17,8 @@ const Stack = createStackNavigator();
 export default (props) => {
     const isAdmin = props.route.params.isAdmin || false;
     const purchaseOrderPermissions = props.route.params.userPermissions.purchase_orders
+    const suppplierPermissions = props.route.params.userPermissions.suppliers
+
     return (
         <Stack.Navigator
             initialRouteName="Suppliers"
@@ -27,7 +29,7 @@ export default (props) => {
                 options={{
                     headerShown: false
                 }}
-                initialParams={{ isAdmin }}
+                initialParams={{ isAdmin, suppplierPermissions }}
             />
 
 
@@ -48,7 +50,8 @@ export default (props) => {
                     headerTitle: ''
                 }} 
                 initialParams={{
-                    purchaseOrderPermissions
+                    purchaseOrderPermissions,
+                    updateSuppliers : suppplierPermissions.update
                 }}
             />
 
