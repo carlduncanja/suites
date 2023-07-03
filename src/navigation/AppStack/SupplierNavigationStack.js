@@ -50,7 +50,8 @@ export default (props) => {
                     headerTitle: ''
                 }} 
                 initialParams={{
-                    purchaseOrderPermissions
+                    purchaseOrderPermissions,
+                    updateSuppliers : suppplierPermissions.update
                 }}
             />
 

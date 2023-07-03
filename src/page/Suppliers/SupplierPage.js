@@ -22,6 +22,8 @@ import LoadingIndicator from '../../components/common/LoadingIndicator';
 function SupplierPage({route, navigation, updateSupplierAction}) {
     const {supplier, isOpenEditable, floatingActions, handleDataRefresh} = route.params; 
     const purchaseOrderPermissions =route.params. purchaseOrderPermissions
+    const updateSuppliers = route.params.updateSuppliers
+    console.log('djsk', updateSuppliers)
     const modal = useModal();
     const currentTabs = ['Details', 'Products', 'Purchase Orders'];
     const {
@@ -258,6 +260,7 @@ function SupplierPage({route, navigation, updateSupplierAction}) {
         <>
             <PageContext.Provider value={{pageState, setPageState}}>
                 <DetailsPage
+                    isEditable={updateSuppliers}
                     headerChildren={[selectedSupplier.name]}
                     onBackPress={backTapped}
                     isArchive={getIsEditable()}
