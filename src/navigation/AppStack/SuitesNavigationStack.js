@@ -111,6 +111,8 @@ export const SuitesNavigationStack = ({ auth = {} }) => {
     return (
         <SuitesNavigator.Navigator
             initialRouteName="SchedulePage"
+            
+
         >
 
             <SuitesNavigator.Screen
