@@ -1934,6 +1934,7 @@ function CasePage({ auth = {}, route, addNotification, navigation, ...props }) {
             }}
             >
                 <DetailsPage
+                    isEditable={casePermissions.update}
                     headerChildren={[name, `#${caseNumber}`]} 
                     updatePhysician={casePermissions.update}
                     onBackPress={() => {
@@ -2026,6 +2027,7 @@ function CasePageContent({
                     <FloatingActionButton
                         isDisabled={actionDisabled}
                         toggleActionButton={toggleActionButton}
+                        hasActions={false}
                     />
                 </FooterContainer>
             </FooterWrapper>
