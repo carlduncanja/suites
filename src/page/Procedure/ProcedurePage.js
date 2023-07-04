@@ -29,7 +29,6 @@ function ProcedurePage({route, navigation}) {
     // const { isEditMode } = pageState;
 
     const {procedure, isOpenEditable, onUpdate, updatesProcedure} = route.params;
-    console.log("procedur information", updatesProcedure)
     const {
         _id = '',
         name,
