@@ -152,6 +152,7 @@ function SchedulePage({ navigation, route }) {
     return (
         <PageContext.Provider value={{ pageState, setPageState }}>
             <DetailsPage
+                isEditable={true}
                 headerChildren={['Custom types', 'Schedule']}
                 onBackPress={() => {
                     navigation.navigate('Settings');

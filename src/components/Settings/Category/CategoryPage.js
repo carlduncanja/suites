@@ -211,6 +211,7 @@ function CategoryPage({navigation, route}) {
         }}
         >
              <DetailsPage
+                isEditable={true}
                 headerChildren={['Custom types', item.categoryTitle]}
                 onBackPress={() => {
                     navigation.navigate('Settings');

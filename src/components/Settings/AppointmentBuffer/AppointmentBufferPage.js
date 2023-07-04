@@ -218,6 +218,7 @@ function AppointmentBufferPage({navigation}) {
         }}
         >
             <DetailsPage
+                isEditable={true}
                 headerChildren={['Custom types', 'Appointment Buffer-time']}
                 onBackPress={() => {
                     navigation.navigate('Settings');
