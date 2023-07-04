@@ -20,6 +20,7 @@ import ConfirmationComponent from '../ConfirmationComponent';
 
 function PhysicianPage({route, navigation}) {
     const {physician, isOpenEditable, reloadPhysicians, updatePhysicians} = route.params;
+    console.log('jskjdsk', updatePhysicians)
     const currentTabs = ['Details', 'Case Files', 'Custom Procedures', 'Schedule'];
     const modal = useModal();
     const {
@@ -307,7 +308,7 @@ function PhysicianPage({route, navigation}) {
                 <DetailsPage
                     title={name}
                     subTitle=""
-                    isEditable={updatePhysician}
+                    isEditable={updatePhysicians}
                     headerChildren={[name]}
                     onBackPress={backTapped}
                     isArchive={getIsEditable()}

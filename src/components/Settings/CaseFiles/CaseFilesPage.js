@@ -364,6 +364,7 @@ function CaseFilesPage({ navigation, route }) {
     return (
         <PageContext.Provider value={{ pageState, setPageState }}>
             <DetailsPage
+                isEditable={true}
                 headerChildren={['Custom types', 'Case Files']}
                 onBackPress={() => {
                     navigation.navigate('Settings');
