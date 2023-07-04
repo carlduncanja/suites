@@ -512,6 +512,7 @@ function CaseFiles(props) {
     };
 
     const getFabActions = () => {
+        const actionArray = []
 
         console.log("this is to check the user permissions", userPermissions)
         const disabled = !!isEmpty(selectedCaseIds);
@@ -578,13 +579,12 @@ function CaseFiles(props) {
             </View>
         );
 
+        userPermissions.delete && actionArray.push(deleteDraftAction, deleteAction)
+        userPermissions.create && actionArray.push(createNewCase)
+        userPermissions.update && actionArray.push(archiveCase)
+
         return <ActionContainer
-            floatingActions={[
-                userPermissions.update && archiveCase,
-                userPermissions.delete && deleteDraftAction,
-                userPermissions.delete && deleteAction,
-                userPermissions.create && createNewCase
-            ]}
+            floatingActions={actionArray}
              title="CASE ACTIONS"
         />;
     };
