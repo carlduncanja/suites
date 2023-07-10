@@ -36,6 +36,7 @@ function RegisterPaymentDialogContainer({headerTitle, handleDonePressed }) {
     const theme = useTheme();
     const [amountPaid, setAmountPaid] = useState(0);
     const [receiptId, setReceiptId] = useState('');
+    const [paymentMethod, setPaymentMethod] = useState('');
     const [errors, setErrors] = useState({})
 
     // ######### EVENT HANDLERS
@@ -51,8 +52,6 @@ function RegisterPaymentDialogContainer({headerTitle, handleDonePressed }) {
             updateErrors("amountPaid")
         }
     }
-
-
 
     const formatAmount = () => {
         if (amountPaid) {
@@ -73,13 +72,22 @@ function RegisterPaymentDialogContainer({headerTitle, handleDonePressed }) {
         updateErrors("receiptId")
     }
 
+    const handlePaymentMethod = (value) => {
+        setPaymentMethod(value)
+        updateErrors("paymentMethod")
+    }
+
     const validateFields = () => {
+        let amount = 0
         let errors = {};
         if (!amountPaid) errors = { amountPaid: true }
         if (!receiptId) errors = { ...errors, receiptId: true }
+        if (!paymentMethod) errors = {...errors, paymentMethod: true}
         setErrors(errors);
-        const amount = amountPaid.replace(/[^0-9.]/g, '');
-        if (_.isEmpty(errors)) handleDonePressed(parseFloat(amount), receiptId);
+        if (amountPaid) {
+            amount = amountPaid.replace(/[^0-9.]/g, '');
+        }
+        if (_.isEmpty(errors)) handleDonePressed(parseFloat(amount), receiptId, paymentMethod);
     }
 
 
@@ -129,6 +137,19 @@ function RegisterPaymentDialogContainer({headerTitle, handleDonePressed }) {
                     />
                 </FieldContainer>
 
+            </Row>
+
+            <Row>
+                <FieldContainer maxWidth='50%'>
+                <InputField2
+                            label="Payment Method"
+                            errorMessage="This field is required"
+                            value={paymentMethod}
+                            onClear={()=> setPaymentMethod('')}
+                            hasError={errors?.paymentMethod}
+                            onChangeText={(value) => handlePaymentMethod(value)}
+                        />
+                </FieldContainer>
             </Row>
 
             <Row margin={1}>
