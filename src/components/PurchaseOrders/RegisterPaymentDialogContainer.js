@@ -143,7 +143,7 @@ function RegisterPaymentDialogContainer({headerTitle, handleDonePressed }) {
                 <FieldContainer maxWidth='50%'>
                 <InputField2
                             label="Payment Method"
-                            labelWidth={120}
+                            labelWidth={120 }
                             errorMessage="This field is required"
                             value={paymentMethod}
                             onClear={()=> setPaymentMethod('')}
