@@ -36,7 +36,7 @@ const InputFieldContainer = styled.View`
 `;
 
 const LabelWrapper = styled.View(({theme, label}) => ({
-    minWidth: 70,
+    minWidth: '30%',
     marginRight: label ? 20 : 0
 }));
 

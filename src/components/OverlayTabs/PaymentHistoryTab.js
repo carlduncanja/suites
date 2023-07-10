@@ -122,8 +122,8 @@ const PaymentHistoryTab = ({
             });
     };
 
-    const handleAddPayment = (amount, receipt) => {
-        registerPayment(order._id, { paid: amount, receiptId: receipt })
+    const handleAddPayment = (amount, receipt, paymentMethod) => {
+        registerPayment(order._id, { paid: amount, receiptId: receipt, paymentMethod })
             .then(_ => {
                 onUpdate();
                 setSelectedItems([]);
@@ -273,13 +273,14 @@ const PaymentHistoryTab = ({
 
 
     const listItemFormat = (item, index) => {
-        const { receiptId, paid, registeredBy, createdAt } = item;
+        const { receiptId, paid, registeredBy, createdAt, paymentMethod } = item;
 
         return (
             <>
                 <DataItem text={receiptId} fontStyle="--text-base-medium" color="--color-blue-600" />
                 <DataItem text={`$${currencyFormatter(paid)}`} fontStyle="--text-base-medium" color="--color-gray-800" />
                 <DataItem text={registeredBy} fontStyle="--text-base-medium" color="--color-gray-800" />
+                <DataItem text={paymentMethod} fontStyle="--text-base-medium" color="--color-gray-800" />
                 <DataItem text={formatDate(createdAt, 'DD/MM/YYYY')} fontStyle="--text-base-medium" color="--color-gray-800" />
             </>
         );
@@ -390,6 +391,9 @@ const listHeaders = [
     },
     {
         name: 'Paid By',
+    },
+    {
+        name: 'Payment Method',
     },
     {
         name: 'Date',
