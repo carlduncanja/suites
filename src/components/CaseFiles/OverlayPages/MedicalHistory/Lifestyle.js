@@ -11,14 +11,15 @@ import DisabledSectionComponent from '../../../DisabledSectionComponent';
 import FrameTitle from '../../../common/Frames/FrameTitle';
 const Lifestyle = ({ tabDetails, isEditMode, patient, fetchCase = () => { } }) => {
 
-
+    console.log('jhjkjkj', tabDetails)
 
     const getTypeData = (lifestyleType) => {
         return tabDetails.filter(item => {
+            
             const { type = { name: "Molly" } } = item
             const { name = "Alcohol Use" } = type
             return name === lifestyleType && item
-        }) || []
+        }) 
     }
 
 
@@ -27,10 +28,9 @@ const Lifestyle = ({ tabDetails, isEditMode, patient, fetchCase = () => { } }) =
     const tobacco = getTypeData("Tobacco Use")
 
     return (
-        tabDetails.length != 0 ?
+        
             <ScrollView style={{ marginBottom: 80 }}>
-                {drugs.length != 0 ?
-
+                
                     <View style={styles.frameContainer} >
                         <View style={styles.container}>
 
@@ -50,11 +50,8 @@ const Lifestyle = ({ tabDetails, isEditMode, patient, fetchCase = () => { } }) =
                         </View>
 
                     </View>
-                    :
-                    null
-                }
 
-                {alcohol.length != 0 ?
+
 
 
                     <View style={styles.frameContainer} >
@@ -73,11 +70,8 @@ const Lifestyle = ({ tabDetails, isEditMode, patient, fetchCase = () => { } }) =
                             />
                         </View>
                     </View>
-                    :
-                    null
-                }
-                {tobacco.length != 0 ?
-
+                   
+                
                     <View style={styles.frameContainer}>
 
                         <View style={styles.container} >
@@ -95,14 +89,11 @@ const Lifestyle = ({ tabDetails, isEditMode, patient, fetchCase = () => { } }) =
                             />
                         </View>
                     </View>
-                    :
-                    null
+                  
 
-                }
+                
             </ScrollView>
-            :
-
-            <DisabledSectionComponent />
+           
 
 
     );
