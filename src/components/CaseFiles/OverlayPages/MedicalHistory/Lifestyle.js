@@ -11,15 +11,14 @@ import DisabledSectionComponent from '../../../DisabledSectionComponent';
 import FrameTitle from '../../../common/Frames/FrameTitle';
 const Lifestyle = ({ tabDetails, isEditMode, patient, fetchCase = () => { } }) => {
 
-    console.log('jhjkjkj', tabDetails)
+
 
     const getTypeData = (lifestyleType) => {
         return tabDetails.filter(item => {
-            
             const { type = { name: "Molly" } } = item
             const { name = "Alcohol Use" } = type
             return name === lifestyleType && item
-        }) 
+        }) || []
     }
 
 
@@ -28,9 +27,9 @@ const Lifestyle = ({ tabDetails, isEditMode, patient, fetchCase = () => { } }) =
     const tobacco = getTypeData("Tobacco Use")
 
     return (
-        
+       
             <ScrollView style={{ marginBottom: 80 }}>
-                
+
                     <View style={styles.frameContainer} >
                         <View style={styles.container}>
 
@@ -50,9 +49,7 @@ const Lifestyle = ({ tabDetails, isEditMode, patient, fetchCase = () => { } }) =
                         </View>
 
                     </View>
-
-
-
+                   
 
                     <View style={styles.frameContainer} >
                         <View style={styles.container}>
@@ -70,8 +67,7 @@ const Lifestyle = ({ tabDetails, isEditMode, patient, fetchCase = () => { } }) =
                             />
                         </View>
                     </View>
-                   
-                
+                    
                     <View style={styles.frameContainer}>
 
                         <View style={styles.container} >
@@ -89,11 +85,8 @@ const Lifestyle = ({ tabDetails, isEditMode, patient, fetchCase = () => { } }) =
                             />
                         </View>
                     </View>
-                  
-
-                
+                   
             </ScrollView>
-           
 
 
     );

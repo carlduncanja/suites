@@ -71,6 +71,7 @@ const FrameLifestyleCard = ({ fetchCase = () => { }, ...props }) => {
                     onClose: () => {
                         modal.closeModals('ConfirmationModal');
                     },
+                    
                 });
             })
             .catch(error => {
@@ -244,6 +245,7 @@ const FrameLifestyleCard = ({ fetchCase = () => { }, ...props }) => {
                         }}
                         onAction={() => {
                             modal.closeAllModals();
+                            setDataUpdated(false)
                             addLifeStyleItems()
                         }}
                         message="Do you want to save changes?" // general message you can send to be displayed
@@ -251,7 +253,9 @@ const FrameLifestyleCard = ({ fetchCase = () => { }, ...props }) => {
                     />
                 ),
                 onClose: () => console.log('Modal closed'),
+ 
             })
+
             :
             null
 
@@ -270,6 +274,12 @@ const FrameLifestyleCard = ({ fetchCase = () => { }, ...props }) => {
                     frameTitle={props.frameTitle}
                 />
             </View>
+
+            {substances.length === 0 ? 
+            <View style={{paddingHorizontal: 15, paddingBottom: 0, paddingTop: 20}}>  
+            <FrameItem itemContent='None'/>
+            </View>: <></>}
+            
             <View style={styles.content} >
                 {substances.map((categorieInformation, index) => {
                     return (
