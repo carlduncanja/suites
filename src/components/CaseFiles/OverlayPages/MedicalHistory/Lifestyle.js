@@ -9,7 +9,7 @@ import AlcoholIcon from '../../../../../assets/svg/alcohol';
 import FrameLifestyleCard from '../../../common/Frames/FrameCards/FrameLifestyleCard'
 import DisabledSectionComponent from '../../../DisabledSectionComponent';
 import FrameTitle from '../../../common/Frames/FrameTitle';
-const Lifestyle = ({ tabDetails, isEditMode, patient, fetchCase = () => { } }) => {
+const Lifestyle = ({ setPageState, tabDetails, isEditMode, patient, fetchCase = () => { } }) => {
 
 
 
@@ -34,6 +34,7 @@ const Lifestyle = ({ tabDetails, isEditMode, patient, fetchCase = () => { } }) =
                         <View style={styles.container}>
 
                             <FrameLifestyleCard
+                                setPageState = {setPageState}
                                 frameColor="#805AD5"
                                 titleBackgroundColor="#FAF5FF"
                                 frameBorderColor="#D6BCFA"

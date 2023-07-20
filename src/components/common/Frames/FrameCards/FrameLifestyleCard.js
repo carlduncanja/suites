@@ -34,6 +34,7 @@ const FrameLifestyleCard = ({ fetchCase = () => { }, ...props }) => {
         let newLifeStyleItem = {
             "amount": 10,
             "frequency": "often",
+            "measureValue": 0,
             "name": substance.name,
             "patient": patientId,
             "startDate": "1999-04-03T05:00:00.000Z",
@@ -53,6 +54,7 @@ const FrameLifestyleCard = ({ fetchCase = () => { }, ...props }) => {
         setDataUpdated(true)
     }
     const updateLifeStyle = (id, data) => {
+        console.log('jsjj', data)
         updatePatientLifestyle(id, { pateintLifeStyle: data })
             .then(data => {
                 modal.openModal('ConfirmationModal', {
@@ -115,7 +117,7 @@ const FrameLifestyleCard = ({ fetchCase = () => { }, ...props }) => {
                         }}
                         onAction={() => {
                             modal.closeModals('ConfirmationModal');
-                            fetchCase()
+                            fetchCase()                            
                         }}
                     />,
                     onClose: () => {
@@ -258,7 +260,7 @@ const FrameLifestyleCard = ({ fetchCase = () => { }, ...props }) => {
             :
             null
 
-    }, [props.isEditMode])
+    }, [addMode])
 
 
 

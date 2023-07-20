@@ -15,8 +15,8 @@ const FrameLifestyleContent = ({ cardInformation, isEditMode = false, onSavePres
         amount = 0,
         unit = "",
         usage = "",
-        measureValue = 10,
-        unitOfMeasure = "oz",
+        measureValue = 0,
+        unitOfMeasure,
         startDate,
         _id = " "
     } = cardInformation
@@ -39,6 +39,7 @@ const FrameLifestyleContent = ({ cardInformation, isEditMode = false, onSavePres
             [feildName]: value
         })
         setEditted(true)
+        console.log('oioi', lifestyleFeilds)
     }
 
 

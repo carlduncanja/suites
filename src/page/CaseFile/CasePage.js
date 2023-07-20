@@ -1893,6 +1893,7 @@ function CasePage({ auth = {}, route, addNotification, navigation, ...props }) {
                     medicalInfo={medicalInfo}
                     selectedTab={selectedTab}
                     patient={patient}
+                    setPageState = {setPageState}
                     fetchCase={() => fetchCase(caseId)}
                 />;
             case 'Procedures': 
