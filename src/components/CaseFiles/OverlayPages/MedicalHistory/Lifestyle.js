@@ -44,7 +44,6 @@ const Lifestyle = ({ tabDetails, isEditMode, patient, fetchCase = () => { } }) =
                                 isEditMode={isEditMode}
                                 patient={patient}
                                 fetchCase={fetchCase}
-
                             />
                         </View>
 
