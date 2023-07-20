@@ -15,7 +15,6 @@ import ConfirmationComponent from '../../../ConfirmationComponent';
 import ConfirmationCheckBoxComponent from '../../../ConfirmationCheckBoxComponent';
 
 const FrameLifestyleCard = ({ fetchCase = () => { }, ...props }) => {
-    //console.log(props.cardInformation)
 
     const modal = useModal();
     const theme = useTheme();
@@ -35,12 +34,13 @@ const FrameLifestyleCard = ({ fetchCase = () => { }, ...props }) => {
         let newLifeStyleItem = {
             "amount": 10,
             "frequency": "often",
+            "measureValue": 0,
             "name": substance.name,
             "patient": patientId,
             "startDate": "1999-04-03T05:00:00.000Z",
             "type": substance.typeID,
             "unit": "",
-            "usage": "to calm nerves",
+            "usage": "",
         }
 
         let newSubstanceArray = substances.slice()
@@ -54,6 +54,7 @@ const FrameLifestyleCard = ({ fetchCase = () => { }, ...props }) => {
         setDataUpdated(true)
     }
     const updateLifeStyle = (id, data) => {
+        console.log('jsjj', data)
         updatePatientLifestyle(id, { pateintLifeStyle: data })
             .then(data => {
                 modal.openModal('ConfirmationModal', {
@@ -71,6 +72,7 @@ const FrameLifestyleCard = ({ fetchCase = () => { }, ...props }) => {
                     onClose: () => {
                         modal.closeModals('ConfirmationModal');
                     },
+                    
                 });
             })
             .catch(error => {
@@ -97,14 +99,12 @@ const FrameLifestyleCard = ({ fetchCase = () => { }, ...props }) => {
     const addLifeStyleItems = () => {
         createPatientLifeStyle({ patientLifestyleItems: newLifeStyle })
             .then(data => {
-
                 data.map((newLifeStyle, index) => {
                     updatePatient(patientId, {
                         medicalInfo: {
                             lifestyles: [...props.updateData, newLifeStyle]
                         }
-                    }).then(result => {
-
+                    }).then(result => {  
                     }
                     )
                 })
@@ -117,7 +117,7 @@ const FrameLifestyleCard = ({ fetchCase = () => { }, ...props }) => {
                         }}
                         onAction={() => {
                             modal.closeModals('ConfirmationModal');
-                            fetchCase()
+                            fetchCase()                            
                         }}
                     />,
                     onClose: () => {
@@ -160,8 +160,8 @@ const FrameLifestyleCard = ({ fetchCase = () => { }, ...props }) => {
                         modal.closeModals('ConfirmationModal');
                     }}
                     onAction={() => {
-                        //console.log(substances[index])
                         deleteLifestyleItem(id, index)
+                        fetchCase()
                         modal.closeModals('ConfirmationModal');
                     }}
                     message="Do you want to delete this item?"
@@ -176,14 +176,15 @@ const FrameLifestyleCard = ({ fetchCase = () => { }, ...props }) => {
     }
 
     const deleteLifestyleItem = async (id, index) => {
-
         let container = []
-        props.updateData.filter(item => {
+        let items = []
+
+        substances.filter(item => {
             if (item._id !== id) {
+                items.push(item)
                 container.push(item._id)
             }
         });
-
 
         await updatePatient(patientId,
             {
@@ -202,6 +203,7 @@ const FrameLifestyleCard = ({ fetchCase = () => { }, ...props }) => {
                         onAction={() => {
                             modal.closeModals('ConfirmationModal');
                             fetchCase()
+                            setSubtances(items)
                         }}
                     />,
                     onClose: () => {
@@ -245,17 +247,20 @@ const FrameLifestyleCard = ({ fetchCase = () => { }, ...props }) => {
                         onAction={() => {
                             modal.closeAllModals();
                             addLifeStyleItems()
+                            setDataUpdated(false)
                         }}
                         message="Do you want to save changes?" // general message you can send to be displayed
                         action="Yes"
                     />
                 ),
                 onClose: () => console.log('Modal closed'),
+ 
             })
+
             :
             null
 
-    }, [props.isEditMode])
+    }, [addMode])
 
 
 
@@ -270,6 +275,12 @@ const FrameLifestyleCard = ({ fetchCase = () => { }, ...props }) => {
                     frameTitle={props.frameTitle}
                 />
             </View>
+
+            {substances.length === 0 ? 
+            <View style={{paddingHorizontal: 15, paddingBottom: 0, paddingTop: 20}}>  
+            <FrameItem itemContent='None'/>
+            </View>: <></>}
+            
             <View style={styles.content} >
                 {substances.map((categorieInformation, index) => {
                     return (

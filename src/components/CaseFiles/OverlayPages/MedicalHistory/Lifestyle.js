@@ -9,7 +9,7 @@ import AlcoholIcon from '../../../../../assets/svg/alcohol';
 import FrameLifestyleCard from '../../../common/Frames/FrameCards/FrameLifestyleCard'
 import DisabledSectionComponent from '../../../DisabledSectionComponent';
 import FrameTitle from '../../../common/Frames/FrameTitle';
-const Lifestyle = ({ tabDetails, isEditMode, patient, fetchCase = () => { } }) => {
+const Lifestyle = ({ setPageState, tabDetails, isEditMode, patient, fetchCase = () => { } }) => {
 
 
 
@@ -27,14 +27,14 @@ const Lifestyle = ({ tabDetails, isEditMode, patient, fetchCase = () => { } }) =
     const tobacco = getTypeData("Tobacco Use")
 
     return (
-        tabDetails.length != 0 ?
+       
             <ScrollView style={{ marginBottom: 80 }}>
-                {drugs.length != 0 ?
 
                     <View style={styles.frameContainer} >
                         <View style={styles.container}>
 
                             <FrameLifestyleCard
+                                setPageState = {setPageState}
                                 frameColor="#805AD5"
                                 titleBackgroundColor="#FAF5FF"
                                 frameBorderColor="#D6BCFA"
@@ -45,17 +45,11 @@ const Lifestyle = ({ tabDetails, isEditMode, patient, fetchCase = () => { } }) =
                                 isEditMode={isEditMode}
                                 patient={patient}
                                 fetchCase={fetchCase}
-
                             />
                         </View>
 
                     </View>
-                    :
-                    null
-                }
-
-                {alcohol.length != 0 ?
-
+                   
 
                     <View style={styles.frameContainer} >
                         <View style={styles.container}>
@@ -73,11 +67,7 @@ const Lifestyle = ({ tabDetails, isEditMode, patient, fetchCase = () => { } }) =
                             />
                         </View>
                     </View>
-                    :
-                    null
-                }
-                {tobacco.length != 0 ?
-
+                    
                     <View style={styles.frameContainer}>
 
                         <View style={styles.container} >
@@ -95,14 +85,8 @@ const Lifestyle = ({ tabDetails, isEditMode, patient, fetchCase = () => { } }) =
                             />
                         </View>
                     </View>
-                    :
-                    null
-
-                }
+                   
             </ScrollView>
-            :
-
-            <DisabledSectionComponent />
 
 
     );
