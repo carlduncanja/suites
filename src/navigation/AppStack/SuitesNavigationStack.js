@@ -77,7 +77,9 @@ export const SuitesNavigationStack = ({ auth = {} }) => {
     }, [auth]);
 
     const ViewProcedures = userPermissions?.['procedures']?.['read'];
+    
     const ViewCase = userPermissions?.['cases']?.['read'];
+
     const ViewEquipment = userPermissions?.['equipment_type']?.['read'];
 
     const ViewTheatre = userPermissions?.['theatres']?.['read'];
@@ -111,8 +113,6 @@ export const SuitesNavigationStack = ({ auth = {} }) => {
     return (
         <SuitesNavigator.Navigator
             initialRouteName="SchedulePage"
-            
-
         >
 
             <SuitesNavigator.Screen
