@@ -7,7 +7,7 @@ import MultipleShadowsContainer from '../common/MultipleShadowContainer';
 import jwtDecode from 'jwt-decode';
 import {connect} from 'react-redux'
 import QuickMenu from "../../../assets/svg/QuickMenu";
-import {useModal} from "react-native-modalfy";
+import { useModal } from "react-native-modalfy";
 import { getUserCall } from '../../api/network';
 
 const shadows = [
@@ -110,16 +110,18 @@ function SideBarComponent({routes, selectedIndex, screenDimensions, onTabPressed
                 >
 
                     {/*QUICK MENU*/}
-                    {createCase && 
-                    <View style={{width: '100%'}} key={"QUICK_MENU"}>
+                    
+                    <View style={{width: '100%'}} key={"QUICK_MENU"}> 
+                    { createCase &&
                         <NavigationTab
                             icon={QuickMenu}
                             tabName={"Quick Menu"}
                             isTabSelected={false}
                             onTabPress={showQuickMenuModal}
-                        />
-                    </View>
+                        /> 
                     }
+                    </View>
+                    
                     
                     {
                         // Spread the navigation routes.
