@@ -1841,8 +1841,6 @@ function CasePage({ auth = {}, route, addNotification, navigation, ...props }) {
 
     const getIsEditable = () => {
         switch (selectedMenuItem) {
-            case 'Patient':
-                return selectedTab === 'Diagnosis';
             case 'Medical Staff':
                 return selectedTab === 'Insurance' || selectedTab === 'Diagnosis' || selectedTab === 'Patient Risk';
             case 'Medical History':
