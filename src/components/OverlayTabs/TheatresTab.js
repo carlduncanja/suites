@@ -29,18 +29,9 @@ const headers = [
     {
         name: 'Status',
         alignment: 'center',
-        flex: 1.5
+        flex: 1.3
     },
-    {
-        name: 'Recovery',
-        alignment: 'center',
-        flex: 2.2
-    },
-    {
-        name: 'Availability',
-        alignment: 'center',
-        flex: 1
-    }
+
 ]
 
 const testData = [
@@ -97,9 +88,7 @@ const TheatresTab = ({ modal, theatresData, onAddTheatre }) => {
         return (
             <>
                 <TouchableDataItem flex={3} fontStyle="--text-base-medium" text={name} isDisabled={true} />
-                <DataItem flex={2.4} fontStyle="--text-sm-medium" align="center" color="--color-orange-600" text={status} />
-                <DataItem flex={2} fontStyle="--text-sm-medium" align="center" color={recoveryColor} text={isRecovery ? 'Yes' : 'No'} />
-                <DataItem flex={1} fontStyle="--text-sm-regular" align="flex-end" color="--color-gray-800" text={`${availability} slots`} />
+                <DataItem flex={1} fontStyle="--text-sm-medium" align="center" color="--color-orange-600" text={status} />
 
                 {/* <View style={{flexDirection: 'row', borderBottomColor:'#E3E8EF', borderBottomWidth:1, marginBottom:15, paddingBottom:15}}>
                     <View style={{flex:2}}>
