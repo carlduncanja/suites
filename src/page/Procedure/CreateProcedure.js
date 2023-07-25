@@ -248,7 +248,7 @@ function CreateProcedure({addProcedure, navigation, route}) {
 
     const validateProcedure = () => {
         let isValid = true;
-        const requiredFields = ['name', 'duration', 'physicians'];
+        const requiredFields = ['name', 'duration'];
         console.log("physician field here,", fields['physicians'])
         const errorObj = {...errors} || {};
 
@@ -389,7 +389,7 @@ function CreateProcedure({addProcedure, navigation, route}) {
         const data = {
             name: updatedFields.name,
             duration: updatedFields.duration,
-            physicians: updatedFields.physicians,
+            physicians: updatedFields.physicians || [],
             serviceFee: updatedFields.serviceFee,
             hasRecovery: updatedFields.hasRecovery,
             supportedRooms: updatedFields.supportedRooms,
