@@ -154,7 +154,7 @@ const ProcedureStep = ({onProcedureUpdate, procedures, patient = "--", selectedT
             {/* SCHEDULING ASSISTANT */}
 
             <View style={{flex: 1, paddingRight: 30}}>
-                <ScheduleDisplayComponent appointments={appointments} date={date}/>
+                <ScheduleDisplayComponent procedureStep = {true} appointments={appointments} date={date}/>
             </View>
         </View>
     )
