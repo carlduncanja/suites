@@ -156,9 +156,13 @@ function ProcedureScheduleContent({
   );
 
   const renderPhysicians = (physicians, leadPhysicianId) => {
-    /*const leadPhysician = physicians.find(item => item._id === leadPhysicianId);
-        const supportingPhysicians = physicians.filter(item => item._id !== leadPhysicianId);
-        */
+    if (physicians.length == 0) {
+    let leadPhysicianObj = {...leadPhysicianId, tag: 'Lead Surgeon',  name: "Dr. " + leadPhysicianId.surname}
+      physicians.push(leadPhysicianObj)
+    }
+    //const leadPhysician = physicians.find(item => item._id === leadPhysicianId._id);
+    //const supportingPhysicians = physicians.filter(item => item._id !== leadPhysicianId);
+
     function findPhysicianByTag(tag) {
       const match = physicians.filter((target) => target.tag === tag);
 
