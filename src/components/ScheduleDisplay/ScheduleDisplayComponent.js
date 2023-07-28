@@ -9,7 +9,8 @@ function ScheduleDisplayComponent({
     onPress,  
     updatePhysician,
     updateTheatre,
-    idData
+    idData,
+    procedureStep
 
 }) {
 
@@ -125,6 +126,7 @@ function ScheduleDisplayComponent({
                                         onPress={ event => {
                                             onCheckBoxPress(item)
                                         }}
+                                        procedureStep = {procedureStep}
                                         isSelected={selected === item._id} />
                                 </View>
                             )
@@ -282,7 +284,7 @@ export const EVENT_TYPES = {
     GONE: 3
 }
 
-function Event({ startTime, endTime, type, title, subTitle, isSelected = true, onPress }) {
+function Event({ startTime, endTime, type, title, subTitle, isSelected = true, onPress, procedureStep }) {
 
 
     const start = moment(startTime);
@@ -330,13 +332,13 @@ function Event({ startTime, endTime, type, title, subTitle, isSelected = true, o
                 ]}>{title}</Text>
 
 
-                <TouchableOpacity style={eventStyleSheet.CircleShape} onPress={onPress}>
+               { !procedureStep && <TouchableOpacity style={eventStyleSheet.CircleShape} onPress={onPress}>
                     {isSelected ?
                         <View style={eventStyleSheet.circleSelected}></View>
                         :
                         <View style={eventStyleSheet.CircleShapeUnSelcted}></View>
                     }
-                </TouchableOpacity>
+                </TouchableOpacity>}
             </View>
 
 
