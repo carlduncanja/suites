@@ -214,7 +214,7 @@ const ProcedureTab = ({
 
         onProcedureInfoChange({
             ...procedureInfo,
-            [field]: newTime.toDate().toString(),
+            [field]: newTime.toDate(),
         });
 
         updateErrorField(field)(false);
