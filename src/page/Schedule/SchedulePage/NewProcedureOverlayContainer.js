@@ -690,11 +690,11 @@ function NewProcedureOverlayContainer({ handleScheduleRefresh=()=> {}, appointme
 
         setDate(newDate)
         // update procedure
-        setProcedure({
+        /*setProcedure({
             ...procedure,
             date: date,
             startTime: newStartTime && newStartTime.toDate(),
-        });
+        });*/
     };
 
     const onTimeUpdate = (field) => (dateTime) => {
@@ -1119,7 +1119,7 @@ function NewProcedureOverlayContainer({ handleScheduleRefresh=()=> {}, appointme
 
                 <Accent />
 
-                <View style={styles.staffContainer, { zIndex: 8 }}>
+                <View style={[styles.staffContainer, { zIndex: 8 }]}>
 
                     <View style={[styles.row, { zIndex: 10 }]}>
                         <View style={styles.staffField}>
@@ -1269,7 +1269,7 @@ function NewProcedureOverlayContainer({ handleScheduleRefresh=()=> {}, appointme
 
                 <Space />
 
-                <View style={styles.staffContainer, { zIndex: 7 }}>
+                <View style={[styles.staffContainer, { zIndex: 7 }]}>
                     <View style={[styles.row, { zIndex: 7 }]}>
                         <View style={styles.staffField}>
                             <SearchableOptionsField
