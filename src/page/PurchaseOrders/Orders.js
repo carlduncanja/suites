@@ -203,7 +203,7 @@ const Orders = (props) => {
     };
 
     const goToNextPage = () => {
-        if (currentPagePosition < totalPages) {
+        if (currentPagePosition > totalPages) {
             let { currentPage, currentListMin, currentListMax } = useNextPaginator(
                 currentPagePosition,
                 recordsPerPage,
