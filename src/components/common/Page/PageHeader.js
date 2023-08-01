@@ -12,9 +12,14 @@ import LockIcon from '../../../../assets/svg/lockIcon';
 import EditLockIcon from '../../../../assets/svg/editLockedIcon';
 import DeleteIcon from '../../../../assets/svg/wasteIcon';
 import MultipleShadowsContainer from '../MultipleShadowContainer';
+import ConfirmationCheckBoxComponent from '../../ConfirmationCheckBoxComponent';
+import { Modal } from 'react-native-paper';
+import { useModal } from 'react-native-modalfy';
+import moment from 'moment';
 
 function PageHeader({
                         onBack,
+                        timeStamp,
                         isArchive: isEditDisabled = false,
                         headerChildren = [],
                         separator = null,
@@ -22,6 +27,7 @@ function PageHeader({
                         editMessage = 'now in edit mode'
                     }) {
     const theme = useTheme();
+    console.log('sifkjs,', theme)
 
     const {pageState, setPageState} = useContext(PageContext);
 
@@ -35,6 +41,33 @@ function PageHeader({
             ...pageState,
             isEditMode: !pageState.isEditMode
         });
+    };
+
+    const modal = useModal();
+
+    const endConfirm = data => {
+        const end = new moment()
+        modal.openModal(
+            'ConfirmationModal',
+            {
+                content: <ConfirmationCheckBoxComponent
+                    isError={false}
+                    isEditUpdate={true}
+                    onCancel={() => modal.closeModals('ConfirmationModal')}
+                    onAction={() => {
+                        modal.closeModals('ConfirmationModal');
+                    }}
+                    // onAction = { () => confirmAction()}
+                    timeStamp ={timeStamp}
+                    caseFileActions = {true}
+                    endTime = {end}
+                    message="Please confirm the following updates"
+                />,
+                onClose: () => {
+                    modal.closeModals('ConfirmationModal');
+                }
+            }
+        );
     };
 
     const {isEditMode, isReview, locked, editMsg, editDisabled} = pageState;
@@ -163,6 +196,22 @@ function PageHeader({
                         </EditModeContainer>
                     }
 
+                    { (!isEditMode && timeStamp) && <EditButtonWrapper style = {{width: 150}}>
+                        <EditButtonContainer
+                            theme={theme}
+                            backgroundColor={getEditBtnBackground()}
+                            >
+                            <Button
+                                backgroundColor = {theme.colors['--accent-button']}
+                                color = {theme.colors['--default-shade-white']}
+                                title =  "End Procedure"
+                                buttonPress={endConfirm}
+                                font={theme.font['--text-sm-medium']}
+                            />
+                            </EditButtonContainer>
+                        </EditButtonWrapper>
+                    }
+                    
                    { isEditable  && <EditButtonWrapper theme={theme}>
                         <EditButtonContainer
                             theme={theme}

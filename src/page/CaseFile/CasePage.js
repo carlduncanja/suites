@@ -109,15 +109,23 @@ const overlayMenu = [
     }
 ];
 
-const initialMenuItem = overlayMenu[0].name;
+
+
+let initialMenuItem = overlayMenu[0].name;
 const initialCurrentTabs = overlayMenu[0].overlayTabs;
 const initialSelectedTab = initialCurrentTabs[0];
 
 function CasePage({ auth = {}, route, addNotification, navigation, ...props }) {
+    const timeStamp = route.params.timeStamp
     const modal = useModal();
     const theme = useTheme();
     const chargeSheetRef = useRef(); 
     const casePermissions = route.params.permissions;
+
+    // if(timeStamp){
+    //     console.log('ialkljekwrs ', timeStamp)
+    //     initialMenuItem = overlayMenu[4].name
+    // }
 
     const { userToken } = auth;
     let authInfo = {};
@@ -1934,6 +1942,7 @@ function CasePage({ auth = {}, route, addNotification, navigation, ...props }) {
             >
                 <DetailsPage
                     isEditable={casePermissions.update}
+                    timeStamp = {timeStamp}
                     headerChildren={[name, `#${caseNumber}`]} 
                     updatePhysician={casePermissions.update}
                     onBackPress={() => {

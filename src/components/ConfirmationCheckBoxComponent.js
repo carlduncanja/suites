@@ -10,10 +10,12 @@ import ErrorIcon from '../../assets/svg/ErrorIcon';
 import TickIcon from '../../assets/svg/tickIcon';
 import MultipleShadowsContainer from './common/MultipleShadowContainer';
 import CheckBoxComponent from '../components/common/Checkbox';
+import DateInputField from './common/Input Fields/DateInputField';
+import moment from 'moment';
 
 const ModalWrapper = styled.View`
     width: 440px;
-    height: 267px;
+    height: 400px;
     position: relative;
     background-color: white;
     border-radius: 8px;
@@ -220,15 +222,45 @@ function ConfirmationCheckBoxComponent({
     message = '',
     confirmMessage="Yes, I want to delete",
     action = 'Save',
-    type = ''
+    type = '',
+    caseFileActions,
+    timeStamp,
+    endTime
 }) {
     const theme = useTheme();
-
+    const [end, setEnd] = useState(endTime)
     const [isChecked, setIsChecked] = useState(false)
+    
+    let actions = [
+       { 
+            name: 'Consumables updated',
+            time: ""    
+        }, 
+        {
+            name: 'Equioment used updated',
+            time: ''
+        }, 
+        {
+            name: "Procedure End Time",
+            time: timeStamp
+        }
+    ]
 
     const onCheckBoxPress = () => {
         setIsChecked(!isChecked)
     }
+
+    const onTimeUpdate =  (dateTime) => {
+
+        let newTime = moment(dateTime);
+
+        console.log('jwieowi', dateTime)
+        
+
+       setEnd(newTime)
+        
+
+    };
 
     const typeDecipher = () => {
 
@@ -237,7 +269,7 @@ function ConfirmationCheckBoxComponent({
                 <MessageContainer theme={theme}>
                     <ModalText theme={theme} color="--color-gray-700" font="--confirm-message">{message}</ModalText>
 
-                    <View style={styles.rowContianer}> 
+                    { !caseFileActions ? <View style={styles.rowContianer}> 
                         
                         <View style={styles.sideBox}></View>
                         
@@ -251,6 +283,43 @@ function ConfirmationCheckBoxComponent({
                             <Text>{confirmMessage}</Text>
                         </View>
                     </View>
+                    : 
+                    <>
+                    {actions.map((message) => {
+                        return (
+                        <View style={styles.rowContianer}> 
+                        
+                            <View style={styles.sideBox}></View>
+                            
+                            <View style={styles. centerCheckBox}>
+                                <CheckBoxComponent
+                                    isCheck={isChecked}
+                                    onPress={onCheckBoxPress}
+                                />
+                            </View >
+                            <View style={{flexDirection: "row", marginVertical: 10}}>
+                                <Text>{message.name}</Text>
+                                {message.time != "" && 
+                                
+                                <View style={styles.inputWrapper}>
+                                    <DateInputField
+                                        onDateChange={(data) => onTimeUpdate(data)}
+                                        value={end}
+                                        mode={"time"}
+                                        format={"hh:mm A"}
+                                        onClear={() => setEnd(undefined)}
+                                        placeholder="HH:MM"
+                                    />
+                            </View>}
+                            </View>
+                        </View>
+
+                    );
+                    })}
+                    
+                    </>
+
+                }
 
                 </MessageContainer>
             </MessageWrapper>
@@ -316,6 +385,15 @@ const styles = StyleSheet.create({
         padding: 5
 
     },
+
+    inputWrapper: {
+        // flex: 1,
+        width: '52%',
+        flexDirection: 'row',
+        marginLeft: 15
+        // backgroundColor: 'blue'
+    },
+
 
     centerContent: {
         alignSelf: 'center',

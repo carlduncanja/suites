@@ -15,6 +15,7 @@ import BreadCrumbIcon from '../../../../assets/svg/BreadCrumbIcon';
 function DetailsPage({
     isArchive = false,
     hasIcon = null,
+    timeStamp,
     title = '__',
     isEditable,
     subTitle = '__',
@@ -43,6 +44,7 @@ function DetailsPage({
 
                 <>
                     <PageHeader
+                        timeStamp = {timeStamp}
                         isArchive={isArchive}
                         isEditable={isEditable}                  
                         headerChildren={headerChildren || [title, subTitle]}
