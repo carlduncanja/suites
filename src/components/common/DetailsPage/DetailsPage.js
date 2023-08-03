@@ -19,8 +19,10 @@ function DetailsPage({
     title = '__',
     isEditable,
     subTitle = '__',
+    proceduresBillableItemsInfo,
     headerChildren,
     isSpecialHeader = false,
+    selectedTab,
     onBackPress = () => {},
     pageTabs = null,
     ...props
@@ -46,6 +48,7 @@ function DetailsPage({
                     <PageHeader
                         timeStamp = {timeStamp}
                         isArchive={isArchive}
+                        selectedTab ={selectedTab}
                         isEditable={isEditable}                  
                         headerChildren={headerChildren || [title, subTitle]}
                         separator={<BreadCrumbIcon/>}

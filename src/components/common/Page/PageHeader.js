@@ -20,6 +20,7 @@ import moment from 'moment';
 function PageHeader({
                         onBack,
                         timeStamp,
+                        selectedTab,
                         isArchive: isEditDisabled = false,
                         headerChildren = [],
                         separator = null,
@@ -55,9 +56,9 @@ function PageHeader({
                     isEditUpdate={true}
                     onCancel={() => modal.closeModals('ConfirmationModal')}
                     onAction={() => {
+                        console.log('siosido')
                         modal.closeModals('ConfirmationModal');
                     }}
-                    // onAction = { () => confirmAction()}
                     timeStamp ={timeStamp}
                     caseFileActions = {true}
                     endTime = {end}
@@ -196,7 +197,7 @@ function PageHeader({
                         </EditModeContainer>
                     }
 
-                    { (!isEditMode && timeStamp) && <EditButtonWrapper style = {{width: 150}}>
+                    { (!isEditMode && timeStamp && selectedTab  === 'Consumables') && <EditButtonWrapper style = {{width: 150}}>
                         <EditButtonContainer
                             theme={theme}
                             backgroundColor={getEditBtnBackground()}

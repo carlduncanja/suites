@@ -157,13 +157,19 @@ function CasePage({ auth = {}, route, addNotification, navigation, ...props }) {
     });
     const [selectedCase, setSelectedCase] = useState({});
     const [userPermissions, setUserPermissions] = useState({});
-
+    let billable = []
     // ############### Lifecycle Methods
     useEffect(() => {
         fetchCase(caseId);
         fetchUser(authInfo?.user_id); 
         
     }, []);
+
+    if (selectedCase){
+         billable = selectedCase.chargeSheet
+    }
+
+    console.log('suodso t78878', billable?.inventories)
 
     // ############### Event Handlers
     const handleTabPressChange = tab => {
@@ -1870,9 +1876,10 @@ function CasePage({ auth = {}, route, addNotification, navigation, ...props }) {
             quotations = [],
             invoices = []
         } = selectedCase;
-        const { medicalInfo = {} } = patient;
+        const { medicalInfo= {} } = patient;
         const { proceduresBillableItems } = chargeSheet;
-        
+       // setBiilable(proceduresBillableItems)
+
         switch (selectedMenuItem) {
             case 'Patient':
                 return <Patient
@@ -1943,11 +1950,13 @@ function CasePage({ auth = {}, route, addNotification, navigation, ...props }) {
                 <DetailsPage
                     isEditable={casePermissions.update}
                     timeStamp = {timeStamp}
+                    proceduresBillableItemsInfo = {billable}
                     headerChildren={[name, `#${caseNumber}`]} 
                     updatePhysician={casePermissions.update}
                     onBackPress={() => {
                         navigation.navigate('CaseFiles');
                     }}
+                    selectedTab =  {selectedTab}
                     isArchive={getIsEditable()}
                     pageTabs={(
                         <TabsContainer

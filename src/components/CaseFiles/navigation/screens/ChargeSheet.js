@@ -898,7 +898,6 @@ const ChargeSheet = React.forwardRef(({
             } else {
                 return<Consumables
                     headers={headers}
-                    timeStamp = {timeStamp}
                     allItems={equipmentList}
                     equipments={procedureEquipments}
                     caseProceduresFilters={consumableProcedures}

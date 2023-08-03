@@ -230,25 +230,50 @@ function ConfirmationCheckBoxComponent({
     const theme = useTheme();
     const [end, setEnd] = useState(endTime)
     const [isChecked, setIsChecked] = useState(false)
-    
+    const [isChecked1, setIsChecked1] = useState(false)
+    const [isChecked2, setIsChecked2] = useState(false)
+    const [isChecked3, setIsChecked3] = useState(false)
+
     let actions = [
        { 
+            id: 1,
             name: 'Consumables updated',
-            time: ""    
+            time: "" , 
         }, 
         {
+            id: 2,
             name: 'Equioment used updated',
-            time: ''
+            time: '',
+            isChecked: false   
         }, 
         {
+            id: 3,
             name: "Procedure End Time",
-            time: timeStamp
+            time: endTime,
+            isChecked: false   
         }
     ]
 
+    const [actionsData, setActionsData] = useState(actions)
+
     const onCheckBoxPress = () => {
-        setIsChecked(!isChecked)
+            setIsChecked(!isChecked)
+        
     }
+
+    const onCheckBoxPress1 = (index) => {
+        if(index == 0){   
+            setIsChecked1(!isChecked1)
+        } 
+        if(index == 1){        
+            setIsChecked2(!isChecked2)
+        } 
+        if(index == 2){        
+            setIsChecked3(!isChecked3)
+        } 
+        
+    }
+
 
     const onTimeUpdate =  (dateTime) => {
 
@@ -285,18 +310,34 @@ function ConfirmationCheckBoxComponent({
                     </View>
                     : 
                     <>
-                    {actions.map((message) => {
+                    {actionsData.map((message, index) => {
                         return (
                         <View style={styles.rowContianer}> 
                         
                             <View style={styles.sideBox}></View>
                             
-                            <View style={styles. centerCheckBox}>
+                           { index == 0 && <View style={styles. centerCheckBox}>
                                 <CheckBoxComponent
-                                    isCheck={isChecked}
-                                    onPress={onCheckBoxPress}
+                                    isCheck={isChecked1}
+                                    onPress={() =>onCheckBoxPress1(index)}
                                 />
-                            </View >
+                            </View >}
+
+                            { index == 1 && <View style={styles. centerCheckBox}>
+                                <CheckBoxComponent
+                                    isCheck={isChecked2}
+                                    onPress={() => onCheckBoxPress1(index)}
+                                />
+                            </View >}
+
+                            { index == 2 && <View style={styles. centerCheckBox}>
+                                <CheckBoxComponent
+                                    isCheck={isChecked3}
+                                    onPress={() => onCheckBoxPress1(index)}
+                                />
+                            </View >}
+
+
                             <View style={{flexDirection: "row", marginVertical: 10}}>
                                 <Text>{message.name}</Text>
                                 {message.time != "" && 
@@ -329,7 +370,7 @@ function ConfirmationCheckBoxComponent({
                     <ModalText theme={theme} textColor="--color-blue-600" font="--text-base-bold">CANCEL</ModalText>
 
                 </CancelButtonContainer>
-                {isChecked ?
+                {(isChecked || (isChecked1 && isChecked2 && isChecked3)) ?
                     <ButtonContainer
                         onPress={onAction}
                         theme={theme}
