@@ -56,6 +56,7 @@ function ProcedureScheduleContent({
 
   const { case: caseItem } = item;
   const { caseNumber } = caseItem;
+  const [started, setStarted] = useState(false)
 
   const [owner, setOwner] = useState({
     firstName: "",
@@ -255,6 +256,22 @@ function ProcedureScheduleContent({
     closeOverlay();
   }
 
+  function handleStartClick(){
+    const now = new moment()
+    setStarted(true)
+    navigation.navigate("CaseFiles", {
+      screen: "Case",
+      params: {
+        initial: false,
+        caseId: caseItem._id,
+        isEdit: false,
+        timeStamp: now
+      },
+    });
+    closeOverlay();
+    
+  }
+
   return (
     <TouchableOpacity style={{ flex: 1 }} activeOpacity={1}>
       <ScrollView style={styles.container}>
@@ -363,6 +380,14 @@ function ProcedureScheduleContent({
           Created by {owner.firstName} {owner.lastName}
         </Text>
         <View style={styles.buttonHolder}>
+        {!started && <NewProcedureButton
+            style={{ borderColor: "#0CB0E7" , width: 150}}
+            theme={theme}
+            onPress={() => handleStartClick()}
+          >
+            <NewProcedureButtonText> Start Procedure </NewProcedureButtonText>
+          </NewProcedureButton>}
+          
           <NewProcedureButton
             style={{ borderColor: "#0CB0E7" }}
             theme={theme}

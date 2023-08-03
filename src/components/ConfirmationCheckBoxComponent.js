@@ -10,10 +10,12 @@ import ErrorIcon from '../../assets/svg/ErrorIcon';
 import TickIcon from '../../assets/svg/tickIcon';
 import MultipleShadowsContainer from './common/MultipleShadowContainer';
 import CheckBoxComponent from '../components/common/Checkbox';
+import DateInputField from './common/Input Fields/DateInputField';
+import moment from 'moment';
 
 const ModalWrapper = styled.View`
     width: 440px;
-    height: 267px;
+    height: 400px;
     position: relative;
     background-color: white;
     border-radius: 8px;
@@ -220,15 +222,70 @@ function ConfirmationCheckBoxComponent({
     message = '',
     confirmMessage="Yes, I want to delete",
     action = 'Save',
-    type = ''
+    type = '',
+    caseFileActions,
+    timeStamp,
+    endTime
 }) {
     const theme = useTheme();
-
+    const [end, setEnd] = useState(endTime)
     const [isChecked, setIsChecked] = useState(false)
+    const [isChecked1, setIsChecked1] = useState(false)
+    const [isChecked2, setIsChecked2] = useState(false)
+    const [isChecked3, setIsChecked3] = useState(false)
+
+    let actions = [
+       { 
+            id: 1,
+            name: 'Consumables updated',
+            time: "" , 
+        }, 
+        {
+            id: 2,
+            name: 'Equioment used updated',
+            time: '',
+            isChecked: false   
+        }, 
+        {
+            id: 3,
+            name: "Procedure End Time",
+            time: endTime,
+            isChecked: false   
+        }
+    ]
+
+    const [actionsData, setActionsData] = useState(actions)
 
     const onCheckBoxPress = () => {
-        setIsChecked(!isChecked)
+            setIsChecked(!isChecked)
+        
     }
+
+    const onCheckBoxPress1 = (index) => {
+        if(index == 0){   
+            setIsChecked1(!isChecked1)
+        } 
+        if(index == 1){        
+            setIsChecked2(!isChecked2)
+        } 
+        if(index == 2){        
+            setIsChecked3(!isChecked3)
+        } 
+        
+    }
+
+
+    const onTimeUpdate =  (dateTime) => {
+
+        let newTime = moment(dateTime);
+
+        console.log('jwieowi', dateTime)
+        
+
+       setEnd(newTime)
+        
+
+    };
 
     const typeDecipher = () => {
 
@@ -237,7 +294,7 @@ function ConfirmationCheckBoxComponent({
                 <MessageContainer theme={theme}>
                     <ModalText theme={theme} color="--color-gray-700" font="--confirm-message">{message}</ModalText>
 
-                    <View style={styles.rowContianer}> 
+                    { !caseFileActions ? <View style={styles.rowContianer}> 
                         
                         <View style={styles.sideBox}></View>
                         
@@ -251,6 +308,59 @@ function ConfirmationCheckBoxComponent({
                             <Text>{confirmMessage}</Text>
                         </View>
                     </View>
+                    : 
+                    <>
+                    {actionsData.map((message, index) => {
+                        return (
+                        <View style={styles.rowContianer}> 
+                        
+                            <View style={styles.sideBox}></View>
+                            
+                           { index == 0 && <View style={styles. centerCheckBox}>
+                                <CheckBoxComponent
+                                    isCheck={isChecked1}
+                                    onPress={() =>onCheckBoxPress1(index)}
+                                />
+                            </View >}
+
+                            { index == 1 && <View style={styles. centerCheckBox}>
+                                <CheckBoxComponent
+                                    isCheck={isChecked2}
+                                    onPress={() => onCheckBoxPress1(index)}
+                                />
+                            </View >}
+
+                            { index == 2 && <View style={styles. centerCheckBox}>
+                                <CheckBoxComponent
+                                    isCheck={isChecked3}
+                                    onPress={() => onCheckBoxPress1(index)}
+                                />
+                            </View >}
+
+
+                            <View style={{flexDirection: "row", marginVertical: 10}}>
+                                <Text>{message.name}</Text>
+                                {message.time != "" && 
+                                
+                                <View style={styles.inputWrapper}>
+                                    <DateInputField
+                                        onDateChange={(data) => onTimeUpdate(data)}
+                                        value={end}
+                                        mode={"time"}
+                                        format={"hh:mm A"}
+                                        onClear={() => setEnd(undefined)}
+                                        placeholder="HH:MM"
+                                    />
+                            </View>}
+                            </View>
+                        </View>
+
+                    );
+                    })}
+                    
+                    </>
+
+                }
 
                 </MessageContainer>
             </MessageWrapper>
@@ -260,7 +370,7 @@ function ConfirmationCheckBoxComponent({
                     <ModalText theme={theme} textColor="--color-blue-600" font="--text-base-bold">CANCEL</ModalText>
 
                 </CancelButtonContainer>
-                {isChecked ?
+                {(isChecked || (isChecked1 && isChecked2 && isChecked3)) ?
                     <ButtonContainer
                         onPress={onAction}
                         theme={theme}
@@ -316,6 +426,15 @@ const styles = StyleSheet.create({
         padding: 5
 
     },
+
+    inputWrapper: {
+        // flex: 1,
+        width: '52%',
+        flexDirection: 'row',
+        marginLeft: 15
+        // backgroundColor: 'blue'
+    },
+
 
     centerContent: {
         alignSelf: 'center',
