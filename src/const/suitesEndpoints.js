@@ -90,6 +90,7 @@ export const caseProcedureAppointmentsEndpoint = caseId => `/cases/${caseId}/pro
 export const caseStaffEndpoint = caseId => `/cases/staff/${caseId}`;
 export const caseUpdateStaffEndpoint = caseId => `/cases/${caseId}`;
 export const casePatientEndpoint = patientId => `/cases/patient/${patientId}`
+export const addConsumablesCall = caseId => `/cases/${caseId}/consumables`
 
 // ##### STORAGE
 export const storageLocationsEndpoint = '/storage-locations';

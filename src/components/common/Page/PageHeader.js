@@ -1,4 +1,4 @@
-import React, {Component, useContext, useState} from 'react';
+import React, {Component, useContext, useEffect, useState} from 'react';
 import styled, {css} from '@emotion/native';
 import {useTheme} from 'emotion-theming';
 import {View} from 'react-native-animatable';
@@ -16,10 +16,14 @@ import ConfirmationCheckBoxComponent from '../../ConfirmationCheckBoxComponent';
 import { Modal } from 'react-native-paper';
 import { useModal } from 'react-native-modalfy';
 import moment from 'moment';
+import { addConsumablesToStorage, updateAppointmentById } from '../../../api/network';
+import ConfirmationComponent from '../../ConfirmationComponent';
 
 function PageHeader({
                         onBack,
+                        caseId,
                         timeStamp,
+                        appointmentObj,
                         selectedTab,
                         isArchive: isEditDisabled = false,
                         headerChildren = [],
@@ -28,9 +32,11 @@ function PageHeader({
                         editMessage = 'now in edit mode'
                     }) {
     const theme = useTheme();
-    console.log('sifkjs,', theme)
 
     const {pageState, setPageState} = useContext(PageContext);
+    const [updated, setUpdated] = useState(false)
+    const [endTime, setEndTime] = useState("")
+
 
     const onEditPress = () => {
         if (locked) {
@@ -46,8 +52,104 @@ function PageHeader({
 
     const modal = useModal();
 
+
+    const openErrorConfirmation = () => {
+        modal.openModal(
+            'ConfirmationModal',
+            {
+                content: <ConfirmationComponent
+                    isError={true}
+                    isEditUpdate={false}
+                    onCancel={() => modal.closeModals('ConfirmationModal')}
+                    message='One or more item(s) used could not be located in nurses storage, please update and try making your request again.'
+                />,
+                onClose: () => {
+                    modal.closeModals('ConfirmationModal');
+                }
+            }
+        );
+    };
+
+    const hanadleErrorModal = () => {
+        modal.openModal(
+            'ConfirmationModal',
+            {
+                content: <ConfirmationComponent
+                    isError={true}
+                    isEditUpdate={false}
+                    onCancel={() => modal.closeModals('ConfirmationModal')}
+                    message="Something went wrong, updating procedure end time, please try again later"
+                />,
+                onClose: () => {
+                    modal.closeModals('ConfirmationModal');
+                }
+            }
+        );
+    };
+
+
+    function updateAppointment(){
+        //console.log(' ia mqa epowjip', endTime.format( "YYYY-MM-DD HH:mm:ss" ))
+        updateAppointmentById(appointmentObj._id,
+            {
+             description: appointmentObj.description,
+               subject: appointmentObj.subject,
+               startTime: appointmentObj.startTime,
+               endTime: endTime,
+               title: appointmentObj.title,
+               location: appointmentObj.appLocation
+            }
+           ).then(data => {
+                addConsumablesCall(caseId)
+            }).catch(
+            err => {
+                console.log(err)
+                hanadleErrorModal()
+            }
+       )
+
+    }
+
+    const addConsumablesCall = id => {
+        addConsumablesToStorage(id)
+        .then(_ => {
+            modal.openModal(
+                'ConfirmationModal',
+                {
+                    content: <ConfirmationComponent
+                        isError={false}
+                        isEditUpdate={false}
+                        message='Nurses storage updated with consumables'
+                        onAction={() => {
+                            modal.closeModals('ConfirmationModal');
+                            setTimeout(() => {
+                                modal.closeModals('ActionContainerModal');
+                            }, 200);
+                        }}
+                    />,
+                    onClose: () => {
+                        modal.closeModals('ConfirmationModal');
+                    }
+                }
+            );
+
+            setUpdated(true)
+        })
+        .catch(error => {
+            openErrorConfirmation();
+            setTimeout(() => {
+                modal.closeModals('ActionContainerModal');
+            }, 200);
+        })
+        .finally(_ => {
+            setFloatingAction(false);
+        });
+
+    };
+
     const endConfirm = data => {
         const end = new moment()
+        setEndTime(end)
         modal.openModal(
             'ConfirmationModal',
             {
@@ -56,12 +158,13 @@ function PageHeader({
                     isEditUpdate={true}
                     onCancel={() => modal.closeModals('ConfirmationModal')}
                     onAction={() => {
-                        console.log('siosido')
+                        updateAppointment()
                         modal.closeModals('ConfirmationModal');
                     }}
                     timeStamp ={timeStamp}
                     caseFileActions = {true}
                     endTime = {end}
+                    setEndTime = {(data) => setEndTime(data)}
                     message="Please confirm the following updates"
                 />,
                 onClose: () => {
@@ -197,7 +300,7 @@ function PageHeader({
                         </EditModeContainer>
                     }
 
-                    { (!isEditMode && timeStamp && selectedTab  === 'Consumables') && <EditButtonWrapper style = {{width: 150}}>
+                    { ((!isEditMode && timeStamp && selectedTab  === 'Consumables') &&  !updated) && <EditButtonWrapper style = {{width: 150}}>
                         <EditButtonContainer
                             theme={theme}
                             backgroundColor={getEditBtnBackground()}

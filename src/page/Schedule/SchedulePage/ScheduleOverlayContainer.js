@@ -42,6 +42,7 @@ function ScheduleOverlayContainer({
   closeOverlay = emptyFn,
 }) {
   const [appointmentDetails, setAppointmentDetails] = useState();
+  const [appLocation, setAppLocation] = useState();
   const [isFetchingDetails, setFetchingDetails] = useState(false);
   const [caseFile, setCaseFile] = useState();
 
@@ -94,8 +95,8 @@ function ScheduleOverlayContainer({
 
     getAppointmentById(id)
       .then((data) => {
-        console.log("data: ", data);
         setAppointmentDetails(data);
+        setAppLocation(data.location._id)
       })
       .catch((error) => {
         console.log("failed to get appointment", error);
@@ -193,6 +194,7 @@ function ScheduleOverlayContainer({
           <ProcedureScheduleContent
             handleScheduleRefresh={handleScheduleRefresh}
             appointmentDetails={appointment}
+            appLocation = {appLocation}
             physicians={finalPhysicians}
             patient={patient}
             leadPhysicianId={caseFile.staff.leadPhysician}
