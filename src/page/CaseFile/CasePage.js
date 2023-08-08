@@ -78,7 +78,7 @@ import PayBalanceItem from './PayBalanceItem';
 const overlayMenu = [
     {
         name: 'Patient',
-        overlayTabs: ['Details', 'Insurance', 'Diagnosis', 'Patient Risk', 'Covid Test'],
+        overlayTabs: ['Details', 'Insurance', 'Diagnosis', 'Patient Comments', 'Covid Test'],
         selectedIcon: <PatientSelectedIcon />,
         disabledIcon: <PatientDisabledIcon />
     },
@@ -1857,12 +1857,12 @@ function CasePage({ auth = {}, route, addNotification, navigation, ...props }) {
     const getIsEditable = () => {
         switch (selectedMenuItem) {
             case 'Medical Staff':
-                return selectedTab === 'Insurance' || selectedTab === 'Diagnosis' || selectedTab === 'Patient Risk';
+                return selectedTab === 'Insurance' || selectedTab === 'Diagnosis' || selectedTab === 'Patient Comments';
             case 'Medical History':
                 true
 
             case 'Medical Staff':
-                return selectedTab === 'Insurance' || selectedTab === 'Diagnosis' || selectedTab === 'Patient Risk';
+                return selectedTab === 'Insurance' || selectedTab === 'Diagnosis' || selectedTab === 'Patient Comments';
             default:
                 return false;
         }
