@@ -58,7 +58,6 @@ function ProcedureScheduleContent({
     endTime = new Date(),
   } = appointmentDetails;
 
-  console.log('78euwishjkd', appLocation)
 
   const { case: caseItem } = item;
   const { caseNumber } = caseItem;

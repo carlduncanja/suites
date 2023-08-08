@@ -89,7 +89,6 @@ function PageHeader({
 
 
     function updateAppointment(){
-        //console.log(' ia mqa epowjip', endTime.format( "YYYY-MM-DD HH:mm:ss" ))
         updateAppointmentById(appointmentObj._id,
             {
              description: appointmentObj.description,

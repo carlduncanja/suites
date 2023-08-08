@@ -278,7 +278,6 @@ function ConfirmationCheckBoxComponent({
 
     const onTimeUpdate =  (dateTime) => {
         let newTime = moment(dateTime);
-        console.log('jwieowi', newTime.format( "YYYY-MM-DD HH:mm:ss" ))
         setEnd(newTime)
         setEndTime(newTime)
         
