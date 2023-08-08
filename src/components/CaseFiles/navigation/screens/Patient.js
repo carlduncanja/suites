@@ -163,7 +163,7 @@ const Patient = ({
                     />
                 );
 
-            case 'Patient Risk':
+            case 'Patient Comments':
                 return (
                     <PatientRisk
                         tabDetails={risk}
