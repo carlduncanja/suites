@@ -119,7 +119,8 @@ import {
     createPatientLifestyleEndpiont,
     deletePatientLifestyleEndpiont,
     updatePatientLifestyleEndpiont,
-    getAllById
+    getAllById,
+    addConsumablesCall
 } from '../const/suitesEndpoints';
 import { createDocumentLink, documentById, documentData, documentUpload } from '../const/documentGenerationEndpoints';
 
@@ -559,6 +560,11 @@ export const createInvoiceViaQuotation = async (caseId, quotationId) => suitesAx
     .post(createInvoice(caseId)(quotationId))
     .then(handleResponse)
     .catch(handleError);
+
+export const addConsumablesToStorage = async caseId => suitesAxiosInstance
+    .put(addConsumablesCall(caseId))
+    .then(handleResponse)
+    .catch(handleError)
 
 // Case procedure appointments
 export const removeCaseProcedureAppointment = async (caseId, caseProcedureId) => suitesAxiosInstance

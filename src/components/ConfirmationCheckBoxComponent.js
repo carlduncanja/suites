@@ -214,6 +214,7 @@ const shadows = [
 function ConfirmationCheckBoxComponent({
     isEditUpdate,
     isError,
+    setEndTime ,
     onCancel = () => {
     },
     onAction = () => {
@@ -276,15 +277,10 @@ function ConfirmationCheckBoxComponent({
 
 
     const onTimeUpdate =  (dateTime) => {
-
         let newTime = moment(dateTime);
-
-        console.log('jwieowi', dateTime)
+        setEnd(newTime)
+        setEndTime(newTime)
         
-
-       setEnd(newTime)
-        
-
     };
 
     const typeDecipher = () => {

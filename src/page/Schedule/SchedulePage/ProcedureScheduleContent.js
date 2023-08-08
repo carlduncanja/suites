@@ -18,8 +18,10 @@ import {
   getUserCall,
   deleteCaseFile,
   deleteAppointmentById,
+  updateAppointmentById,
 } from "../../../api/network";
 import NewProcedureOverlayContainer from "./NewProcedureOverlayContainer";
+import ConfirmationComponent from "../../../components/ConfirmationComponent";
 /**
  * Visual component for rendering procedure appointments.
  * @param scheduleItem
@@ -29,6 +31,7 @@ import NewProcedureOverlayContainer from "./NewProcedureOverlayContainer";
 function ProcedureScheduleContent({
   handleScheduleRefresh = () => {},
   appointmentDetails,
+  appLocation,
   physicians,
   patient,
   nurses = [],
@@ -43,6 +46,7 @@ function ProcedureScheduleContent({
     _id = "",
     createdBy = "",
     item = {},
+    descrition,
     responseEntity = "",
     title = "",
     subject = "",
@@ -54,9 +58,11 @@ function ProcedureScheduleContent({
     endTime = new Date(),
   } = appointmentDetails;
 
+
   const { case: caseItem } = item;
   const { caseNumber } = caseItem;
   const [started, setStarted] = useState(false)
+  const [newStart, setNewStart] =  useState(undefined)
 
   const [owner, setOwner] = useState({
     firstName: "",
@@ -71,6 +77,14 @@ function ProcedureScheduleContent({
         lastName: res.data[0].last_name,
       });
     });
+  }, []);
+
+  const [temp, setTemp] = useState('')
+
+  useEffect(() => {
+    const x =  getProgressStatus(startTime, endTime)
+    setTemp(x)
+   
   }, []);
 
   /**
@@ -256,20 +270,70 @@ function ProcedureScheduleContent({
     closeOverlay();
   }
 
+  const hanadleErrorModal = (error='') => {
+    modal.openModal(
+        'ConfirmationModal',
+        {
+            content: <ConfirmationComponent
+                textPadding={15}
+                message={error}
+                isError={true}
+                isEditUpdate={false}
+                onCancel={() => modal.closeModals('ConfirmationModal')}
+            />,
+            onClose: () => {
+                setAllowedToSubmit(false);
+                modal.closeModals('ConfirmationModal');
+
+            }
+        }
+    );
+
+}
+
   function handleStartClick(){
     const now = new moment()
+    const appointmentObj = {
+          _id: _id,
+          description: descrition,
+          subject: subject,
+          startTime: now,
+          endTime: endTime,
+          title: title,
+          location: appLocation
+    }
     setStarted(true)
-    navigation.navigate("CaseFiles", {
-      screen: "Case",
-      params: {
-        initial: false,
-        caseId: caseItem._id,
-        isEdit: false,
-        timeStamp: now
-      },
-    });
-    closeOverlay();
-    
+    setNewStart(now)
+    updateAppointmentById(_id,
+       {
+        description: descrition,
+          subject: subject,
+          startTime: now,
+          endTime: endTime,
+          title: title,
+          location: appLocation
+
+       }
+      ).then(data => {
+        navigation.navigate("CaseFiles", {
+          screen: "Case",
+          params: {
+            initial: false,
+            caseId: caseItem._id,
+            isEdit: false,
+            timeStamp: now,
+            appointmentObj: appointmentObj
+          },
+        });
+        closeOverlay();
+    }).catch(
+      err => {
+          console.log(err)
+          hanadleErrorModal()
+      }
+  )
+
+   
   }
 
   return (
@@ -302,7 +366,7 @@ function ProcedureScheduleContent({
                     fontSize: 12,
                   }}
                 >
-                  {getProgressStatus(startTime, endTime)}
+                  {temp}
                 </Text>
               </View>
             </View>
@@ -380,7 +444,7 @@ function ProcedureScheduleContent({
           Created by {owner.firstName} {owner.lastName}
         </Text>
         <View style={styles.buttonHolder}>
-        {!started && <NewProcedureButton
+        {(temp ===  "Not Yet Started") && <NewProcedureButton
             style={{ borderColor: "#0CB0E7" , width: 150}}
             theme={theme}
             onPress={() => handleStartClick()}

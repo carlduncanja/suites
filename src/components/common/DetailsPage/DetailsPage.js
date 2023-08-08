@@ -16,6 +16,8 @@ function DetailsPage({
     isArchive = false,
     hasIcon = null,
     timeStamp,
+    appointmentObj,
+    caseId,
     title = '__',
     isEditable,
     subTitle = '__',
@@ -47,7 +49,9 @@ function DetailsPage({
                 <>
                     <PageHeader
                         timeStamp = {timeStamp}
-                        isArchive={isArchive}
+                        appointmentObj = {appointmentObj}
+                        caseId = {caseId}
+                        isArchive={isArchive}  
                         selectedTab ={selectedTab}
                         isEditable={isEditable}                  
                         headerChildren={headerChildren || [title, subTitle]}

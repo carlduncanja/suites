@@ -117,6 +117,7 @@ const initialSelectedTab = initialCurrentTabs[0];
 
 function CasePage({ auth = {}, route, addNotification, navigation, ...props }) {
     const timeStamp = route.params.timeStamp
+    const appointmentObj = route.params.appointmentObj
     const modal = useModal();
     const theme = useTheme();
     const chargeSheetRef = useRef(); 
@@ -1950,6 +1951,8 @@ function CasePage({ auth = {}, route, addNotification, navigation, ...props }) {
                 <DetailsPage
                     isEditable={casePermissions.update}
                     timeStamp = {timeStamp}
+                    appointmentObj = {appointmentObj}
+                    caseId =  {caseId}
                     proceduresBillableItemsInfo = {billable}
                     headerChildren={[name, `#${caseNumber}`]} 
                     updatePhysician={casePermissions.update}
