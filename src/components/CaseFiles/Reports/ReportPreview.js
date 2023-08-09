@@ -78,8 +78,8 @@ const ReportPreview = ({
     });
 
     const billedFor = [...new Set(procedureNames)];
-    const reportTotal = hasDiscount ? (amountDue - (amountDue * discount)) * (1 + tax) : (amountDue) * (1 + tax);
-    const formatDiscount = amountDue * discount;
+    const reportTotal = hasDiscount ? (amountDue - discount) * (1 + tax) : (amountDue) * (1 + tax);
+    const formatDiscount = discount;
 
 
     const headers = [

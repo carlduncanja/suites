@@ -34,7 +34,7 @@ const BillingDetails = ({subtotal = 0, discount = 0, tax = 0, total = 0}) => {
         },
         {
             name: 'Discount',
-            value: `-$ ${currencyFormatter(discount)}`
+            value: `$ ${currencyFormatter(discount)}`
         },
         {
             name: 'Tax',

@@ -983,6 +983,7 @@ const ChargeSheet = React.forwardRef(({
             if (isClosed) return <EmptyChargeSheetComponent/>;
             return <BillingCaseCard
                 tabDetails={billing}
+                quotations = {quotations}
                 caseProcedures={caseProcedures}
                 isEditMode={isEditMode}
                 caseId={caseId}
