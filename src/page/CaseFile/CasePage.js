@@ -1368,10 +1368,15 @@ function CasePage({ auth = {}, route, addNotification, navigation, ...props }) {
 
     const getBillingData = () => {
         const { invoices, chargeSheet = {}, caseProcedures: procedures = [] } = selectedCase;
-        const { proceduresBillableItems = [], total = 0 } = chargeSheet;
+        const { proceduresBillableItems = [], total = 0, lineItems } = chargeSheet;
+        let totalDiscount = 0
+
+        for(const discount of lineItems){
+            totalDiscount+= discount.unitPrice
+        }
 
         const LINE_ITEM_TYPES = {
-            DISCOUNT: 'discount',
+            DISCOUNT: 'discount', 
             SERVICE: 'service',
             PROCEDURES: 'procedures',
             PHYSICIANS: 'physician',
@@ -1380,7 +1385,7 @@ function CasePage({ auth = {}, route, addNotification, navigation, ...props }) {
         const billing = {
             total,
             hasDiscount: true,
-            discount: 0.15,
+            discount: totalDiscount,
             procedures: []
         };
 
@@ -2047,7 +2052,7 @@ function CasePageContent({
                     <FloatingActionButton
                         isDisabled={actionDisabled}
                         toggleActionButton={toggleActionButton}
-                        hasActions={false}
+                        hasActions={true}
                     />
                 </FooterContainer>
             </FooterWrapper>
