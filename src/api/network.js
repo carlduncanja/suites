@@ -959,7 +959,12 @@ export const getPatients = async (query, max, page) => suitesAxiosInstance
 export const updatePatientRisk = async (id, data) => suitesAxiosInstance
     .put(updatePatientRiskEndpoint(id), data)
     .then(handleResponse)
-    .catch(handleError)
+    .catch(handleError) 
+
+export const deletePatient = async (id) => suitesAxiosInstance
+.delete(deletePatient(id))
+.then(handleResponse)
+.catch(handleError)
 
 // ################# Document Generation Endpoints
 export const generateDocumentLink = async data => documentGenerationInstance.post(createDocumentLink, data)
