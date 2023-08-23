@@ -36,7 +36,7 @@ import { removeDraft } from "../../redux/actions/draftActions";
 import Button from '../../components/common/Buttons/Button';
 import ConfirmationComponent from '../../components/ConfirmationComponent';
 import { userPassword } from '../../const/suitesEndpoints';
-
+import { getPatients, deletePatient, } from '../../api/network';
 const ButtonContainer = styled.View`
     width: 105px;
     height: 26px;
@@ -44,36 +44,57 @@ const ButtonContainer = styled.View`
     box-sizing: border-box;
     border-radius: 6px;
     padding-top: 2px;
-`; 
+`;
 
-function PatientFiles(props){ 
+function PatientFiles(props) {
     //######## const
     const modal = useModal();
     const theme = useTheme();
-    return(
-         
-        <NavPage  
-        routeName='Patients' 
-        placeholderText="Search by Case ID, Patient, Staff" 
-        TopButton={() => (
-            <ButtonContainer theme={theme}>
-                <Button
-                    title="Archives"
-                    color={theme.colors['--color-gray-500']}
-                    font="--text-sm-regular"
-                    buttonPress={console.log("gaza will rain")}
-                />
-            </ButtonContainer> )}
+
+    //pagination
+    const [currentPagePosition, setCurrentPagePosition] = useState(1) 
+
+    useEffect(()=>{
+        fetchPatientFiles(1)
+    },[])
+
+    const fetchPatientFiles = pagePosition => {
+        const currentPosition = pagePosition || 1;
+        setCurrentPagePosition(currentPagePosition)
+        getPatients('', 10, 1)
+            .then(patientResults => {
+                const { data = [], pages = 0 } = patientResults
+                console.log("the data for real ",data)
+            })
+            .catch(error => {
+                console.log("failed to get the data", error)
+            })
+    }
+
+    return (
+
+        <NavPage
+            routeName='Patients'
+            placeholderText="Search by Case ID, Patient, Staff"
+            TopButton={() => (
+                <ButtonContainer theme={theme}>
+                    <Button
+                        title="Archives"
+                        color={theme.colors['--color-gray-500']}
+                        font="--text-sm-regular"
+                        buttonPress={console.log("gaza will rain")}
+                    />
+                </ButtonContainer>)}
         />
 
-       
+
     )
 
-}  
+}
 
-const mapStateToProps = state =>{
+const mapStateToProps = state => {
 
-}  
-const mapDispatcherToProp = { }
+}
+const mapDispatcherToProp = {}
 
 export default connect(mapStateToProps, mapDispatcherToProp)(PatientFiles)
