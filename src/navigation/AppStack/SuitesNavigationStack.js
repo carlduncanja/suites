@@ -26,6 +26,7 @@ import PhysicianNavigationStack from './PhysiciansNavigationStack';
 import EquipmentNavigationStack from './EquipmentNavigationStack';
 import InventoryNavigationStack from './InventoryNavigationStack';
 import SettingsNavigationStack from './SettingsNavigationStack';
+import PatientNavigationStack from './PatientNavigationStack';
 
 /* Providers*/
 import NotFoundPage from '../../components/common/Page/NotFoundPage';
@@ -45,6 +46,8 @@ import PhysiciansIcon from '../../../assets/svg/physicians';
 import ProcedureIcon from '../../../assets/svg/procedures';
 import SettingsIcon from '../../../assets/svg/settingsIcon';
 import NotificationIcon from '../../../assets/svg/notificationIcon';
+import PersonIcon from '../../../assets/svg/personIcon';
+
 import { ROLES } from '../../const';
 import UserPageIcon from '../../../assets/svg/UserPageIcon';
 import UsersNavigationStack from './UsersNavigationStack';
@@ -77,7 +80,7 @@ export const SuitesNavigationStack = ({ auth = {} }) => {
     }, [auth]);
 
     const ViewProcedures = userPermissions?.['procedures']?.['read'];
-    
+
     const ViewCase = userPermissions?.['cases']?.['read'];
 
     const ViewEquipment = userPermissions?.['equipment_type']?.['read'];
@@ -100,6 +103,8 @@ export const SuitesNavigationStack = ({ auth = {} }) => {
 
     const ViewSuppliers = userPermissions?.['suppliers']?.['read']
 
+    const ViewPatiens = userPermissions?.['patients']?.['read']
+
     // the invioces section was removed becuase of the changes to the purchase order section 
     /* <SuitesNavigator.Screen
                  name="Invoices"
@@ -117,12 +122,12 @@ export const SuitesNavigationStack = ({ auth = {} }) => {
 
             <SuitesNavigator.Screen
                 name="SchedulePage"
-                 component={ScheduleNavigationStack}
+                component={ScheduleNavigationStack}
                 initialParams={{
                     icon: ScheduleIcon,
                     tabName: 'schedule',
                     userPermissions,
-                    id : auth.user.user_id,
+                    id: auth.user.user_id,
                 }}
             />
 
@@ -133,6 +138,20 @@ export const SuitesNavigationStack = ({ auth = {} }) => {
                     initialParams={{
                         icon: CaseFileIcon,
                         tabName: 'Case Files',
+                        isAdmin,
+                        userPermissions
+                    }}
+                />
+            }
+            {
+                ViewPatiens &&
+
+                <SuitesNavigator.Screen
+                    name='Patients'
+                    component={PatientNavigationStack}
+                    initialParams={{
+                        icon: PersonIcon,
+                        tabName: 'Patients',
                         isAdmin,
                         userPermissions
                     }}
@@ -261,10 +280,10 @@ export const SuitesNavigationStack = ({ auth = {} }) => {
                     name="Alerts"
                     component={Alerts}
                     initialParams={{
-                          icon: NotificationIcon,
-                          tabName: 'Alerts',
-                          isAdmin,
-                          userPermissions
+                        icon: NotificationIcon,
+                        tabName: 'Alerts',
+                        isAdmin,
+                        userPermissions
                     }}
                 />
 
