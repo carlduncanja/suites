@@ -37,6 +37,7 @@ import Button from '../../components/common/Buttons/Button';
 import ConfirmationComponent from '../../components/ConfirmationComponent';
 import { userPassword } from '../../const/suitesEndpoints';
 import { getPatients, deletePatient, } from '../../api/network';
+import patient from '../../../assets/svg/newCasePatient';
 const ButtonContainer = styled.View`
     width: 105px;
     height: 26px;
@@ -46,36 +47,101 @@ const ButtonContainer = styled.View`
     padding-top: 2px;
 `;
 
+const listHeaders = [
+    {
+        name: 'Name',
+        aligment: 'flex-start'
+    },
+    {
+        name: 'Gender',
+        aligment: 'flex-start'
+    },
+    {
+        name: "Contact #",
+        aligment: 'flex-start'
+    },
+    {
+        name: 'TRN',
+        aligment: "flex-start"
+    }
+]
+
 function PatientFiles(props) {
     //######## const
     const modal = useModal();
     const theme = useTheme();
 
-    //pagination
-    const [currentPagePosition, setCurrentPagePosition] = useState(1) 
 
-    useEffect(()=>{
+    // States
+    const [isFetchingPatients, setFetchingPatients] = useState(false);
+    const [patientData, setPatientData] = useState([])
+
+    //pagination
+    const [currentPagePosition, setCurrentPagePosition] = useState(1)
+
+    useEffect(() => {
         fetchPatientFiles(1)
-    },[])
+    }, [])
+
+
 
     const fetchPatientFiles = pagePosition => {
         const currentPosition = pagePosition || 1;
         setCurrentPagePosition(currentPagePosition)
+        setFetchingPatients(true)
+
         getPatients('', 10, 1)
             .then(patientResults => {
                 const { data = [], pages = 0 } = patientResults
-                console.log("the data for real ",data)
+                setPatientData(data)
+                console.log("the data for real ", data)
             })
             .catch(error => {
                 console.log("failed to get the data", error)
             })
+            .finally(_ => {
+                setFetchingPatients(false)
+            })
+    }
+    const patientItem = item => {
+        const {
+            firstName,
+            middleName,
+            surname,
+            gender,
+            phones,
+            trn
+        } = item || {} 
+
+       return(
+        <> 
+        <DataItem text={` ${firstName} ${middleName} ${surname}`}/>
+        <DataItem text={gender}/>
+        <DataItem text={8768957533}/>
+        <DataItem text={trn} />
+        </>
+       )
+    }
+    const renderFn = item => {
+        return <>
+
+            <ListItem
+                hasCheckBox={true}
+                itemView={patientItem(item)}
+
+            />
+        </>
+
     }
 
     return (
 
         <NavPage
+            isFetchingData={isFetchingPatients}
             routeName='Patients'
-            placeholderText="Search by Case ID, Patient, Staff"
+            placeholderText="Search Patient by name"
+            listData={patientData}
+            listItemFormat={renderFn}
             TopButton={() => (
                 <ButtonContainer theme={theme}>
                     <Button
@@ -85,6 +151,7 @@ function PatientFiles(props) {
                         buttonPress={console.log("gaza will rain")}
                     />
                 </ButtonContainer>)}
+            listHeaders={listHeaders}
         />
 
 
