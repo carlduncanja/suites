@@ -136,7 +136,8 @@ export const addFamilyHistoryEndpoint = id => `/patients/${id}/add_family`;
 export const editFamilyHistoryEndpoint = id => `/patients/${id}/edit_family`;
 export const deleteFamilyHistoryEndpoint = id => `/patients/${id}/delete_family`;
 export const allPatientsEndpoint = '/patients'
-export const updatePatientRiskEndpoint = id => `/patients/${id}/risk`
+export const updatePatientRiskEndpoint = id => `/patients/${id}/risk` 
+export const deletePatient = id =>`/patients/${id}/deletePatient`
 
 
 // ##### ALERTS
