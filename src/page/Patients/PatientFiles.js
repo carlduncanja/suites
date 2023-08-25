@@ -26,7 +26,8 @@ import {
 import { currencyFormatter, formatDate } from '../../utils/formatter';
 
 import NavPage from '../../components/common/Page/NavPage';
-import DataItem from '../../components/common/List/DataItem';
+import DataItem from '../../components/common/List/DataItem'; 
+import RightBorderDataItem from "../../components/common/List/RightBorderDataItem";
 import MultipleTextDataItem from '../../components/common/List/MultipleTextDataItem';
 import { emptyFn, LONG_PRESS_TIMER } from "../../const";
 import { PageSettingsContext } from '../../contexts/PageSettingsContext';
@@ -50,19 +51,23 @@ const ButtonContainer = styled.View`
 const listHeaders = [
     {
         name: 'Name',
-        aligment: 'flex-start'
+        aligment: 'flex-start',
+        flex:2
     },
     {
         name: 'Gender',
-        aligment: 'flex-start'
+        aligment: 'flex-end',
+        flex: 1,
     },
     {
         name: "Contact #",
-        aligment: 'flex-start'
+        aligment: 'flex-start',
+        flex: 1,
     },
     {
         name: 'TRN',
-        aligment: "flex-start"
+        aligment: "flex-start",
+        flex: 1,
     }
 ]
 
@@ -187,25 +192,27 @@ function PatientFiles(props) {
             middleName ,
             surname,
             gender,
-            phones,
+            contactInfo,
             trn
         } = item || {} 
         
         const genderLetter= gender == 'Male' ? "M" : "F"
-       //const phone = phones[1].
+       console.log("we are here",contactInfo.phones[0]) 
+
+       const phoneNumber = contactInfo?.phones[0]?.['phone'] || "--"
        return(
         <> 
-        <DataItem text={` ${firstName} ${middleName} ${surname}`}/>
-        <DataItem text={genderLetter}  color={"--color-blue-700"}/>
-        <DataItem text={8768957533} color={"--color-blue-700"}/>
-        <DataItem text={trn} color={"--color-blue-700"}/>
+        <RightBorderDataItem text={`${firstName} ${middleName} ${surname}`} flex={2}/>
+        <DataItem text={genderLetter}  color={"--color-blue-700"} flex={0.7} align={'flex-end'}/>
+        <DataItem text={phoneNumber} color={"--color-blue-700"} flex={1.2} textAlign='center'/>
+        <DataItem text={trn} color={"--color-blue-700"} flex={1}/>
         </>
        )
     }
     const renderFn = item => {
         return <>
 
-            <ListItem
+            <ListItem 
                 hasCheckBox={true}
                 itemView={patientItem(item)}
 
