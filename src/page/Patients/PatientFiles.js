@@ -106,19 +106,21 @@ function PatientFiles(props) {
     const patientItem = item => {
         const {
             firstName,
-            middleName,
+            middleName ,
             surname,
             gender,
             phones,
             trn
         } = item || {} 
-
+        
+        const genderLetter= gender == 'Male' ? "M" : "F"
+       //const phone = phones[1].
        return(
         <> 
         <DataItem text={` ${firstName} ${middleName} ${surname}`}/>
-        <DataItem text={gender}/>
-        <DataItem text={8768957533}/>
-        <DataItem text={trn} />
+        <DataItem text={genderLetter}  color={"--color-blue-700"}/>
+        <DataItem text={8768957533} color={"--color-blue-700"}/>
+        <DataItem text={trn} color={"--color-blue-700"}/>
         </>
        )
     }
