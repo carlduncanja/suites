@@ -70,33 +70,111 @@ function PatientFiles(props) {
     //######## const
     const modal = useModal();
     const theme = useTheme();
+    const recordsPerPage = 10;
 
 
     // States
+    const [searchValue, setSearchValue] = useState('');
     const [isFetchingPatients, setFetchingPatients] = useState(false);
     const [patientData, setPatientData] = useState([])
+    const [searchResults, setSearchResult] = useState([]);
+    const [searchQuery, setSearchQuery] = useState({});
+    // pagination
+    const [totalPages, setTotalPages] = useState(1);
+    const [currentPageListMin, setCurrentPageListMin] = useState(0);
+    const [currentPageListMax, setCurrentPageListMax] = useState(recordsPerPage);
+    const [currentPagePosition, setCurrentPagePosition] = useState(1);
+    const [isNextDisabled, setNextDisabled] = useState(false);
+    const [isPreviousDisabled, setPreviousDisabled] = useState(true);
 
-    //pagination
-    const [currentPagePosition, setCurrentPagePosition] = useState(1)
+    console.log('i am 83953h59hgjrk', currentPagePosition)
 
     useEffect(() => {
-        fetchPatientFiles(1)
-    }, [])
+        if (!searchValue) {
+            // empty search values and cancel any out going request.
+            setSearchResult([]);
+            fetchPatientFiles(1);
+            if (searchQuery.cancel) searchQuery.cancel();
+            return;
+        }
+
+        // wait 300ms before search. cancel any prev request before executing current.
+
+        const search = _.debounce(fetchPatientFiles, 300);
+
+        setSearchQuery(prevSearch => {
+            if (prevSearch && prevSearch.cancel) {
+                prevSearch.cancel();
+            }
+            return search;
+        });
+
+        search();
+        setCurrentPagePosition(1);
+    }, [searchValue]);
+
+    const onSearchChange = input => {
+        setSearchValue(input);
+    };
+
+    const goToNextPage = () => {
+        if (currentPagePosition < totalPages) {
+            const {
+                currentPage,
+                currentListMin,
+                currentListMax
+            } = useNextPaginator(currentPagePosition, recordsPerPage, currentPageListMin, currentPageListMax);
+            setCurrentPagePosition(currentPage);
+            setCurrentPageListMin(currentListMin);
+            setCurrentPageListMax(currentListMax);
+            fetchPatientFiles(currentPage);
+        }
+    };
 
 
+    const goToPreviousPage = () => {
+        const {
+            currentPage,
+            currentListMin,
+            currentListMax
+        } = usePreviousPaginator(currentPagePosition, recordsPerPage, currentPageListMin, currentPageListMax);
+        setCurrentPagePosition(currentPage);
+        setCurrentPageListMin(currentListMin);
+        setCurrentPageListMax(currentListMax);
+        fetchPatientFiles(currentPage);
+    };
 
     const fetchPatientFiles = pagePosition => {
         const currentPosition = pagePosition || 1;
         setCurrentPagePosition(currentPagePosition)
         setFetchingPatients(true)
 
-        getPatients('', 10, 1)
+        getPatients(searchValue, 10, currentPosition)
             .then(patientResults => {
                 const { data = [], pages = 0 } = patientResults
-                setPatientData(data)
-                console.log("the data for real ", data)
+                if (pages === 1) {
+                    setPreviousDisabled(true);
+                    setNextDisabled(true);
+                } else if (currentPosition === 1) {
+                    setPreviousDisabled(true);
+                    setNextDisabled(false);
+                } else if (currentPosition === pages) {
+                    setNextDisabled(true);
+                    setPreviousDisabled(false);
+                } else if (currentPosition < pages) {
+                    setNextDisabled(false);
+                    setPreviousDisabled(false);
+                } else {
+                    setNextDisabled(true);
+                    setPreviousDisabled(true);
+                }
+                setPatientData(data);
+                data.length === 0 ? setTotalPages(1) : setTotalPages(pages);
             })
             .catch(error => {
+                setTotalPages(1);
+                setPreviousDisabled(true);
+                setNextDisabled(true);
                 console.log("failed to get the data", error)
             })
             .finally(_ => {
@@ -143,6 +221,8 @@ function PatientFiles(props) {
             routeName='Patients'
             placeholderText="Search Patient by name"
             listData={patientData}
+            changeText={onSearchChange}
+            inputText={searchValue}
             listItemFormat={renderFn}
             TopButton={() => (
                 <ButtonContainer theme={theme}>
@@ -154,6 +234,16 @@ function PatientFiles(props) {
                     />
                 </ButtonContainer>)}
             listHeaders={listHeaders}
+
+            totalPages={totalPages}
+            currentPage={currentPagePosition}
+            goToNextPage={goToNextPage}
+            goToPreviousPage={goToPreviousPage}
+            hasPaginator={true}
+            hasActionButton={true}
+            hasActions={true}
+            isNextDisabled={isNextDisabled}
+            isPreviousDisabled={isPreviousDisabled}
         />
 
 
