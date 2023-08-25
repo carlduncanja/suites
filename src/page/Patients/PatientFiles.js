@@ -26,7 +26,8 @@ import {
 import { currencyFormatter, formatDate } from '../../utils/formatter';
 
 import NavPage from '../../components/common/Page/NavPage';
-import DataItem from '../../components/common/List/DataItem';
+import DataItem from '../../components/common/List/DataItem'; 
+import RightBorderDataItem from "../../components/common/List/RightBorderDataItem";
 import MultipleTextDataItem from '../../components/common/List/MultipleTextDataItem';
 import { emptyFn, LONG_PRESS_TIMER } from "../../const";
 import { PageSettingsContext } from '../../contexts/PageSettingsContext';
@@ -37,6 +38,7 @@ import Button from '../../components/common/Buttons/Button';
 import ConfirmationComponent from '../../components/ConfirmationComponent';
 import { userPassword } from '../../const/suitesEndpoints';
 import { getPatients, deletePatient, } from '../../api/network';
+import patient from '../../../assets/svg/newCasePatient';
 const ButtonContainer = styled.View`
     width: 105px;
     height: 26px;
@@ -46,36 +48,189 @@ const ButtonContainer = styled.View`
     padding-top: 2px;
 `;
 
+const listHeaders = [
+    {
+        name: 'Name',
+        aligment: 'flex-start',
+        flex:2
+    },
+    {
+        name: 'Gender',
+        aligment: 'flex-end',
+        flex: 1,
+    },
+    {
+        name: "Contact #",
+        aligment: 'flex-start',
+        flex: 1,
+    },
+    {
+        name: 'TRN',
+        aligment: "flex-start",
+        flex: 1,
+    }
+]
+
 function PatientFiles(props) {
     //######## const
     const modal = useModal();
     const theme = useTheme();
+    const recordsPerPage = 10;
 
-    //pagination
-    const [currentPagePosition, setCurrentPagePosition] = useState(1) 
 
-    useEffect(()=>{
-        fetchPatientFiles(1)
-    },[])
+    // States
+    const [searchValue, setSearchValue] = useState('');
+    const [isFetchingPatients, setFetchingPatients] = useState(false);
+    const [patientData, setPatientData] = useState([])
+    const [searchResults, setSearchResult] = useState([]);
+    const [searchQuery, setSearchQuery] = useState({});
+    // pagination
+    const [totalPages, setTotalPages] = useState(1);
+    const [currentPageListMin, setCurrentPageListMin] = useState(0);
+    const [currentPageListMax, setCurrentPageListMax] = useState(recordsPerPage);
+    const [currentPagePosition, setCurrentPagePosition] = useState(1);
+    const [isNextDisabled, setNextDisabled] = useState(false);
+    const [isPreviousDisabled, setPreviousDisabled] = useState(true);
+
+    console.log('i am 83953h59hgjrk', currentPagePosition)
+
+    useEffect(() => {
+        if (!searchValue) {
+            // empty search values and cancel any out going request.
+            setSearchResult([]);
+            fetchPatientFiles(1);
+            if (searchQuery.cancel) searchQuery.cancel();
+            return;
+        }
+
+        // wait 300ms before search. cancel any prev request before executing current.
+
+        const search = _.debounce(fetchPatientFiles, 300);
+
+        setSearchQuery(prevSearch => {
+            if (prevSearch && prevSearch.cancel) {
+                prevSearch.cancel();
+            }
+            return search;
+        });
+
+        search();
+        setCurrentPagePosition(1);
+    }, [searchValue]);
+
+    const onSearchChange = input => {
+        setSearchValue(input);
+    };
+
+    const goToNextPage = () => {
+        if (currentPagePosition < totalPages) {
+            const {
+                currentPage,
+                currentListMin,
+                currentListMax
+            } = useNextPaginator(currentPagePosition, recordsPerPage, currentPageListMin, currentPageListMax);
+            setCurrentPagePosition(currentPage);
+            setCurrentPageListMin(currentListMin);
+            setCurrentPageListMax(currentListMax);
+            fetchPatientFiles(currentPage);
+        }
+    };
+
+
+    const goToPreviousPage = () => {
+        const {
+            currentPage,
+            currentListMin,
+            currentListMax
+        } = usePreviousPaginator(currentPagePosition, recordsPerPage, currentPageListMin, currentPageListMax);
+        setCurrentPagePosition(currentPage);
+        setCurrentPageListMin(currentListMin);
+        setCurrentPageListMax(currentListMax);
+        fetchPatientFiles(currentPage);
+    };
 
     const fetchPatientFiles = pagePosition => {
         const currentPosition = pagePosition || 1;
         setCurrentPagePosition(currentPagePosition)
-        getPatients('', 10, 1)
+        setFetchingPatients(true)
+
+        getPatients(searchValue, 10, currentPosition)
             .then(patientResults => {
                 const { data = [], pages = 0 } = patientResults
-                console.log("the data for real ",data)
+                if (pages === 1) {
+                    setPreviousDisabled(true);
+                    setNextDisabled(true);
+                } else if (currentPosition === 1) {
+                    setPreviousDisabled(true);
+                    setNextDisabled(false);
+                } else if (currentPosition === pages) {
+                    setNextDisabled(true);
+                    setPreviousDisabled(false);
+                } else if (currentPosition < pages) {
+                    setNextDisabled(false);
+                    setPreviousDisabled(false);
+                } else {
+                    setNextDisabled(true);
+                    setPreviousDisabled(true);
+                }
+                setPatientData(data);
+                data.length === 0 ? setTotalPages(1) : setTotalPages(pages);
             })
             .catch(error => {
+                setTotalPages(1);
+                setPreviousDisabled(true);
+                setNextDisabled(true);
                 console.log("failed to get the data", error)
             })
+            .finally(_ => {
+                setFetchingPatients(false)
+            })
+    }
+    const patientItem = item => {
+        const {
+            firstName,
+            middleName ,
+            surname,
+            gender,
+            contactInfo,
+            trn
+        } = item || {} 
+        
+        const genderLetter= gender == 'Male' ? "M" : "F"
+       console.log("we are here",contactInfo.phones[0]) 
+
+       const phoneNumber = contactInfo?.phones[0]?.['phone'] || "--"
+       return(
+        <> 
+        <RightBorderDataItem text={`${firstName} ${middleName} ${surname}`} flex={2}/>
+        <DataItem text={genderLetter}  color={"--color-blue-700"} flex={0.7} align={'flex-end'}/>
+        <DataItem text={phoneNumber} color={"--color-blue-700"} flex={1.2} textAlign='center'/>
+        <DataItem text={trn} color={"--color-blue-700"} flex={1}/>
+        </>
+       )
+    }
+    const renderFn = item => {
+        return <>
+
+            <ListItem 
+                hasCheckBox={true}
+                itemView={patientItem(item)}
+
+            />
+        </>
+
     }
 
     return (
 
         <NavPage
+            isFetchingData={isFetchingPatients}
             routeName='Patients'
-            placeholderText="Search by Case ID, Patient, Staff"
+            placeholderText="Search Patient by name"
+            listData={patientData}
+            changeText={onSearchChange}
+            inputText={searchValue}
+            listItemFormat={renderFn}
             TopButton={() => (
                 <ButtonContainer theme={theme}>
                     <Button
@@ -85,6 +240,17 @@ function PatientFiles(props) {
                         buttonPress={console.log("gaza will rain")}
                     />
                 </ButtonContainer>)}
+            listHeaders={listHeaders}
+
+            totalPages={totalPages}
+            currentPage={currentPagePosition}
+            goToNextPage={goToNextPage}
+            goToPreviousPage={goToPreviousPage}
+            hasPaginator={true}
+            hasActionButton={true}
+            hasActions={true}
+            isNextDisabled={isNextDisabled}
+            isPreviousDisabled={isPreviousDisabled}
         />
 
 
