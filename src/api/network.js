@@ -120,7 +120,8 @@ import {
     deletePatientLifestyleEndpiont,
     updatePatientLifestyleEndpiont,
     getAllById,
-    addConsumablesCall
+    addConsumablesCall,
+    deletePatientEndpoint
 } from '../const/suitesEndpoints';
 import { createDocumentLink, documentById, documentData, documentUpload } from '../const/documentGenerationEndpoints';
 
@@ -961,8 +962,8 @@ export const updatePatientRisk = async (id, data) => suitesAxiosInstance
     .then(handleResponse)
     .catch(handleError) 
 
-export const deletePatient = async (id) => suitesAxiosInstance
-.delete(deletePatient(id))
+export const deletePatient = async (data) => suitesAxiosInstance
+.delete(deletePatientEndpoint, {data})
 .then(handleResponse)
 .catch(handleError)
 

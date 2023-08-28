@@ -79,6 +79,8 @@ function PatientFiles(props) {
 
 
     // States
+    const [selectedPatientds, setSelectedPatientIds] = useState([]);
+    const [isFloatingActionDisabled, setFloatingAction] = useState(false);
     const [searchValue, setSearchValue] = useState('');
     const [isFetchingPatients, setFetchingPatients] = useState(false);
     const [patientData, setPatientData] = useState([])
@@ -214,12 +216,159 @@ function PatientFiles(props) {
 
             <ListItem 
                 hasCheckBox={true}
+                isChecked={selectedPatientds.includes(item._id || item.id)}
                 itemView={patientItem(item)}
-
+                onCheckBoxPress={handleOnCheckBoxPress(item)}
             />
         </>
 
     }
+
+    const openErrorConfirmation = () => {
+        modal.openModal(
+            'ConfirmationModal',
+            {
+                content: <ConfirmationComponent
+                    isError={true}
+                    isEditUpdate={false}
+                    onCancel={() => modal.closeModals('ConfirmationModal')}
+                />,
+                onClose: () => {
+                    modal.closeModals('ConfirmationModal');
+                }
+            }
+        );
+    };
+
+    const handleDataRefresh = () => {
+        fetchPatientFiles();
+    };
+
+    const removePatientsCall = data => {
+        deletePatient(data)
+            .then(_ => {
+                modal.openModal(
+                    'ConfirmationModal',
+                    {
+                        content: <ConfirmationComponent
+                            isError={false}
+                            isEditUpdate={false}
+                            onAction={() => {
+                                modal.closeModals('ConfirmationModal');
+                                setTimeout(() => {
+                                    modal.closeModals('ActionContainerModal');
+                                    handleDataRefresh();
+                                }, 200);
+                            }}
+                        />,
+                        onClose: () => {
+                            modal.closeModals('ConfirmationModal');
+                        }
+                    }
+                );
+
+                setSelectedPatientIds([]);
+            })
+            .catch(error => {
+                openErrorConfirmation();
+                setTimeout(() => {
+                    modal.closeModals('ActionContainerModal');
+                }, 200);
+                console.log('Failed to remove case file: ', error);
+            })
+            .finally(_ => {
+                setFloatingAction(false);
+            });
+    }
+
+    const openDeletionConfirm = data => {
+        modal.openModal(
+            'ConfirmationModal',
+            {
+                content: <ConfirmationComponent
+                    isError={false}
+                    isEditUpdate={true}
+                    onCancel={() => modal.closeModals('ConfirmationModal')}
+                    onAction={() => {
+                        modal.closeModals('ConfirmationModal');
+                        removePatientsCall(data);
+
+                    }}
+                    // onAction = { () => confirmAction()}
+                    message="Do you want to delete these item(s)?"
+                />,
+                onClose: () => {
+
+                    modal.closeModals('ConfirmationModal');
+                }
+            }
+        );
+
+    };
+
+    const handleRemovePatient = async (id) => {
+        console.log('delted idss', selectedPatientds)
+        openDeletionConfirm({ patientIds: [...selectedPatientds] })
+    }
+
+    const handleOnCheckBoxPress = item => () => {
+        const { _id, id } = item; // account for both drafts and created cases.
+        const updateditems = checkboxItemPress(_id || id, selectedPatientds);
+        setSelectedPatientIds(updateditems);
+    };
+
+    const getFabActions = () => { 
+        const actionArray = []
+        const disabled = !!isEmpty(selectedPatientds);
+        const enabled = selectedPatientds.length === 1
+        const strokeColor = !enabled ? theme.colors['--color-gray-600'] : theme.colors['--color-red-700'];
+        const deleteAction = (
+            <View style={{
+                borderRadius: 6,
+                flex: 1,
+                overflow: 'hidden'
+            }}
+            >
+                <LongPressWithFeedback
+                    pressTimer={LONG_PRESS_TIMER.MEDIUM}
+                    isDisabled={disabled}
+                    onLongPress={() => handleRemovePatient(selectedPatientds[0])}
+                >
+                    <ActionItem
+                        title="Hold to Delete Patient"
+                        icon={(
+                            <WasteIcon
+                                strokeColor={disabled ? theme.colors['--color-gray-600'] : theme.colors['--color-red-700']}
+                            />
+                        )}
+                         touchable={false}
+                         disabled={disabled}
+                    />
+                </LongPressWithFeedback>
+
+            </View>
+        );
+
+        actionArray.push(deleteAction)
+
+        return <ActionContainer
+            floatingActions={actionArray}
+             title="CASE ACTIONS"
+        />;
+
+    }
+
+    const toggleActionButton = () => {
+        setFloatingAction(true);
+        modal.openModal('ActionContainerModal',
+            {
+                actions: getFabActions(),
+                title: 'PATIENT ACTIONS',
+                onClose: () => {
+                    setFloatingAction(false);
+                }
+            });
+    };
 
     return (
 
@@ -229,6 +378,7 @@ function PatientFiles(props) {
             placeholderText="Search Patient by name"
             listData={patientData}
             changeText={onSearchChange}
+            itemsSelected={selectedPatientds}
             inputText={searchValue}
             listItemFormat={renderFn}
             TopButton={() => (
@@ -241,6 +391,8 @@ function PatientFiles(props) {
                     />
                 </ButtonContainer>)}
             listHeaders={listHeaders}
+            isDisabled={isFloatingActionDisabled}
+            toggleActionButton={toggleActionButton}
 
             totalPages={totalPages}
             currentPage={currentPagePosition}
