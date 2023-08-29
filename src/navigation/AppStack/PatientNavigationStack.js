@@ -17,7 +17,8 @@ export default (props) => {
         >
 
             <Stack.Screen
-                name="PatientFiles"
+                name="PatientFiles" 
+                
                 component={PatientFiles}
                 options={{
                     headerShown: false
