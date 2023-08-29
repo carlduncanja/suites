@@ -99,7 +99,6 @@ function PatientFiles(props) {
     const [isPreviousDisabled, setPreviousDisabled] = useState(true);
 
     console.log('i am 83953h59hgjrk', currentPagePosition)
-    const navigation = useNavigation();
 
     useEffect(() => {
         if (!searchValue) {

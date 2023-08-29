@@ -170,7 +170,7 @@ function PatientPage( {route}) {
                     caseId =  {selectedPatient._id}
                     headerChildren={[ patientName, `#${ patientNumber}`]} 
                     onBackPress={() => {
-                        navigation.navigate('patientFiles');
+                        navigation.navigate('PatientFiles');
                     }}
                     selectedTab =  {selectedTab}
                     isArchive={getIsEditable()}
