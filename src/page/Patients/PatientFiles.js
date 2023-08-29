@@ -26,7 +26,7 @@ import {
 import { currencyFormatter, formatDate } from '../../utils/formatter';
 
 import NavPage from '../../components/common/Page/NavPage';
-import DataItem from '../../components/common/List/DataItem'; 
+import DataItem from '../../components/common/List/DataItem';
 import RightBorderDataItem from "../../components/common/List/RightBorderDataItem";
 import MultipleTextDataItem from '../../components/common/List/MultipleTextDataItem';
 import { emptyFn, LONG_PRESS_TIMER } from "../../const";
@@ -52,7 +52,7 @@ const listHeaders = [
     {
         name: 'Name',
         aligment: 'flex-start',
-        flex:2
+        flex: 2
     },
     {
         name: 'Gender',
@@ -76,6 +76,10 @@ function PatientFiles(props) {
     const modal = useModal();
     const theme = useTheme();
     const recordsPerPage = 10;
+
+    const {
+        navigation
+    } = props
 
 
     // States
@@ -192,25 +196,25 @@ function PatientFiles(props) {
     const patientItem = item => {
         const {
             firstName,
-            middleName ,
+            middleName,
             surname,
             gender,
             contactInfo,
             trn
-        } = item || {} 
-        
-        const genderLetter= gender == 'Male' ? "M" : "F"
-       console.log("we are here",contactInfo.phones[0]) 
+        } = item || {}
 
-       const phoneNumber = contactInfo?.phones[0]?.['phone'] || "--"
-       return(
-        <> 
-        <RightBorderDataItem text={`${firstName} ${middleName} ${surname}`} flex={2}/>
-        <DataItem text={genderLetter}  color={"--color-blue-700"} flex={0.7} align={'flex-end'}/>
-        <DataItem text={phoneNumber} color={"--color-blue-700"} flex={1.2} textAlign='center'/>
-        <DataItem text={trn} color={"--color-blue-700"} flex={1}/>
-        </>
-       )
+        const genderLetter = gender == 'Male' ? "M" : "F"
+        //console.log("we are here", contactInfo.phones[0])
+
+        const phoneNumber = contactInfo?.phones[0]?.['phone'] || "--"
+        return (
+            <>
+                <RightBorderDataItem text={`${firstName} ${middleName} ${surname}`} flex={2} />
+                <DataItem text={genderLetter} color={"--color-blue-700"} flex={0.7} align={'flex-end'} />
+                <DataItem text={phoneNumber} color={"--color-blue-700"} flex={1.2} textAlign='center' />
+                <DataItem text={trn} color={"--color-blue-700"} flex={1} />
+            </>
+        )
     }
 
     const handleOnItemPress = (item, isOpenEditable) => () => {
@@ -228,7 +232,7 @@ function PatientFiles(props) {
     const renderFn = item => {
         return <>
 
-            <ListItem 
+            <ListItem
                 hasCheckBox={true}
                 isChecked={selectedPatientds.includes(item._id || item.id)}
                 itemView={patientItem(item)}
@@ -332,7 +336,16 @@ function PatientFiles(props) {
         setSelectedPatientIds(updateditems);
     };
 
-    const getFabActions = () => { 
+    const openCreatePatient = () => {
+        modal.closeModals('ActionContainerModal');
+        navigation.navigate('PatientCreation', {
+            initial: false,
+            draftItem: null,
+           intialPage:"Patient"
+        });
+    }
+
+    const getFabActions = () => {
         const actionArray = []
         const disabled = !!isEmpty(selectedPatientds);
         const enabled = selectedPatientds.length === 1
@@ -356,19 +369,28 @@ function PatientFiles(props) {
                                 strokeColor={disabled ? theme.colors['--color-gray-600'] : theme.colors['--color-red-700']}
                             />
                         )}
-                         touchable={false}
-                         disabled={disabled}
+                        touchable={false}
+                        disabled={disabled}
                     />
                 </LongPressWithFeedback>
 
             </View>
         );
 
+        const createPatient = (
+            <ActionItem
+                title=' Create Patient'
+                icon={<AddIcon />}
+                onPress={openCreatePatient}
+            />)
+        actionArray.push(createPatient)
         actionArray.push(deleteAction)
+
+
 
         return <ActionContainer
             floatingActions={actionArray}
-             title="CASE ACTIONS"
+            title="CASE ACTIONS"
         />;
 
     }

@@ -1,13 +1,13 @@
-import React, {useState, useEffect} from 'react';
-import {Alert, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import {useModal} from 'react-native-modalfy';
-import {connect} from 'react-redux';
-import {isEmpty} from 'lodash';
+import React, { useState, useEffect } from 'react';
+import { Alert, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { useModal } from 'react-native-modalfy';
+import { connect } from 'react-redux';
+import { isEmpty } from 'lodash';
 import moment from 'moment';
 import styled from '@emotion/native';
-import {useTheme} from 'emotion-theming';
+import { useTheme } from 'emotion-theming';
 import Snackbar from 'react-native-paper/src/components/Snackbar';
-import {createCaseFile, isValidCaseProcedureAppointment} from '../../api/network';
+import { createCaseFile, isValidCaseProcedureAppointment } from '../../api/network';
 import DialogTabs from '../../components/common/Dialog/DialogTabs';
 import PatientIcon from '../../../assets/svg/newCasePatient';
 import MedicalIcon from '../../../assets/svg/newCaseMedical';
@@ -17,8 +17,8 @@ import StaffStep from '../../components/CaseFiles/StaffDialogTabs/StaffStep';
 import ProcedureStep from '../../components/CaseFiles/ProceduresDialogTabs/ProcedureStep';
 import CompleteCreateCase from '../../components/CaseFiles/CompleteCreateCase';
 import ProgressContainer from '../../components/common/Progress/ProgressContainer';
-import {addCaseFile} from '../../redux/actions/caseFilesActions';
-import {removeDraft, saveDraft} from '../../redux/actions/draftActions';
+import { addCaseFile } from '../../redux/actions/caseFilesActions';
+import { removeDraft, saveDraft } from '../../redux/actions/draftActions';
 import ConfirmationComponent from '../../components/ConfirmationComponent';
 import PageButton from '../../components/common/Page/PageButton';
 import ChevronRight from '../../../assets/svg/ChevronRight';
@@ -44,7 +44,7 @@ const PageWrapper = styled.View`
   flex: 1;
   display: flex;
   margin: 0;
-  background-color: ${({theme}) => theme.colors['--default-shade-white']};
+  background-color: ${({ theme }) => theme.colors['--default-shade-white']};
 `;
 const PageContentWrapper = styled.View`
   flex: 1;
@@ -57,8 +57,8 @@ const HeaderWrapper = styled.View`
   height: 47px;
   width: 100%;
   justify-content: center;
-  padding-left: ${({theme}) => theme.space['--space-24']};
-  padding-right: ${({theme}) => theme.space['--space-24']};
+  padding-left: ${({ theme }) => theme.space['--space-24']};
+  padding-right: ${({ theme }) => theme.space['--space-24']};
 
 `;
 
@@ -69,21 +69,21 @@ const HeaderContainer = styled.View`
   align-items: center;
 `;
 
-const PageTitle = styled.Text(({theme}) => ({
+const PageTitle = styled.Text(({ theme }) => ({
     ...theme.font['--text-xl-medium'],
     color: theme.colors['--company']
 }));
 
 const FooterWrapper = styled.View`
   bottom: 0;
-  border: 1px solid ${({theme}) => theme.colors['--color-gray-300']};
+  border: 1px solid ${({ theme }) => theme.colors['--color-gray-300']};
   border-bottom-width: 0;
   border-left-width: 0;
   border-right-width: 0;
-  padding-top: ${({theme}) => theme.space['--space-24']};
-  padding-bottom: ${({theme}) => theme.space['--space-24']};
-  margin-left: ${({theme}) => theme.space['--space-24']};
-  margin-right: ${({theme}) => theme.space['--space-24']};
+  padding-top: ${({ theme }) => theme.space['--space-24']};
+  padding-bottom: ${({ theme }) => theme.space['--space-24']};
+  margin-left: ${({ theme }) => theme.space['--space-24']};
+  margin-right: ${({ theme }) => theme.space['--space-24']};
 `;
 
 const FooterContainer = styled.View`
@@ -96,17 +96,17 @@ const FooterButtonContainer = styled.View`
   height: 48px;
 `;
 
-function CreateCasePage({navigation, addCaseFile, saveDraft, removeDraft, route}) {
+function CreateCasePage({ navigation, addCaseFile, saveDraft, removeDraft, route, pageTitle }) {
     // ########### CONST
     const [wizard, setWizard] = useState([
         {
             step: {
                 name: 'Patient',
                 selectedIcon: (
-                    <PatientIcon fillColor="#0CB0E7" strokeColor="#64D8FF"/>
+                    <PatientIcon fillColor="#0CB0E7" strokeColor="#64D8FF" />
                 ),
                 disabledIcon: (
-                    <PatientIcon fillColor="#A0AEC0" strokeColor="#CCD6E0"/>
+                    <PatientIcon fillColor="#A0AEC0" strokeColor="#CCD6E0" />
                 ),
                 progress: 0,
             },
@@ -120,8 +120,8 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, removeDraft, route}
         {
             step: {
                 name: 'Medical Team',
-                selectedIcon: <MedicalIcon fillColor="#E53E3E"/>,
-                disabledIcon: <MedicalIcon fillColor="#CBD5E0"/>,
+                selectedIcon: <MedicalIcon fillColor="#E53E3E" />,
+                disabledIcon: <MedicalIcon fillColor="#CBD5E0" />,
                 progress: 0,
             },
             tabs: ['Assignment 1'],
@@ -129,7 +129,7 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, removeDraft, route}
             onAdd: () => {
                 // add new assignment
                 const updatedWizard = [...wizard];
-                const {tabs} = updatedWizard[1];
+                const { tabs } = updatedWizard[1];
                 if (tabs.length === 3) return;
 
                 const assignment = `Assignment ${tabs.length + 1}`;
@@ -142,10 +142,10 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, removeDraft, route}
             step: {
                 name: 'Procedures',
                 selectedIcon: (
-                    <ProcedureIcon fillColor="#319795" strokeColor="#81E6D9"/>
+                    <ProcedureIcon fillColor="#319795" strokeColor="#81E6D9" />
                 ),
                 disabledIcon: (
-                    <ProcedureIcon fillColor="#A0AEC0" strokeColor="#CCD6E0"/>
+                    <ProcedureIcon fillColor="#A0AEC0" strokeColor="#CCD6E0" />
                 ),
                 progress: 0,
             },
@@ -154,7 +154,7 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, removeDraft, route}
             onAdd: () => {
                 // add new procedure
                 const updatedWizard = [...wizard];
-                const {tabs} = updatedWizard[2];
+                const { tabs } = updatedWizard[2];
                 if (tabs.length === 3) return;
 
                 const assignment = `Procedure ${tabs.length + 1}`;
@@ -167,7 +167,7 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, removeDraft, route}
     const theme = useTheme();
     const steps = [...wizard.map(step => step.step)];
     const modal = useModal();
-    const {draftItem} = route.params || {};
+    const { draftItem } = route.params || {};
 
     //console.log("what's in route", route.params);
     // ########### STATES
@@ -201,42 +201,51 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, removeDraft, route}
     });
 
     useEffect(
-        () => navigation.addListener('beforeRemove', (e) => {
-            if (caseCreated || _.isEmpty(patientFields)) {
-                // If we don't have unsaved changes, then we don't need to do anything
-                return;
-            }
+        () =>
 
-            // Prevent default behavior of leaving the screen
-            e.preventDefault();
+            navigation.addListener('beforeRemove', (e) => {
+                if (caseCreated || _.isEmpty(patientFields)) {
+                    // If we don't have unsaved changes, then we don't need to do anything
+                    return;
+                }
 
-            modal.openModal('ConfirmationModal', {
-                content: (
-                    <ConfirmationComponent
-                        isError={false}
-                        isEditUpdate={true}
-                        onAction={() => {
-                            modal.closeAllModals();
-                            createDraft()
-                            navigation.dispatch(e.data.action)
-                        }}
-                        action="Save"
-                        titleText="Save Draft?"
-                        onCancel={() => {
-                            navigation.dispatch(e.data.action)
-                            modal.closeAllModals();
-                        }}
-                        message={`You haven't finished creating the Case File for "${patientFields?.firstName || 'Unknown'}". Do you wish to save your progress?`}
-                    />
-                ),
-            });
-        }),
+                // Prevent default behavior of leaving the screen
+                e.preventDefault();
+
+                modal.openModal('ConfirmationModal', {
+                    content: (
+                        <ConfirmationComponent
+                            isError={false}
+                            isEditUpdate={true}
+                            onAction={() => {
+                                modal.closeAllModals();
+                                createDraft()
+                                navigation.dispatch(e.data.action)
+                            }}
+                            action="Save"
+                            titleText="Save Draft?"
+                            onCancel={() => {
+                                navigation.dispatch(e.data.action)
+                                modal.closeAllModals();
+                            }}
+                            message={`You haven't finished creating the Case File for "${patientFields?.firstName || 'Unknown'}". Do you wish to save your progress?`}
+                        />
+                    ),
+                });
+            }),
         [navigation, caseCreated, patientFields, staffInfo, caseProceduresInfo]
     );
 
-    // useEffect( () => {
-    //     console.log('hello???', patientFields);
-    // }, [patientFields])
+    useEffect(() => {
+        
+        if (route.params.intialPage == 'Patient') {
+            setName("New Patient");
+        }
+        else{
+            setName('')
+        }
+
+    }, [])
 
     //put fields in redux make one big object put it in redux maybe draft case file as redux, once they leave the page they should br prompted to save as draft
     //action to save the data
@@ -317,7 +326,7 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, removeDraft, route}
             setSelectedIndex(updatedIndex);
             setSelectedStep(steps[updatedIndex].name);
 
-            const {tabs} = wizard[updatedIndex];
+            const { tabs } = wizard[updatedIndex];
             setTabs(tabs);
             setSelectedTabIndex(0);
             setCompletedTabs([]);
@@ -390,7 +399,7 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, removeDraft, route}
             setSelectedIndex(updatedIndex);
             setSelectedStep(steps[updatedIndex].name);
 
-            const {tabs} = wizard[updatedIndex];
+            const { tabs } = wizard[updatedIndex];
             setTabs(tabs);
             setSelectedTabIndex(0);
             setCompletedTabs([]);
@@ -415,7 +424,7 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, removeDraft, route}
             setSelectedIndex(updatedIndex);
             setSelectedStep(steps[updatedIndex]?.name);
 
-            const {tabs} = wizard[updatedIndex];
+            const { tabs } = wizard[updatedIndex];
             setTabs(tabs);
             setSelectedTabIndex(0);
             setCompletedTabs([]);
@@ -431,9 +440,9 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, removeDraft, route}
                 // validate the fields on the details tab that are required
                 requiredFields = ['firstName', 'surname', 'trn', 'passport', 'national', 'other'];
 
-                const {trn, passport, national, other} = patientFields
-                
-                if(trn) {
+                const { trn, passport, national, other } = patientFields
+
+                if (trn) {
                     requiredFields = requiredFields.filter(item => (
                         item !== 'passport' &&
                         item !== 'national' &&
@@ -464,7 +473,7 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, removeDraft, route}
                         item !== 'trn'
                     ));
                 }
-                
+
                 break;
             }
             case PATIENT_TABS.ADDRESS: {
@@ -475,7 +484,7 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, removeDraft, route}
             }
         }
 
-        let updateErrors = {...patientFieldErrors};
+        let updateErrors = { ...patientFieldErrors };
 
         for (const requiredField of requiredFields) {
 
@@ -515,7 +524,7 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, removeDraft, route}
                     ...updateErrors,
                     [requiredField]: `${requiredField.charAt(0)
                         .toUpperCase() + requiredField.slice(1)
-                        .replace(/([a-z0-9])([A-Z0-9])/g, '$1 $2')} is required`, // capitalize and separate camelcase named field
+                            .replace(/([a-z0-9])([A-Z0-9])/g, '$1 $2')} is required`, // capitalize and separate camelcase named field
                     // [requiredField]: `${requiredField} is required`,
                 };
             }
@@ -562,7 +571,7 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, removeDraft, route}
         if (!isValid) return isValid;
 
         // TODO validate time.
-        const {procedure, location, startTime, duration} = procedureInfo;
+        const { procedure, location, startTime, duration } = procedureInfo;
         isValid = await validateProcedureAsync(procedure._id, location._id, startTime, duration);
 
         // TODO validate theatre location.
@@ -681,7 +690,13 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, removeDraft, route}
     };
 
     const onClose = () => {
-        navigation.navigate('CaseFiles');
+        if (route.params.intialPage == 'Patient') {
+            navigation.navigate('PatientFiles')
+        }
+        else{
+            navigation.navigate('CaseFiles')
+        }
+       
     };
 
     const getTabContent = () => {
@@ -737,7 +752,7 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, removeDraft, route}
 
     const validateProcedureAsync = (procedure, location, startTime, duration) => isValidCaseProcedureAppointment(procedure, location, startTime, duration)
         .then(results => {
-            const {errors = [], isValid} = results;
+            const { errors = [], isValid } = results;
 
             // loop through and show all errors.
             const messages = errors.map(item => item.message);
@@ -772,14 +787,14 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, removeDraft, route}
                 <HeaderContainer theme={theme}>
                     <PageTitle>{title}</PageTitle>
 
-                    <TouchableOpacity style={[styles.closeButton, {backgroundColor: theme.colors["--color-blue-500"]}]} onPress={onClose}>
-                        <Text style={{color: 'white'}}>Close</Text>
+                    <TouchableOpacity style={[styles.closeButton, { backgroundColor: theme.colors["--color-blue-500"] }]} onPress={onClose}>
+                        <Text style={{ color: 'white' }}>Close</Text>
                     </TouchableOpacity>
 
                 </HeaderContainer>
             </HeaderWrapper>
 
-            <View style={{height: 140}}>
+            <View style={{ height: 140 }}>
                 <ProgressContainer
                     steps={steps}
                     handleStepPress={handleStepPress}
@@ -789,7 +804,7 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, removeDraft, route}
                 />
             </View>
 
-            <View style={{height: 40}}>
+            <View style={{ height: 40 }}>
                 <DialogTabs
                     tabs={tabs}
                     tab={selectedTabIndex}
@@ -800,7 +815,7 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, removeDraft, route}
             </View>
 
             <PageContentWrapper>
-                <View style={{flex: 1}}>{getTabContent()}</View>
+                <View style={{ flex: 1 }}>{getTabContent()}</View>
             </PageContentWrapper>
 
             <FooterWrapper>
@@ -811,7 +826,7 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, removeDraft, route}
                             fontColor={theme.colors['--color-gray-600']}
                             text="PREVIOUS"
                             onPress={onPreviousButtonPress}
-                            IconLeft={<ChevronLeft strokeColor={theme.colors['--color-gray-600']}/>}
+                            IconLeft={<ChevronLeft strokeColor={theme.colors['--color-gray-600']} />}
                         />
                     </FooterButtonContainer>
 
@@ -821,7 +836,7 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, removeDraft, route}
                             fontColor={theme.colors['--default-shade-white']}
                             text={positiveText}
                             onPress={onPositiveButtonPress}
-                            IconRight={<ChevronRight strokeColor={theme.colors['--default-shade-white']}/>}
+                            IconRight={<ChevronRight strokeColor={theme.colors['--default-shade-white']} />}
                         />
                     </FooterButtonContainer>
                 </FooterContainer>
@@ -851,7 +866,7 @@ function CreateCasePage({navigation, addCaseFile, saveDraft, removeDraft, route}
 
             {
                 isLoading &&
-                <LoadingComponent/>
+                <LoadingComponent />
             }
 
         </PageWrapper>
