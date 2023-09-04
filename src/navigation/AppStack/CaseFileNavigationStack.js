@@ -46,6 +46,9 @@ export default (props) => {
                     // },
                     // headerTitle: ""
                 }} 
+                initialParams={{
+                    intialPage:" "
+                }}
             />
 
             <Stack.Screen

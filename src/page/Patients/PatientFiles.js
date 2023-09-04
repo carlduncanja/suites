@@ -98,7 +98,7 @@ function PatientFiles(props) {
     const [isNextDisabled, setNextDisabled] = useState(false);
     const [isPreviousDisabled, setPreviousDisabled] = useState(true);
 
-    console.log('i am 83953h59hgjrk', currentPagePosition)
+    
 
     useEffect(() => {
         if (!searchValue) {
@@ -326,7 +326,15 @@ function PatientFiles(props) {
         navigation.navigate('PatientCreation', {
             initial: false,
             draftItem: null,
-           intialPage:"Patient"
+            intialPage: "Patient"
+        });
+    } 
+
+    const handleAddProcedure =()=>{
+        modal.closeModals('ActionContainerModal');
+        navigation.navigate('AddProcedure', {
+            initial: false,
+            draftItem: null,
         });
     }
 
@@ -368,6 +376,18 @@ function PatientFiles(props) {
                 icon={<AddIcon />}
                 onPress={openCreatePatient}
             />)
+
+        const addProcedure = (
+            <ActionItem
+                title='Add Procedure'
+                icon={<AddIcon 
+                    strokeColor={!enabled ? theme.colors['--color-gray-600'] : theme.colors['--color-green-700']}
+                />} 
+                disabled={!enabled}
+                onPress={handleAddProcedure}
+            />) 
+
+        actionArray.push(addProcedure)
         actionArray.push(createPatient)
         actionArray.push(deleteAction)
 
@@ -409,7 +429,6 @@ function PatientFiles(props) {
                         title="Archives"
                         color={theme.colors['--color-gray-500']}
                         font="--text-sm-regular"
-                        buttonPress={console.log("gaza will rain")}
                     />
                 </ButtonContainer>)}
             listHeaders={listHeaders}

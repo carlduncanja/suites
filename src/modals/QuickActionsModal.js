@@ -30,8 +30,9 @@ const QuickActionsModal = (props) => {
             performAction: () => {
                 navigation.navigate(
                     'CaseFiles',
-                    {screen: 'CreateCase', initial: false,intialPage:" "},
-                );
+                    {screen: 'CreateCase', 
+                    initial: false,
+                });
             }
         },
         theatre: {},
