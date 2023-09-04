@@ -97,6 +97,22 @@ function PatientPage( {route}) {
     const getOverlayContent = () => {
   
         const { medicalInfo= {} } = selectedPatient;
+        const {cases} = selectedPatient
+
+        let procedures = []
+        //let {caseProcedures, chargeSheet} = cases[0]
+        //const { proceduresBillableItems } = chargeSheet;
+
+        if (cases) {
+            for (let x of cases){
+                let {caseProcedures} = x
+                console.log('i am x', ...caseProcedures)
+                procedures.push(...caseProcedures)
+            }
+        }
+       
+
+        console.log('i am cajsjdks', cases)
        
         switch (selectedMenuItem) {
             case 'Patient':
@@ -114,6 +130,14 @@ function PatientPage( {route}) {
                         patient={selectedPatient}
                         setPageState = {setPageState}
                         fetchCase={() => fetchPatient(patientId)}
+                    />;
+            case 'Procedures': 
+               
+                    return <Procedures
+                        procedures={procedures}
+                        proceduresBillableItems={[]}
+                        //caseId={cases[0]._id}
+                       
                     />;
             
         
@@ -221,13 +245,6 @@ function CasePageContent({
     toggleActionButton,
     actionDisabled
 }) {
-    useEffect(() => {
-        console.log('Case Page Create');
-    }, []);
-
-    useEffect(() => {
-        console.log('Case Page Update');
-    });
 
     const FooterWrapper = styled.View`
       width: 100%;
