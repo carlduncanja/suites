@@ -12,6 +12,7 @@ const Stack = createStackNavigator();
 
 export default (props) => {
     const isAdmin = props.route.params.isAdmin || false;
+    const allPermisisons = props.route.params.userPermissions
     const permissions = props.route.params.userPermissions.physicians;
     return (
         <Stack.Navigator

@@ -121,7 +121,8 @@ import {
     updatePatientLifestyleEndpiont,
     getAllById,
     addConsumablesCall,
-    deletePatientEndpoint
+    deletePatientEndpoint,
+    getPatientByIdEndpoint
 } from '../const/suitesEndpoints';
 import { createDocumentLink, documentById, documentData, documentUpload } from '../const/documentGenerationEndpoints';
 
@@ -954,6 +955,11 @@ export const deleteFamilyHistory = async (id, data) => suitesAxiosInstance
 
 export const getPatients = async (query, max, page) => suitesAxiosInstance
     .get(allPatientsEndpoint, ({ params: { query, max, page } }))
+    .then(handleResponse)
+    .catch(handleError)
+
+export const getPatientbyId = async (id) => suitesAxiosInstance
+    .get(getPatientByIdEndpoint(id))
     .then(handleResponse)
     .catch(handleError)
 
