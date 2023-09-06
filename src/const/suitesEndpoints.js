@@ -86,7 +86,7 @@ export const caseInvoicesEndpoint = caseId => `/cases/${caseId}/invoices`;
 export const quotationEndpoint = (caseId, quotationId) => `/cases/${caseId}/quotations/${quotationId}`;
 export const updateQuotationStatusEndpoint = (caseId, quotationId) => `/cases/${caseId}/quotations/${quotationId}/status`;
 export const caseProcedureAppointmentEndpoint = (caseId, procedureAppointmentId) => `/cases/${caseId}/procedures/${procedureAppointmentId}`;
-export const caseProcedureAppointmentsEndpoint = caseId => `/cases/${caseId}/procedures/`;
+export const caseProcedureAppointmentsEndpoint = caseId => `/cases/${caseId}/procedures`;
 export const caseStaffEndpoint = caseId => `/cases/staff/${caseId}`;
 export const caseUpdateStaffEndpoint = caseId => `/cases/${caseId}`;
 export const casePatientEndpoint = patientId => `/cases/patient/${patientId}`
@@ -136,6 +136,7 @@ export const addFamilyHistoryEndpoint = id => `/patients/${id}/add_family`;
 export const editFamilyHistoryEndpoint = id => `/patients/${id}/edit_family`;
 export const deleteFamilyHistoryEndpoint = id => `/patients/${id}/delete_family`;
 export const allPatientsEndpoint = '/patients'
+export const getPatientByIdEndpoint = id => `/patients/${id}`
 export const updatePatientRiskEndpoint = id => `/patients/${id}/risk` 
 export const deletePatientEndpoint = `/patients/deletePatient`
 

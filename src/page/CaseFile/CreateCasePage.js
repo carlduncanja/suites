@@ -341,7 +341,7 @@ function CreateCasePage({ navigation, addCaseFile, saveDraft, removeDraft, route
             `selected index ${selectedIndex}, selected tab index ${selectedTabIndex}, current tab ${currentTab}`
         );
 
-        let isValid = true;
+        let isValid = true;  
 
         switch (selectedIndex) {
             case CASE_PROCEDURE_TABS.PATIENT_DETAILS: {

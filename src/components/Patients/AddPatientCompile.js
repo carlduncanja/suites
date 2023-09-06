@@ -1,17 +1,18 @@
 import React, {} from 'react';
 import {View, Text, StyleSheet} from 'react-native';
 import CaseFileIcon from '../../../assets/svg/caseFolder'; 
+import {patient as PatientIcon} from '../../../assets/svg/newCasePatient'; 
 
 const CompleteAddPatient=({name})=>{
     <View style={styles.container}>
 
         <View style={styles.icon}>
-            <CaseFileIcon/>
+            <PatientIcon/>
         </View>
 
         <View style={styles.textBox}>
             <Text style={styles.text}>
-                Tap <Text style={{color: '#3182CE'}}>CONTINUE</Text> to finish filling out your new Case File for "{name}"
+                Tap <Text style={{color: '#3182CE'}}>CONTINUE</Text> to finish adding procedure 
             </Text>
         </View>
 

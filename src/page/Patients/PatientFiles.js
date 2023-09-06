@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View } from 'react-native';
-
+import {useNavigation} from '@react-navigation/native'
 import { connect } from 'react-redux';
 import _, { isEmpty } from 'lodash';
 import { useModal } from 'react-native-modalfy';
@@ -215,6 +215,19 @@ function PatientFiles(props) {
             </>
         )
     }
+
+    const handleOnItemPress = (item, isOpenEditable) => () => {
+        console.log('i anklfn oifja', item)
+        if (item !== null) {
+                navigation.navigate('patient', {
+                    initial: false,
+                    patientPage: true,
+                    patientId: item._id,
+                    isEdit: isOpenEditable
+                });
+        } else return;
+    };
+
     const renderFn = item => {
         return <>
 
@@ -222,6 +235,7 @@ function PatientFiles(props) {
                 hasCheckBox={true}
                 isChecked={selectedPatientds.includes(item._id || item.id)}
                 itemView={patientItem(item)}
+                onItemPress={handleOnItemPress(item, false)}
                 onCheckBoxPress={handleOnCheckBoxPress(item)}
             />
         </>
@@ -335,6 +349,7 @@ function PatientFiles(props) {
         navigation.navigate('AddProcedure', {
             initial: false,
             draftItem: null,
+            patientId:selectedPatientds[0]
         });
     }
 

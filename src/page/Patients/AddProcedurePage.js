@@ -10,7 +10,7 @@ import { useTheme } from 'emotion-theming';
 import ProgressContainer from '../../components/common/Progress/ProgressContainer';
 import ProcedureStep from '../../components/CaseFiles/ProceduresDialogTabs/ProcedureStep';
 import CompleteCreateCase from '../../components/CaseFiles/CompleteCreateCase';
-import { createCaseFile, isValidCaseProcedureAppointment } from '../../api/network';
+import { isValidCaseProcedureAppointment, addProcedureAppointmentCall, getCaseFileByPatientId, createAppointment } from '../../api/network';
 
 //svg import 
 import ProcedureIcon from '../../../assets/svg/newCaseProcedure';
@@ -19,6 +19,7 @@ import Snackbar from 'react-native-paper/src/components/Snackbar';
 import ChevronLeft from '../../../assets/svg/ChevronLeft';
 import ChevronRight from '../../../assets/svg/ChevronRight';
 import CompleteAddPatient from '../../components/Patients/AddPatientCompile';
+import procedures from '../../../assets/svg/newCaseProcedure';
 
 const PageWrapper = styled.View`
   flex: 1;
@@ -80,7 +81,7 @@ const FooterButtonContainer = styled.View`
 
 const CASE_PROCEDURE_TABS = {
     PROCEDURES: 0,
-    FINAL: 1
+    FINAL: 3
 };
 
 
@@ -89,7 +90,7 @@ function AddProcedurePage({ navigation, addCaseFile, saveDraft, removeDraft, rou
     const theme = useTheme();
     const modal = useModal();
     const { draftItem } = route.params || {};
-
+    const { patientId } = route.params
 
     const [wizard, setWizard] = useState([
         {
@@ -125,7 +126,7 @@ function AddProcedurePage({ navigation, addCaseFile, saveDraft, removeDraft, rou
     const [selectedIndex, setSelectedIndex] = useState(0);
 
     const [selectedStep, setSelectedStep] = useState(steps[0].name);
-    const [tabs, setTabs] = useState(wizard[0].tabs); 
+    const [tabs, setTabs] = useState(wizard[0].tabs);
     const [positiveText, setPositiveText] = useState('NEXT');
 
     const [completedSteps, setCompletedSteps] = useState([]);
@@ -134,9 +135,10 @@ function AddProcedurePage({ navigation, addCaseFile, saveDraft, removeDraft, rou
 
     const [caseProceduresInfo, setCaseProceduresInfo] = useState(!isEmpty(draftItem) && draftItem.procedures?.length ? draftItem.procedures : []);
     const [procedureErrors, setProcedureErrors] = useState([]);
-    const [patientFields, setPatientFields] = useState(!isEmpty(draftItem) ? draftItem.patient : {}); 
+    const [patientFields, setPatientFields] = useState(!isEmpty(draftItem) ? draftItem.patient : {});
+    const [patientData, setPatientData] = useState({})
 
-    
+
     const [snackbar, setSnackbar] = useState({
         visible: false,
         message: ''
@@ -144,8 +146,8 @@ function AddProcedurePage({ navigation, addCaseFile, saveDraft, removeDraft, rou
 
 
     const onClose = () => {
-        navigation.navigate('PatientFiles') 
-    } 
+        navigation.navigate('PatientFiles')
+    }
 
     const clearSnackBar = () => {
         setSnackbar({
@@ -153,6 +155,28 @@ function AddProcedurePage({ navigation, addCaseFile, saveDraft, removeDraft, rou
             message: ''
         });
     };
+
+    useEffect(() => { //used to get patient data
+        fetchPatientCases(patientId)
+        //console.log(patientData)
+    }, [])
+
+
+    const fetchPatientCases = id => {
+        console.log('fetching patient');
+        getCaseFileByPatientId(id)
+            .then(data => {
+                setPatientData(data);
+
+            })
+            .catch(error => {
+                console.log('Failed to get case', error);
+                //navigation.replace("CaseFiles");
+                //Alert.alert(('Failed', 'Failed to get details for case'));
+            })
+
+    };
+
 
     const handleStepPress = name => {
         if (completedSteps.includes(name)) {
@@ -178,6 +202,40 @@ function AddProcedurePage({ navigation, addCaseFile, saveDraft, removeDraft, rou
         }
     };
 
+    const handleOnComplete = () => {
+
+        console.log("the case date", caseProceduresInfo[0].procedure._id)
+        let caseId = patientData[0]._id
+        let end = moment (caseProceduresInfo[0].startTime)
+        end = end.hour + caseProceduresInfo[0].duration 
+        console.log("the datatatatata",end.toString())
+        
+        let appiontmentInfo = {
+            procedureId: caseProceduresInfo[0].procedure._id,
+            startTime: caseProceduresInfo[0].startTime,
+            endTime:caseProceduresInfo[0].startTime,
+            locationId: caseProceduresInfo[0].location._id,
+            caseId: caseId,
+            physicianId: patientData[0].staff.leadPhysician,
+            isRecovery: false,
+            authInfo: patientData[0].staff.leadPhysician
+        }
+
+        createAppointment(appiontmentInfo)
+            .then(data => {
+                console.log("the data coming out", data)
+                navigation.replace('patient', {
+                    patientId: patientId
+                })
+            })
+            .catch(error => {
+                console.log('failed to create case file', error.message);
+                console.log('failed to create case file', error.response);
+                Alert.alert('Sorry', 'Something went wrong when adding procedure.');
+            })
+
+    }
+
 
     const getTabContent = () => {
         switch (selectedIndex) {
@@ -191,12 +249,13 @@ function AddProcedurePage({ navigation, addCaseFile, saveDraft, removeDraft, rou
                         errors={procedureErrors}
                         onErrorUpdate={value => setProcedureErrors(value)}
                     />
-                );
+                ); 
 
             case CASE_PROCEDURE_TABS.FINAL:
                 return (
-                    <CompleteAddPatient 
-                    name={"Dean Morcan"}
+                    <CompleteAddPatient
+                        name={"Dean Morcan"}
+                        onComplete={handleOnComplete}
                     />
                 );
             default:
@@ -210,7 +269,7 @@ function AddProcedurePage({ navigation, addCaseFile, saveDraft, removeDraft, rou
         setCaseProceduresInfo([...value]);
     };
 
-    const getTabsProgress = () => ((selectedTabIndex + 1) / tabs.length) * 100; 
+    const getTabsProgress = () => ((selectedTabIndex + 1) / tabs.length) * 100;
 
     const onPreviousButtonPress = () => {
         if (selectedIndex === 0 && selectedTabIndex === 0) {
@@ -230,12 +289,12 @@ function AddProcedurePage({ navigation, addCaseFile, saveDraft, removeDraft, rou
             setSelectedIndex(updatedIndex);
             setSelectedStep(steps[updatedIndex]?.name);
 
-            const { tabs } = wizard[updatedIndex];
-            setTabs(tabs);
+            //const { tabs } = wizard[updatedIndex];
+            //setTabs(tabs);
             setSelectedTabIndex(0);
             setCompletedTabs([]);
         }
-    }; 
+    };
 
     const onPositiveButtonPress = async () => {
 
@@ -251,12 +310,12 @@ function AddProcedurePage({ navigation, addCaseFile, saveDraft, removeDraft, rou
         let isValid = true;
 
         switch (selectedIndex) {
-            
+
             case CASE_PROCEDURE_TABS.PROCEDURES: {
                 isValid = await validateProcedureInfo(selectedTabIndex);
                 break;
             }
-            
+
             case CASE_PROCEDURE_TABS.FINAL: {
                 console.log('validation procedure info');
 
@@ -283,7 +342,7 @@ function AddProcedurePage({ navigation, addCaseFile, saveDraft, removeDraft, rou
         ) {
             setPositiveText('CONTINUE');
             setCompletedSteps([...completedSteps, steps[selectedIndex].name]);
-            setSelectedIndex(3);
+            setSelectedIndex(1);
             setSelectedTabIndex(0);
             setTabs([
                 `${patientFields.firstName} ${patientFields.surname} Case Created`,
@@ -299,7 +358,7 @@ function AddProcedurePage({ navigation, addCaseFile, saveDraft, removeDraft, rou
             setSelectedTabIndex(0);
             setCompletedTabs([]);
         }
-    }; 
+    };
 
     const validateProcedureInfo = async procedureIndex => {
         let isValid = true;
@@ -399,7 +458,7 @@ function AddProcedurePage({ navigation, addCaseFile, saveDraft, removeDraft, rou
                         <PageButton
                             text="PREVIOUS"
                             backgroundColor={theme.colors['--color-gray-200']}
-                            fontColor={theme.colors['--color-gray-600']}  
+                            fontColor={theme.colors['--color-gray-600']}
                             IconLeft={<ChevronLeft strokeColor={theme.colors['--color-gray-600']} />}
                             onPress={onPreviousButtonPress}
 

@@ -3,16 +3,17 @@ import { createStackNavigator } from '@react-navigation/stack';
 
 import PatientFiles from "../../page/Patients/PatientFiles";
 //import PatientCreationPage from "../../page/Patients/PatientCreation/PatientCreationPage"; 
-import CreateCasePage from "../../page/CaseFile/CreateCasePage";  
-import CasePage from "../../page/CaseFile/CasePage"; 
+import CreateCasePage from "../../page/CaseFile/CreateCasePage";
 import AddProcedurePage from "../../page/Patients/AddProcedurePage";
-
+import CasePage from "../../page/CaseFile/CasePage";
+import HeaderBackComponent from "../components/HeaderBackComponent";
+import PatientPage from "../../page/Patients/PatientPage";
 const Stack = createStackNavigator();
 
 
 export default (props) => {
     const isAdmin = props.route.params.isAdmin || false;
-    const permissions = null
+    const permissions = props.route.params.userPermissions
 
     return (
         <Stack.Navigator
@@ -20,8 +21,8 @@ export default (props) => {
         >
 
             <Stack.Screen
-                name="PatientFiles" 
-                
+                name="PatientFiles"
+
                 component={PatientFiles}
                 options={{
                     headerShown: false
@@ -41,32 +42,31 @@ export default (props) => {
                     isAdmin,
                     permissions
                 }}
-            />   
+            />
 
             <Stack.Screen
-            name="AddProcedure"
-            component={AddProcedurePage}
-            options={{
-                headerShown: false
-            }}
-            initialParams={{
-                isAdmin,
-                permissions
-            }}
+                name="patient"
+                component={PatientPage}
+                options={{
+                    headerShown: false,
+                    headerStyle: {
+                        height: 100,
+                    },
+                    headerTitle: ""
+                }}
+                initialParams={{ permissions }}
             />
-        { /*temporay till the details can be added*/ }
-           <Stack.Screen  
-            name='Case'
-            component={CasePage}
-            options={{
-                headerShown: false
-            }}
-            initialParams={{
-                isAdmin,
-                permissions
-            }}
-           />
-
+            <Stack.Screen
+                name="AddProcedure"
+                component={AddProcedurePage}
+                options={{
+                    headerShown: false
+                }}
+                initialParams={{
+                    isAdmin,
+                    permissions
+                }}
+            />
 
 
         </Stack.Navigator>
