@@ -4,6 +4,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import PatientFiles from "../../page/Patients/PatientFiles";
 //import PatientCreationPage from "../../page/Patients/PatientCreation/PatientCreationPage"; 
 import CreateCasePage from "../../page/CaseFile/CreateCasePage";
+import AddProcedurePage from "../../page/Patients/AddProcedurePage";
 import CasePage from "../../page/CaseFile/CasePage";
 import HeaderBackComponent from "../components/HeaderBackComponent";
 import PatientPage from "../../page/Patients/PatientPage";
@@ -20,8 +21,8 @@ export default (props) => {
         >
 
             <Stack.Screen
-                name="PatientFiles" 
-                
+                name="PatientFiles"
+
                 component={PatientFiles}
                 options={{
                     headerShown: false
@@ -43,7 +44,7 @@ export default (props) => {
                 }}
             />
 
-        <Stack.Screen
+            <Stack.Screen
                 name="patient"
                 component={PatientPage}
                 options={{
@@ -53,7 +54,18 @@ export default (props) => {
                     },
                     headerTitle: ""
                 }}
-                initialParams={{permissions}}
+                initialParams={{ permissions }}
+            />
+            <Stack.Screen
+                name="AddProcedure"
+                component={AddProcedurePage}
+                options={{
+                    headerShown: false
+                }}
+                initialParams={{
+                    isAdmin,
+                    permissions
+                }}
             />
 
 
