@@ -122,7 +122,8 @@ import {
     getAllById,
     addConsumablesCall,
     deletePatientEndpoint,
-    getPatientByIdEndpoint
+    getPatientByIdEndpoint,
+    addAppointmentToPatientEndPoint
 } from '../const/suitesEndpoints';
 import { createDocumentLink, documentById, documentData, documentUpload } from '../const/documentGenerationEndpoints';
 
@@ -918,6 +919,11 @@ export const revertPayment = async (orderId, data) => suitesAxiosInstance
 // ################# Patients Endpoints
 export const updatePatient = async (id, data) => suitesAxiosInstance
     .put(patientEndpoint(id), data)
+    .then(handleResponse)
+    .catch(handleError);
+
+export const addProcedureToPatientCall = async (procedureAppointment) => suitesAxiosInstance
+    .post(addAppointmentToPatientEndPoint, procedureAppointment)
     .then(handleResponse)
     .catch(handleError);
 

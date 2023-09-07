@@ -6,7 +6,7 @@ import { MenuOptions, MenuOption } from 'react-native-popup-menu';
 import InputField2 from '../../../components/common/Input Fields/InputField2';
 import DateInputField from '../../../components/common/Input Fields/DateInputField';
 import OptionsField from '../../../components/common/Input Fields/OptionsField';
-import { getTheatres, createPhysician, createTheatre, createNewProcedure, updateCaseFile, updateAppointmentById, updatePatient as patientUpdater, getUsersCall, addProcedureAppointmentCall, getCaseFileByPatientId, registrationCall, getRole, getRolesCall } from '../../../api/network';
+import { getTheatres, createPhysician, createTheatre, createNewProcedure, updateCaseFile, updateAppointmentById, updatePatient as patientUpdater, getUsersCall, addProcedureAppointmentCall, getCaseFileByPatientId, registrationCall, getRole, getRolesCall, getPatientbyId, addProcedureToPatientCall } from '../../../api/network';
 import styled, { css } from '@emotion/native';
 import { useTheme } from 'emotion-theming';
 import { createCaseFile } from '../../../api/network'
@@ -182,8 +182,8 @@ function NewProcedureOverlayContainer({ handleScheduleRefresh=()=> {}, appointme
     }
 
     const addProcedureAppointment = async (caseId, procedureAppointment) => {
-        // here
-        await addProcedureAppointmentCall(caseId, procedureAppointment)
+        
+        await addProcedureToPatientCall(procedureAppointment)
             .then(data => {
                 handleScheduleRefresh({});
                 handleConfirm()
@@ -191,11 +191,13 @@ function NewProcedureOverlayContainer({ handleScheduleRefresh=()=> {}, appointme
             .catch(res => {
                 hanadleErrorModal(res?.response?.data[0]?.message)
             })
+
+        console.log('i amldanknd', procedureAppointment)
     }
 
     const getCaseData = async (patientID) => {
 
-        await getCaseFileByPatientId(patientID)
+        await getPatientbyId(patientID)
             .then(data => {
                 
                 setPatientCase(data)
@@ -211,7 +213,7 @@ function NewProcedureOverlayContainer({ handleScheduleRefresh=()=> {}, appointme
     const addProcedure = async (caseFileData) => {
         let patientId = patientValue._id
         let procedure = caseFileData.caseProcedures[0]
-        let caseId=patientCase[0]._id
+        let caseId=patientCase._id
         procedure.staff = caseFileData.staff
         procedure.patient = patientId
         procedure.roleKeys = caseFileData.roleKeys

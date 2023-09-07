@@ -1884,6 +1884,8 @@ function CasePage({ auth = {}, route, addNotification, navigation, ...props }) {
         } = selectedCase;
         const { medicalInfo= {} } = patient;
         const { proceduresBillableItems } = chargeSheet;
+
+        console.log('i anka dopor', caseProcedures)
        // setBiilable(proceduresBillableItems)
 
         switch (selectedMenuItem) {

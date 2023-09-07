@@ -111,12 +111,12 @@ const FrameProcedureContent = ({
                     </View>
                 }
 
-                <View style={{padding: 8, height: 30}}>
+                {/* <View style={{padding: 8, height: 30}}>
                     <TextButton
                         title="View Picklist"
                         buttonPress={() => onOpenPickList()}
                     />
-                </View>
+                </View> */}
 
             </View>
         </View>
