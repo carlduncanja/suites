@@ -139,6 +139,7 @@ export const allPatientsEndpoint = '/patients'
 export const getPatientByIdEndpoint = id => `/patients/${id}`
 export const updatePatientRiskEndpoint = id => `/patients/${id}/risk` 
 export const deletePatientEndpoint = `/patients/deletePatient`
+export const addAppointmentToPatientEndPoint = `/patients/addProcedure`
 
 
 // ##### ALERTS
