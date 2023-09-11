@@ -102,7 +102,6 @@ const BillingCaseCard = ({quotations, tabDetails, caseProcedures, paymentDetails
         amountDue
     } = paymentDetails;
 
-    console.log('i fhgh jkj', quotations)
 
     const initialAmount = total
 
