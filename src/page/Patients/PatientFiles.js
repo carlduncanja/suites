@@ -208,7 +208,7 @@ function PatientFiles(props) {
         const phoneNumber = contactInfo?.phones[0]?.['phone'] || "--"
         return (
             <>
-                <RightBorderDataItem text={`${firstName} ${middleName} ${surname}`} flex={2} />
+                <RightBorderDataItem text={`${firstName} ${middleName === undefined ? "" : middleName} ${surname}`} flex={2} />
                 <DataItem text={genderLetter} color={"--color-blue-700"} flex={0.7} align={'flex-end'} />
                 <DataItem text={phoneNumber} color={"--color-blue-700"} flex={1.2} textAlign='center' />
                 <DataItem text={trn} color={"--color-blue-700"} flex={1} />

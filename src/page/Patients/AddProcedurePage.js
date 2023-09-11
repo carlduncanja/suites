@@ -9,8 +9,9 @@ import { useTheme } from 'emotion-theming';
 
 import ProgressContainer from '../../components/common/Progress/ProgressContainer';
 import ProcedureStep from '../../components/CaseFiles/ProceduresDialogTabs/ProcedureStep';
+import StaffStep from '../../components/CaseFiles/StaffDialogTabs/StaffStep';
 import CompleteCreateCase from '../../components/CaseFiles/CompleteCreateCase';
-import { isValidCaseProcedureAppointment, addProcedureAppointmentCall, getCaseFileByPatientId, createAppointment } from '../../api/network';
+import { isValidCaseProcedureAppointment, addProcedureAppointmentCall, getCaseFileByPatientId, createAppointment, addProcedureToPatientCall } from '../../api/network';
 
 //svg import 
 import ProcedureIcon from '../../../assets/svg/newCaseProcedure';
@@ -19,6 +20,7 @@ import Snackbar from 'react-native-paper/src/components/Snackbar';
 import ChevronLeft from '../../../assets/svg/ChevronLeft';
 import ChevronRight from '../../../assets/svg/ChevronRight';
 import CompleteAddPatient from '../../components/Patients/AddPatientCompile';
+import MedicalIcon from '../../../assets/svg/newCaseMedical';
 import procedures from '../../../assets/svg/newCaseProcedure';
 
 const PageWrapper = styled.View`
@@ -80,8 +82,9 @@ const FooterButtonContainer = styled.View`
 
 
 const CASE_PROCEDURE_TABS = {
-    PROCEDURES: 0,
-    FINAL: 3
+    MEDICAL_STAFF: 0,
+    PROCEDURES: 1,
+    FINAL: 2
 };
 
 
@@ -93,6 +96,28 @@ function AddProcedurePage({ navigation, addCaseFile, saveDraft, removeDraft, rou
     const { patientId } = route.params
 
     const [wizard, setWizard] = useState([
+
+        {
+            step: {
+                name: 'Medical Team',
+                selectedIcon: <MedicalIcon fillColor="#E53E3E" />,
+                disabledIcon: <MedicalIcon fillColor="#CBD5E0" />,
+                progress: 0,
+            },
+            tabs: ['Assignment 1'],
+            tabName: 'Assignment',
+            onAdd: () => {
+                // add new assignment
+                const updatedWizard = [...wizard];
+                const { tabs } = updatedWizard[1];
+                if (tabs.length === 3) return;
+
+                const assignment = `Assignment ${tabs.length + 1}`;
+                // wizard[2].tabs.push()
+                updatedWizard[1].tabs.push(assignment);
+                setWizard(updatedWizard);
+            },
+        },
         {
             step: {
                 name: 'Procedure',
@@ -138,6 +163,9 @@ function AddProcedurePage({ navigation, addCaseFile, saveDraft, removeDraft, rou
     const [patientFields, setPatientFields] = useState(!isEmpty(draftItem) ? draftItem.patient : {});
     const [patientData, setPatientData] = useState({})
 
+    const [staffInfo, setStaffInfo] = useState(!isEmpty(draftItem) && draftItem.staff?.length ? draftItem.staff : []);
+    const [staffErrors, setStaffErrors] = useState([]);
+    const [loadDraft, setLoadDraft] = useState(false);
 
     const [snackbar, setSnackbar] = useState({
         visible: false,
@@ -204,24 +232,31 @@ function AddProcedurePage({ navigation, addCaseFile, saveDraft, removeDraft, rou
 
     const handleOnComplete = () => {
 
-        console.log("the case date", caseProceduresInfo[0].procedure._id)
+        console.log("the case date",caseProceduresInfo[0].startTime)
         let caseId = patientData[0]._id
-        let end = moment (caseProceduresInfo[0].startTime)
-        end = end.hour + caseProceduresInfo[0].duration 
-        console.log("the datatatatata",end.toString())
-        
-        let appiontmentInfo = {
-            procedureId: caseProceduresInfo[0].procedure._id,
-            startTime: caseProceduresInfo[0].startTime,
-            endTime:caseProceduresInfo[0].startTime,
-            locationId: caseProceduresInfo[0].location._id,
-            caseId: caseId,
-            physicianId: patientData[0].staff.leadPhysician,
-            isRecovery: false,
-            authInfo: patientData[0].staff.leadPhysician
+        staffInfo[0].tag = "Lead Surgeon"
+
+        let staffBreakDown = {
+            leadPhysician: staffInfo[0],
+            nurses: [],
+            physicians: []
         }
 
-        createAppointment(appiontmentInfo)
+
+        let appiontmentInfo = {
+            duration: caseProceduresInfo[0].duration,
+            location : caseProceduresInfo[0].location._id,
+            patient: patientId,
+            procedure: caseProceduresInfo[0].procedure._id,
+            roleKeys: staffInfo,
+            staff: staffBreakDown,
+            startTime: caseProceduresInfo[0].startTime,
+            subject: staffInfo[0].name
+        } 
+
+        console.log("the appiontment info",appiontmentInfo)
+
+        addProcedureToPatientCall(appiontmentInfo)
             .then(data => {
                 console.log("the data coming out", data)
                 navigation.replace('patient', {
@@ -249,13 +284,27 @@ function AddProcedurePage({ navigation, addCaseFile, saveDraft, removeDraft, rou
                         errors={procedureErrors}
                         onErrorUpdate={value => setProcedureErrors(value)}
                     />
-                ); 
+                );
 
             case CASE_PROCEDURE_TABS.FINAL:
                 return (
                     <CompleteAddPatient
                         name={"Dean Morcan"}
                         onComplete={handleOnComplete}
+                    />
+                );
+
+
+            case CASE_PROCEDURE_TABS.MEDICAL_STAFF:
+                return (
+                    <StaffStep
+                        selectedTabIndex={selectedTabIndex}
+                        onStaffChange={onStaffUpdate}
+                        staffs={staffInfo}
+                        tabs={tabs}
+                        completedTabs={completedTabs}
+                        errors={staffErrors}
+                        onErrorsUpdate={value => setStaffErrors(value)}
                     />
                 );
             default:
@@ -267,6 +316,10 @@ function AddProcedurePage({ navigation, addCaseFile, saveDraft, removeDraft, rou
         console.log('procedure update', value);
 
         setCaseProceduresInfo([...value]);
+    };
+
+    const onStaffUpdate = value => {
+        setStaffInfo(value);
     };
 
     const getTabsProgress = () => ((selectedTabIndex + 1) / tabs.length) * 100;
@@ -313,6 +366,11 @@ function AddProcedurePage({ navigation, addCaseFile, saveDraft, removeDraft, rou
 
             case CASE_PROCEDURE_TABS.PROCEDURES: {
                 isValid = await validateProcedureInfo(selectedTabIndex);
+                break;
+            }
+
+            case CASE_PROCEDURE_TABS.MEDICAL_STAFF: {
+                isValid = validateStaffInfo(selectedTabIndex);
                 break;
             }
 
@@ -397,6 +455,37 @@ function AddProcedurePage({ navigation, addCaseFile, saveDraft, removeDraft, rou
 
         return isValid;
     };
+
+    const validateStaffInfo = staffIndex => {
+        let isValid = true;
+        const requiredParams = ['name'];
+
+        const staff = staffInfo[staffIndex] || {};
+
+        const updateErrors = [...staffErrors];
+        const errorObj = updateErrors[staffIndex] || {};
+
+        console.log('error index at', staffIndex, staff, staffInfo);
+
+        for (const requiredParam of requiredParams) {
+            if (!staff[requiredParam]) {
+                console.log(`${requiredParam} is required`);
+                isValid = false;
+                errorObj[requiredParam] = 'Please enter a value';
+                updateErrors[+staffIndex] = errorObj;
+            } else {
+                delete errorObj[requiredParam];
+                updateErrors[+staffIndex] = errorObj;
+            }
+        }
+
+        setStaffErrors(updateErrors);
+        console.log('staff errors', staffErrors);
+
+        return isValid;
+    };
+
+
     const validateProcedureAsync = (procedure, location, startTime, duration) => isValidCaseProcedureAppointment(procedure, location, startTime, duration)
         .then(results => {
             const { errors = [], isValid } = results;
