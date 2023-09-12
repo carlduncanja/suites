@@ -278,7 +278,7 @@ function AddProcedurePage({ navigation, addCaseFile, saveDraft, removeDraft, rou
 
         console.log("the appiontment info", appiontmentInfo)
 
-        /* addProcedureToPatientCall(appiontmentInfo)
+        addProcedureToPatientCall(appiontmentInfo)
              .then(data => {
                  console.log("the data coming out", data)
                  navigation.replace('patient', {
@@ -289,7 +289,7 @@ function AddProcedurePage({ navigation, addCaseFile, saveDraft, removeDraft, rou
                  console.log('failed to create case file', error.message);
                  console.log('failed to create case file', error.response);
                  Alert.alert('Sorry', 'Something went wrong when adding procedure.');
-             })*/
+             })
 
     }
 
