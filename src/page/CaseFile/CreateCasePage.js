@@ -661,11 +661,19 @@ function CreateCasePage({ navigation, addCaseFile, saveDraft, removeDraft, route
         setCaseCreated(true);
         createCaseFile(caseFileData)
             .then(data => {
-                addCaseFile(data);
-                navigation.replace('Case', {
-                    caseId: data._id,
-                    isEdit: true,
-                });
+                addCaseFile(data); 
+                if (route.params.intialPage == 'Patient') {
+                    navigation.replace('patient', {
+                        patientId: data.patient._id
+                    }) 
+                }
+                else{
+                    navigation.replace('Case', {
+                        caseId: data._id,
+                        isEdit: true,
+                    });
+                }
+                
             })
             .catch(error => {
                 console.log('failed to create case file', error.message);

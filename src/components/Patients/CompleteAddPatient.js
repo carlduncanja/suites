@@ -1,13 +1,13 @@
 import React, {} from 'react';
 import {View, Text, StyleSheet} from 'react-native';
-import CaseFileIcon from '../../../assets/svg/caseFolder'; 
-import {patient as PatientIcon} from '../../../assets/svg/newCasePatient'; 
+//import CaseFileIcon from '../../../assets/svg/caseFolder'; 
+//import {patient as PatientIcon} from '../../../assets/svg/newCasePatient'; 
 
 const CompleteAddPatient=({name})=>{
     <View style={styles.container}>
 
         <View style={styles.icon}>
-            <PatientIcon/>
+            
         </View>
 
         <View style={styles.textBox}>

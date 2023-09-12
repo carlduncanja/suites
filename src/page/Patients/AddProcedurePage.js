@@ -19,7 +19,7 @@ import PageButton from '../../components/common/Page/PageButton';
 import Snackbar from 'react-native-paper/src/components/Snackbar';
 import ChevronLeft from '../../../assets/svg/ChevronLeft';
 import ChevronRight from '../../../assets/svg/ChevronRight';
-import CompleteAddPatient from '../../components/Patients/AddPatientCompile';
+import CompleteAddPatient from '../../components/Patients/CompleteAddPatient';
 import MedicalIcon from '../../../assets/svg/newCaseMedical';
 import procedures from '../../../assets/svg/newCaseProcedure';
 
@@ -106,17 +106,17 @@ function AddProcedurePage({ navigation, addCaseFile, saveDraft, removeDraft, rou
             },
             tabs: ['Assignment 1'],
             tabName: 'Assignment',
-            onAdd: () => {
+            /*onAdd: () => {
                 // add new assignment
                 const updatedWizard = [...wizard];
-                const { tabs } = updatedWizard[1];
+                const { tabs } = updatedWizard[0];
                 if (tabs.length === 3) return;
 
                 const assignment = `Assignment ${tabs.length + 1}`;
                 // wizard[2].tabs.push()
-                updatedWizard[1].tabs.push(assignment);
+                updatedWizard[0].tabs.push(assignment);
                 setWizard(updatedWizard);
-            },
+            },*/
         },
         {
             step: {
@@ -134,12 +134,12 @@ function AddProcedurePage({ navigation, addCaseFile, saveDraft, removeDraft, rou
             onAdd: () => {
                 // add new procedure
                 const updatedWizard = [...wizard];
-                const { tabs } = updatedWizard[0];
-                if (tabs.length === 3) return;
+                const { tabs } = updatedWizard[1];
+                //if (tabs.length === 3) return;
 
                 const assignment = `Procedure ${tabs.length + 1}`;
-                // wizard[2].tabs.push()
-                updatedWizard[0].tabs.push(assignment);
+                wizard[2].tabs.push()
+                updatedWizard[1].tabs.push(assignment);
                 setWizard(updatedWizard);
             },
         },
@@ -230,9 +230,31 @@ function AddProcedurePage({ navigation, addCaseFile, saveDraft, removeDraft, rou
         }
     };
 
+    const handleTabPress = name => {
+        if (completedTabs.includes(name)) {
+            let newTabs = [...tabs];
+            if (selectedIndex === 1) {
+                tabs.length === 3 ?
+                    (newTabs = newTabs) :
+                    (newTabs = [...newTabs, `Assignment ${tabs.length + 1}`]);
+            }
+            const tabsCopy = completedTabs;
+            const completedFilterTabIndex = completedTabs.findIndex(
+                tab => tab === name
+            );
+            const selectedFilterTabIndex = tabs.findIndex(tab => tab === name);
+            const updatedTabs = tabsCopy.slice(0, completedFilterTabIndex);
+
+            setSelectedTabIndex(selectedFilterTabIndex);
+            setCompletedTabs(updatedTabs);
+            setTabs(newTabs);
+        }
+    };
+
+
     const handleOnComplete = () => {
 
-        console.log("the case date",caseProceduresInfo[0].startTime)
+        console.log("the case date", caseProceduresInfo[0].startTime)
         let caseId = patientData[0]._id
         staffInfo[0].tag = "Lead Surgeon"
 
@@ -245,29 +267,29 @@ function AddProcedurePage({ navigation, addCaseFile, saveDraft, removeDraft, rou
 
         let appiontmentInfo = {
             duration: caseProceduresInfo[0].duration,
-            location : caseProceduresInfo[0].location._id,
+            location: caseProceduresInfo[0].location._id,
             patient: patientId,
             procedure: caseProceduresInfo[0].procedure._id,
             roleKeys: staffInfo,
             staff: staffBreakDown,
             startTime: caseProceduresInfo[0].startTime,
             subject: staffInfo[0].name
-        } 
+        }
 
-        console.log("the appiontment info",appiontmentInfo)
+        console.log("the appiontment info", appiontmentInfo)
 
-        addProcedureToPatientCall(appiontmentInfo)
-            .then(data => {
-                console.log("the data coming out", data)
-                navigation.replace('patient', {
-                    patientId: patientId
-                })
-            })
-            .catch(error => {
-                console.log('failed to create case file', error.message);
-                console.log('failed to create case file', error.response);
-                Alert.alert('Sorry', 'Something went wrong when adding procedure.');
-            })
+        /* addProcedureToPatientCall(appiontmentInfo)
+             .then(data => {
+                 console.log("the data coming out", data)
+                 navigation.replace('patient', {
+                     patientId: patientId
+                 })
+             })
+             .catch(error => {
+                 console.log('failed to create case file', error.message);
+                 console.log('failed to create case file', error.response);
+                 Alert.alert('Sorry', 'Something went wrong when adding procedure.');
+             })*/
 
     }
 
@@ -288,10 +310,13 @@ function AddProcedurePage({ navigation, addCaseFile, saveDraft, removeDraft, rou
 
             case CASE_PROCEDURE_TABS.FINAL:
                 return (
-                    <CompleteAddPatient
-                        name={"Dean Morcan"}
-                        onComplete={handleOnComplete}
-                    />
+                    <View style={{ flex:1,alignSelf: 'center',marginTop:50}}>
+                        <View style={styles.textBox}>
+                            <Text style={styles.text}>
+                                Tap <Text style={{ color: '#3182CE' }}>CONTINUE</Text> to finish filling out your new Case File
+                            </Text>
+                        </View>
+                    </View>
                 );
 
 
@@ -350,6 +375,7 @@ function AddProcedurePage({ navigation, addCaseFile, saveDraft, removeDraft, rou
     };
 
     const onPositiveButtonPress = async () => {
+        console.log("the selected index ", selectedIndex)
 
         const isFinalTab = selectedTabIndex === tabs.length - 1;
 
@@ -385,7 +411,7 @@ function AddProcedurePage({ navigation, addCaseFile, saveDraft, removeDraft, rou
             return;
         }
 
-        if (selectedIndex === 1) {
+        if (selectedIndex === 2) {
             // we are on the final tab
             console.log('Hey Save my data and open bottom sheet with the data');
 
@@ -400,7 +426,7 @@ function AddProcedurePage({ navigation, addCaseFile, saveDraft, removeDraft, rou
         ) {
             setPositiveText('CONTINUE');
             setCompletedSteps([...completedSteps, steps[selectedIndex].name]);
-            setSelectedIndex(1);
+            setSelectedIndex(2);
             setSelectedTabIndex(0);
             setTabs([
                 `${patientFields.firstName} ${patientFields.surname} Case Created`,
@@ -645,4 +671,22 @@ const styles = StyleSheet.create({
         borderBottomWidth: 1,
         borderBottomColor: '#E3E8EF',
     },
+    textBox: {
+        borderWidth: 1,
+        borderColor: '#CCD6E0',
+        borderRadius: 8,
+        height: 64,
+        width: 304,
+        padding: 12,
+        paddingLeft: 20,
+        paddingRight: 20,
+        alignItems: 'center',
+        justifyContent: 'center'
+    },
+    text: {
+        color: '#4E5664',
+        fontSize: 14,
+        fontWeight: '500',
+        textAlign: 'center'
+    }
 });
