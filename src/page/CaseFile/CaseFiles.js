@@ -165,7 +165,7 @@ function CaseFiles(props) {
             setCurrentPageListMin(currentListMin);
             setCurrentPageListMax(currentListMax);
             fetchCaseFilesData(currentPage);
-            setNextDisabled(false);
+            //setNextDisabled(false);
         }
     };
 
@@ -262,8 +262,8 @@ function CaseFiles(props) {
                     setPreviousDisabled(true);
                 }
                 setCaseFiles(data);
-                setTotalPages(pages);
-                // data.length === 0 ? setTotalPages(1) : setTotalPages(pages);
+                //setTotalPages(pages);
+                data.length === 0 ? setTotalPages(1) : setTotalPages(pages);
             })
             .catch(error => {
                 console.log('failed to get case files', error);
