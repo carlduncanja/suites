@@ -23,6 +23,7 @@ function PageHeader({
                         onBack,
                         caseId,
                         timeStamp,
+                        status,
                         appointmentObj,
                         selectedTab,
                         isArchive: isEditDisabled = false,
@@ -36,6 +37,14 @@ function PageHeader({
     const {pageState, setPageState} = useContext(PageContext);
     const [updated, setUpdated] = useState(false)
     const [endTime, setEndTime] = useState("")
+
+    const [started, setStarted] = useState(false)
+
+    useEffect(() => { 
+        if(status == 'In Progress') {
+            setStarted(true)
+        }
+    }, [])
 
 
     const onEditPress = () => {
@@ -163,7 +172,7 @@ function PageHeader({
                     timeStamp ={timeStamp}
                     caseFileActions = {true}
                     endTime = {end}
-                    setEndTime = {(data) => setEndTime(data)}
+                    setEndTime = {data => {setEndTime(data)}}
                     message="Please confirm the following updates"
                 />,
                 onClose: () => {
@@ -299,7 +308,7 @@ function PageHeader({
                         </EditModeContainer>
                     }
 
-                    { ((!isEditMode && timeStamp && selectedTab  === 'Consumables') &&  !updated) && <EditButtonWrapper style = {{width: 150}}>
+                    { (((!isEditMode && timeStamp && selectedTab  === 'Consumables') || started )&&  !updated) && <EditButtonWrapper style = {{width: 150}}>
                         <EditButtonContainer
                             theme={theme}
                             backgroundColor={getEditBtnBackground()}
@@ -315,7 +324,7 @@ function PageHeader({
                         </EditButtonWrapper>
                     }
                     
-                   { isEditable  && <EditButtonWrapper theme={theme}>
+                   { (isEditable && !updated ) && <EditButtonWrapper theme={theme}>
                         <EditButtonContainer
                             theme={theme}
                             backgroundColor={getEditBtnBackground()}

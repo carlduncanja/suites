@@ -74,6 +74,7 @@ import AcceptIcon from '../../../assets/svg/acceptIcon';
 import { CHARGE_SHEET_STATUSES } from '../../components/CaseFiles/navigation/screens/ChargeSheet';
 import ApplyDiscountItem from './ApplyDiscountItem';
 import PayBalanceItem from './PayBalanceItem';
+import moment from 'moment';
 
 const overlayMenu = [
     {
@@ -128,6 +129,8 @@ function CasePage({ auth = {}, route, addNotification, navigation, ...props }) {
     //     initialMenuItem = overlayMenu[4].name
     // }
 
+
+
     const { userToken } = auth;
     let authInfo = {};
     try {
@@ -169,6 +172,25 @@ function CasePage({ auth = {}, route, addNotification, navigation, ...props }) {
     if (selectedCase){
          billable = selectedCase.chargeSheet
     }
+
+    const start = selectedCase.caseProcedures?.[0].appointment.startTime
+    const end = selectedCase.caseProcedures?.[0].appointment.endTime
+
+    const getProgressStatus = (startTime, endTime) => {
+        const now = moment();
+        const start = moment(startTime);
+        const end = moment(endTime);
+
+        if (now.isBefore(start)) {
+            return 'Not Yet Started';
+        }
+        if (now.isBefore(end)) {
+            return 'In Progress';
+        }
+        return 'Ended';
+    };
+
+    const status = getProgressStatus(start, end)
 
     console.log('suodso t78878', billable?.inventories)
 
@@ -1958,6 +1980,7 @@ function CasePage({ auth = {}, route, addNotification, navigation, ...props }) {
                 <DetailsPage
                     isEditable={casePermissions.update}
                     timeStamp = {timeStamp}
+                    status={status}
                     appointmentObj = {appointmentObj}
                     caseId =  {caseId}
                     proceduresBillableItemsInfo = {billable}
