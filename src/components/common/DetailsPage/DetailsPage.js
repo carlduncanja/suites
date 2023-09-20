@@ -16,6 +16,7 @@ function DetailsPage({
     isArchive = false,
     hasIcon = null,
     timeStamp,
+    status,
     appointmentObj,
     caseId,
     title = '__',
@@ -49,6 +50,7 @@ function DetailsPage({
                 <>
                     <PageHeader
                         timeStamp = {timeStamp}
+                        status = {status}
                         appointmentObj = {appointmentObj}
                         caseId = {caseId}
                         isArchive={isArchive}  
