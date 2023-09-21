@@ -1,6 +1,6 @@
 import suitesAxiosInstance, { documentGenerationInstance, documentManagementInstance } from './index';
 import { handleError, handleRawResponse, handleResponse } from './apiUtils';
-
+import { Buffer } from "buffer";
 import {
     inventoryGroups,
     inventoryGroup,
@@ -985,7 +985,7 @@ const credentials = Buffer.from(`${'devapiuser'}:${'openforme'}`).toString('base
 export const generateDocumentLink = async data => documentGenerationInstance.post(createDocumentLink, data,
     { headers: { 
         'Content-Type': 'application/json', 
-        'Authentication': `Basic ${credentials}`
+        'Authorization': `Basic ${credentials}`
         },
     })
     .then(handleResponse)
