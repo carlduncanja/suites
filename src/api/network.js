@@ -980,7 +980,14 @@ export const deletePatient = async (data) => suitesAxiosInstance
 .catch(handleError)
 
 // ################# Document Generation Endpoints
-export const generateDocumentLink = async data => documentGenerationInstance.post(createDocumentLink, data)
+
+const credentials = Buffer.from(`${'devapiuser'}:${'openforme'}`).toString('base64');
+export const generateDocumentLink = async data => documentGenerationInstance.post(createDocumentLink, data,
+    { headers: { 
+        'Content-Type': 'application/json', 
+        'Authentication': `Basic ${credentials}`
+        },
+    })
     .then(handleResponse)
     .catch(handleError);
 
