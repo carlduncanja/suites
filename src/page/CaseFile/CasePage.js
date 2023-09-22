@@ -1312,18 +1312,18 @@ function CasePage({ auth = {}, route, addNotification, navigation, ...props }) {
             }
         } else if (selectedMenuItem === 'Procedures') {
             switch (selectedTab) {
-                case 'Details': {
-                    const addNewProcedure = (
-                        <ActionItem
-                            title="Add Appointment"
-                            icon={<AddIcon />}
-                            onPress={openAddProcedure}
-                        />
-                    );
-                    floatingAction.push(addNewProcedure);
-                    title = 'APPOINTMENT ACTIONS';
-                    break;
-                }
+                // case 'Details': {
+                //     const addNewProcedure = (
+                //         <ActionItem
+                //             title="Add Appointment"
+                //             icon={<AddIcon />}
+                //             onPress={openAddProcedure}
+                //         />
+                //     );
+                //     floatingAction.push(addNewProcedure);
+                //     title = 'APPOINTMENT ACTIONS';
+                //     break;
+                // }
             }
         }
 
