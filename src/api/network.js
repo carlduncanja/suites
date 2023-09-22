@@ -1,6 +1,6 @@
 import suitesAxiosInstance, { documentGenerationInstance, documentManagementInstance } from './index';
 import { handleError, handleRawResponse, handleResponse } from './apiUtils';
-
+import { Buffer } from "buffer";
 import {
     inventoryGroups,
     inventoryGroup,
@@ -972,19 +972,27 @@ export const getPatientbyId = async (id) => suitesAxiosInstance
 export const updatePatientRisk = async (id, data) => suitesAxiosInstance
     .put(updatePatientRiskEndpoint(id), data)
     .then(handleResponse)
-    .catch(handleError) 
+    .catch(handleError)
 
 export const deletePatient = async (data) => suitesAxiosInstance
-.delete(deletePatientEndpoint, {data})
-.then(handleResponse)
-.catch(handleError)
+    .delete(deletePatientEndpoint, { data })
+    .then(handleResponse)
+    .catch(handleError)
 
 // ################# Document Generation Endpoints
-export const generateDocumentLink = async data => documentGenerationInstance.post(createDocumentLink, data, {auth: { username: "api_user", password: "d0cManUzer123"}})
+
+const credentials = Buffer.from(`${'devapiuser'}:${'openforme'}`).toString('base64');
+export const generateDocumentLink = async data => documentGenerationInstance.post(createDocumentLink, data,
+    {
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Basic ${credentials}`
+        },
+    })
     .then(handleResponse)
     .catch(handleError);
 
-export const uploadDocument = async data => documentManagementInstance.post(documentUpload, data, { headers: { 'Content-Type': 'multipart/form-data',auth: {     username: "api_user",  password: "d0cManUzer123"} } })
+export const uploadDocument = async data => documentManagementInstance.post(documentUpload, data, { headers: { 'Content-Type': 'multipart/form-data', auth: { username: "api_user", password: "d0cManUzer123" } } })
     .then(handleResponse)
     .catch(handleError);
 
@@ -992,7 +1000,17 @@ export const getFiletData = async id => documentManagementInstance.get(documentD
     .then(handleResponse)
     .catch(handleError);
 
-export const getDocumentById = async id => documentManagementInstance.get(documentById(id), { responseType: 'blob', headers:{auth: { username: "api_user", password: "d0cManUzer123"}}})
+
+/*export const getFileData = async id => documentManagementInstance.get(documentData(id), {
+    headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Basic ${credentials}`
+    },
+})
+    .then(handleResponse)
+    .catch(handleError)*/
+
+export const getDocumentById = async id => documentManagementInstance.get(documentById(id), { responseType: 'blob', headers: { auth: { username: "api_user", password: "d0cManUzer123" } } })
     .then(handleResponse)
     .catch(handleError);
 
@@ -1097,8 +1115,8 @@ export const deletePatientLifestyle = async (id) => suitesAxiosInstance
     .then(handleResponse)
     .catch(handleError)
 
-export const updatePatientLifestyle = async (id,data) => suitesAxiosInstance
-    .put(updatePatientLifestyleEndpiont(id),data)
+export const updatePatientLifestyle = async (id, data) => suitesAxiosInstance
+    .put(updatePatientLifestyleEndpiont(id), data)
     .then(handleResponse)
     .catch(handleError)
 
