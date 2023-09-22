@@ -1,6 +1,6 @@
 import suitesAxiosInstance, { documentGenerationInstance, documentManagementInstance } from './index';
 import { handleError, handleRawResponse, handleResponse } from './apiUtils';
-
+import { Buffer } from "buffer";
 import {
     inventoryGroups,
     inventoryGroup,
@@ -980,7 +980,14 @@ export const deletePatient = async (data) => suitesAxiosInstance
 .catch(handleError)
 
 // ################# Document Generation Endpoints
-export const generateDocumentLink = async data => documentGenerationInstance.post(createDocumentLink, data)
+
+const credentials = Buffer.from(`${'devapiuser'}:${'openforme'}`).toString('base64');
+export const generateDocumentLink = async data => documentGenerationInstance.post(createDocumentLink, data,
+    { headers: { 
+        'Content-Type': 'application/json', 
+        'Authorization': `Basic ${credentials}`
+        },
+    })
     .then(handleResponse)
     .catch(handleError);
 
