@@ -94,6 +94,7 @@ function PrintSchedulePage({route, navigation}) {
             console.log('print payload: ', printDocumentPayload);
 
             // generate pdf for print schedule.
+            console.log("we here permanent")
             const response = await generateDocumentLink(printDocumentPayload);
 
             const fileUrl = response?.url;

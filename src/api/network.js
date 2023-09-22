@@ -980,19 +980,19 @@ export const deletePatient = async (data) => suitesAxiosInstance
 .catch(handleError)
 
 // ################# Document Generation Endpoints
-export const generateDocumentLink = async data => documentGenerationInstance.post(createDocumentLink, data)
+export const generateDocumentLink = async data => documentGenerationInstance.post(createDocumentLink, data, {auth: { username: "api_user", password: "d0cManUzer123"}})
     .then(handleResponse)
     .catch(handleError);
 
-export const uploadDocument = async data => documentManagementInstance.post(documentUpload, data, { headers: { 'Content-Type': 'multipart/form-data' } })
+export const uploadDocument = async data => documentManagementInstance.post(documentUpload, data, { headers: { 'Content-Type': 'multipart/form-data',auth: {     username: "api_user",  password: "d0cManUzer123"} } })
     .then(handleResponse)
     .catch(handleError);
 
-export const getFiletData = async id => documentManagementInstance.get(documentData(id))
+export const getFiletData = async id => documentManagementInstance.get(documentData(id),{auth: { username: "api_user", password: "d0cManUzer123"}})
     .then(handleResponse)
     .catch(handleError);
 
-export const getDocumentById = async id => documentManagementInstance.get(documentById(id), { responseType: 'blob' })
+export const getDocumentById = async id => documentManagementInstance.get(documentById(id), { responseType: 'blob', headers:{auth: { username: "api_user", password: "d0cManUzer123"}}})
     .then(handleResponse)
     .catch(handleError);
 
