@@ -10,7 +10,7 @@ import { getFiletData } from '../../api/network';
 import LoadingIndicator from '../../components/common/LoadingIndicator';
 import PdfReader from 'rn-pdf-reader-js';
 import * as FileSystem from 'expo-file-system';
-
+import { Buffer } from "buffer";
 const InvoiceDetailsPage = ({
     onImageUpload = () => { },
     removeDocument = () => { },
@@ -47,7 +47,9 @@ const InvoiceDetailsPage = ({
     }, [documentId]);
 
     const getDocumentData =  () => {
+        const credentials = Buffer.from(`${'devapiuser'}:${'openforme'}`).toString('base64');
         return new Promise((resolve) => {
+            console.log('i am docunsjd id,', documentId)
             setIsFetching(true)
             getFiletData(documentId)
             .then(async (res) => {
@@ -57,8 +59,13 @@ const InvoiceDetailsPage = ({
                     let image;
                     try {
                         const { uri } = await FileSystem.downloadAsync(
-                            `https://influx.smssoftwarestudio.com/insight/document-management-service/api/documents/${documentId}`,
-                            `${FileSystem.cacheDirectory}${frameName.replace(/\s/g, '')}`
+                            `https://influx-dev.smssoftwarestudio.com/insight/document-management-service/api/documents/${documentId}`,
+                            `${FileSystem.cacheDirectory}${frameName.replace(/\s/g, '')}`,
+                            { headers: { 
+                                'Content-Type': 'application/json', 
+                                'Authorization': `Basic ${credentials}`
+                                },
+                            }
                         );
 
                         image = await FileSystem.readAsStringAsync(uri, {
@@ -70,7 +77,7 @@ const InvoiceDetailsPage = ({
                         console.log("An error occured whilst converting to base 64", err);
                     }
                 } else {
-                    resolve(`https://influx.smssoftwarestudio.com/insight/document-management-service/api/documents/${documentId}`);
+                    resolve(`https://influx-dev.smssoftwarestudio.com/insight/document-management-service/api/documents/${documentId}`);
                 }
                 
             })

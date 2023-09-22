@@ -991,11 +991,20 @@ export const generateDocumentLink = async data => documentGenerationInstance.pos
     .then(handleResponse)
     .catch(handleError);
 
-export const uploadDocument = async data => documentManagementInstance.post(documentUpload, data, { headers: { 'Content-Type': 'multipart/form-data' } })
+export const uploadDocument = async data => documentManagementInstance.post(documentUpload, data, 
+    {headers: { 
+        'Content-Type': 'multipart/form-data',
+        'Authorization': `Basic ${credentials}` 
+    } })
     .then(handleResponse)
     .catch(handleError);
 
-export const getFiletData = async id => documentManagementInstance.get(documentData(id))
+export const getFiletData = async id => documentManagementInstance.get(documentData(id),
+{ headers: { 
+    'Content-Type': 'application/json', 
+    'Authorization': `Basic ${credentials}`
+    },
+})
     .then(handleResponse)
     .catch(handleError);
 

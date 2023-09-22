@@ -455,7 +455,7 @@ function AppointmentPage({ navigation, route }) {
     return (
         <PageWrapper theme={theme}>
 
-            <HeaderWrapper theme={theme}>
+            {/* <HeaderWrapper theme={theme}>
                 <HeaderContainer theme={theme}>
                     <HeaderText theme={theme}>Add Appointment</HeaderText>
                     <CloseButtonWrapper>
@@ -464,7 +464,7 @@ function AppointmentPage({ navigation, route }) {
                         </CloseButtonContainer>
                     </CloseButtonWrapper>
                 </HeaderContainer>
-            </HeaderWrapper>
+            </HeaderWrapper> */}
 
             <PageContentWrapper theme={theme}>
                 <TabsViewContainer>
