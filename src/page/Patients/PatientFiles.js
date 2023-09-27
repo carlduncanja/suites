@@ -97,6 +97,7 @@ function PatientFiles(props) {
     const [currentPagePosition, setCurrentPagePosition] = useState(1);
     const [isNextDisabled, setNextDisabled] = useState(false);
     const [isPreviousDisabled, setPreviousDisabled] = useState(true);
+    const [currentPage, setCurrentPage] = useState(1)
 
     
 
@@ -121,7 +122,7 @@ function PatientFiles(props) {
         });
 
         search();
-        setCurrentPagePosition(1);
+        // setCurrentPagePosition(1);
     }, [searchValue]);
 
     const onSearchChange = input => {
@@ -129,27 +130,41 @@ function PatientFiles(props) {
     };
 
     const goToNextPage = () => {
-        if (currentPagePosition < totalPages) {
+        if (currentPagePosition < totalPages) { 
+            console.log("total pages: " + totalPages)
+            console.log("current page position: ", currentPagePosition)
+            
             const {
                 currentPage,
                 currentListMin,
                 currentListMax
             } = useNextPaginator(currentPagePosition, recordsPerPage, currentPageListMin, currentPageListMax);
-            setCurrentPagePosition(currentPage);
+            
+            console.log("current page: ", currentPage)
+            
+           
+            setCurrentPagePosition(currentPagePosition);
+            setCurrentPage(currentPage);
+            
+            console.log("new current page position: ", currentPagePosition)
+            
             setCurrentPageListMin(currentListMin);
             setCurrentPageListMax(currentListMax);
+            
             fetchPatientFiles(currentPage);
         }
     };
+ 
+    
 
-
-    const goToPreviousPage = () => {
+    const goToPreviousPage = () => { 
         const {
             currentPage,
             currentListMin,
             currentListMax
         } = usePreviousPaginator(currentPagePosition, recordsPerPage, currentPageListMin, currentPageListMax);
         setCurrentPagePosition(currentPage);
+        console.log("current page: ", currentPage)
         setCurrentPageListMin(currentListMin);
         setCurrentPageListMax(currentListMax);
         fetchPatientFiles(currentPage);
@@ -157,12 +172,14 @@ function PatientFiles(props) {
 
     const fetchPatientFiles = pagePosition => {
         const currentPosition = pagePosition || 1;
-        setCurrentPagePosition(currentPagePosition)
-        setFetchingPatients(true)
-
+        setCurrentPagePosition(currentPagePosition) 
+        setFetchingPatients(true) 
+        
+         
         getPatients(searchValue, 10, currentPosition)
             .then(patientResults => {
-                const { data = [], pages = 0 } = patientResults
+                const { data = [], pages = 0 } = patientResults 
+                console.log(patientResults)
                 if (pages === 1) {
                     setPreviousDisabled(true);
                     setNextDisabled(true);
@@ -178,9 +195,11 @@ function PatientFiles(props) {
                 } else {
                     setNextDisabled(true);
                     setPreviousDisabled(true);
-                }
+                } 
+                setCurrentPagePosition(currentPosition)
                 setPatientData(data);
-                data.length === 0 ? setTotalPages(1) : setTotalPages(pages);
+                data.length === 0 ? setTotalPages(1) : setTotalPages(pages); 
+                
             })
             .catch(error => {
                 setTotalPages(1);
