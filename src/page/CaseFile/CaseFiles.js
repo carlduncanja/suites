@@ -242,7 +242,9 @@ function CaseFiles(props) {
 
         setFetchingCaseFiles(true);
         getCaseFiles(searchValue, recordsPerPage, currentPosition)
-            .then(caseResult => {
+            .then(caseResult => { 
+
+                console.log("this all the data i will ever neeed",caseResult.data[0].caseProcedures)
                 const { data = [], pages = 0 } = caseResult;
 
                 if (pages === 1) {
@@ -341,11 +343,14 @@ function CaseFiles(props) {
 
         patient ? name = `${patient.firstName} ${patient.surname}` : name = '';
         leadPhysician ? physicianName = `Dr. ${leadPhysician.surname}` : physicianName = '';
-
+        
+       
         const dates = caseProcedures.map(item => {
+           
             const { appointment } = item;
-            const { startTime } = appointment;
-            return moment(startTime);
+            const  startTime  = appointment?.["startTime"]
+            
+           return moment( startTime );
         });
 
         const nextVisit = getDate(dates);
