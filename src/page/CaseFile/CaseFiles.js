@@ -155,12 +155,13 @@ function CaseFiles(props) {
 
     const goToNextPage = () => {
         if (currentPagePosition < totalPages) {
-            console.log('Next page');
+            console.log('Next page',currentPage);
             const {
                 currentPage,
                 currentListMin,
                 currentListMax
-            } = useNextPaginator(currentPagePosition, recordsPerPage, currentPageListMin, currentPageListMax);
+            } = useNextPaginator(currentPagePosition, recordsPerPage, currentPageListMin, currentPageListMax); 
+            console.log('Next page',currentPage);
             setCurrentPagePosition(currentPage);
             setCurrentPageListMin(currentListMin);
             setCurrentPageListMax(currentListMax);
