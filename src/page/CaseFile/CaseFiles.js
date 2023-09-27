@@ -349,8 +349,9 @@ function CaseFiles(props) {
         const dates = caseProcedures.map(item => {
            
             const { appointment } = item;
-            const { startTime } = appointment;
-            return moment(startTime);
+            const  startTime  = appointment?.["startTime"]
+            
+           return moment( startTime );
         });
 
         const nextVisit = getDate(dates);
