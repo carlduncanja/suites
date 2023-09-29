@@ -44,7 +44,7 @@ function PageHeader({
         if(status == 'In Progress') {
             setStarted(true)
         }
-    }, [])
+    }, [status])
 
 
     const onEditPress = () => {
@@ -308,7 +308,7 @@ function PageHeader({
                         </EditModeContainer>
                     }
 
-                    { (((!isEditMode && timeStamp && selectedTab  === 'Consumables') || started )&&  !updated) && <EditButtonWrapper style = {{width: 150}}>
+                    { (((!isEditMode && timeStamp && selectedTab  === 'Consumables') || (started && selectedTab  === 'Consumables' )) &&  !updated) && <EditButtonWrapper style = {{width: 150}}>
                         <EditButtonContainer
                             theme={theme}
                             backgroundColor={getEditBtnBackground()}
