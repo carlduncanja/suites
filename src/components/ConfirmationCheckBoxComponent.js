@@ -15,7 +15,7 @@ import moment from 'moment';
 
 const ModalWrapper = styled.View`
     width: 440px;
-    height: 400px;
+    /*height: 400px;*/
     position: relative;
     background-color: white;
     border-radius: 8px;
@@ -393,7 +393,7 @@ function ConfirmationCheckBoxComponent({
 
     return (
         <MultipleShadowsContainer shadows={shadows}>
-            <ModalWrapper theme={theme}>
+            <ModalWrapper theme={theme} style={{height : !caseFileActions ? 250 : 400}}>
                 <ModalContainer>
                     <HeaderWrapper theme={theme}>
                         <HeadingContainer theme={theme}>
