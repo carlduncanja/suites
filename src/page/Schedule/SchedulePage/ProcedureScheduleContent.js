@@ -293,12 +293,14 @@ function ProcedureScheduleContent({
 
   function handleStartClick(){
     const now = new moment()
+    const end = new moment().add(2, "hours");
+    
     const appointmentObj = {
           _id: _id,
           description: descrition,
           subject: subject,
           startTime: now,
-          endTime: endTime,
+          endTime: end,
           title: title,
           location: appLocation
     }
