@@ -117,7 +117,7 @@ function Page(props) {
     }, []);
 
 
-    const content = hasList ? (
+    const content = listData?.length > 0 ? (
         <List
             listData={listData}
             listHeaders={listHeaders}
@@ -128,7 +128,7 @@ function Page(props) {
             listItemFormat={listItemFormat}
             refreshing={isFetchingData}
         />
-    ) : hasEmpty && listData?.length < 1 ?
+    ) : listData?.length < 1?
         <EmptyWrapper theme={theme}>
             <PageContent theme={theme}>
                 {/*    ICON     */}
@@ -137,7 +137,7 @@ function Page(props) {
                 </IconWrapper>
 
                 {/*    MESSAGE HEADER  */}
-                <MessageWrapper theme={theme}>{emptyTitle}</MessageWrapper>
+                <MessageWrapper theme={theme}>{'No Records Found'}</MessageWrapper>
 
             </PageContent>
         </EmptyWrapper>
@@ -174,10 +174,18 @@ function Page(props) {
                         isFetchingData ?
                             <LoadingIndicator /> :
                             isDisabled ? (
-                                <DisabledSectionComponent
-                                    navigation={navigation}
-                                    isAdmin={isAdmin}
-                                />
+                                <EmptyWrapper theme={theme}>
+                                    <PageContent theme={theme}>
+                                        {/*    ICON     */}
+                                        <IconWrapper theme={theme}>
+                                            <EmptyState />
+                                        </IconWrapper>
+
+                                        {/*    MESSAGE HEADER  */}
+                                        <MessageWrapper theme={theme}>{'No Records Found'}</MessageWrapper>
+
+                                    </PageContent>
+                                </EmptyWrapper>
                             ) :
                                 content
                     }
