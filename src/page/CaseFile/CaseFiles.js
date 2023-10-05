@@ -266,6 +266,7 @@ function CaseFiles(props) {
                 }
                 setCaseFiles(data);
                 //setTotalPages(pages);
+                setPageSettingState({ ...pageSettingState, isDisabled: false });
                 data.length === 0 ? setTotalPages(1) : setTotalPages(pages);
             })
             .catch(error => {
@@ -620,7 +621,7 @@ function CaseFiles(props) {
             setPageSettingState
         }}
         >
-            {/*search bar and archives button*/}
+
             <NavPage
                 isFetchingData={isFetchingCaseFiles}
                 onRefresh={handleDataRefresh}
@@ -658,7 +659,7 @@ function CaseFiles(props) {
                 isNextDisabled={isNextDisabled}
                 isPreviousDisabled={isPreviousDisabled}
             />
-        </PageSettingsContext.Provider>
+         </PageSettingsContext.Provider>
     );
 }
 

@@ -250,6 +250,8 @@ function PatientFiles(props) {
     const renderFn = item => {
         return <>
 
+            {console.log('i a, iajksj', item)}
+
             <ListItem
                 hasCheckBox={true}
                 isChecked={selectedPatientds.includes(item._id || item.id)}
@@ -451,7 +453,7 @@ function PatientFiles(props) {
         <NavPage
             isFetchingData={isFetchingPatients}
             routeName='Patients'
-            placeholderText="Search Patient by name"
+            placeholderText="Search Patient by name or contact#"
             listData={patientData}
             changeText={onSearchChange}
             itemsSelected={selectedPatientds}
