@@ -453,7 +453,7 @@ function PatientFiles(props) {
         <NavPage
             isFetchingData={isFetchingPatients}
             routeName='Patients'
-            placeholderText="Search Patient by name"
+            placeholderText="Search Patient by name or contact#"
             listData={patientData}
             changeText={onSearchChange}
             itemsSelected={selectedPatientds}
