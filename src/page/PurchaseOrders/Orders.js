@@ -98,6 +98,7 @@ const Orders = (props) => {
     const [currentPagePosition, setCurrentPagePosition] = useState(1);
     const [isNextDisabled, setNextDisabled] = useState(false);
     const [isPreviousDisabled, setPreviousDisabled] = useState(true);
+    const [currentPage, setCurrentPage] = useState(1)
 
     const [searchValue, setSearchValue] = useState("");
     const [searchResults, setSearchResult] = useState([]);
@@ -203,7 +204,7 @@ const Orders = (props) => {
     };
 
     const goToNextPage = () => {
-        if (currentPagePosition > totalPages) {
+        if (currentPagePosition < totalPages) {
             let { currentPage, currentListMin, currentListMax } = useNextPaginator(
                 currentPagePosition,
                 recordsPerPage,
@@ -211,6 +212,7 @@ const Orders = (props) => {
                 currentPageListMax
             );
             setCurrentPagePosition(currentPage);
+            setCurrentPage(currentPage);
             setCurrentPageListMin(currentListMin);
             setCurrentPageListMax(currentListMax);
             fetchOrdersData(currentPage)
@@ -218,7 +220,7 @@ const Orders = (props) => {
     };
 
     const goToPreviousPage = () => {
-        if (currentPagePosition === 1) return;
+        //if (currentPagePosition === 1) return;
 
         let { currentPage, currentListMin, currentListMax } = usePreviousPaginator(
             currentPagePosition,
@@ -565,6 +567,7 @@ const Orders = (props) => {
     const handleRequestQuotation = (purchaseOrder) => {
         modal.closeAllModals();
         const { _id, supplier } = purchaseOrder
+        console.log('i am sidosi',_id, { email: supplier.email })
         setFetchingData(true)
         requestQuotation(_id, { email: supplier.email })
             .then(_ => {

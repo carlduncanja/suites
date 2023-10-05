@@ -247,6 +247,8 @@ function PatientFiles(props) {
     const renderFn = item => {
         return <>
 
+            {console.log('i a, iajksj', item)}
+
             <ListItem
                 hasCheckBox={true}
                 isChecked={selectedPatientds.includes(item._id || item.id)}
