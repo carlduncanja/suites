@@ -131,8 +131,7 @@ function PatientFiles(props) {
 
     const goToNextPage = () => {
         if (currentPagePosition < totalPages) { 
-            console.log("total pages: " + totalPages)
-            console.log("current page position: ", currentPagePosition)
+            
             
             const {
                 currentPage,
@@ -140,13 +139,11 @@ function PatientFiles(props) {
                 currentListMax
             } = useNextPaginator(currentPagePosition, recordsPerPage, currentPageListMin, currentPageListMax);
             
-            console.log("current page: ", currentPage)
             
            
             setCurrentPagePosition(currentPagePosition);
             setCurrentPage(currentPage);
             
-            console.log("new current page position: ", currentPagePosition)
             
             setCurrentPageListMin(currentListMin);
             setCurrentPageListMax(currentListMax);
@@ -164,7 +161,7 @@ function PatientFiles(props) {
             currentListMax
         } = usePreviousPaginator(currentPagePosition, recordsPerPage, currentPageListMin, currentPageListMax);
         setCurrentPagePosition(currentPage);
-        console.log("current page: ", currentPage)
+ 
         setCurrentPageListMin(currentListMin);
         setCurrentPageListMax(currentListMax);
         fetchPatientFiles(currentPage);
@@ -179,7 +176,7 @@ function PatientFiles(props) {
         getPatients(searchValue, 10, currentPosition)
             .then(patientResults => {
                 const { data = [], pages = 0 } = patientResults 
-                console.log(patientResults)
+                
                 if (pages === 1) {
                     setPreviousDisabled(true);
                     setNextDisabled(true);
@@ -236,7 +233,7 @@ function PatientFiles(props) {
     }
 
     const handleOnItemPress = (item, isOpenEditable) => () => {
-        console.log('i anklfn oifja', item)
+       
         if (item !== null) {
                 navigation.navigate('patient', {
                     initial: false,
@@ -346,7 +343,7 @@ function PatientFiles(props) {
     };
 
     const handleRemovePatient = async (id) => {
-        console.log('delted idss', selectedPatientds)
+        
         openDeletionConfirm({ patientIds: [...selectedPatientds] })
     }
 
@@ -453,7 +450,7 @@ function PatientFiles(props) {
         <NavPage
             isFetchingData={isFetchingPatients}
             routeName='Patients'
-            placeholderText="Search Patient by name or contact#"
+            placeholderText="Search Patient by First Name, Surname ,Contact Number or T.R.N"
             listData={patientData}
             changeText={onSearchChange}
             itemsSelected={selectedPatientds}
