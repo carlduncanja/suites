@@ -214,7 +214,7 @@ const shadows = [
 function ConfirmationCheckBoxComponent({
     isEditUpdate,
     isError,
-    setEndTime ,
+    onEndTime ,
     onCancel = () => {
     },
     onAction = () => {
@@ -226,10 +226,12 @@ function ConfirmationCheckBoxComponent({
     type = '',
     caseFileActions,
     timeStamp,
-    endTime
+    endProcedure,
+    time
 }) {
     const theme = useTheme();
-    const [end, setEnd] = useState(endTime)
+    const [end, setEnd] = useState(time)
+    
     const [isChecked, setIsChecked] = useState(false)
     const [isChecked1, setIsChecked1] = useState(false)
     const [isChecked2, setIsChecked2] = useState(false)
@@ -250,7 +252,7 @@ function ConfirmationCheckBoxComponent({
         {
             id: 3,
             name: "Procedure End Time",
-            time: endTime,
+            time: time,
             isChecked: false   
         }
     ]
@@ -279,7 +281,7 @@ function ConfirmationCheckBoxComponent({
     const onTimeUpdate =  (dateTime) => {
         let newTime = moment(dateTime);
         setEnd(newTime)
-        setEndTime(newTime)
+        onEndTime(newTime)
         
     };
 
@@ -368,7 +370,7 @@ function ConfirmationCheckBoxComponent({
                 </CancelButtonContainer>
                 {(isChecked || (isChecked1 && isChecked2 && isChecked3)) ?
                     <ButtonContainer
-                        onPress={onAction}
+                        onPress={endProcedure ? () => onAction(end) : onAction}
                         theme={theme}
                         background="--color-blue-600"
                     >

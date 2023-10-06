@@ -36,7 +36,7 @@ function PageHeader({
 
     const {pageState, setPageState} = useContext(PageContext);
     const [updated, setUpdated] = useState(false)
-    const [endTime, setEndTime] = useState("")
+    const [endTime, setEndTime] = useState(new moment())
 
     const [started, setStarted] = useState(false)
 
@@ -97,13 +97,13 @@ function PageHeader({
     };
 
 
-    function updateAppointment(){
+    function updateAppointment(data){
         updateAppointmentById(appointmentObj._id,
             {
              description: appointmentObj.description,
                subject: appointmentObj.subject,
                startTime: appointmentObj.startTime,
-               endTime: endTime,
+               endTime: data,
                title: appointmentObj.title,
                location: appointmentObj.appLocation
             }
@@ -127,7 +127,7 @@ function PageHeader({
                     content: <ConfirmationComponent
                         isError={false}
                         isEditUpdate={false}
-                        message='Nurses storage updated with consumables'
+                        message='Nurses storage updated with consumables and may contain negative stock values. Please update storage location as soon as possible.'
                         onAction={() => {
                             modal.closeModals('ConfirmationModal');
                             setTimeout(() => {
@@ -156,8 +156,7 @@ function PageHeader({
     };
 
     const endConfirm = data => {
-        const end = new moment()
-        setEndTime(end)
+        setEndTime(new moment())
         modal.openModal(
             'ConfirmationModal',
             {
@@ -165,14 +164,16 @@ function PageHeader({
                     isError={false}
                     isEditUpdate={true}
                     onCancel={() => modal.closeModals('ConfirmationModal')}
-                    onAction={() => {
-                        updateAppointment()
+                    onAction={(data) => {
+                        updateAppointment(data)
                         modal.closeModals('ConfirmationModal');
                     }}
                     timeStamp ={timeStamp}
                     caseFileActions = {true}
-                    endTime = {end}
-                    setEndTime = {data => {setEndTime(data)}}
+                    time = {new moment()}
+                    onEndTime = {data => {
+                        setEndTime(data)}}
+                    endProcedure ={true}
                     message="Please confirm the following updates"
                 />,
                 onClose: () => {
@@ -308,7 +309,7 @@ function PageHeader({
                         </EditModeContainer>
                     }
 
-                    { (((!isEditMode && timeStamp && selectedTab  === 'Consumables') || (started && selectedTab  === 'Consumables' )) &&  !updated) && <EditButtonWrapper style = {{width: 150}}>
+                    { (((!isEditMode && timeStamp && selectedTab  === 'Consumables') || (started && selectedTab  === 'Consumables' && !isEditMode )) &&  !updated) && <EditButtonWrapper style = {{width: 150}}>
                         <EditButtonContainer
                             theme={theme}
                             backgroundColor={getEditBtnBackground()}
