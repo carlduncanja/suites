@@ -185,7 +185,7 @@ function NewProcedureOverlayContainer({ handleScheduleRefresh=()=> {}, appointme
         
         await addProcedureToPatientCall(procedureAppointment)
             .then(data => {
-                handleScheduleRefresh({});
+                handleScheduleRefresh(()=>{});
                 handleConfirm()
             })
             .catch(res => {
@@ -433,12 +433,14 @@ function NewProcedureOverlayContainer({ handleScheduleRefresh=()=> {}, appointme
                         modal.closeModals('ConfirmationModal');
                     }}
                     onAction={() => {
+                        handleScheduleRefresh(()=>{});
                         modal.closeAllModals();
                     }}
                     message="Completed Successfully!"
                 // onAction = { () => confirmAction()}
                 />,
                 onClose: () => {
+                    //handleScheduleRefresh(()=>{});
                     modal.closeModals('ConfirmationModal');
                 }
             });
