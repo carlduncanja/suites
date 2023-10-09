@@ -97,7 +97,7 @@ const Equipment = props => {
     const equipmentPermissions = props.route.params.equipmentPermissions;
     const theme = useTheme();
     // ############# Const data
-    const recordsPerPage = 10;
+    const recordsPerPage = 12;
     const listHeaders = [
 
         {

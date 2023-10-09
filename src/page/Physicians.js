@@ -41,7 +41,7 @@ import { PageSettingsContext } from '../contexts/PageSettingsContext';
 const Physicians = props => {
     // ############# Const data
     const userPermissions = props.route.params.permissions;
-    const recordsPerPage = 10;
+    const recordsPerPage = 12;
     const listHeaders = [
         {
             name: 'Name',

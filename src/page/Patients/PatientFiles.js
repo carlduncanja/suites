@@ -75,7 +75,7 @@ function PatientFiles(props) {
     //######## const
     const modal = useModal();
     const theme = useTheme();
-    const recordsPerPage = 10;
+    const recordsPerPage = 12;
 
     const {
         navigation
@@ -99,7 +99,15 @@ function PatientFiles(props) {
     const [isPreviousDisabled, setPreviousDisabled] = useState(true);
     const [currentPage, setCurrentPage] = useState(1)
 
-    
+    useEffect(() => {
+        if (!patientData.length) {
+            fetchPatientFiles(currentPagePosition);
+        }
+        setTotalPages(
+            patientData.length === 0 ? 1 :
+                Math.ceil(patientData.length / recordsPerPage)
+        );
+    }, []);
 
     useEffect(() => {
         if (!searchValue) {
@@ -173,7 +181,7 @@ function PatientFiles(props) {
         setFetchingPatients(true) 
         
          
-        getPatients(searchValue, 10, currentPosition)
+        getPatients(searchValue, recordsPerPage, currentPosition)
             .then(patientResults => {
                 const { data = [], pages = 0 } = patientResults 
                 

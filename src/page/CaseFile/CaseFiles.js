@@ -75,7 +75,7 @@ function CaseFiles(props) {
     const userPermissions = props.route.params.permissions;
 
     // const router = useRouter
-    const recordsPerPage = 10;
+    const recordsPerPage = 12;
 
     //######## Props
 

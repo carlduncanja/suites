@@ -56,7 +56,7 @@ function UsersPage(props) {
     const pageTitle = "Users";
     const navigation = useNavigation();
     const modal = useModal();
-    const recordsPerPage = 10;
+    const recordsPerPage = 12;
 
     // ##### States
     const [isLoading, setFetchingData] = useState(false);
@@ -382,7 +382,7 @@ function UsersPage(props) {
         // taken from search box upon form submit
         // page position probably tracks page number
         // basic pagination
-        getUsersCall(searchValue, pagePosition, 20)
+        getUsersCall(searchValue, pagePosition, recordsPerPage)
             .then(data => {
                 let currentPosition = pagePosition ? pagePosition : 1;
                 setCurrentPagePosition(currentPosition)

@@ -56,7 +56,7 @@ function Storage(props) {
 
     storagePermissions = props.route.params.storagePermissions
     const pageTitle = 'Storage';
-    const recordsPerPage = 10;
+    const recordsPerPage = 12;
     const modal = useModal();
     const theme = useTheme();
 

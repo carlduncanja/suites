@@ -73,7 +73,7 @@ const listHeaders = [
 
 const Orders = (props) => {
     // ############# Const data
-    const recordsPerPage = 10;
+    const recordsPerPage = 12;
 
     //  ############ Props
     const {

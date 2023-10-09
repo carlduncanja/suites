@@ -61,7 +61,7 @@ function Inventory(props) {
     const pageTitle = 'Inventory';
     const modal = useModal();
     const theme = useTheme();
-    const recordsPerPage = 10;
+    const recordsPerPage = 12;
 
     // ##### States
 
