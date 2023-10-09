@@ -64,7 +64,7 @@ const Suppliers = props => {
     const suppplierPermissions = props.route.params.suppplierPermissions;
     // ############# Const data
     
-    const recordsPerPage = 10;
+    const recordsPerPage = 12;
     const listHeaders = [
         {
             name: 'Name',

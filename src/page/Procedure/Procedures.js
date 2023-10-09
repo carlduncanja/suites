@@ -35,7 +35,7 @@ import ConfirmationCheckBoxComponent from '../../components/ConfirmationCheckBox
 
 const Procedures = props => {
     // ############# Const data
-    const recordsPerPage = 10;
+    const recordsPerPage = 12;
 
     const procedurePermissions = props.route.params.procedurePermissions
 

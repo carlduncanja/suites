@@ -72,7 +72,7 @@ function Theatres(props) {
     const pageTitle = 'Theatre Rental';
     const emptyTitle = 'No Theatres Found';
     const modal = useModal();
-    const recordsPerPage = 10;
+    const recordsPerPage = 12;
     const theatrePermissions =   props.route.params.theatrePermissions;
     //const hasEmpty = true
 
