@@ -174,11 +174,11 @@ function ChargesheetEquipment({
 
     const listItem = ({name}, onActionPress, isCollapsed, index) => <>
         <DataItem text={name} flex={10} color="--color-gray-800" fontStyle="--text-base-regular"/>
-
-        <IconButton
+        {caseProcedures[0]?.equipments.length < 1 ? <></> :  <IconButton
             Icon={isCollapsed ? <ActionIcon/> : <CollapsedIcon/>}
-            onPress={onActionPress}
-        />
+            onPress={onActionPress} 
+        />}
+       
     </>
 
 
