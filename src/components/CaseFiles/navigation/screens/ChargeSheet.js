@@ -179,13 +179,13 @@ const ChargeSheet = React.forwardRef(({
     // --------------------------- Life Cycle
 
     useEffect(() => {
-        if (isUpdated  && !isEditMode) {
+        if (isUpdated) {
             const isPendingState = (status === CHARGE_SHEET_STATUSES.PENDING_CHANGES)
             const update = isPendingState ? caseProcedureChanges : caseProcedures
             onUpdateChargeSheet(update);
             setUpdated(false);
         }
-    }, [isEditMode]);
+    }, [isUpdated]);
 
     useEffect(() => {
         // preparing billing information
@@ -672,7 +672,7 @@ const ChargeSheet = React.forwardRef(({
             }
 
         } else {
-            const isDisabled = !(selectedCaseProcedureIds.length === 1 && isEditMode)
+            const isDisabled = !(selectedCaseProcedureIds.length === 1 )
 
             const addNewItem = (
                 <ActionItem
