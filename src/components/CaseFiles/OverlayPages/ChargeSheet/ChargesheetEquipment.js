@@ -187,7 +187,12 @@ function ChargesheetEquipment({
 
         return (
             <>
-                <DataItem text={name} fontStyle={'--text-sm-medium'} color="--color-blue-600"/>
+                {isEditMode ? 
+                <DataItem text={name} flex={3} fontStyle={'--text-sm-medium'} color="--color-blue-600"/>
+                : 
+                <DataItem text={name} flex={2.2} fontStyle={'--text-sm-medium'} color="--color-blue-600"/>
+
+                }
 
                 {/* <ContentDataItem
                     flex = {1}
@@ -199,25 +204,33 @@ function ChargesheetEquipment({
                     }
                 /> */}
 
-                <DataItem text={type} align="center" fontStyle={'--text-base-regular'} color="--color-gray-700"/>
+                {isEditMode ? 
+                <DataItem text={type} flex={1.5} align="center" fontStyle={'--text-base-regular'} color="--color-gray-700"/>
+                    : 
+                    <DataItem text={type} flex={2.1} align="center" fontStyle={'--text-base-regular'} color="--color-gray-700"/>
+                }
+
+               
                 {
                     isEditMode === true ?
                         <ContentDataItem
+                            flex={3}
                             align="center"
                             content={
                                 <NumberChangeField
                                     onChangePress={onQuantityChangePress(item, itemIndex, sectionIndex)}
-                                    value={amount === 0 ? "" : amount.toString()}
+                                    value={amount <= 0 ? "0" : amount.toString()}
                                     borderColor='--color-green-500'
                                     backgroundColor='--color-green-100'
                                 />
                             }
                         />
                         :
-                        <DataItem text={amount} align="center" fontStyle={'--text-base-regular'}
+                        <DataItem flex={1} text={amount} align="center" fontStyle={'--text-base-regular'}
                                   color="--color-gray-700"/>
                 }
-                <DataItem text={`$ ${currencyFormatter(cost)}`} align="center" fontStyle={'--text-base-regular'}
+
+                <DataItem flex={1} text={`$ ${currencyFormatter(cost)}`} align="center" fontStyle={'--text-base-regular'}
                           color="--color-gray-700"/>
 
             </>
