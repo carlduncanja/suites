@@ -155,6 +155,7 @@ function CasePage({ auth = {}, route, addNotification, navigation, ...props }) {
     const [selectedTab, setSelectedTab] = useState(initialSelectedTab);
     const [currentTabs, setCurrentTabs] = useState(initialCurrentTabs);
     const [selectedMenuItem, setSelectedMenuItem] = useState(initialMenuItem);
+    const [status, setStatus] = useState('')
 
     const [pageState, setPageState] = useState({
         isEditMode: false,
@@ -176,6 +177,12 @@ function CasePage({ auth = {}, route, addNotification, navigation, ...props }) {
     const start = selectedCase.caseProcedures?.[0].appointment.startTime
     const end = selectedCase.caseProcedures?.[0].appointment.endTime
 
+    useEffect(() => {
+        const info = getProgressStatus(start, end)
+        setStatus(info)
+        console.log('Case Page Create');
+    }, [start, end]);
+
     const getProgressStatus = (startTime, endTime) => {
         const now = moment();
         const start = moment(startTime);
@@ -190,7 +197,6 @@ function CasePage({ auth = {}, route, addNotification, navigation, ...props }) {
         return 'Ended';
     };
 
-    const status = getProgressStatus(start, end)
 
     console.log('suodso t78878', billable?.inventories)
 
