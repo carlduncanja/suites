@@ -123,7 +123,8 @@ import {
     addConsumablesCall,
     deletePatientEndpoint,
     getPatientByIdEndpoint,
-    addAppointmentToPatientEndPoint
+    addAppointmentToPatientEndPoint,
+    endProcedureEndpoint
 } from '../const/suitesEndpoints';
 import { createDocumentLink, documentById, documentData, documentUpload } from '../const/documentGenerationEndpoints';
 
@@ -248,6 +249,12 @@ export const updateAppointmentById = async (id, data) => suitesAxiosInstance
     .put(appointmentEndpoint(id), data)
     .then(handleResponse)
     .catch(handleError);
+
+
+export const endProcedure = async (id, data) => suitesAxiosInstance
+    .post(endProcedureEndpoint(id), data)
+    .then(handleResponse)
+    .catch(handleError)
 
 
 export const createAppointment = async (data) => suitesAxiosInstance
@@ -972,39 +979,43 @@ export const getPatientbyId = async (id) => suitesAxiosInstance
 export const updatePatientRisk = async (id, data) => suitesAxiosInstance
     .put(updatePatientRiskEndpoint(id), data)
     .then(handleResponse)
-    .catch(handleError) 
+    .catch(handleError)
 
 export const deletePatient = async (data) => suitesAxiosInstance
-.delete(deletePatientEndpoint, {data})
-.then(handleResponse)
-.catch(handleError)
+    .delete(deletePatientEndpoint, { data })
+    .then(handleResponse)
+    .catch(handleError)
 
 // ################# Document Generation Endpoints
 
 const credentials = Buffer.from(`${'devapiuser'}:${'openforme'}`).toString('base64');
 export const generateDocumentLink = async data => documentGenerationInstance.post(createDocumentLink, data,
-    { headers: { 
-        'Content-Type': 'application/json', 
-        'Authorization': `Basic ${credentials}`
+    {
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Basic ${credentials}`
         },
     })
     .then(handleResponse)
     .catch(handleError);
 
-export const uploadDocument = async data => documentManagementInstance.post(documentUpload, data, 
-    {headers: { 
-        'Content-Type': 'multipart/form-data',
-        'Authorization': `Basic ${credentials}` 
-    } })
+export const uploadDocument = async data => documentManagementInstance.post(documentUpload, data,
+    {
+        headers: {
+            'Content-Type': 'multipart/form-data',
+            'Authorization': `Basic ${credentials}`
+        }
+    })
     .then(handleResponse)
     .catch(handleError);
 
 export const getFiletData = async id => documentManagementInstance.get(documentData(id),
-{ headers: { 
-    'Content-Type': 'application/json', 
-    'Authorization': `Basic ${credentials}`
-    },
-})
+    {
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Basic ${credentials}`
+        },
+    })
     .then(handleResponse)
     .catch(handleError);
 
@@ -1113,8 +1124,8 @@ export const deletePatientLifestyle = async (id) => suitesAxiosInstance
     .then(handleResponse)
     .catch(handleError)
 
-export const updatePatientLifestyle = async (id,data) => suitesAxiosInstance
-    .put(updatePatientLifestyleEndpiont(id),data)
+export const updatePatientLifestyle = async (id, data) => suitesAxiosInstance
+    .put(updatePatientLifestyleEndpiont(id), data)
     .then(handleResponse)
     .catch(handleError)
 
