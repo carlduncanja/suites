@@ -86,8 +86,11 @@ function PageHeader({
                 content: <ConfirmationComponent
                     isError={true}
                     isEditUpdate={false}
-                    onCancel={() => modal.closeModals('ConfirmationModal')}
-                    message="Something went wrong, updating procedure end time, please try again later"
+                    onCancel={() => modal.closeModals('ConfirmationModal')} 
+                    textAlign='center'
+                    textPadding={15}
+                    message="Ending this procedure could not be completed ,please ensure nurses storage is uptodate with consumable and try again" 
+                    secondaryMessage='please ensure nurses storage is uptodate with consumable and try again'
                 />,
                 onClose: () => {
                     modal.closeModals('ConfirmationModal');
@@ -132,7 +135,7 @@ function PageHeader({
             setUpdated(true)
         }).catch(
             err => {
-                console.log(err)
+                console.log("This is the end procedure error ",err)
                 hanadleErrorModal()
             }
         )
