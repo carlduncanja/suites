@@ -1,12 +1,12 @@
-import React, {Component, useContext, useEffect, useState} from 'react';
-import styled, {css} from '@emotion/native';
-import {useTheme} from 'emotion-theming';
-import {View} from 'react-native-animatable';
-import {isEmpty} from 'lodash';
-import {Text} from 'react-native';
+import React, { Component, useContext, useEffect, useState } from 'react';
+import styled, { css } from '@emotion/native';
+import { useTheme } from 'emotion-theming';
+import { View } from 'react-native-animatable';
+import { isEmpty } from 'lodash';
+import { Text } from 'react-native';
 import Button from '../Buttons/Button';
 import SmallLeftTriangle from '../../../../assets/svg/smallLeftTriangle';
-import {PageContext} from '../../../contexts/PageContext';
+import { PageContext } from '../../../contexts/PageContext';
 import SvgIcon from '../../../../assets/SvgIcon';
 import LockIcon from '../../../../assets/svg/lockIcon';
 import EditLockIcon from '../../../../assets/svg/editLockedIcon';
@@ -16,32 +16,32 @@ import ConfirmationCheckBoxComponent from '../../ConfirmationCheckBoxComponent';
 import { Modal } from 'react-native-paper';
 import { useModal } from 'react-native-modalfy';
 import moment from 'moment';
-import { addConsumablesToStorage, updateAppointmentById } from '../../../api/network';
+import { addConsumablesToStorage, endProcedure, updateAppointmentById } from '../../../api/network';
 import ConfirmationComponent from '../../ConfirmationComponent';
 
 function PageHeader({
-                        onBack,
-                        caseId,
-                        timeStamp,
-                        status,
-                        appointmentObj,
-                        selectedTab,
-                        isArchive: isEditDisabled = false,
-                        headerChildren = [],
-                        separator = null,
-                        isEditable,
-                        editMessage = 'now in edit mode'
-                    }) {
+    onBack,
+    caseId,
+    timeStamp,
+    status,
+    appointmentObj,
+    selectedTab,
+    isArchive: isEditDisabled = false,
+    headerChildren = [],
+    separator = null,
+    isEditable,
+    editMessage = 'now in edit mode'
+}) {
     const theme = useTheme();
 
-    const {pageState, setPageState} = useContext(PageContext);
+    const { pageState, setPageState } = useContext(PageContext);
     const [updated, setUpdated] = useState(false)
     const [endTime, setEndTime] = useState(new moment())
 
     const [started, setStarted] = useState(false)
 
-    useEffect(() => { 
-        if(status == 'In Progress') {
+    useEffect(() => {
+        if (status == 'In Progress') {
             setStarted(true)
         }
     }, [status])
@@ -86,8 +86,11 @@ function PageHeader({
                 content: <ConfirmationComponent
                     isError={true}
                     isEditUpdate={false}
-                    onCancel={() => modal.closeModals('ConfirmationModal')}
-                    message="Something went wrong, updating procedure end time, please try again later"
+                    onCancel={() => modal.closeModals('ConfirmationModal')} 
+                    textAlign='center'
+                    textPadding={15}
+                    message="Ending this procedure could not be completed ,please ensure nurses storage is uptodate with consumable and try again" 
+                    secondaryMessage='please ensure nurses storage is uptodate with consumable and try again'
                 />,
                 onClose: () => {
                     modal.closeModals('ConfirmationModal');
@@ -96,31 +99,19 @@ function PageHeader({
         );
     };
 
+    const endProcedureCall = (data) => {
 
-    function updateAppointment(data){
-        updateAppointmentById(appointmentObj._id,
-            {
-             description: appointmentObj.description,
-               subject: appointmentObj.subject,
-               startTime: appointmentObj.startTime,
-               endTime: data,
-               title: appointmentObj.title,
-               location: appointmentObj.appLocation
-            }
-           ).then(data => {
-                addConsumablesCall(caseId)
-            }).catch(
-            err => {
-                console.log(err)
-                hanadleErrorModal()
-            }
-       )
-
-    }
-
-    const addConsumablesCall = id => {
-        addConsumablesToStorage(id)
-        .then(_ => {
+        let appiontmentUpdateData = {
+            appiontmentId: appointmentObj._id,
+            description: appointmentObj.description,
+            subject: appointmentObj.subject,
+            startTime: appointmentObj.startTime,
+            endTime: data,
+            title: appointmentObj.title,
+            location: appointmentObj.appLocation
+        } 
+        endProcedure(caseId,appiontmentUpdateData) 
+        .then( _ =>{
             modal.openModal(
                 'ConfirmationModal',
                 {
@@ -142,16 +133,69 @@ function PageHeader({
             );
 
             setUpdated(true)
-        })
-        .catch(error => {
-            openErrorConfirmation();
-            setTimeout(() => {
-                modal.closeModals('ActionContainerModal');
-            }, 200);
-        })
-        .finally(_ => {
-            setFloatingAction(false);
-        });
+        }).catch(
+            err => {
+                console.log("This is the end procedure error ",err)
+                hanadleErrorModal()
+            }
+        )
+    }
+
+    function updateAppointment(data) {
+        updateAppointmentById(appointmentObj._id,
+            {
+                description: appointmentObj.description,
+                subject: appointmentObj.subject,
+                startTime: appointmentObj.startTime,
+                endTime: data,
+                title: appointmentObj.title,
+                location: appointmentObj.appLocation
+            }
+        ).then(data => {
+            addConsumablesCall(caseId)
+        }).catch(
+            err => {
+                console.log(err)
+                hanadleErrorModal()
+            }
+        )
+
+    }
+
+    const addConsumablesCall = id => {
+        addConsumablesToStorage(id)
+            .then(_ => {
+                modal.openModal(
+                    'ConfirmationModal',
+                    {
+                        content: <ConfirmationComponent
+                            isError={false}
+                            isEditUpdate={false}
+                            message='Nurses storage updated with consumables and may contain negative stock values. Please update storage location as soon as possible.'
+                            onAction={() => {
+                                modal.closeModals('ConfirmationModal');
+                                setTimeout(() => {
+                                    modal.closeModals('ActionContainerModal');
+                                }, 200);
+                            }}
+                        />,
+                        onClose: () => {
+                            modal.closeModals('ConfirmationModal');
+                        }
+                    }
+                );
+
+                setUpdated(true)
+            })
+            .catch(error => {
+                openErrorConfirmation();
+                setTimeout(() => {
+                    modal.closeModals('ActionContainerModal');
+                }, 200);
+            })
+            .finally(_ => {
+                setFloatingAction(false);
+            });
 
     };
 
@@ -165,15 +209,16 @@ function PageHeader({
                     isEditUpdate={true}
                     onCancel={() => modal.closeModals('ConfirmationModal')}
                     onAction={(data) => {
-                        updateAppointment(data)
+                        endProcedureCall(data)
                         modal.closeModals('ConfirmationModal');
                     }}
-                    timeStamp ={timeStamp}
-                    caseFileActions = {true}
-                    time = {new moment()}
-                    onEndTime = {data => {
-                        setEndTime(data)}}
-                    endProcedure ={true}
+                    timeStamp={timeStamp}
+                    caseFileActions={true}
+                    time={new moment()}
+                    onEndTime={data => {
+                        setEndTime(data)
+                    }}
+                    endProcedure={true}
                     message="Please confirm the following updates"
                 />,
                 onClose: () => {
@@ -183,7 +228,7 @@ function PageHeader({
         );
     };
 
-    const {isEditMode, isReview, locked, editMsg, editDisabled} = pageState;
+    const { isEditMode, isReview, locked, editMsg, editDisabled } = pageState;
 
     const buttonProps = !isEditMode ?
         {
@@ -198,7 +243,7 @@ function PageHeader({
         };
 
     const showIcon = () => (
-        <SvgIcon iconName="doctorArrow" strokeColor="#718096"/>
+        <SvgIcon iconName="doctorArrow" strokeColor="#718096" />
     );
 
     const getButtonProps = () => {
@@ -268,7 +313,7 @@ function PageHeader({
 
                     {
                         !isEditMode &&
-                        <IconContainer theme={theme} onPress={onBack}><SmallLeftTriangle/></IconContainer>
+                        <IconContainer theme={theme} onPress={onBack}><SmallLeftTriangle /></IconContainer>
                     }
 
                     {
@@ -285,13 +330,13 @@ function PageHeader({
                                             theme={theme}
                                             numberOfLines={1}
                                             ellipsizeMode='tail'
-                                            >{item}</HeaderText>
+                                        >{item}</HeaderText>
                                         : (
                                             <React.Fragment key={index}>
                                                 <SpecialText
                                                     theme={theme}
                                                 > {item}</SpecialText>
-                                                <View style={{marginLeft: 15, marginRight: 10}}>
+                                                <View style={{ marginLeft: 15, marginRight: 10 }}>
                                                     {separator}
                                                 </View>
                                             </React.Fragment>
@@ -309,23 +354,23 @@ function PageHeader({
                         </EditModeContainer>
                     }
 
-                    { (((!isEditMode && timeStamp && selectedTab  === 'Consumables') || (started && selectedTab  === 'Consumables' && !isEditMode )) &&  !updated) && <EditButtonWrapper style = {{width: 150}}>
+                    {(((!isEditMode && timeStamp && selectedTab === 'Consumables') || (started && selectedTab === 'Consumables' && !isEditMode)) && !updated) && <EditButtonWrapper style={{ width: 150 }}>
                         <EditButtonContainer
                             theme={theme}
                             backgroundColor={getEditBtnBackground()}
-                            >
+                        >
                             <Button
-                                backgroundColor = {theme.colors['--accent-button']}
-                                color = {theme.colors['--default-shade-white']}
-                                title =  "End Procedure"
+                                backgroundColor={theme.colors['--accent-button']}
+                                color={theme.colors['--default-shade-white']}
+                                title="End Procedure"
                                 buttonPress={endConfirm}
                                 font={theme.font['--text-sm-medium']}
                             />
-                            </EditButtonContainer>
-                        </EditButtonWrapper>
+                        </EditButtonContainer>
+                    </EditButtonWrapper>
                     }
-                    
-                   { (isEditable && !updated ) && <EditButtonWrapper theme={theme}>
+
+                    {(isEditable && !updated) && <EditButtonWrapper theme={theme}>
                         <EditButtonContainer
                             theme={theme}
                             backgroundColor={getEditBtnBackground()}
@@ -336,7 +381,7 @@ function PageHeader({
                                 buttonPress={onEditPress}
                                 disabled={!isEditDisabled ? locked : true}
                                 font={theme.font['--text-sm-medium']}
-                                Icon={locked && <EditLockIcon/>}
+                                Icon={locked && <EditLockIcon />}
                             />
 
                         </EditButtonContainer>
@@ -385,7 +430,7 @@ const shadow = {
     zIndex: 3,
 };
 
-const HeaderWrapper = styled.View(({isEditMode, theme, isEditBackground}) => ({
+const HeaderWrapper = styled.View(({ isEditMode, theme, isEditBackground }) => ({
     display: 'flex',
     height: 55,
     // ...(isEditMode ? shadow : {}),
@@ -404,15 +449,15 @@ const HeaderContainer = styled.View`
 
 const TextContainer = styled.View`
   flex: 1;
-  margin-right: ${({theme}) => theme.space['--space-14']};
-  margin-left: ${({theme}) => theme.space['--space-14']};
+  margin-right: ${({ theme }) => theme.space['--space-14']};
+  margin-left: ${({ theme }) => theme.space['--space-14']};
   flex-direction: row;
   align-items: center;
 `;
 
 const HeaderText = styled.Text`
-  font: ${({theme}) => theme.font['--text-xl-medium']};
-  color: ${({theme}) => theme.colors['--accent-button']};
+  font: ${({ theme }) => theme.font['--text-xl-medium']};
+  color: ${({ theme }) => theme.colors['--accent-button']};
   flex: 1;
 `;
 
@@ -422,8 +467,8 @@ const IconContainer = styled.TouchableOpacity`
 
 const SpecialText = styled.Text`
   margin-left: 8px;
-  font: ${({theme}) => theme.font['--text-sm-medium']};
-  color: ${({theme}) => theme.colors['--company']};
+  font: ${({ theme }) => theme.font['--text-sm-medium']};
+  color: ${({ theme }) => theme.colors['--company']};
 `;
 
 const EditButtonWrapper = styled.View`
@@ -439,14 +484,14 @@ const EditButtonContainer = styled.View`
   border-radius: 6px;
   padding: 4px;
 
-  background-color: ${({backgroundColor}) => backgroundColor};
-  border: ${({theme, hasBorder}) => hasBorder && `1px solid ${theme.colors['--color-gray-300']}`};
+  background-color: ${({ backgroundColor }) => backgroundColor};
+  border: ${({ theme, hasBorder }) => hasBorder && `1px solid ${theme.colors['--color-gray-300']}`};
   align-items: center;
   justify-content: center;
 `;
 
 const DisabledEditContainer = styled.View`
-  background-color: ${({theme}) => theme.colors['--default-shade-white']};
+  background-color: ${({ theme }) => theme.colors['--default-shade-white']};
   height: 26px;
   width: 53px;
   align-items: center;
@@ -459,7 +504,7 @@ const DisabledText = styled.Text`
   color: #A0AEC0;
 `;
 
-const EditModeContainer = styled.Text(({theme, isReview}) => ({
+const EditModeContainer = styled.Text(({ theme, isReview }) => ({
     ...theme.font['--text-base-medium'],
     color: theme.colors['--color-white'],
     alignItems: 'center',
@@ -469,13 +514,13 @@ const EditModeContainer = styled.Text(({theme, isReview}) => ({
 const shadows = [
     {
         shadowColor: 'black',
-        shadowOffset: {width: 2, height: 0},
+        shadowOffset: { width: 2, height: 0 },
         shadowOpacity: 0.06,
         shadowRadius: 4
     },
     {
         shadowColor: 'black',
-        shadowOffset: {width: 4, height: 0},
+        shadowOffset: { width: 4, height: 0 },
         shadowOpacity: 0.1,
         shadowRadius: 6
     },

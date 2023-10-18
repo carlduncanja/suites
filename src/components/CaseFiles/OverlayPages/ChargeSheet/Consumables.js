@@ -317,7 +317,7 @@ function Consumables({
             <ConsumablesContainer>
 
                 <Search
-                    placeholderText="Search by inventory item"
+                    placeholderText=" Search by inventory item "
                     inputText={searchText}
                     changeText={onSearchInputChange}
                     backgroundColor={theme.colors['--color-neutral-gray-100']}
