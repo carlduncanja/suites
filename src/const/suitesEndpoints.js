@@ -17,7 +17,8 @@ export const role = roleId => `/users/roles/${roleId}`;
 
 // ##### Appointments
 export const appointmentsEndpoint = '/appointments/';
-export const appointmentEndpoint = id => `/appointments/${id}`;
+export const appointmentEndpoint = id => `/appointments/${id}`; 
+export const endProcedureEndpoint = id => `/appointments/endProcedure/${id}`
 
 // #### Appiontment Type
 export const appointmentTypeEndPiont = `/appointment-types`
