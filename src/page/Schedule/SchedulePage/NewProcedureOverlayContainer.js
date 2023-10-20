@@ -384,7 +384,8 @@ function NewProcedureOverlayContainer({ handleScheduleRefresh=()=> {}, appointme
                         title: procedure?.name || "",
                         location: updatedLocation
                     })
-                    .then(data => {
+                    .then(data => { 
+                        console.log("the data sent over ", data)
                         handleConfirm()
                     })
                     .catch(
@@ -440,7 +441,7 @@ function NewProcedureOverlayContainer({ handleScheduleRefresh=()=> {}, appointme
                 // onAction = { () => confirmAction()}
                 />,
                 onClose: () => {
-                    //handleScheduleRefresh(()=>{});
+                    handleScheduleRefresh(()=>{}); 
                     modal.closeModals('ConfirmationModal');
                 }
             });
@@ -684,7 +685,7 @@ function NewProcedureOverlayContainer({ handleScheduleRefresh=()=> {}, appointme
     const onDateUpdate = (date) => {
         // update the date for start and end time.
         const newDate = moment(date);
-
+        console.log("the date selected" ,newDate)
         const newStartTime = startTime
             ? moment(startTime)
                 .year(newDate.year())
@@ -694,11 +695,11 @@ function NewProcedureOverlayContainer({ handleScheduleRefresh=()=> {}, appointme
 
         setDate(newDate)
         // update procedure
-        /*setProcedure({
+        setProcedure({
             ...procedure,
-            date: date,
-            startTime: newStartTime && newStartTime.toDate(),
-        });*/
+            ["startTime"]: newDate.toDate(),
+        });
+
     };
 
     const onTimeUpdate = (field) => (dateTime) => {
@@ -712,7 +713,9 @@ function NewProcedureOverlayContainer({ handleScheduleRefresh=()=> {}, appointme
                 .date(dateMoment.date());
         }
 
-        setStartTime(newTime)
+        setStartTime(newTime) 
+
+        console.log("this is the new time",newTime)
         setProcedure({
             ...procedure,
             [field]: newTime.toDate(),
