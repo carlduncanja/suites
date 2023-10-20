@@ -441,7 +441,7 @@ function NewProcedureOverlayContainer({ handleScheduleRefresh=()=> {}, appointme
                 // onAction = { () => confirmAction()}
                 />,
                 onClose: () => {
-                    //handleScheduleRefresh(()=>{});
+                    handleScheduleRefresh(()=>{}); 
                     modal.closeModals('ConfirmationModal');
                 }
             });
