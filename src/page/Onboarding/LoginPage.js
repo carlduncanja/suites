@@ -108,7 +108,7 @@ function LoginPage({ navigation, signIn, expoPushToken }) {
     // edit: works now
     const onGuestButtonPress = () => {
         setLoading(true);
-        login("howard.edwards@smsja.net", "password1", expoPushToken)
+        login("guest@suites.com", "123456", expoPushToken)
             .then(async data => {
                 // save auth data
                 const { token = null } = data;
