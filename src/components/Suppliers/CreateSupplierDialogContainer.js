@@ -47,17 +47,8 @@ function CreateSupplierDialogContainer({ onCancel, onCreated, addSupplier, onUpd
 
     // ######### STATE
     const [selectedIndex, setSelectedTabIndex] = useState(0);
-    const [fields, setFields] = useState({
-        name: 'Medical Supplies Inc.',
-        email: "infoMed@supplies.com",
-        phone: "8763687566",
-        fax: "8769973765",
-    });
-    const [representative, setRepresentative] = useState({
-        name: 'John Doe',
-        email: "doe@supplies.com",
-        phone: "8768458743",
-    })
+    const [fields, setFields] = useState({ });
+    const [representative, setRepresentative] = useState({})
     const [errorFields, setErrorFields] = useState({})
     const [number, setNumber] = useState(fields.phone);
     const [fax, setFax] = useState(fields.fax);
