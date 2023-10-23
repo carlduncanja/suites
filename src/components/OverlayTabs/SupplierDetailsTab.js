@@ -52,11 +52,11 @@ const RowWrapper = styled.View`
     z-index: ${({ zIndex }) => zIndex};
 `
 
-const SupplierDetailsTab = ({ supplierId, onUpdated, order, refresh = () => {} }) => {
+const SupplierDetailsTab = ({ supplierId, onUpdated, order, refresh = () => { } }) => {
 
     const fieldsBaseStateRef = useRef();
     const modal = useModal();
-    const theme = useTheme(); 
+    const theme = useTheme();
 
     const { supplier = {} } = order;
     const { pageState, setPageState } = useContext(PageContext);
@@ -77,7 +77,7 @@ const SupplierDetailsTab = ({ supplierId, onUpdated, order, refresh = () => {} }
 
 
     const [fields, setFields] = useState({});
-    
+
     useEffect(() => {
 
         if (isUpdated && !isEditMode) {
@@ -90,7 +90,7 @@ const SupplierDetailsTab = ({ supplierId, onUpdated, order, refresh = () => {} }
                             // resetState()
                             setPageState({ ...pageState, isEditMode: true })
                             modal.closeAllModals();
-                            
+
                         }}
                         onAction={() => {
                             modal.closeAllModals();
@@ -120,7 +120,7 @@ const SupplierDetailsTab = ({ supplierId, onUpdated, order, refresh = () => {} }
             email,
             representatives
         });
-        
+
     }, [supplier])
 
     const onFieldUpdated = (field) => (value) => {
@@ -199,6 +199,14 @@ const SupplierDetailsTab = ({ supplierId, onUpdated, order, refresh = () => {} }
             })
             .finally(_ => setLoading(false))
 
+    }
+
+    const handlePhoneVarification = (field) => (phoneValue) =>  {
+        if (phoneValue.toString().length > 10) return;
+
+        if (/^\d+$/g.test(phoneValue) || !phoneValue) {
+            onFieldUpdated(field)(phoneValue);
+        }
     }
 
     return (
@@ -308,7 +316,7 @@ const SupplierDetailsTab = ({ supplierId, onUpdated, order, refresh = () => {} }
                                 <InputLabelComponent label={'Telephone'} />
                                 <InputField2
                                     value={fields['phone']}
-                                    onChangeText={onFieldUpdated('phone')}
+                                    onChangeText={handlePhoneVarification('phone')}
                                     enabled={true}
                                     onClear={() => { onFieldUpdated('phone')('') }}
                                 />
@@ -327,7 +335,7 @@ const SupplierDetailsTab = ({ supplierId, onUpdated, order, refresh = () => {} }
                                 <InputLabelComponent label={'Fax'} />
                                 <InputField2
                                     value={fields['fax']}
-                                    onChangeText={onFieldUpdated('fax')}
+                                    onChangeText={handlePhoneVarification('fax')}
                                     enabled={true}
                                     onClear={() => { onFieldUpdated('fax')('') }}
                                 />
