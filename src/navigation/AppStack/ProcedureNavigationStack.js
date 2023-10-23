@@ -20,10 +20,10 @@ export default (props) => {
 
     return (
         <Stack.Navigator
-            initialRouteName="Procedures"
+            initialRouteName="Procedures List"
         >
             <Stack.Screen
-                name="Procedures"
+                name="Procedures List"
                 component={Procedures}
                 options={{
                     headerShown: false
