@@ -47,11 +47,15 @@ const PatientDetailsTab = ({onFieldChange, fields, errors}) => {
         if (/^\d+$/g.test(trnValue) || !trnValue) {
             onFieldChange('trn')(trnValue);
         }
-    };
+    }; 
+
+    const handelPassportValidation = passportNumber =>{
+        if (passportNumber.toString().length > 8 ) return; 
+          onFieldChange("passport")(passportNumber)
+    }
 
     const onDateChange = date => {
         if (isValidDOB(date)) {
-            console.log('Date: ', date);
             onFieldChange('dob')(date);
         }
     };
@@ -180,8 +184,8 @@ const PatientDetailsTab = ({onFieldChange, fields, errors}) => {
                         label="Passport"
                         labelWidth={98}
                         onChangeText={value => {
-                            //handleTrnValidation(value);
-                            onFieldChange('passport')(value)
+                            handelPassportValidation(value);
+                            
                         }}
                         value={fields.passport}
                         onClear={() => onFieldChange('passport')('')}
