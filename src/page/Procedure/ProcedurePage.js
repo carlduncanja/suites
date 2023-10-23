@@ -183,6 +183,8 @@ function ProcedurePage({route, navigation}) {
     };
 
     const onAddInventory = data => {
+        console.log("invenkfl", newProcedureData)
+
         const {inventories = []} = selectedProcedure;
         const updatedInventory = inventories.map(item => ({
             inventory: item?.inventory._id,
@@ -468,7 +470,7 @@ function ProcedurePage({route, navigation}) {
                 headerChildren={[name, physicianName]}
                 isEditable={updatesProcedure}
                 onBackPress={() => {
-                    navigation.navigate('Procedures');
+                    navigation.navigate('Procedures List');
                 }}
                 isArchive={getIsEditable()}
                 pageTabs={(

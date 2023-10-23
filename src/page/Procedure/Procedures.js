@@ -138,9 +138,15 @@ const Procedures = props => {
 
     const handleOnItemPress = (item, isOpenEditable) => () => {
         console.log('Open');
-        navigation.navigate('Procedures List', {
+        navigation.navigate('Procedure', {
             screen: 'Procedure',
             initial: false,
+            procedure: item,
+            procedure: item,
+            isOpenEditable,
+            onUpdate: () => {
+                handleDataRefresh();
+            },
             params: {
                 procedure: item,
                 isOpenEditable,

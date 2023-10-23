@@ -17,11 +17,11 @@ export default (props) => {
 
     return (
         <Stack.Navigator
-            initialRouteName="PatientFiles"
+            initialRouteName="Patients"
         >
 
             <Stack.Screen
-                name="PatientFiles"
+                name="Patients"
 
                 component={PatientFiles}
                 options={{
