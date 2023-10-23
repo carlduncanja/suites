@@ -93,7 +93,7 @@ function CreateSupplierDialogContainer({ onCancel, onCreated, addSupplier, onUpd
                 supplierToAdd = { ...fields }
             }
 
-            console.log("Success:", supplierToAdd);
+            
 
             createSupplierCall(supplierToAdd)
         }
@@ -334,124 +334,11 @@ function CreateSupplierDialogContainer({ onCancel, onCreated, addSupplier, onUpd
             </Row>
         </>
 
-        // <View style={styles.sectionContainer}>
-
-        //     <View style={styles.row}>
-        //         <View style={[styles.inputWrapper,{flex:1,}]}>
-        //             <InputField2
-        //                 label={"Supplier Name"}
-        //                 onChangeText={onFieldChange('name')}
-        //                 value={fields['name']}
-        //                 onClear={() => onFieldChange('name')('')}
-        //                 hasError = {errorFields['name']}
-        //                 errorMessage = "Name must be filled."
-        //             />
-        //         </View>
-        //     </View>
-
-        //     <View style={styles.row}>
-        //         <View style={[styles.inputWrapper,{flex:1}]}>
-        //             <InputField2
-        //                 label={"Description"}
-        //                 onChangeText={onFieldChange('description')}
-        //                 value={fields['description']}
-        //                 onClear={() => onFieldChange('description')('')}
-        //             />
-        //         </View>
-        //     </View>
-
-        //     <View style={styles.row}>
-        //         <Text style={{color:'#000000'}}>Contact Information</Text>
-        //     </View>
-
-        //     <View style={[styles.row,{zIndex:-2}]}>
-        //         <View style={styles.inputWrapper}>
-        //             <InputField2
-        //                 label={"Phone"}
-        //                 onChangeText={(value)=>{
-        //                     if(/^\d{10}$/g.test(value))(onFieldChange('phone')(value))
-        //                 }}
-        //                 value={fields['phone']}
-        //                 onClear={() => onFieldChange('phone')('')}
-        //                 keyboardType = {'number-pad'}
-        //                 hasError = {errorFields['phone']}
-        //                 errorMessage = "Phone must be filled."
-        //             />
-        //         </View>
-
-        //         <View style={styles.inputWrapper}>
-        //             <InputField2
-        //                 label={"Fax"}
-        //                 onChangeText={(value)=>{
-        //                     if(/^\d{10}$/g.test(value))(onFieldChange('fax')(value))
-        //                 }}
-        //                 value={fields['fax']}
-        //                 onClear={() => onFieldChange('fax')('')}
-        //                 keyboardType = {'number-pad'}
-        //                 hasError = {errorFields['fax']}
-        //                 errorMessage = "Fax must be filled."
-        //             />
-        //         </View>
-        //     </View>
-
-        //     <View style={[styles.row,{zIndex:-3}]}>
-        //         <View style={styles.inputWrapper}>
-        //             <InputField2
-        //                 label={"Email"}
-        //                 onChangeText={onFieldChange('email')}
-        //                 value={fields['email']}
-        //                 keyboardType = {'email-address'}
-        //                 onClear={() => onFieldChange('email')('')}
-        //             />
-        //         </View>
-
-        //     </View>
-
-        // </View>
+        
 
     );
 
-    // const representativeTab = (
-
-    //     <View style={styles.sectionContainer}>
-
-    //         <View style={styles.row}>
-    //             <View style={styles.inputWrapper}>
-    //                 <InputField2
-    //                     label={"Name"}
-    //                     onChangeText={handleRepresentative('name')}
-    //                     value={representative['name']}
-    //                     onClear={() => handleRepresentative('name')('')}
-    //                 />
-    //             </View>
-
-    //             <View style={styles.inputWrapper}>
-    //                 <InputField2
-    //                     label={"Phone"}
-    //                     onChangeText={(value)=>{
-    //                         if(/^\d{10}$/g.test(value))(handleRepresentative('phone')(value))
-    //                     }}
-    //                     value={representative['phone']}
-    //                     onClear={() => handleRepresentative('phone')('')}
-    //                     keyboardType={'number-pad'}
-    //                 />
-    //             </View>
-    //         </View>
-
-    //         <View style={styles.row}>
-    //             <View style={styles.inputWrapper}>
-    //                 <InputField2
-    //                     label={"Email"}
-    //                     onChangeText={onFieldChange('email')}
-    //                     value={representative['email']}
-    //                     onClear={() => handleRepresentative('email')('')}
-    //                     keyboardType={'email-address'}
-    //                 />
-    //             </View>
-    //         </View>
-    //     </View>
-
-    // );
+    
 
     return (
         <OverlayDialog
