@@ -476,7 +476,7 @@ const Physicians = props => {
             <NavPage
                 isFetchingData={isFetchingData}
                 onRefresh={handleDataRefresh}
-                placeholderText="Search by Physician"
+                placeholderText="Search by Physician or phone number"
                 changeText={onSearchInputChange}
                 inputText={searchValue}
                 routeName="Physicians"
