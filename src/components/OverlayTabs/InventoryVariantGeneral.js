@@ -320,11 +320,11 @@ function InventoryVariantGeneral({
                             )}
                         />
 
-                        <ListTextRecord
+                        {/* <ListTextRecord
 
                             recordTitle="Suppliers"
                             values={suppliers}
-                        />
+                        /> */}
 
                     </Row>
 
