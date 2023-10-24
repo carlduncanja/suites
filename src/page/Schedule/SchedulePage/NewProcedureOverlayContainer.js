@@ -695,10 +695,10 @@ function NewProcedureOverlayContainer({ handleScheduleRefresh=()=> {}, appointme
 
         setDate(newDate)
         // update procedure
-        setProcedure({
-            ...procedure,
-            ["startTime"]: newDate.toDate(),
-        });
+        // setProcedure({
+        //     ...procedure,
+        //     ["startTime"]: newDate.toDate(),
+        // });
 
     };
 
@@ -716,10 +716,10 @@ function NewProcedureOverlayContainer({ handleScheduleRefresh=()=> {}, appointme
         setStartTime(newTime) 
 
         console.log("this is the new time",newTime)
-        setProcedure({
-            ...procedure,
-            [field]: newTime.toDate(),
-        });
+        // setProcedure({
+        //     ...procedure,
+        //     [field]: newTime.toDate(),
+        // });
 
     };
 
