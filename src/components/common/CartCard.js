@@ -267,7 +267,7 @@ function CartCard(props) {
                                         placeholder="Delivery Date"
                                         borderColor="--color-gray-400"
                                         hasBorder={false}
-                                        minDate={new Date()}
+                                        //minDate={new Date()}
                                         onDateChange={onDateChange('deliveryDate')}
                                         value={fields.deliveryDate}
                                         onClear={() => onDateChange('deliveryDate')('')}
