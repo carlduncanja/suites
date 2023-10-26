@@ -127,6 +127,7 @@ function SchedulesList({
             animated: animated,
             sectionIndex: index,
             itemIndex: 0,
+            viewPosition: 0
         })
     };
 
@@ -149,9 +150,9 @@ function SchedulesList({
                         return item.id + new Date().toString() + Math.random()
                     }}
                     getItemLayout={sectionListGetItemLayout({
-                        getItemHeight: (rowData, sectionIndex, rowIndex) => 24,
-                        getSeparatorHeight: () => 24,
-                        getSectionHeaderHeight: () => 60,
+                        getItemHeight: (rowData, sectionIndex, rowIndex) => 38, // title (16) + paddingTop (8) + subText (12) + border (2)
+                        getSeparatorHeight: () => 26, // marginTop (12) + marginBottom (12) + border (2)
+                        getSectionHeaderHeight: () => 72, // height (70) + border (2)
                         getSectionFooterHeight: () => 0,
                         listHeaderHeight: 0
                     })}
