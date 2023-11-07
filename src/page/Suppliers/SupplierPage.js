@@ -20,7 +20,10 @@ import {updateSupplierAction} from '../../redux/actions/suppliersActions';
 import LoadingIndicator from '../../components/common/LoadingIndicator';
 
 function SupplierPage({route, navigation, updateSupplierAction}) {
-    const {supplier, isOpenEditable, floatingActions} = route.params;
+    const {supplier, isOpenEditable, floatingActions, handleDataRefresh} = route.params; 
+    const purchaseOrderPermissions =route.params. purchaseOrderPermissions
+    const updateSuppliers = route.params.updateSuppliers
+    console.log('djsk', updateSuppliers)
     const modal = useModal();
     const currentTabs = ['Details', 'Products', 'Purchase Orders'];
     const {
@@ -51,7 +54,9 @@ function SupplierPage({route, navigation, updateSupplierAction}) {
                 // fetchProducts();
                 fetchSupplier(_id);
             }
-        }, 200);
+        }, 200); 
+
+        
     }, []);
 
     // ##### Event Handlers
@@ -74,8 +79,11 @@ function SupplierPage({route, navigation, updateSupplierAction}) {
         if (!isEditMode) setCurrentTab(selectedTab);
     };
 
+    
     const backTapped = () => {
+        // here
         navigation.navigate('Suppliers');
+        
     };
 
     const handlePopovers = popoverValue => popoverItem => {
@@ -153,9 +161,11 @@ function SupplierPage({route, navigation, updateSupplierAction}) {
     const fetchSupplier = id => {
         setFetching(true);
         setPageLoading(true);
+        handleDataRefresh();
+        
         getSupplierById(id)
             .then(data => {
-                // console.log('Supplier Products: ', data.products);
+                
                 setSelectedSupplier(data);
                 setProducts(data?.products || []);
             })
@@ -202,7 +212,6 @@ function SupplierPage({route, navigation, updateSupplierAction}) {
 
     // const supplierDetails = { supplier, status: '' }
     const getTabContent = selectedTab => {
-        console.log("Page State: ", pageState.isLoading);
         switch (selectedTab) {
             case 'Details':
                 return <SupplierDetailsTab
@@ -210,6 +219,7 @@ function SupplierPage({route, navigation, updateSupplierAction}) {
                     supplierId={_id}
                     onUpdated={supplierInfoUpdated}
                     isEditMode={isEditMode}
+                    refresh={() => { setPageLoading(true); fetchSupplier(_id)}}
                 />;
             case 'Products':
                 return pageState.isLoading ?
@@ -219,8 +229,10 @@ function SupplierPage({route, navigation, updateSupplierAction}) {
                             onAddProducts={onAddProducts}
                             onProductsCreated={() => fetchSupplier(_id)}
                             onRefresh={() => fetchSupplier(_id)}
-                            supplierId={_id}
-                            onRefresh={() => { console.log("Refreshing"); setPageLoading(true); fetchSupplier(_id); }}
+                            supplierId={_id} 
+                            permissions={purchaseOrderPermissions}
+
+                            //onRefresh={() => { console.log("Refreshing"); setPageLoading(true); fetchSupplier(_id); }}
                         />
                     );
             case 'Purchase Orders':
@@ -248,6 +260,7 @@ function SupplierPage({route, navigation, updateSupplierAction}) {
         <>
             <PageContext.Provider value={{pageState, setPageState}}>
                 <DetailsPage
+                    isEditable={updateSuppliers}
                     headerChildren={[selectedSupplier.name]}
                     onBackPress={backTapped}
                     isArchive={getIsEditable()}

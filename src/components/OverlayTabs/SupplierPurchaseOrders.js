@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { withModal } from 'react-native-modalfy';
-import {useNavigation} from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import { isEmpty, isError, result } from 'lodash';
-import styled, {css} from '@emotion/native';
-import {getPurchaseOrders} from '../../api/network';
+import styled, { css } from '@emotion/native';
+import { getPurchaseOrders } from '../../api/network';
 import axios from 'axios';
-import {useTheme} from 'emotion-theming';
+import { useTheme } from 'emotion-theming';
 import Table from '../common/Table/Table';
 import Item from '../common/Table/Item';
 import { formatDate } from '../../utils/formatter';
@@ -35,7 +35,7 @@ import LoadingIndicator from '../common/LoadingIndicator';
 
 const EditDateRecord = styled.View`
     flex: 1.2;
-    border: ${({theme}) => `1px solid ${theme.colors['--color-gray-300']}` };
+    border: ${({ theme }) => `1px solid ${theme.colors['--color-gray-300']}`};
     border-radius: 6px;
     flex-direction: row;
     justify-content: space-between;
@@ -46,8 +46,8 @@ const SupplierPurchaseOrders = ({
     modal,
     isArchive = false,
     data = [],
-    onRefresh = () => {},
-    onUpdatePurchaseOrders = () => {},
+    onRefresh = () => { },
+    onUpdatePurchaseOrders = () => { },
     supplierName = '',
     supplierId = ''
     // isEditMode
@@ -58,10 +58,12 @@ const SupplierPurchaseOrders = ({
     const [checkBoxList, setCheckBoxList] = useState([]);
     const [isFloatingActionDisabled, setFloatingAction] = useState(false);
     const [hasActionButton, setHasActionButton] = useState(!isArchive);
-    const [totalPages, setTotalPages] = useState(0);
+    const [totalPages, setTotalPages] = useState(1);
     const [currentPageListMin, setCurrentPageListMin] = useState(0);
     const [currentPageListMax, setCurrentPageListMax] = useState(recordsPerPage);
-    const [currentPagePosition, setCurrentPagePosition] = useState(1);
+    const [currentPagePosition, setCurrentPagePosition] = useState(1); 
+    const [isNextDisabled, setNextDisabled] = useState(false);
+    const [isPreviousDisabled, setPreviousDisabled] = useState(true);
 
     const [tabDetails, setTabDetails] = useState([]);
 
@@ -112,8 +114,8 @@ const SupplierPurchaseOrders = ({
 
     useEffect(() => {
         setIsPageLoading(true);
-        fetchPurchaseOrders();
-    },[]);
+        fetchPurchaseOrders(currentPagePosition);
+    }, []);
 
     useEffect(() => {
         if (isUpdated && !isEditMode) {
@@ -144,10 +146,33 @@ const SupplierPurchaseOrders = ({
         }
     }, [isEditMode]);
 
-    const fetchPurchaseOrders = () => {
-        getPurchaseOrders("",recordsPerPage,currentPagePosition,supplierId)
+    const fetchPurchaseOrders = (pagePosition) => {
+        
+        let currentPosition = pagePosition ? pagePosition : 1;
+        setCurrentPagePosition(currentPosition)
+
+        getPurchaseOrders("", recordsPerPage, currentPosition, supplierId)
             .then(orders => {
-                setOrdersData(orders?.data || []);
+                setOrdersData(orders?.data || []); 
+
+                const { data = [], pages = 0 } = ordersInfo;
+
+                if (pages === 1) {
+                    setPreviousDisabled(true);
+                    setNextDisabled(true);
+                } else if (currentPosition === 1) {
+                    setPreviousDisabled(true);
+                    setNextDisabled(false);
+                } else if (currentPosition === pages) {
+                    setNextDisabled(true);
+                    setPreviousDisabled(false);
+                } else if (currentPosition < pages) {
+                    setNextDisabled(false);
+                    setPreviousDisabled(false)
+                } else {
+                    setNextDisabled(true);
+                    setPreviousDisabled(true);
+                }
                 // console.log('Orders for supplier: ', orders)
             })
             .catch(err => {
@@ -158,20 +183,30 @@ const SupplierPurchaseOrders = ({
 
     const goToNextPage = () => {
         if (currentPagePosition < totalPages) {
-            const { currentPage, currentListMin, currentListMax } = useNextPaginator(currentPagePosition, recordsPerPage, currentPageListMin, currentPageListMax);
+            let { currentPage, currentListMin, currentListMax } = useNextPaginator(
+                currentPagePosition, 
+                recordsPerPage, 
+                currentPageListMin, 
+                currentPageListMax);
             setCurrentPagePosition(currentPage);
             setCurrentPageListMin(currentListMin);
             setCurrentPageListMax(currentListMax);
+            fetchPurchaseOrders(currentPage);
         }
     };
 
     const goToPreviousPage = () => {
         if (currentPagePosition === 1) return;
 
-        const { currentPage, currentListMin, currentListMax } = usePreviousPaginator(currentPagePosition, recordsPerPage, currentPageListMin, currentPageListMax);
+        let { currentPage, currentListMin, currentListMax } = usePreviousPaginator(
+            currentPagePosition, 
+            recordsPerPage, 
+            currentPageListMin, 
+            currentPageListMax);
         setCurrentPagePosition(currentPage);
         setCurrentPageListMin(currentListMin);
         setCurrentPageListMax(currentListMax);
+        fetchPurchaseOrders(currentPage);
     };
 
     const getFabActions = () => {
@@ -368,7 +403,7 @@ const SupplierPurchaseOrders = ({
 
         Promise.all(promises)
             .then(result => {
-                
+
                 //this gets called when all the promises have resolved/rejected.
                 result.forEach(res => console.log('Response: ', res));
                 if (hasError) {
@@ -410,12 +445,12 @@ const SupplierPurchaseOrders = ({
         setUpdated(true);
         console.log('Value:', value);
         const updateItemId = dataItem?._id;
-        const newDataObj = {...dataItem, deliveryDate: value || dataItem.deliveryDate };
+        const newDataObj = { ...dataItem, deliveryDate: value || dataItem.deliveryDate };
 
         const updatedPOData = ordersData.map(item => (item._id === dataItem._id ?
-            {...newDataObj} :
-            {...item}));
-        
+            { ...newDataObj } :
+            { ...item }));
+
         setOrdersData([...updatedPOData]);
         // setPurchaseOrdersData([...updatedPOData]);
         onUpdatePurchaseOrders([...updatedPOData]);
@@ -424,16 +459,14 @@ const SupplierPurchaseOrders = ({
     const listItemFormat = item => {
         const { invoice = {}, purchaseOrderNumber = '', status = '', nextOrderDate = '', deliveryDate = '', } = item;
         const invoiceColor = invoice === '' ? '--color-gray-500' : '--color-blue-600';
-        const statusColor = status === 'Request Sent' ? '--color-teal-600' : '--color-red-700';
-        // console.log('Doc id: ', invoice);
+        const statusColor = status === 'Request Sent' ? '--color-teal-600' : status == 'approved' ? "--color-green-500" : '--color-red-700';
         return (
             <>
-                <TouchableDataItem
+                <DataItem
                     text={purchaseOrderNumber}
-                    onPress={() => {
-                    }}
                     fontStyle="--text-base-medium"
                     flex={1.2}
+                    color={invoiceColor}
                 />
                 <DataItemWithIcon
                     text={invoice?.invoiceNumber || 'n/a'}
@@ -449,7 +482,7 @@ const SupplierPurchaseOrders = ({
                     color={statusColor}
                     fontStyle="--text-sm-medium"
                 />
-                <DataItem text={formatDate(nextOrderDate, 'DD/MM/YYYY') || 'n/a'}/>
+                <DataItem text={formatDate(nextOrderDate, 'DD/MM/YYYY') || 'n/a'} />
                 {
                     isEditMode ? (
                         <EditDateRecord>
@@ -464,9 +497,9 @@ const SupplierPurchaseOrders = ({
                             />
                         </EditDateRecord>
                     ) :
-                        <DataItem text={formatDate(deliveryDate, 'DD/MM/YYYY')} flex={1.2}/>
+                        <DataItem text={formatDate(deliveryDate, 'DD/MM/YYYY')} flex={1.2} />
                 }
-                
+
             </>
         );
     };
@@ -480,18 +513,39 @@ const SupplierPurchaseOrders = ({
         });
     };
 
+    const handleOnItemPress = (item, isOpenEditable) => {
+        navigation.navigate("Orders", {
+            screen: 'OrderItemPage',
+            params: {
+                initial: false,
+                order: item,
+                isEdit: isOpenEditable,
+            },
+            updateOrders: () => {
+                {
+                    handleDataRefresh();
+                    console.log("Refreshed")
+                }
+            }
+        });
+    };
+
+    const handleDataRefresh = () => {
+        fetchOrdersData();
+    };
+
     const renderListFn = item => (
         <Item
             hasCheckBox={true}
             isChecked={checkBoxList.includes(item)}
             onCheckBoxPress={toggleCheckbox(item)}
-            onItemPress={() => (item?.status === 'billed' && goToDetailsTab(item))}
+            onItemPress={() => handleOnItemPress(item, false)}
             itemView={listItemFormat(item)}
         />
     );
 
     return (
-        isPageLoading ? <LoadingIndicator/> : (
+        isPageLoading ? <LoadingIndicator /> : (
             <>
                 <Table
                     data={ordersData}
@@ -514,7 +568,7 @@ const SupplierPurchaseOrders = ({
                 />
             </>
         )
-        
+
     );
 };
 

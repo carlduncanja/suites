@@ -42,9 +42,20 @@ const ActionItemContainer = styled.View`
 `;
 
 const ActionTitle = styled.Text(({ theme, disabled }) => ({
-    font: theme.font['--text-base-regular'],
+     ...theme.font['--text-base-regular'],
     color: disabled ? theme.colors['--color-gray-600'] : theme.colors['--color-gray-800'],
     marginLeft: 13,
+    fontSize: 12,
+    flex: 1
+    // paddingBottom: 1
+}));
+
+const PatientName = styled.Text(({ theme, disabled }) => ({
+    ...theme.font['--text-base-regular'],
+    color: theme.colors['--color-blue-600'],
+    marginLeft: 13,
+    fontSize: 12,
+    flex: 1
     // paddingBottom: 1
 }));
 
@@ -52,10 +63,16 @@ const IconContainer = styled.View`
 
 `;
 
-function ActionItem({ icon, title, disabled, touchable = true, onPress }) {
+function ActionItem({ icon, title, disabled, touchable = true, onPress, text="" }) {
 
     const theme = useTheme();
 
+    function getBreadCrumb(item) {
+        const result = item.substring(0,7)
+        
+        return `${result}...`
+    };
+    
     return (
         <ActionItemWrapper
             onPress={onPress}
@@ -68,6 +85,7 @@ function ActionItem({ icon, title, disabled, touchable = true, onPress }) {
                 </IconContainer>
                 
                 <ActionTitle theme={theme} disabled={disabled}>{title}</ActionTitle>
+                <PatientName>"{getBreadCrumb(text)}"</PatientName>
             </ActionItemContainer>
         </ActionItemWrapper>
     );

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import {useModal, withModal} from 'react-native-modalfy';
 import { TextInput } from 'react-native-gesture-handler';
@@ -15,29 +15,32 @@ import CartCard from '../common/CartCard';
 import AddOverlayDialog from '../common/AddOverlayDialog';
 import DataItem from '../common/List/DataItem';
 import ContentDataItem from '../common/List/ContentDataItem';
+import OptionsField from '../common/Input Fields/OptionsField';
+import { MenuOption, MenuOptions } from 'react-native-popup-menu';
 
 const Row = styled.View`
     /* width : 100%; */
     height : 20px;
     flex-direction : row;
     margin-bottom : ${({ theme }) => theme.space['--space-24']};
+    margin-top: 10px;
 `;
 
 const headers = [
     {
         name: 'Product',
         alignment: 'flex-start',
-        flex: 2,
+        flex: 2.5,
     },
     {
         name: 'Quantity',
         alignment: 'center',
-        flex: 1
+        flex: 1.2
     },
     {
         name: 'Unit',
         alignment: 'center',
-        flex: 1
+        flex: 2
     },
     {
         name: 'Actions',
@@ -45,7 +48,18 @@ const headers = [
         flex: 1
     }
 ];
-    
+
+const UNIT_TYPES = {
+    pack: 'pack',
+    box: 'box'
+};
+
+const InputFieldContainer = styled.View`
+    width : 100%;
+    flex-direction: row;
+    align-items: center;
+`;
+
 const SuppliersPurchaseOrder = ({ details, onUpdateItems, onClearPress, onListFooterPress }) => {
     const modal = useModal();
     const theme = useTheme();
@@ -57,7 +71,6 @@ const SuppliersPurchaseOrder = ({ details, onUpdateItems, onClearPress, onListFo
     const [isFrequency, setIsFrequency] = useState(true);
 
     const onNumberArrowChange = id => operation => {
-        console.log("what's in id?", id)
         const findIndex = purchaseOrders.findIndex(obj => obj._id === id);
         // const objQuantity = Object.assign(...purchaseOrders).amount || 1;
         const objQuantity = purchaseOrders[findIndex].amount || 1;
@@ -77,7 +90,6 @@ const SuppliersPurchaseOrder = ({ details, onUpdateItems, onClearPress, onListFo
     };
 
     const onChangeField = id => value => {
-        console.log('Change:', id);
         const findIndex = purchaseOrders.findIndex(obj => obj._id === id);
         const objQuantity = purchaseOrders[findIndex].amount || 1;
         const updatedObj = {
@@ -111,22 +123,25 @@ const SuppliersPurchaseOrder = ({ details, onUpdateItems, onClearPress, onListFo
             return;
         }
 
-        const updatedPurchaseOrders = purchaseOrders.map(order => ({
+        let updatedPurchaseOrders = purchaseOrders.map(order => ({
             ...order,
-            productId: order?._id
+            productId: order?._id,
+            unit: 'pack'
         }));
 
         const repeating = isFrequency;
         const repeatingType = fields.orderFrequency;
+        productUnits.map(item => {
+            let findOrder = updatedPurchaseOrders.find(x => x._id === item._id);
+            findOrder.unit = item.selected;
+        });
 
-        // console.log('UpdatedPurchase REPEATING: ', repeatingType);
         onListFooterPress({
             purchaseOrders: updatedPurchaseOrders,
             deliveryDate: fields.deliveryDate,
             repeating,
             repeatingType
         });
-        // onUpdateItems(purchaseOrders)
     };
 
     const validateOrder = () => {
@@ -152,7 +167,6 @@ const SuppliersPurchaseOrder = ({ details, onUpdateItems, onClearPress, onListFo
     };
 
     const onFieldChange = fieldName => value => {
-        console.log('Field:', fieldName, value);
         const updatedFields = { ...fields };
         setFields({
             ...updatedFields,
@@ -164,11 +178,19 @@ const SuppliersPurchaseOrder = ({ details, onUpdateItems, onClearPress, onListFo
         setErrorFields(updatedErrors);
     };
 
+    const [productUnits, setProductUnits] = useState([]);
+    
     const listItemFormat = item => {
-        //const { _id = '', name = '', amount = 1, unit = 'n/a' } = item;
-        // console.log("item has", item)
-        return (
+        const newUnit = productUnits.filter(result => result._id !== item._id);
+        const findUnit = productUnits.filter(result => result._id === item._id);
+        let defaultUnit = 'pack';
 
+        if (findUnit.length > 0) {
+            defaultUnit = findUnit[0].selected;
+        }
+
+        return (
+            
             <Row theme={theme}>
                 <DataItem
                     text={item?.name}
@@ -181,17 +203,35 @@ const SuppliersPurchaseOrder = ({ details, onUpdateItems, onClearPress, onListFo
                     onAmountChange={onChangeField(item?._id)}
                     value={item.amount.toString()}
                     align="center"
-                />
-
-                <DataItem
-                    text={item?.unit}
-                    fontStyle="--text-sm-regular"
-                    color="--color-gray-800"
-                    align="center"
+                    flex={2}
                 />
 
                 <ContentDataItem
                     align="flex-end"
+                    flex={1}
+                    content={(
+                        <InputFieldContainer>
+                            <OptionsField
+                                align="center"
+                                text={defaultUnit[0].toUpperCase() + defaultUnit.slice(1)}
+                                oneOptionsSelected={value => {                                
+                                    newUnit.push({_id: item?._id, selected: value})
+                                    setProductUnits(newUnit);
+                                }}
+                                menuOption={(
+                                    <MenuOptions>
+                                        <MenuOption value="pack" text="Pack"/>
+                                        <MenuOption value="box" text="Box"/>
+                                    </MenuOptions>
+                                )}
+                            />
+                        </InputFieldContainer>
+                    )}
+                />
+
+                <ContentDataItem
+                    align="flex-end"
+                    flex={1.3}
                     content={(
                         <IconButton
                             Icon={<DeleteIcon />}
@@ -199,36 +239,6 @@ const SuppliersPurchaseOrder = ({ details, onUpdateItems, onClearPress, onListFo
                         />
                     )}
                 />
-
-                {/* <View style={{flex:1,alignItems:'center', flexDirection:'row', justifyContent:'space-between'}}> */}
-                {/* <NumberChangeField
-                        onChangePress = {onNumberArrowChange(_id)}
-                        onAmountChange = {onChangeField(_id)}
-                        value = {amount.toString()}
-                    /> */}
-                {/* <IconButton
-                        Icon = {<LeftArrow strokeColor="#CCD6E0"/>}
-                        onPress = {()=>onNumberArrowChange('subtract')(_id)}
-                    />
-                    <View style={{padding:5, paddingLeft:8, paddingRight:8, borderColor:'#CCD6E0', borderWidth:1}}>
-                        <TextInput
-                            value = {quantity.toString()}
-                            onChangeText = {(value)=>onChangeField(_id)(value)}
-                        />
-                        <Text style={[styles.dataText,{color:"#4A5568"}]}>{item.quantity}</Text>
-                    </View>
-                    <IconButton
-                        Icon = {<RightArrow strokeColor="#CCD6E0"/>}
-                        onPress = {()=>onNumberArrowChange('add')(_id)}
-                    />  */}
-                {/* </View>
-                <View style={{flex:1,alignItems:'flex-end'}}>
-                    <IconButton
-                        Icon = {<DeleteIcon/>}
-                        onPress = {()=>onDeletePress(_id)}
-                    />
-
-                </View> */}
             </Row>
         );
     };
@@ -240,6 +250,9 @@ const SuppliersPurchaseOrder = ({ details, onUpdateItems, onClearPress, onListFo
             listItemFormat={listItemFormat}
             headers={headers}
             isCheckBox={false}
+            onBackPress={() => {
+                navigation.navigate('purchase-order');
+            }}
             data={purchaseOrders}
             onFooterPress={onFooterPress}
             onClearPress={onClearItems}

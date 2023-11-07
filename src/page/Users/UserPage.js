@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
 import {View} from 'react-native';
 import styled from '@emotion/native';
@@ -13,16 +13,13 @@ import ResetPasswordComponent from './ResetPasswordComponent';
 function UserPage({route, ...props}) {
 
     const navigation = useNavigation();
-    const {user, onUserUpdate} = route.params;
+    const {user, onUserUpdate, editMode, updateUser} = route.params;
     const modal = useModal();
-
     const [pageState, setPageState] = useState({});
     const [selectedUser, setUser] = useState(user);
     const [currentTab, setCurrentTab] = useState('Details')
     const currentTabs = ['Details'];
 
-
-    console.log("hello", selectedUser);
 
     const onBackTapped = () => {
         navigation.goBack()
@@ -32,6 +29,17 @@ function UserPage({route, ...props}) {
 
     }
 
+    editMode ?
+
+    useEffect (() => {
+        setPageState({
+            ...pageState,
+            isEditMode: !pageState.isEditMode
+        });
+    }, [editMode]) : ''
+
+   
+
     const handleUserUpdate = (updatedUser) => {
         setUser({...selectedUser, ...updatedUser});
         if (onUserUpdate) onUserUpdate({...selectedUser, ...updatedUser})
@@ -40,7 +48,7 @@ function UserPage({route, ...props}) {
     const getOverlayScreen = (currentTab) => {
         switch (currentTab) {
             case 'Details':
-                return <UserDetailsComponent user={selectedUser} onUserUpdated={handleUserUpdate} onResetPassword={onResetPassword}/>
+                return <UserDetailsComponent editMode = {editMode} user={selectedUser} onUserUpdated={handleUserUpdate} onResetPassword={onResetPassword}/>
             default:
                 return <View/>
         }
@@ -62,7 +70,9 @@ function UserPage({route, ...props}) {
     return (
         <PageContext.Provider value={{pageState, setPageState}}>
             <DetailsPage
-                headerChildren={[`${selectedUser?.first_name || '--'} ${selectedUser?.last_name || ''} `]}
+                editMode = {editMode}
+                isEditable={updateUser}
+                headerChildren={[`${selectedUser?.first_name || '--'} ${selectedUser?.last_name || '__'} `]}
                 onBackPress={onBackTapped}
                 pageTabs={(
                     <TabsContainer

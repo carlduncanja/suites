@@ -111,7 +111,6 @@ const AddEquipmentPage = ({ navigation, route, modal }) => {
             ...updateFields,
             [fieldName]: value
         })
-        console.log(equipmentData);
     }
 
     const onLocationUpdate = (value) => {
@@ -175,7 +174,6 @@ const AddEquipmentPage = ({ navigation, route, modal }) => {
                             isEditUpdate={false}//use this specification to either get the confirm an edit or update
                             onCancel={onCancel}
                             onAction={createdSuccessfully}
-                            message="Please choose a supplier "//general message you can send to be displayed
                             action="Archive"
                         />
                     ), onClose: () => {

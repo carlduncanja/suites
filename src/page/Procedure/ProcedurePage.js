@@ -28,8 +28,7 @@ function ProcedurePage({route, navigation}) {
     // const { pageState } = useContext(PageContext);
     // const { isEditMode } = pageState;
 
-    const {procedure, isOpenEditable, onUpdate} = route.params;
-
+    const {procedure, isOpenEditable, onUpdate, updatesProcedure} = route.params;
     const {
         _id = '',
         name,
@@ -37,7 +36,7 @@ function ProcedurePage({route, navigation}) {
         hasRecovery,
         duration,
         custom = false,
-        physician = {},
+        physicians = [],
     } = procedure;
 
     // ##### States
@@ -53,15 +52,13 @@ function ProcedurePage({route, navigation}) {
         duration,
         hasRecovery,
         custom,
-        physician: {
-            ...physician,
-            name: formatPhysician(physician)
-        }
+        physicians: physicians
+        
     });
 
     const [popoverList, setPopoverList] = useState([
         {
-            name: 'physician',
+            name: 'physicians',
             status: false
         }
     ]);
@@ -124,9 +121,10 @@ function ProcedurePage({route, navigation}) {
 
     const onConfirmCancel = () => {
         modal.closeModals('ConfirmationModal');
+        fetchProcedure(_id);
         setPageState({
             ...pageState,
-            isEditMode: true
+            isEditMode: false
         });
     };
 
@@ -171,6 +169,7 @@ function ProcedurePage({route, navigation}) {
         getProcedureById(id)
             .then(data => {
                 setSelectedProcedure(data);
+                setFields({...fields, physicians: data?.physicians || []})
                 console.log('Fetched data: ', data);
                 // setProcedure(data)
             })
@@ -184,6 +183,8 @@ function ProcedurePage({route, navigation}) {
     };
 
     const onAddInventory = data => {
+        console.log("invenkfl", newProcedureData)
+
         const {inventories = []} = selectedProcedure;
         const updatedInventory = inventories.map(item => ({
             inventory: item?.inventory._id,
@@ -306,7 +307,6 @@ function ProcedurePage({route, navigation}) {
     };
 
     const updateProcedureCall = updatedFields => {
-        // console.log("Fields: ", updatedFields);
         updateProcedure(_id, updatedFields)
             .then(data => {
                 // getProcedures()
@@ -333,7 +333,6 @@ function ProcedurePage({route, navigation}) {
                         console.log('Modal closed');
                     },
                 });
-
                 // modal.closeAllModals();
                 // setTimeout(() => {onCreated(data)}, 200);
             })
@@ -404,11 +403,13 @@ function ProcedurePage({route, navigation}) {
                     procedure={selectedProcedure}
                     onDetailsUpdate={onDetailsUpdate}
                     fields={fields}
+                    setFields ={setFields}
                     onFieldChange={onFieldChange}
                 />;
             case 'Consumables':
                 return <ProceduresConsumablesTab
                     consumablesData={inventories}
+                    updateProcedure = {updatesProcedure}
                     handleInventoryUpdate={handleInventoryUpdate}
                     handleConsumablesDelete={handleConsumablesDelete}
                     onAddInventory={onAddInventory}
@@ -418,6 +419,7 @@ function ProcedurePage({route, navigation}) {
             case 'Equipment':
                 return <ProceduresEquipmentTab
                     equipmentsData={equipments}
+                    updateProcedure = {updatesProcedure}
                     onAddEquipment={onAddEquipment}
                     handleEquipmentDelete={handleEquipmentDelete}
                     onAddItems={onAddItems}
@@ -456,7 +458,7 @@ function ProcedurePage({route, navigation}) {
                 return false;
         }
     };
-    const physicianName = formatPhysician(physician);
+    const physicianName = formatPhysician(physicians);
 
     return (
         <PageContext.Provider value={{
@@ -466,8 +468,9 @@ function ProcedurePage({route, navigation}) {
         >
             <DetailsPage
                 headerChildren={[name, physicianName]}
+                isEditable={updatesProcedure}
                 onBackPress={() => {
-                    navigation.navigate('Procedures');
+                    navigation.navigate('Procedures List');
                 }}
                 isArchive={getIsEditable()}
                 pageTabs={(

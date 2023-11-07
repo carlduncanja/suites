@@ -92,8 +92,8 @@ const PhysiciansDetailsTab = ({physician}) => {
             recordValue={formatTrn(trn)}
         />,
         <Record
-            recordTitle="Type"
-            recordValue={ field || "Neurosurgeon" }
+            recordTitle="Specialization"
+            recordValue={ field || "" }
         />
     ];
 

@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
-import { View, StyleSheet, Text, TouchableOpacity } from "react-native";
+import { View, StyleSheet, Text, TouchableOpacity, Dimensions } from "react-native";
 import ClearIcon from "../../../../assets/svg/clearIcon";
 import RightArrow from "../../../../assets/svg/rightArrow";
 
@@ -20,11 +20,12 @@ import OverlayDialogFooter from "./OverlayDialogFooter";
 
 const OverlayDialogWrapper = styled.View`
     flex : 1;
-    max-width : 636px;
+    max-width: ${({maxWidth}) => `${maxWidth}px`};
 `;
 const OverlayDialogContainer = styled.View`
     display : flex;
     width : 100%;
+    height: 100%;
     position : relative;
     border-radius: 8px;
     background-color : ${ ({theme}) => theme.colors['--default-shade-white']};
@@ -32,6 +33,8 @@ const OverlayDialogContainer = styled.View`
 
 
 const OverlayContentWrapper = styled.View`
+  z-index: ${(props) => props.zIndex || 1};
+  position: relative;
   width : 100%;
 `;
 const OverlayContentContainer = styled.View`
@@ -47,14 +50,25 @@ function OverlayDialog(props) {
     onPositiveButtonPress = () => {}, 
     positiveText = "DONE",
     buttonIcon = <View />,
-    isButtonDisabled = false
-    // handlePopovers = () =>{}
+    isButtonDisabled = false,
+    // handlePopovers = () =>{},
+    isOpen = false,
+    footerIndex,
+    max=100
   } = props;
 
   const theme = useTheme();
+  const [zIndex, setZindex] = useState(isOpen ? 11 : 1);
+  const dimensions = Dimensions.get("window");
+
+  const maxWidth = dimensions.width - max;
+  
+  useEffect(() => {
+    setZindex(isOpen ? 11 : 1)
+  }, [isOpen])
 
   return (
-    <OverlayDialogWrapper>
+    <OverlayDialogWrapper maxWidth={maxWidth}>
       <OverlayDialogContainer theme = {theme}>
 
         <OverlayDialogHeader
@@ -62,19 +76,21 @@ function OverlayDialog(props) {
           onClose = {onClose}
         />
 
-        
+        <OverlayContentWrapper zIndex={zIndex}>
+          <OverlayContentContainer theme = {theme}> 
+            {props.children}
+          </OverlayContentContainer>
+        </OverlayContentWrapper>
+        <View style={{width: 100, height: 20}}>
+        </View>
+
         <OverlayDialogFooter
           onPositiveButtonPress = {onPositiveButtonPress}
           positiveText = {positiveText}
           buttonIcon = {buttonIcon}
           isButtonDisabled={isButtonDisabled}
+          zIndex={footerIndex}
         />
-      
-        <OverlayContentWrapper>
-          <OverlayContentContainer theme = {theme}> 
-            {props.children}
-          </OverlayContentContainer>
-        </OverlayContentWrapper>
 
      
     
@@ -116,7 +132,8 @@ OverlayDialog.propTypes = {
   onClose: PropTypes.func,
   onPositiveButtonPress: PropTypes.func.isRequired,
   positiveText: PropTypes.string.isRequired,
-  isButtonDisabled: PropTypes.bool
+  isButtonDisabled: PropTypes.bool,
+  isOpen: PropTypes.bool
 };
 OverlayDialog.defaultProps = {};
 

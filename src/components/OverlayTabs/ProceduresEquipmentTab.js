@@ -30,6 +30,7 @@ const ProceduresEquipmentTab = ({
     onAddEquipment,
     handleEquipmentDelete,
     navigation,
+    updateProcedure,
     onAddItems
 }) => {
     const {pageState} = useContext(PageContext);
@@ -53,21 +54,21 @@ const ProceduresEquipmentTab = ({
         {
             name: 'Item Name',
             alignment: 'flex-start',
-            flex: 2,
+            flex: 1.6,
         },
         {
             name: 'SKU',
             alignment: 'center',
-            flex: 1,
+            flex: 1.5,
         },
         {
             name: 'Quantity',
             alignment: 'center',
-            flex: 1,
+            flex: 2.2,
         },
         {
             name: 'Unit Price',
-            alignment: 'flex-end',
+            alignment: 'center',
             flex: 1
         }
     ];
@@ -139,10 +140,10 @@ const ProceduresEquipmentTab = ({
         } = equipment || {};
         return (
             <>
-                <DataItem flex={2} text={name} color="--color-blue-600" fontStyle="--text-base-medium"/>
-                <DataItem text={sku || 'n/a'} align="center" color="--color-gray-600" fontStyle="--text-base-regular"/>
-                <DataItem text={amount || 'n/a'} align="center" color="--color-gray-600" fontStyle="--text-base-medium"/>
-                <DataItem text={`$ ${currencyFormatter(unitPrice)}`} align="flex-end" color="--color-gray-600" fontStyle="--text-base-medium"/>
+                <DataItem flex={3} align='flex-start' text={name} color="--color-blue-600" fontStyle="--text-base-medium"/>
+                <DataItem flex={2.4} text={sku || 'n/a'} align="center" color="--color-gray-600" fontStyle="--text-base-regular"/>
+                <DataItem flex={2} text={amount || 'n/a'} align="center" color="--color-gray-600" fontStyle="--text-base-medium"/>
+                <DataItem  flex={1} text={`$ ${currencyFormatter(unitPrice)}`} align="flex-end" color="--color-gray-600" fontStyle="--text-base-medium"/>
 
             </>
         );
@@ -300,7 +301,7 @@ const ProceduresEquipmentTab = ({
                 isDisabled={isFloatingActionDisabled}
                 toggleActionButton={toggleActionButton}
                 hasPaginator={true}
-                hasActionButton={true}
+                hasActionButton={updateProcedure}
                 hasActions={true}
                 isNextDisabled={false}
                 isPreviousDisabled={false}

@@ -87,8 +87,7 @@ const BillingText = styled.Text(({theme, font = '--text-base-regular', color = '
     paddingTop: 1,
 }));
 
-const BillingCaseCard = ({tabDetails, caseProcedures, paymentDetails,isEditMode, handleEditDone, onCaseProcedureBillablesChange}) => {
-    // console.log('Billing Case: ', caseProcedures);
+const BillingCaseCard = ({quotations, tabDetails, caseProcedures, paymentDetails,isEditMode, handleEditDone, onCaseProcedureBillablesChange}) => {
     const modal = useModal();
     const theme = useTheme();
     const {
@@ -103,9 +102,15 @@ const BillingCaseCard = ({tabDetails, caseProcedures, paymentDetails,isEditMode,
         amountDue
     } = paymentDetails;
 
-    const outstandingBalance = amountDue;
+
+    const initialAmount = total
+
+
+    //const outstandingBalance = amountDue;
     const payments = lineItems.filter(lineItem => lineItem.type === 'payment');
     const discounts = lineItems.filter(lineItem => lineItem.type === 'discount');
+
+    
 
     // const [selectedProcedure, setSelectedProcedure] = useState(0);
     // const [updatedBilling, setUpdatedBilling] = useState([]);
@@ -114,6 +119,8 @@ const BillingCaseCard = ({tabDetails, caseProcedures, paymentDetails,isEditMode,
     // const [discounts, setDiscounts] = useState([]);
 
     const totalDiscount = discounts.reduce((acc, curr) => acc + (curr.unitPrice || 0), 0);
+
+    const outstandingBalance = amountDue - totalDiscount
 
     const getProcedureStatusArray = () => {
         const statusArray = procedures.map((procedure, index) => ({
@@ -202,12 +209,12 @@ const BillingCaseCard = ({tabDetails, caseProcedures, paymentDetails,isEditMode,
                     <StackedRecord align="flex-end">
                         <BillingText theme={theme} style={css`padding-bottom: ${theme.space['--space-12']};`}>Adjusted Cost</BillingText>
                         {
-                            discounts.length === 0 ?
+                            total === initialAmount ?
                                 <BillingText theme={theme} color="--color-gray-800" font="--text-base-medium">No Adjustments Yet</BillingText> :
                                 (
                                     <BillingText theme={theme} color="--color-gray-800" font="--text-base-medium">
-                                        (<BillingText theme={theme} color="--accent-button" font="--text-base-medium">discount: </BillingText>
-                                        {`$ ${currencyFormatter(totalDiscount)}) $ ${currencyFormatter(total)}`}
+                                        <BillingText theme={theme} color="--accent-button" font="--text-base-medium">discount: </BillingText>
+                                        {`$ ${currencyFormatter(totalDiscount)}) $ ${currencyFormatter(total - totalDiscount)}`}
                                     </BillingText>
                                 )
                         }
@@ -223,7 +230,7 @@ const BillingCaseCard = ({tabDetails, caseProcedures, paymentDetails,isEditMode,
 
                     <StackedRecord>
                         <BillingText theme={theme} style={css`padding-bottom: ${theme.space['--space-12']};`}>Initial Cost</BillingText>
-                        <BillingText theme={theme} color="--color-gray-800" font="--text-base-medium">$ {currencyFormatter(total)}</BillingText>
+                        <BillingText theme={theme} color="--color-gray-800" font="--text-base-medium">$ {currencyFormatter(initialAmount)}</BillingText>
                     </StackedRecord>
 
                 </RowItem>

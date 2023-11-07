@@ -18,11 +18,11 @@ import { useTheme } from 'emotion-theming';
  * @constructor
  */
 
-const FrameCardWrapper = styled.View`
+export const FrameCardWrapper = styled.View`
     width: 100%;
     margin-bottom : ${ ({theme}) => theme.space['--space-24']};
 `;
-const FrameCardContainer = styled.View`
+export const FrameCardContainer = styled.View`
     width: 100%;
 `;
 
@@ -32,12 +32,18 @@ function FrameCard(props){
         frameBorderColor,
         titleBackgroundColor,
         icon,
+        idArray,
         frameTitle,
         cardInformation,
         isEditMode = false,
         handleEdit = ()=>{},
         isAddNew = true,
-        handleAddNew = () =>{}
+        handleAddNew = () =>{},
+        onDelete =()=>{},
+        onAction =()=>{},
+        onEdit =()=>{},
+        normalInput,
+        physicianSelection=true
     } = props
 
     const theme = useTheme();
@@ -56,10 +62,16 @@ function FrameCard(props){
 
                 <FrameContentList
                     cardInformation={cardInformation}
-                    // isEditMode = {isEditMode}
+                    isEditMode = {isEditMode}
                     handleEdit = {handleEdit}
                     handleAddNew = {handleAddNew}
                     isAddNew = {isAddNew}
+                    onDelete={onDelete}
+                    idArray={idArray}
+                    onAction={onAction}
+                    onEdit={onEdit}
+                    physicianSelection={physicianSelection}
+                    normalInput={normalInput}
                 />
 
 

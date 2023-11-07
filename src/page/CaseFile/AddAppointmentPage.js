@@ -53,7 +53,7 @@ const InputWrapper = styled.View`
 
 
 const CloseButtonContainer = styled.TouchableOpacity`
-    background-color:${({ theme }) => theme.colors["--color-gray-300"]};
+    background-color: ${({ theme }) => theme.colors["--color-blue-500"]};
     width:68px;
     height:26px;
     padding:4px 14px;
@@ -62,7 +62,7 @@ const CloseButtonContainer = styled.TouchableOpacity`
 `;
 
 const CloseText = styled.Text`
-    color:${({ theme }) => theme.colors["--color-gray-600"]};
+    color:white;
     font:${({ theme }) => theme.font["--text-sm-bold"]};
 `;
 
@@ -178,7 +178,6 @@ function AppointmentPage({ navigation, route }) {
 
     let valid;
     const onNextButtonPress = async () => {
-
         // Validate Fields
         switch (currentTabs[currentTabIndex]) {
             case PAGE_TABS.APPOINTMENT:
@@ -456,7 +455,7 @@ function AppointmentPage({ navigation, route }) {
     return (
         <PageWrapper theme={theme}>
 
-            <HeaderWrapper theme={theme}>
+            {/* <HeaderWrapper theme={theme}>
                 <HeaderContainer theme={theme}>
                     <HeaderText theme={theme}>Add Appointment</HeaderText>
                     <CloseButtonWrapper>
@@ -465,7 +464,7 @@ function AppointmentPage({ navigation, route }) {
                         </CloseButtonContainer>
                     </CloseButtonWrapper>
                 </HeaderContainer>
-            </HeaderWrapper>
+            </HeaderWrapper> */}
 
             <PageContentWrapper theme={theme}>
                 <TabsViewContainer>
@@ -664,7 +663,7 @@ const AppointmentTab = ({ onProcedureUpdate, onProcedureSelected, procedure, pat
         }
     }
 
-    const date = currentProcedure?.date || new Date()
+    const date = moment(currentProcedure?.date).toDate().toString() || new Date().toString()
 
     return (
         <View style={{ flex: 1 }}>

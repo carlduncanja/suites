@@ -40,7 +40,7 @@ import {
 } from '../../helpers/caseFilesHelpers';
 
 import {setEquipment} from '../../redux/actions/equipmentActions';
-import {getEquipment, getEquipmentTypes, removeEquipment, removeEquipmentTypes} from '../../api/network';
+import {getEquipment, getEquipmentTypes, removeEquipment, removeEquipmentTypes, updateEquipment} from '../../api/network';
 
 import {formatDate, numberFormatter} from '../../utils/formatter';
 
@@ -53,7 +53,7 @@ import ListItem from '../../components/common/List/ListItem';
 import {LONG_PRESS_TIMER} from '../../const';
 import ConfirmationComponent from '../../components/ConfirmationComponent';
 import { PageSettingsContext } from '../../contexts/PageSettingsContext';
-
+import ConfirmationCheckBoxComponent from '../../components/ConfirmationCheckBoxComponent';
 const QuantityWrapper = styled.View`
     flex:1.5;
     align-items: center; 
@@ -94,9 +94,10 @@ const shadows = [
     },
 ];
 const Equipment = props => {
+    const equipmentPermissions = props.route.params.equipmentPermissions;
     const theme = useTheme();
     // ############# Const data
-    const recordsPerPage = 10;
+    const recordsPerPage = 12;
     const listHeaders = [
 
         {
@@ -107,12 +108,12 @@ const Equipment = props => {
         {
             name: 'Status',
             alignment: 'flex-start',
-            flex: 1.2,
+            flex: 2.4,
         },
         {
             name: 'In Stock',
-            alignment: 'center',
-            flex: 1.5,
+            
+            flex: 1.3,
         },
 
         {
@@ -258,7 +259,8 @@ const Equipment = props => {
             equipment: item,
             isOpenEditable,
             group: type,
-            onCreated: handleDataRefresh
+            onCreated: handleDataRefresh,
+            updatesEquipment : equipmentPermissions.update
         });
     };
 
@@ -320,7 +322,6 @@ const Equipment = props => {
     const fetchEquipmentData = pagePosition => {
         const currentPosition = pagePosition || 1;
         setCurrentPagePosition(currentPosition);
-
         setFetchingData(true);
         getEquipmentTypes(searchValue, recordsPerPage, currentPosition)
             .then(equipmentTypesInfo => {
@@ -342,7 +343,6 @@ const Equipment = props => {
                     setNextDisabled(true);
                     setPreviousDisabled(true);
                 }
-
                 setEquipmentTypes(data);
                 data.length === 0 ? setTotalPages(1) : setTotalPages(pages);
             })
@@ -473,14 +473,14 @@ const Equipment = props => {
     const equipmentItemView = ({equipmentName, quantity, status, assignment}, onActionPress) => (
         <>
             <DataItem text={equipmentName} flex={2} color="--color-blue-600" fontStyle="--text-sm-medium"/>
-            <DataItem text={status} flex={1.2} color="--color-gray-800" fontStyle="--text-sm-regular"/>
-            <DataItem text={quantity} flex={1.5} color="--color-gray-800" fontStyle="--text-sm-regular" align="center"/>
+            <DataItem text={status} flex={2.4} color="--color-gray-800" fontStyle="--text-sm-regular"/>
+            <DataItem text={quantity} flex={1.2} color="--color-gray-800" fontStyle="--text-sm-regular" align="flex-end"/>
             <DataItem text={assignment} flex={2} color="--color-gray-800" fontStyle="--text-sm-regular"/>
         </>
     );
 
     const gotoGroupDetails = item => {
-        props.navigation.navigate('EquipmentGroupDetailsPage', {data: item, onCreated: handleDataRefresh});
+        props.navigation.navigate('EquipmentGroupDetailsPage', {data: item, onCreated: handleDataRefresh, updatesEquipment : equipmentPermissions.update });
     };
 
     const equipmentGroupView = (item, onActionPress, isCollapsed) => (
@@ -527,7 +527,26 @@ const Equipment = props => {
         navigation.navigate('AssignEquipmentPage', {equipment, onCreated: handleDataRefresh});
     };
 
+    const openCreateGroupDialog = () => {
+        modal.closeAllModals();
+        //navigation.navigate('AddEquipmentCategory');
+        navigation.navigate('AddEquipmentCategory', {
+            screen: 'AddEquipmentCategory',
+            initial: false,
+            onCreated: () => {
+                onRefresh();
+                setFloatingAction(false);
+                navigation.goBack();
+            },
+            onCancel: () => {
+                setFloatingAction(false);
+                navigation.goBack();
+            },
+        });
+    }
+
     const getFabActions = () => {
+        actionsArray = []
         const isGroupDeleteDisabled = !selectedTypesIds.length;
 
         const deleteAction = (
@@ -601,15 +620,15 @@ const Equipment = props => {
         );
 
         const createEquipmentType = (
-            <ActionItem
-                title="Create Equipment Type"
+            equipmentPermissions.create && <ActionItem
+                title="Create Equipment Group"
                 icon={<AddIcon/>}
                 onPress={openEquipmentTypeDialog}
             />
         );
 
         const createEquipment = (
-            <ActionItem
+            equipmentPermissions.create && <ActionItem
                 title="Add Equipment"
                 icon={<AddIcon/>}
                 touchable={selectedTypesIds.length === 1}
@@ -620,15 +639,12 @@ const Equipment = props => {
             />
         );
 
+        equipmentPermissions.delete && actionsArray.push(deleteAction, deleteEquipmentItemAction)
+        equipmentPermissions.create && actionsArray.push(createEquipmentType, createEquipment)
+        equipmentPermissions.update && actionsArray.push(assignEquipment)
         return (
             <ActionContainer
-                floatingActions={[
-                    deleteAction,
-                    deleteEquipmentItemAction,
-                    assignEquipment,
-                    createEquipmentType,
-                    createEquipment,
-                ]}
+                floatingActions={actionsArray}
                 title="EQUIPMENT ACTIONS"
             />
         );
@@ -639,7 +655,7 @@ const Equipment = props => {
             .openModal(
                 'ConfirmationModal',
                 {
-                    content: <ConfirmationComponent
+                    content: <ConfirmationCheckBoxComponent
                         isError={false}
                         isEditUpdate={true}
                         onCancel={() => modal.closeModals('ConfirmationModal')}
@@ -780,7 +796,7 @@ const Equipment = props => {
                 isDisabled={isFloatingActionDisabled}
                 toggleActionButton={toggleActionButton}
                 hasPaginator={true}
-                hasActionButton={true}
+                hasActionButton={equipmentPermissions.create || equipmentPermissions.delete}
                 hasActions={true}
                 isNextDisabled={isNextDisabled}
                 isPreviousDisabled={isPreviousDisabled}

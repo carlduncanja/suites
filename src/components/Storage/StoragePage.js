@@ -14,7 +14,7 @@ import StorageDetailsTab from './StorageDetailsTab';
 
 function StoragePage({route, navigation}) {
     const currentTabs = ['Details', 'Transfers', 'Consumables', 'Equipment'];
-
+    const updateStorage =  route.params.updateStorage;
     const {storage, reloadStorageLocations} = route.params;
 
     // ##### States
@@ -24,8 +24,6 @@ function StoragePage({route, navigation}) {
     const [isEditMode, setEditMode] = useState(false);
     const [isFetching, setFetching] = useState(false);
     const [pageState, setPageState] = useState({});
-
-    console.log('Storarge: ', storageItem);
 
     // ##### Life cycle methods
 
@@ -81,9 +79,10 @@ function StoragePage({route, navigation}) {
             name: updates.name,
             description: updates.description
         });
+
         if (reloadStorageLocations) reloadStorageLocations();
     };
-
+    
     const getTabContent = selectedTab => {
         switch (selectedTab) {
             case 'Details':
@@ -91,6 +90,7 @@ function StoragePage({route, navigation}) {
                 const storageLocationDetails = {
                     description: storageItem.description,
                     name: storageItem.name,
+                    storageCategories: storageItem.categories
                 };
 
                 return <StorageDetailsTab
@@ -104,6 +104,7 @@ function StoragePage({route, navigation}) {
                 return <TransfersOverlayTab
                     transferItems={storageItem?.transfers || []}
                     transferObj={storageItem}
+                    updateStorage = {updateStorage}
                     onUpdateItem={() => { fetchStorageItem(storage._id); }}
                 />;
             case 'Consumables': {
@@ -113,6 +114,7 @@ function StoragePage({route, navigation}) {
                     return {
                         item: item.inventory.name,
                         type: '',
+
                         onHand: item.stock,
                         unitPrice: item.inventory.unitPrice
                     };
@@ -121,11 +123,14 @@ function StoragePage({route, navigation}) {
                 return <StorageConsumablesTab
                     consumables={storageItem?.inventoryLocations}
                     storageLocation={storageItem}
+                    updateStorage = {updateStorage}
                     onUpdateItem={() => { fetchStorageItem(storage._id); }}
                 />;
             }
             case 'Equipment':
-                return <StorageEquipmentTab equipments={storageItem?.equipments || []}/>;
+                return <StorageEquipmentTab 
+                updateStorage = {updateStorage}
+                equipments={storageItem?.equipments || []}/>;
             default:
                 return <View/>;
         }
@@ -143,6 +148,7 @@ function StoragePage({route, navigation}) {
             <PageContext.Provider value={{pageState, setPageState}}>
                 <DetailsPage
                     headerChildren={[name]}
+                    isEditable={updateStorage}
                     onBackPress={backTapped}
                     pageTabs={(
                         <TabsContainer

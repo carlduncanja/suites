@@ -15,10 +15,17 @@ import BreadCrumbIcon from '../../../../assets/svg/BreadCrumbIcon';
 function DetailsPage({
     isArchive = false,
     hasIcon = null,
+    timeStamp,
+    status,
+    appointmentObj,
+    caseId,
     title = '__',
+    isEditable,
     subTitle = '__',
+    proceduresBillableItemsInfo,
     headerChildren,
     isSpecialHeader = false,
+    selectedTab,
     onBackPress = () => {},
     pageTabs = null,
     ...props
@@ -42,7 +49,13 @@ function DetailsPage({
 
                 <>
                     <PageHeader
-                        isArchive={isArchive}
+                        timeStamp = {timeStamp}
+                        status = {status}
+                        appointmentObj = {appointmentObj}
+                        caseId = {caseId}
+                        isArchive={isArchive}  
+                        selectedTab ={selectedTab}
+                        isEditable={isEditable}                  
                         headerChildren={headerChildren || [title, subTitle]}
                         separator={<BreadCrumbIcon/>}
                         onBack={onBackPress}

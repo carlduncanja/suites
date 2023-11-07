@@ -79,12 +79,13 @@ function Consumables({
                          allItems = []
                      }) {
 
-    // console.log("Cae: ", caseProcedures)
+    
+    
     const theme = useTheme();
     const {pageState} = useContext(PageContext);
     const {isEditMode} = pageState
 
-    // console.log("caseProcedures: ", caseProcedures);
+    
 
 
     // const [checkBoxList, setCheckBoxList] = useState([]);
@@ -184,17 +185,17 @@ function Consumables({
                 ? {...updatedObj}
                 : {...item}
         })
-
+        // here
         onConsumablesUpdate(sectionIndex, updatedData);
     }
 
     const listItem = ({name}, onActionPress, isCollapsed, index) => <>
         <DataItem text={name} flex={10} color="--color-gray-800" fontStyle="--text-base-regular"/>
-
-        <IconButton
+        {caseProcedures[0]?.inventories.length < 1 ? <></> :  <IconButton
             Icon={isCollapsed ? <ActionIcon/> : <CollapsedIcon/>}
-            onPress={onActionPress}
-        />
+            onPress={onActionPress} 
+        />}
+       
     </>
 
     const childViewItem = (item, itemIndex, sectionIndex) => {
@@ -202,27 +203,59 @@ function Consumables({
 
         return (
             <>
-                <DataItem text={name} fontStyle={'--text-sm-medium'} color="--color-blue-600"/>
-                <DataItem text={type} align="center" fontStyle={'--text-base-regular'} color="--color-gray-700"/>
+            {
+                isEditMode === true ? 
+
+                <DataItem text={name} flex={2.8} fontStyle={'--text-sm-medium'} color="--color-blue-600"/>
+                :
+
+                <DataItem text={name} flex={2.2} fontStyle={'--text-sm-medium'} color="--color-blue-600"/>
+
+            }
+                
+                {
+                    isEditMode === true ? 
+
+                <DataItem text={type} flex={2} align="center" fontStyle={'--text-base-regular'} color="--color-gray-700"/>
+
+                : 
+                <DataItem text={type} flex={2.1} align="center" fontStyle={'--text-base-regular'} color="--color-gray-700"/>
+                
+
+                }
+                
                 {
                     isEditMode === true ?
                         <ContentDataItem
+                            flex={3}
                             align="center"
                             content={
                                 <NumberChangeField
                                     onChangePress={onQuantityChangePress(item, itemIndex, sectionIndex)}
-                                    value={amount === 0 ? "" : amount.toString()}
+                                    value={amount === 0 ? "0" : amount.toString()}
                                     borderColor='--color-green-500'
                                     backgroundColor='--color-green-100'
                                 />
                             }
                         />
                         :
-                        <DataItem text={amount} align="center" fontStyle={'--text-base-regular'}
+                        <DataItem flex={1} text={amount} align="center" fontStyle={'--text-base-regular'}
                                   color="--color-gray-700"/>
                 }
-                <DataItem text={`$ ${currencyFormatter(cost)}`} align="center" fontStyle={'--text-base-regular'}
-                          color="--color-gray-700"/>
+
+                {
+                    isEditMode === true ?
+
+                    <DataItem flex={1} text={`$ ${currencyFormatter(cost)}`} align="center" fontStyle={'--text-base-regular'}
+                    color="--color-gray-700"/>
+
+                    :
+
+                    <DataItem flex={1} text={`$ ${currencyFormatter(cost)}`} align="center" fontStyle={'--text-base-regular'}
+                    color="--color-gray-700"/>
+                    
+                }
+               
             </>
         )
     }
@@ -274,6 +307,7 @@ function Consumables({
                     }
                 />
 
+
             </CollapsibleListItem>
         )
     }
@@ -283,7 +317,7 @@ function Consumables({
             <ConsumablesContainer>
 
                 <Search
-                    placeholderText="Search by inventory item"
+                    placeholderText=" Search by inventory item "
                     inputText={searchText}
                     changeText={onSearchInputChange}
                     backgroundColor={theme.colors['--color-neutral-gray-100']}

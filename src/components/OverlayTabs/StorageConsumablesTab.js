@@ -27,20 +27,22 @@ const headers = [
     },
     {
         name: "Type",
-        alignment: "center"
+        alignment: "flex-start",
+        flex:2
     },
     {
         name: "On-Hand",
-        alignment: "center"
+        alignment: "flex-start",
+        flex:2
     },
     {
         name: "Unit Price",
-        alignment: "flex-end"
+        alignment: "flex-start"
     }
 ];
 
 
-const StorageConsumablesTab = ({consumables = [], storageLocation, onUpdateItem}) => {
+const StorageConsumablesTab = ({consumables = [], storageLocation, onUpdateItem, updateStorage}) => {
 
     const theme = useTheme();
     const modal = useModal();
@@ -60,9 +62,9 @@ const StorageConsumablesTab = ({consumables = [], storageLocation, onUpdateItem}
         return (
             <>
                 <DataItem flex={2} color="--color-blue-600" fontStyle="--text-base-medium" text={inventoryName}/>
-                <DataItem align="center" color="--color-gray-600" fontStyle="--text-base-regular"
+                <DataItem flex={2} align="center" color="--color-gray-600" fontStyle="--text-base-regular"
                           text={inventoryGroup?.name}/>
-                <DataItem align="center" color="--color-gray-600" fontStyle="--text-base-regular" text={stock}/>
+                <DataItem flex={2} align="center" color="--color-gray-600" fontStyle="--text-base-regular" text={stock}/>
                 <DataItem align="flex-end" color="--color-gray-600" fontStyle="--text-base-regular"
                           text={`$ ${currencyFormatter(unitCost)}`}/>
 
@@ -221,6 +223,7 @@ const StorageConsumablesTab = ({consumables = [], storageLocation, onUpdateItem}
                 currentPage={currentPage + 1}
                 goToNextPage={onNextPage}
                 goToPreviousPage={onPreviousPage}
+                hasActionButton = {updateStorage}
                 toggleActionButton={toggleActionButton}
             />
         </>

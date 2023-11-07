@@ -198,7 +198,7 @@ function CartCard(props) {
 
     const theme = useTheme();
 
-    const recordsPerPage = 4;
+    const recordsPerPage = 3;
     const dataLength = data.length;
     const totalPages = Math.ceil(dataLength / recordsPerPage);
 
@@ -249,6 +249,7 @@ function CartCard(props) {
                     onPositiveButtonPress={onFooterPress}
                     onClose={closeModal}
                     positiveText={footerTitle}
+                    footerIndex={"30"}
                 >
                     {tabs &&
                         <CreationDialogTabs
@@ -266,7 +267,7 @@ function CartCard(props) {
                                         placeholder="Delivery Date"
                                         borderColor="--color-gray-400"
                                         hasBorder={false}
-                                        minDate={new Date()}
+                                        //minDate={new Date()}
                                         onDateChange={onDateChange('deliveryDate')}
                                         value={fields.deliveryDate}
                                         onClear={() => onDateChange('deliveryDate')('')}

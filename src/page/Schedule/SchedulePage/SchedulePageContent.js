@@ -1,3 +1,4 @@
+// SchedulePageContent.js
 import React, {useState, useContext, useEffect} from 'react';
 import {View, StyleSheet, Dimensions, ActivityIndicator, Text} from 'react-native';
 import ScheduleCalendar from './ScheduleCalendar';
@@ -17,8 +18,11 @@ function SchedulePageContent({
                                  },
                                  onAppointmentPress = () => {
                                  },
+                                 onNewProcedurePress = () => {
+                                 },
                                  appointments = [],
                                  days = [],
+                                 newProcedure,
                                  month = new Date(),
                                  selectedDate = new Date(),
                                  selectedDay = new Date(),
@@ -30,6 +34,8 @@ function SchedulePageContent({
 
     const theme = useTheme();
 
+    // this is the calendar on the schedule page
+    // shows procedures on the calendar
     return (
         <View style={{flex: 1}}>
             <ScheduleCalendar
@@ -47,9 +53,11 @@ function SchedulePageContent({
                     <LoadingIndicator/> : (
                         <ScheduleListWrapper>
                             <SchedulesList
+                                newProcedure ={newProcedure}
                                 appointments={appointments}
                                 selectedIndex={selectedIndex}
                                 onAppointmentPress={onAppointmentPress}
+                                onNewProcedurePress={onNewProcedurePress}
                                 selectedDay={selectedDay}
                                 month={month}
                                 onRefresh={onScheduleRefresh}

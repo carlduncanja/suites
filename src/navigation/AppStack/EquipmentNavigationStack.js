@@ -10,12 +10,14 @@ import AssignmentManagementPage from "../../page/AssignmentManagementPage";
 import NotFound from "../../page/NotFound";
 import HeaderBackComponent from "../components/HeaderBackComponent";
 
+import AddCategoryDialog from "../../components/Equipment/AddCategoryDialog";
 
 const Stack = createStackNavigator();
 
 
 export default (props) => {
     const isAdmin = props.route.params.isAdmin || false;
+    const equipmentPermissions =  props.route.params.userPermissions.equipment_type;
 
     return (
         <Stack.Navigator
@@ -27,7 +29,7 @@ export default (props) => {
                 options={{
                     headerShown: false
                 }}
-                initialParams={{ isAdmin }}
+                initialParams={{ isAdmin, equipmentPermissions }}
             />
 
 
@@ -48,6 +50,7 @@ export default (props) => {
                     headerTitle: ""
                 }}
             />
+            
             <Stack.Screen
                 name="EquipmentGroupDetailsPage"
                 component={EquipmentGroupDetailsPage}
@@ -77,6 +80,23 @@ export default (props) => {
                 }}
             />
 
+            <Stack.Screen
+                name="AddEquipmentCategory"
+                component={AddCategoryDialog}
+                options={{
+                    headerShown: false,
+                    headerLeft: (props) => (
+                        <HeaderBackComponent
+                            {...props}
+                        />
+                    ),
+                    headerStyle: {
+                        height: 100,
+
+                    },
+                    headerTitle: ""
+                }}
+            />
 
         </Stack.Navigator>
     );

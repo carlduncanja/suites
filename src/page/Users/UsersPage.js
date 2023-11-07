@@ -22,7 +22,8 @@ import CreateUserOverlayDialog from "../../components/Users/CreateUserOverlayDia
 import {useNavigation} from "@react-navigation/native"
 import _ from "lodash";
 
-
+// this affects the header titles
+// for users page
 const listHeaders = [
     {
         name: "User",
@@ -36,7 +37,7 @@ const listHeaders = [
     },
     {
         name: "User Group",
-        alignment: "center",
+        alignment: "flex-start",
         flex: 1,
     },
     {
@@ -46,13 +47,16 @@ const listHeaders = [
     },
 ];
 
-function UsersPage() {
+function UsersPage(props) {
+
+    const usersPermissions = props.route.params.usersPermissions;
 
     const theme = useTheme();
+    // affects page title top left
     const pageTitle = "Users";
     const navigation = useNavigation();
     const modal = useModal();
-    const recordsPerPage = 10;
+    const recordsPerPage = 12;
 
     // ##### States
     const [isLoading, setFetchingData] = useState(false);
@@ -105,10 +109,9 @@ function UsersPage() {
 
     // endregion
 
-
     // region Event Handlers
     const onItemPress = (item, isOpenEditable) => () => {
-        navigation.navigate("UserPage", {user: item, onUserUpdate: handleUserUpdate})
+        navigation.navigate("UserPage", {user: item, onUserUpdate: handleUserUpdate, updateUser : usersPermissions.update})
     };
 
     const onSearchInputChange = (input) => {
@@ -178,8 +181,8 @@ function UsersPage() {
         });
     };
 
-    const onActionPress = () => {
-
+    const onActionPress = (item) => {
+        navigation.navigate("UserPage", {user: item, onUserUpdate: handleUserUpdate, editMode: true, updateUser : usersPermissions.update})
     }
 
     const onDeleteUsers = () => {
@@ -231,7 +234,7 @@ function UsersPage() {
 
     // region Helper Methods
 
-    const userItem = (name, email, groupName, onActions) => (
+    const userItem = (name, email, groupName, item) => (
         <>
             <DataItem flex={1.3} text={name} theme={theme}/>
             <DataItem flex={2} text={email} theme={theme}/>
@@ -241,8 +244,10 @@ function UsersPage() {
                 flex={1}
                 content={
                     <IconButton
+                        disabled={!usersPermissions.update}
                         Icon={<EditIcon/>}
-                        onPress={onActionPress}
+                        onPress={()=> {onActionPress(item)}}
+                        
                     />
                 }
             />
@@ -303,7 +308,7 @@ function UsersPage() {
         const isUsersSelected = selectedIds?.length;
         const deleteColor = !isUsersSelected ? theme.colors['--color-gray-600'] : theme.colors['--color-red-700']
 
-        const DeleteUserAction = <View style={{
+        const DeleteUserAction = usersPermissions.delete && <View style={{
             borderRadius: 6,
             flex: 1,
             overflow: 'hidden'
@@ -313,6 +318,7 @@ function UsersPage() {
                 isDisabled={!isUsersSelected}
                 onLongPress={onDeleteUsers}
             >
+                {/*a part of the botton at the bottom right for deleting users*/}
                 <ActionItem
                     title="Hold to Delete"
                     icon={<WasteIcon strokeColor={deleteColor}/>}
@@ -322,15 +328,21 @@ function UsersPage() {
             </LongPressWithFeedback>
         </View>
 
-        const CreateUserAction = <ActionItem
+        // button apart of the popup
+        // at the bottom right
+        const CreateUserAction = 
+        usersPermissions.create && <ActionItem
             title="New User"
             icon={<AddIcon/>}
             onPress={onNewUserPress}
             touchable={true}
         />
 
+        // popup at the bottom right 
+        // on users page
+        // used to create and delete users
         return (
-            <ActionContainer
+             <ActionContainer
                 floatingActions={[DeleteUserAction, CreateUserAction]}
                 title={"USERS ACTIONS"}
             />
@@ -348,9 +360,10 @@ function UsersPage() {
         const userName = `${item['first_name']} ${item['last_name']}`
         const group = item.role?.name
 
-        const itemView = userItem(userName, item.email, group, onActionClick);
+        const itemView = userItem(userName, item.email, group, item);
 
-
+        // selectedIds.includes() checks if an id is within the array
+        // the below component seems to handle box ticks
         return (
             <ListItem
                 isChecked={selectedIds.includes(item._id)}
@@ -362,9 +375,14 @@ function UsersPage() {
     };
 
     const fetchUsers = (pagePosition) => {
-
+        // gets called when using search bar
+        // in top search bar
         setFetchingData(true);
-        getUsersCall(searchValue, pagePosition, 20)
+        // searchValue is a state
+        // taken from search box upon form submit
+        // page position probably tracks page number
+        // basic pagination
+        getUsersCall(searchValue, pagePosition, recordsPerPage)
             .then(data => {
                 let currentPosition = pagePosition ? pagePosition : 1;
                 setCurrentPagePosition(currentPosition)
@@ -386,7 +404,7 @@ function UsersPage() {
 
     // endregion
 
-
+    // this looks like the search bar at the top of the users page
     return (
         <NavPage
             placeholderText={"Search by user name or email."}
@@ -409,7 +427,7 @@ function UsersPage() {
             isDisabled={isFloatingActionDisabled}
             toggleActionButton={toggleActionButton}
             hasPaginator={true}
-            hasActionButton={true}
+            hasActionButton={usersPermissions.delete || usersPermissions.create}
             hasActions={true}
             isNextDisabled={isNextDisabled}
             isPreviousDisabled={isPreviousDisabled}

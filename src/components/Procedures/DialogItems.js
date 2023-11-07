@@ -307,6 +307,7 @@ function DialogItems({
                     text={item?.name}
                     color="--color-blue-600"
                     fontStyle="--text-base-medium"
+                    flex={2.5}
                 />
 
                 <DataItem
@@ -314,7 +315,7 @@ function DialogItems({
                     align="flex-end"
                     color={recoveryColor}
                     fontStyle="--text-sm-medium"
-                    // flex = {0.2}
+                    flex = {0.1}
                 />
             </ItemWrapper>
         );
@@ -326,11 +327,12 @@ function DialogItems({
         // console.log('Item: ', item);
         return (
             <ItemWrapper theme={theme} style={css`margin-right: 0;`}>
-                <DataItem text={name} flex={1} fontStyle="--text-base-medium" color="--color-blue-600"/>
+                <DataItem text={name} flex={0.9} fontStyle="--text-base-medium" color="--color-blue-600"/>
                 <NumberChangeField
                     onChangePress={onQuantityChange(item)}
                     onAmountChange={onAmountChange(item)}
                     value={amount.toString()}
+                    flex={1.8}
                 />
                 <DataItem text={`$ ${currencyFormatter(price)}`} flex={1} align="center" fontStyle="--text-sm-regular" color="--color-gray-800"/>
                 <ContentDataItem
@@ -379,7 +381,7 @@ function DialogItems({
                     data={dataToDisplay}
                     currentListMin={currentPageListMin}
                     currentListMax={currentPageListMax}
-                    listItemFormat={itemType === 'Locations' ? listLocationsItem : listConsumblesEquipmentItem}
+                     listItemFormat={itemType === 'Locations' ? listLocationsItem : listConsumblesEquipmentItem}
                     headers={headers}
                     isCheckbox={false}
                 />
@@ -392,13 +394,13 @@ function DialogItems({
                         totalPages={totalPages}
                         goToNextPage={goToNextPage}
                         goToPreviousPage={goToPreviousPage}
-                        hasNumberBorder={false}
+                         hasNumberBorder={false}
                     />
                 </PaginatorContainer>
 
                 <ClearListContainer onPress={onClearPress}>
-                    <ClearListText theme={theme}>Clear List</ClearListText>
-                    <ClearList strokeColor={theme.colors['--color-blue-600']}/>
+                     <ClearListText theme={theme}>Clear List</ClearListText>
+                     <ClearList strokeColor={theme.colors['--color-blue-600']}/>
                 </ClearListContainer>
 
             </FooterWrapper>

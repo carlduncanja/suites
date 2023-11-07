@@ -109,37 +109,17 @@ const CreatePhysicianDialogContainer = ({
         if (!isValid) {
             return;
         }
-        console.info('Success:', updatedFields);
+
         createPhysicianCall(updatedFields);
-
-        // let isFirstError = errorFields['firstName']
-        // let isSurnameError = errorFields['surname']
-        // let isTrnError = errorFields['trn']
-        // let isGenderError = errorFields['gender']
-
-        // fields['firstName'] === '' || null ? isFirstError = true : isFirstError = false
-        // fields['surname'] === '' || null ? isSurnameError = true : isSurnameError = false
-        // fields['trn'] === '' || null ? isTrnError = true : isTrnError = false
-        // fields['gender'] === '' || null ? isGenderError = true : isGenderError = false
-
-        // setErrorFields({
-        //     ...errorFields,
-        //     firstName: isFirstError,
-        //     surname : isSurnameError,
-        //     trn : isTrnError,
-        //     gender : isGenderError
-        // })
-
-        // if(isFirstError === false && isSurnameError === false && isTrnError === false && isGenderError === false){
-        //     console.log("Success: ",updatedFields)
-        //     // createPhysicianCall(updatedFields)
-        // }
     };
+
+    const [aboveOpen, setAboveOpen] = useState(false);
 
     const getDialogContent = tab => {
         switch (tab) {
             case 'Details':
                 return <PhysicianDetailsTab
+                    setAboveOpen={setAboveOpen}
                     onFieldChange={onFieldChange}
                     fields={fields}
                     errorFields={errorFields}
@@ -213,10 +193,12 @@ const CreatePhysicianDialogContainer = ({
 
     return (
         <OverlayDialog
+            isOpen={aboveOpen}
             title="Add Physician"
             onPositiveButtonPress={onPositiveButtonPress}
             onClose={handleCloseDialog}
             positiveText={positiveText}
+            max={174}
         >
             <View style={styles.container}>
                 <DialogTabs
@@ -239,8 +221,10 @@ export default CreatePhysicianDialogContainer;
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        width: 636,
+        // width: 'auto',
+        // minWidth: 636,
         flexDirection: 'column',
         backgroundColor: 'white',
+        height: 225
     },
 });

@@ -111,12 +111,12 @@ const FrameProcedureContent = ({
                     </View>
                 }
 
-                <View style={{padding: 8, height: 30}}>
+                {/* <View style={{padding: 8, height: 30}}>
                     <TextButton
                         title="View Picklist"
                         buttonPress={() => onOpenPickList()}
                     />
-                </View>
+                </View> */}
 
             </View>
         </View>
@@ -268,7 +268,7 @@ const AppointmentFields = ({isEdit, fields, onFieldsUpdated, isRecovery = false}
                         enabled={isEdit}
                         label="Time"
                         labelWidth={70}
-                        value={moment(startTime).toDate()}
+                        value={moment(startTime)}
                         format={"h:mm A"}
                         mode={"time"}
                         onDateChange={onStartTimeUpdated}
@@ -287,7 +287,7 @@ const AppointmentFields = ({isEdit, fields, onFieldsUpdated, isRecovery = false}
                         label={"Duration"}
                         labelWidth={70}
                         onChangeText={onDurationUpdated}
-                        value={duration}
+                        value={Math.round(duration)}
                         enabled={isEdit}
                         units={['hrs']}
                         keyboardType="number-pad"

@@ -12,7 +12,7 @@ const NavPageContainer = styled.View`
     display: flex;
     height: 100%;
 `;
-
+// wow whole component dedicated to search?
 function NavPage({
     isFetchingData = () => { },
     TopButton = null,
@@ -39,7 +39,10 @@ function NavPage({
     isNextDisabled = () => { },
     isPreviousDisabled = () => { },
     onClear = () => { },
-    navigation
+    navigation,
+    hasEmpty = false,
+    hasList,
+    emptyTitle
 }) {
     const theme = useTheme();
 
@@ -62,6 +65,9 @@ function NavPage({
                     onSelectAll={onSelectAll}
                     listItemFormat={listItemFormat}
                     navigation={navigation}
+                    hasEmpty= {hasEmpty} 
+                    hasList={hasList}
+                    emptyTitle={emptyTitle}
                 // onClear = {onClear}
                 />
 

@@ -1,7 +1,9 @@
-import React, {useContext, useEffect} from 'react';
+// SuiteNavigator.js
+import React, {useContext, useEffect, useState} from 'react';
 import {View, StyleSheet, Dimensions, SafeAreaView, Text} from 'react-native';
-import AsyncStorage from '@react-native-community/async-storage';
+import AsyncStorage from '@react-native-async-storage/async-storage'
 import * as Notifications from 'expo-notifications';
+import NetInfo from "@react-native-community/netinfo";
 
 import {
     ModalProvider,
@@ -27,6 +29,8 @@ import SideBarComponent from '../components/SideBar/SideBarComponent';
 
 import OverlaySlidePanelModal from '../modals/OverlaySlidePanelModal';
 import OverlayModal from '../modals/OverlayModal';
+import AddWorkItemModal from '../modals/AddWorkItemModal';
+import EditWorkItemModal from '../modals/EditWorkItemModal';
 import ActionContainerModal from '../modals/ActionContainerModal';
 import ReportPreviewModal from '../modals/ReportPreviewModal';
 import OverlayInfoModal from '../modals/OverlayInfoModal';
@@ -42,12 +46,16 @@ import CustomSnackbarProvider from '../components/Snackbar/CustomSnackbarProvide
 import UnauthorizedSubscription from '../UnauthorizedSubscription';
 import {setBearerToken} from "../api";
 import PrintScheduleModal from "../modals/PrintScheduleModal";
+import ToastComponent from '../components/common/ToastComponent';
 
 /**
  * Custom navigator wrapper for application.
  *
  * https://reactnavigation.org/docs/custom-navigators
  */
+
+// navigation bar at the left side
+// 
 const SuitesCustomNavigator = ({
                                    initialRouteName,
                                    children,
@@ -63,9 +71,17 @@ const SuitesCustomNavigator = ({
         screenOptions,
         initialRouteName,
     });
+    const [isDisplay, setIsDispay] = useState(false);
+
+    useEffect(() => {
+        NetInfo.addEventListener(state => {
+            setIsDispay(!state.isInternetReachable);
+        });
+    }, []);
 
     useEffect(() => {
         // get user token from state,
+        // navigation
         AsyncStorage.getItem('userToken')
             .then(token => {
                 // navigation.navigate("App")
@@ -89,6 +105,8 @@ const SuitesCustomNavigator = ({
         BottomSheetModal,
         QuickActionsModal,
         ConfirmationModal,
+        AddWorkItemModal,
+        EditWorkItemModal,
     };
 
     const defaultOptions = {
@@ -135,7 +153,7 @@ const SuitesCustomNavigator = ({
             newState: event.nativeEvent.layout,
         });
     };
-
+    
     return (
         <NavigationHelpersContext.Provider value={navigation}>
             <SafeAreaView style={{flex: 1, backgroundColor: '#fff'}}>
@@ -154,9 +172,19 @@ const SuitesCustomNavigator = ({
 
                             <View style={styles.pageContent} onLayout={getPageMeasure}>
                                 {/*    ACTIVE SCREEN    */}
-
                                 <CustomSnackbarProvider>
-
+                                    {isDisplay ? (
+                                        <View style={{width: '100%', height: 100, position: 'absolute', display: 'flex', zIndex: 100, padding: 30, paddingTop: 13}}>
+                                        <View style={{flex: 1, height: 48, display: 'flex', alignItems: 'center', flexDirection: 'row'}}>
+                                            <ToastComponent
+                                                isDisplay={isDisplay}
+                                                setIsDispay={setIsDispay}
+                                            />
+                                        </View>
+                                    </View>
+                                    ) : <View></View>
+                                
+                                }
                                     {descriptors[state.routes[state.index].key].render()}
 
                                     <UnauthorizedSubscription/>

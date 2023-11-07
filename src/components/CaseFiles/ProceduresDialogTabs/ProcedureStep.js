@@ -20,7 +20,7 @@ const ProcedureStep = ({onProcedureUpdate, procedures, patient = "--", selectedT
     }, [selectedTabIndex])
 
     useEffect(() => {
-        updateValuesForScheduleAssistant().then(r => {
+         updateValuesForScheduleAssistant().then(r => {
         })
     }, [currentProcedure])
 
@@ -127,8 +127,8 @@ const ProcedureStep = ({onProcedureUpdate, procedures, patient = "--", selectedT
         const end = moment(startTime).add(+duration, "hours").toDate();
         return {
             key: "temp",
-            startTime: start,
-            endTime: end,
+            startTime: start.toString(),
+            endTime: end.toString(),
             isActive: true,
             title: "--",
             subTitle: patient,
@@ -138,7 +138,7 @@ const ProcedureStep = ({onProcedureUpdate, procedures, patient = "--", selectedT
 
     console.log("procedure step", selectedTabIndex, procedures)
 
-    const date = currentProcedure?.date || new Date()
+    const date = moment(currentProcedure?.date).toDate().toString() || new Date().toString()
 
     return (
         <View style={{flex: 1}}>
@@ -154,7 +154,7 @@ const ProcedureStep = ({onProcedureUpdate, procedures, patient = "--", selectedT
             {/* SCHEDULING ASSISTANT */}
 
             <View style={{flex: 1, paddingRight: 30}}>
-                <ScheduleDisplayComponent appointments={appointments} date={date}/>
+                <ScheduleDisplayComponent procedureStep = {true} appointments={appointments} date={date}/>
             </View>
         </View>
     )

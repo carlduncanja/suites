@@ -10,6 +10,7 @@ import ConfirmationComponent from '../../components/ConfirmationComponent';
 
 function InventoryPage({ route, navigation }) {
     const { data = {} } = route.params;
+    const inventoryUpdate = route.params.inventoryPermissions
     const {
         name = '',
         _id = '',
@@ -18,7 +19,6 @@ function InventoryPage({ route, navigation }) {
     } = data;
 
     console.log('Data: ', data);
-
     const tabs = ['Details'];
     const modal = useModal();
 
@@ -26,9 +26,9 @@ function InventoryPage({ route, navigation }) {
     const [pageState, setPageState] = useState({});
     const [selectedInventory, setSelectedInventory] = useState({});
     const [fields, setFields] = useState({
-        description,
-        name,
-        categories
+        description: description,
+        name:name,
+        categories: categories
     });
     const [errorFields, setErrorFields] = useState({});
     const [isUpdated, setIsUpdated] = useState(false);
@@ -51,6 +51,7 @@ function InventoryPage({ route, navigation }) {
 
                 console.log('group received is', groupData)
                 setSelectedInventory(groupData);
+                setFields({...fields, categories: groupData?.categories || []})
                 // console.log("Fetch data: ", data)
             })
             .catch(error => {
@@ -138,7 +139,7 @@ function InventoryPage({ route, navigation }) {
             ...selectedInventory,
             description: fields.description,
             name: fields.name,
-            categories: [...groupCategories]
+            categories: fields.categories
         };
         updateInventoryGroupById(selectedInventory?._id, updatedGroup)
             .then(_ => {
@@ -192,6 +193,7 @@ function InventoryPage({ route, navigation }) {
         <PageContext.Provider value={{ pageState, setPageState }}>
             <DetailsPage
                 headerChildren={[selectedInventory?.name]}
+                isEditable={inventoryUpdate}
                 onBackPress={() => navigation.navigate('Inventory')}
                 pageTabs={(
                     <TabsContainerComponent

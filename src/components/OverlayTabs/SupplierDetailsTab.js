@@ -52,11 +52,11 @@ const RowWrapper = styled.View`
     z-index: ${({ zIndex }) => zIndex};
 `
 
-const SupplierDetailsTab = ({ supplierId, onUpdated, order }) => {
+const SupplierDetailsTab = ({ supplierId, onUpdated, order, refresh = () => { } }) => {
 
     const fieldsBaseStateRef = useRef();
     const modal = useModal();
-    const theme = useTheme(); 
+    const theme = useTheme();
 
     const { supplier = {} } = order;
     const { pageState, setPageState } = useContext(PageContext);
@@ -90,6 +90,7 @@ const SupplierDetailsTab = ({ supplierId, onUpdated, order }) => {
                             // resetState()
                             setPageState({ ...pageState, isEditMode: true })
                             modal.closeAllModals();
+
                         }}
                         onAction={() => {
                             modal.closeAllModals();
@@ -118,7 +119,8 @@ const SupplierDetailsTab = ({ supplierId, onUpdated, order }) => {
             status,
             email,
             representatives
-        })
+        });
+
     }, [supplier])
 
     const onFieldUpdated = (field) => (value) => {
@@ -160,7 +162,6 @@ const SupplierDetailsTab = ({ supplierId, onUpdated, order }) => {
                             }}
                             onAction={() => {
                                 modal.closeAllModals();
-
                             }}
 
                             action="Yes"
@@ -170,6 +171,8 @@ const SupplierDetailsTab = ({ supplierId, onUpdated, order }) => {
                         console.log('Modal closed');
                     },
                 });
+            }).then(() => {
+                refresh();
             })
             .catch(error => {
                 console.log("Failed to update supplier", error)
@@ -196,6 +199,14 @@ const SupplierDetailsTab = ({ supplierId, onUpdated, order }) => {
             })
             .finally(_ => setLoading(false))
 
+    }
+
+    const handlePhoneVarification = (field) => (phoneValue) =>  {
+        if (phoneValue.toString().length > 10) return;
+
+        if (/^\d+$/g.test(phoneValue) || !phoneValue) {
+            onFieldUpdated(field)(phoneValue);
+        }
     }
 
     return (
@@ -305,7 +316,7 @@ const SupplierDetailsTab = ({ supplierId, onUpdated, order }) => {
                                 <InputLabelComponent label={'Telephone'} />
                                 <InputField2
                                     value={fields['phone']}
-                                    onChangeText={onFieldUpdated('phone')}
+                                    onChangeText={handlePhoneVarification('phone')}
                                     enabled={true}
                                     onClear={() => { onFieldUpdated('phone')('') }}
                                 />
@@ -324,7 +335,7 @@ const SupplierDetailsTab = ({ supplierId, onUpdated, order }) => {
                                 <InputLabelComponent label={'Fax'} />
                                 <InputField2
                                     value={fields['fax']}
-                                    onChangeText={onFieldUpdated('fax')}
+                                    onChangeText={handlePhoneVarification('fax')}
                                     enabled={true}
                                     onClear={() => { onFieldUpdated('fax')('') }}
                                 />

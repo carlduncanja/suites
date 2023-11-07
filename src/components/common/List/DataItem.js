@@ -15,19 +15,22 @@ const DataItemContainer = styled.View`
     align-items: ${ ({align}) => align};
 `;
 
-const DataText = styled.Text( ({theme, fontStyle, color}) => ({
+const DataText = styled.Text( ({theme, fontStyle, color,alignText}) => ({
     ...theme.font[fontStyle],
     color: theme.colors[color],
     paddingTop: 2,
+    paddingRight: '11%',
+    width: '100%',
+    textAlign: alignText
 }));
 
-function DataItem({text = "", flex = 1, align = 'flex-start', fontStyle = '--text-sm-regular', color = '--color-gray-700', }) {
+function DataItem({text = "", flex = 1, align = 'flex-start', width = {width}, fontStyle = '--text-sm-regular', color = '--color-gray-700', textAlign='left' }) {
     const theme = useTheme();
     
     return (
         <DataItemWrapper flex={flex} theme={theme}>
             <DataItemContainer align={align}>
-                <DataText numberOfLines={1} fontStyle={fontStyle} color={color} theme={theme}>{text}</DataText>
+                <DataText numberOfLines={1} fontStyle={fontStyle} color={color} theme={theme} alignText={textAlign}>{text}</DataText>
             </DataItemContainer>
         </DataItemWrapper>
     );

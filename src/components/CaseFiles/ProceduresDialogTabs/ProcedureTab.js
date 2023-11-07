@@ -173,7 +173,7 @@ const ProcedureTab = ({
         onProcedureInfoChange({
             ...procedureInfo,
             date: date,
-            startTime: newStartTime && newStartTime.toDate(),
+            startTime: newStartTime && newStartTime.toDate().toString(),
         });
 
         onErrorUpdate({

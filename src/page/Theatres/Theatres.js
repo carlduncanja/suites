@@ -1,3 +1,5 @@
+
+// theatresPage.js
 import React, {useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
 import {View, StyleSheet, Text} from 'react-native';
@@ -68,10 +70,14 @@ function Theatres(props) {
     const {theatres = [], setTheatres} = props;
     const theme = useTheme();
     const pageTitle = 'Theatre Rental';
+    const emptyTitle = 'No Theatres Found';
     const modal = useModal();
-    const recordsPerPage = 10;
+    const recordsPerPage = 12;
+    const theatrePermissions =   props.route.params.theatrePermissions;
+    //const hasEmpty = true
 
-    // ##### States
+    // ##### States 
+    const [hasEmpty,setHasEmpty]=useState(false)
     const [isFetchingData, setFetchingData] = useState(false);
     const [isFloatingActionDisabled, setFloatingAction] = useState(false);
 
@@ -130,6 +136,7 @@ function Theatres(props) {
             initial: false,
             theatre: item,
             isEdit: isOpenEditable,
+            updateTheatre : theatrePermissions.update,
             reloadTheatres: () => fetchTheatres(currentPagePosition)
         });
     };
@@ -201,15 +208,15 @@ function Theatres(props) {
                 </Text>
             </View>
             <View style={[styles.item, {flex: 1, justifyContent: 'center'}]}>
-                <IconButton Icon={<AssignIcon/>} onPress={onActionPress}/>
+                <IconButton Icon={<AssignIcon/>} disabled={!theatrePermissions.update} onPress={onActionPress}/>
             </View>
         </>
     );
 
     const getFabActions = () => {
         const deleteAction = (
-            <View style={{borderRadius: 6, flex: 1, overflow: 'hidden'}}>
-                <LongPressWithFeedback
+            theatrePermissions.delete && <View style={{borderRadius: 6, flex: 1, overflow: 'hidden'}}>
+               <LongPressWithFeedback
                     pressTimer={LONG_PRESS_TIMER.LONG}
                     onLongPress={removeTheatresLongPress}
                 >
@@ -225,7 +232,7 @@ function Theatres(props) {
         );
 
         const createAction = (
-            <ActionItem
+            theatrePermissions.create && <ActionItem
                 title="Create Theatre"
                 icon={<AddIcon/>}
                 onPress={openCreateTheatreModel}
@@ -379,10 +386,19 @@ function Theatres(props) {
 
         // console.log("Formatted Item: ", formattedItem)
 
-        const onActionClick = () => {
-        };
+        const onActionClick = (isOpenEditable) => {
+            console.log('click')
+            props.navigation.navigate('TheatresPage', {
+                initial: false,
+                theatre: item,
+                isEdit: isOpenEditable,
+                reloadTheatres: () => fetchTheatres(currentPagePosition),
+                tab: 4,
+                updateTheatre : theatrePermissions.update,
 
-        const itemView = theatreItem(formattedItem, onActionClick);
+            });
+        };
+        const itemView = theatreItem(formattedItem, () => onActionClick(false));
 
         return (
             <ListItem
@@ -402,7 +418,7 @@ function Theatres(props) {
         getTheatres(searchValue, recordsPerPage, currentPosition)
             .then(result => {
                 const {data = [], pages = 0} = result;
-
+                  
                 if (pages === 1) {
                     setPreviousDisabled(true);
                     setNextDisabled(true);
@@ -418,7 +434,9 @@ function Theatres(props) {
                 } else {
                     setNextDisabled(true);
                     setPreviousDisabled(true);
-                }
+                } 
+                data.length === 0 ? setHasEmpty(true) :setHasEmpty(false)
+        
                 console.log('Theatre data:', data);
                 setTheatres(data);
                 data.length === 0 ? setTotalPages(1) : setTotalPages(pages);
@@ -471,6 +489,7 @@ function Theatres(props) {
             setPageSettingState
         }}
         >
+            {/*nav bar at the top of theatre page*/}
             <NavPage
                 placeholderText="Search by theatre name"
                 routeName={pageTitle}
@@ -483,7 +502,6 @@ function Theatres(props) {
                 onRefresh={onRefresh}
                 isFetchingData={isFetchingData}
                 onSelectAll={onSelectAll}
-
                 totalPages={totalPages}
                 currentPage={currentPagePosition}
                 goToNextPage={goToNextPage}
@@ -492,10 +510,13 @@ function Theatres(props) {
                 isDisabled={isFloatingActionDisabled}
                 toggleActionButton={toggleActionButton}
                 hasPaginator={true}
-                hasActionButton={true}
+                hasActionButton={theatrePermissions.delete || theatrePermissions.create}
                 hasActions={true}
                 isNextDisabled={isNextDisabled}
                 isPreviousDisabled={isPreviousDisabled}
+                hasEmpty={hasEmpty} 
+                hasList={!hasEmpty}
+                emptyTitle={emptyTitle}
             />
 
         </PageSettingsContext.Provider>

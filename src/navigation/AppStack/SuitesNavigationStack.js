@@ -1,7 +1,7 @@
-import {createAppContainer} from 'react-navigation';
-import React from 'react';
-import {connect} from 'react-redux';
-import {createSuitesSidebarNavigator} from '../SuiteNavigator';
+import { createAppContainer } from 'react-navigation';
+import React, { useEffect, useState } from 'react';
+import { connect } from 'react-redux';
+import { createSuitesSidebarNavigator } from '../SuiteNavigator';
 
 /* Screens */
 import SchedulePage from '../../page/Schedule/SchedulePage/SchedulePage';
@@ -26,11 +26,14 @@ import PhysicianNavigationStack from './PhysiciansNavigationStack';
 import EquipmentNavigationStack from './EquipmentNavigationStack';
 import InventoryNavigationStack from './InventoryNavigationStack';
 import SettingsNavigationStack from './SettingsNavigationStack';
+import PatientNavigationStack from './PatientNavigationStack';
 
 /* Providers*/
 import NotFoundPage from '../../components/common/Page/NotFoundPage';
+import LostConnectionPage from '../../components/common/Page/LostConnectionPage';
 
 /* Icons */
+import InvoiceIcon from '../../../assets/svg/invoices';
 import ScheduleIcon from '../../../assets/svg/schedule';
 import CaseFileIcon from '../../../assets/svg/caseFile';
 import TheatreIcon from '../../../assets/svg/theatre';
@@ -43,17 +46,74 @@ import PhysiciansIcon from '../../../assets/svg/physicians';
 import ProcedureIcon from '../../../assets/svg/procedures';
 import SettingsIcon from '../../../assets/svg/settingsIcon';
 import NotificationIcon from '../../../assets/svg/notificationIcon';
-import {ROLES} from '../../const';
+import PersonIcon from '../../../assets/svg/personIcon';
+
+import { ROLES } from '../../const';
 import UserPageIcon from '../../../assets/svg/UserPageIcon';
 import UsersNavigationStack from './UsersNavigationStack';
 import ScheduleNavigationStack from "./ScheduleNavigationStack";
+import InvoicesNavigationStack from './InvoicesNavigationStack';
+import ConnectionIcon from '../../../assets/svg/lostConnection';
+import { getUserCall } from '../../api/network';
+
 
 const SuitesNavigator = createSuitesSidebarNavigator();
 
-export const SuitesNavigationStack = ({auth = {}}) => {
+export const SuitesNavigationStack = ({ auth = {} }) => {
     const isAdmin = auth.user.role_name === ROLES.ADMIN;
+    // fetchUser(auth?.user.user_id);
+    const [userPermissions, setUserPermissions] = useState({});
 
-    // console.log('auth suites navigator', auth);
+    const fetchUser = id => {
+        getUserCall(id)
+            .then(data => {
+                setUserPermissions(data.role?.permissions || {});
+            })
+            .catch(error => {
+                console.error('fetch.user.failed', error);
+            })
+            .finally();
+    };
+
+    useEffect(() => {
+        fetchUser(auth.user.user_id);
+    }, [auth]);
+
+    const ViewProcedures = userPermissions?.['procedures']?.['read'];
+
+    const ViewCase = userPermissions?.['cases']?.['read'];
+
+    const ViewEquipment = userPermissions?.['equipment_type']?.['read'];
+
+    const ViewTheatre = userPermissions?.['theatres']?.['read'];
+
+    const ViewAlerts = userPermissions?.['alerts']?.['read'];
+
+    const ViewSettings = userPermissions?.['settings']?.['read'];
+
+    const ViewPhysicians = userPermissions?.['physicians']?.['read'];
+
+    const ViewUsers = userPermissions?.['users']?.['read'];
+
+    const ViewPurchaseOrders = userPermissions?.['purchase_orders']?.['read'];
+
+    const ViewInventory = userPermissions?.['inventory_groups']?.['read'];
+
+    const ViewStrorageLocation = userPermissions?.['storage_locations']?.['read']
+
+    const ViewSuppliers = userPermissions?.['suppliers']?.['read']
+
+    const ViewPatiens = userPermissions?.['patients']?.['read']
+
+    // the invioces section was removed becuase of the changes to the purchase order section 
+    /* <SuitesNavigator.Screen
+                 name="Invoices"
+                 component={InvoicesNavigationStack}
+                 initialParams={{
+                     icon: InvoiceIcon,
+                     tabName: 'Invoices',
+                 }}
+             />*/
 
     return (
         <SuitesNavigator.Navigator
@@ -66,129 +126,168 @@ export const SuitesNavigationStack = ({auth = {}}) => {
                 initialParams={{
                     icon: ScheduleIcon,
                     tabName: 'schedule',
+                    userPermissions,
+                    id: auth.user.user_id,
                 }}
             />
 
-            <SuitesNavigator.Screen
-                name="CaseFiles"
-                component={CaseFileNavigationStack}
-                initialParams={{
-                    icon: CaseFileIcon,
-                    tabName: 'Case Files',
-                    isAdmin
-                }}
-            />
+            {ViewCase &&
+                <SuitesNavigator.Screen
+                    name="CaseFiles"
+                    component={CaseFileNavigationStack}
+                    initialParams={{
+                        icon: CaseFileIcon,
+                        tabName: 'Case Files',
+                        isAdmin,
+                        userPermissions
+                    }}
+                />
+            }
+            {
+                ViewPatiens &&
 
-            <SuitesNavigator.Screen
-                name="Theatres"
-                component={TheatreNavigationStack}
-                initialParams={{
-                    icon: TheatreIcon,
-                    tabName: 'Theatres',
-                    isAdmin
-                }}
-            />
-
-            <SuitesNavigator.Screen
-                name="Inventory"
-                component={InventoryNavigationStack}
-                initialParams={{
-                    icon: InventoryIcon,
-                    tabName: 'Inventory',
-                    isAdmin
-                }}
-            />
-
-            <SuitesNavigator.Screen
-                name="Equipment"
-                component={EquipmentNavigationStack}
-                initialParams={{
-                    icon: EquipmentIcon,
-                    tabName: 'Equipment',
-                    isAdmin
-                }}
-            />
-
-            <SuitesNavigator.Screen
-                name="Orders"
-                component={OrderNavigationStack}
-                initialParams={{
-                    icon: OrdersIcon,
-                    tabName: 'Orders',
-                    isAdmin
-                }}
-            />
-
-            <SuitesNavigator.Screen
-                name="Suppliers"
-                component={SupplierNavigationStack}
-                initialParams={{
-                    icon: DeliveryIcon,
-                    tabName: 'Suppliers',
-                    isAdmin
-                }}
-            />
-
-            {/* <SuitesNavigator.Screen
-                name="Invoices"
-                component={NotFound}
-                initialParams={{
-                    icon: InvoiceIcon,
-                    tabName: 'Invoices',
-                }}
-            /> */}
-
-            <SuitesNavigator.Screen
-                name="Storage"
-                component={StorageNavigationStack}
-                initialParams={{
-                    icon: StorageIcon,
-                    tabName: 'Storage',
-                    isAdmin
-                }}
-            />
-
-            <SuitesNavigator.Screen
-                name="Physicians"
-                component={PhysicianNavigationStack}
-                initialParams={{
-                    icon: PhysiciansIcon,
-                    tabName: 'Physicians',
-                    isAdmin
-                }}
-            />
-
-            <SuitesNavigator.Screen
-                name="Procedures List"
-                component={ProcedureNavigationStack}
-                initialParams={{
-                    icon: ProcedureIcon,
-                    tabName: 'Procedures',
-                    isAdmin
-                }}
-            />
+                <SuitesNavigator.Screen
+                    name='Patients'
+                    component={PatientNavigationStack}
+                    initialParams={{
+                        icon: PersonIcon,
+                        tabName: 'Patients',
+                        isAdmin,
+                        userPermissions
+                    }}
+                />
+            }
 
             {
-                isAdmin &&
+                ViewTheatre &&
+
+                <SuitesNavigator.Screen
+                    name="Theatres"
+                    component={TheatreNavigationStack}
+                    initialParams={{
+                        icon: TheatreIcon,
+                        tabName: 'Theatres',
+                        isAdmin,
+                        userPermissions
+                    }}
+                />
+            }
+            {ViewInventory &&
+                <SuitesNavigator.Screen
+                    name="Inventory"
+                    component={InventoryNavigationStack}
+                    initialParams={{
+                        icon: InventoryIcon,
+                        tabName: 'Inventory',
+                        isAdmin,
+                        userPermissions
+                    }}
+                />
+            }
+            {
+                ViewEquipment &&
+
+                <SuitesNavigator.Screen
+                    name="Equipment"
+                    component={EquipmentNavigationStack}
+                    initialParams={{
+                        icon: EquipmentIcon,
+                        tabName: 'Equipment',
+                        isAdmin,
+                        userPermissions
+                    }}
+                />
+            }
+            {ViewPurchaseOrders &&
+                <SuitesNavigator.Screen
+                    name="Orders"
+                    component={OrderNavigationStack}
+                    initialParams={{
+                        icon: OrdersIcon,
+                        tabName: 'Orders',
+                        isAdmin,
+                        userPermissions
+                    }}
+                />
+            }
+            {ViewSuppliers &&
+                <SuitesNavigator.Screen
+                    name="Suppliers"
+                    component={SupplierNavigationStack}
+                    initialParams={{
+                        icon: DeliveryIcon,
+                        tabName: 'Suppliers',
+                        isAdmin,
+                        userPermissions
+                    }}
+                />
+            }
+            {ViewStrorageLocation &&
+                <SuitesNavigator.Screen
+                    name="Storage"
+                    component={StorageNavigationStack}
+                    initialParams={{
+                        icon: StorageIcon,
+                        tabName: 'Storage',
+                        isAdmin,
+                        userPermissions
+                    }}
+                />
+            }
+            {ViewPhysicians &&
+
+                <SuitesNavigator.Screen
+                    name="Physicians"
+                    component={PhysicianNavigationStack}
+                    initialParams={{
+                        icon: PhysiciansIcon,
+                        tabName: 'Physicians',
+                        isAdmin,
+                        userPermissions
+                    }}
+                />
+            }
+
+            {ViewProcedures &&
+                <SuitesNavigator.Screen
+                    name="Procedures List"
+                    component={ProcedureNavigationStack}
+                    initialParams={{
+                        icon: ProcedureIcon,
+                        tabName: 'Procedures',
+                        isAdmin,
+                        userPermissions
+                    }}
+                />
+            }
+            {
+                ViewUsers &&
                 <SuitesNavigator.Screen
                     name="Users"
                     component={UsersNavigationStack}
                     initialParams={{
                         icon: UserPageIcon,
                         tabName: 'Users',
+                        userPermissions
                     }}
                 />
+
             }
 
-            <SuitesNavigator.Screen
-                name="Alerts"
-                component={Alerts}
-                initialParams={{
-                    icon: NotificationIcon,
-                    tabName: 'Alerts',
-                    isAdmin
-                }}
-            />
+            {ViewAlerts &&
+
+                <SuitesNavigator.Screen
+                    name="Alerts"
+                    component={Alerts}
+                    initialParams={{
+                        icon: NotificationIcon,
+                        tabName: 'Alerts',
+                        isAdmin,
+                        userPermissions
+                    }}
+                />
+
+            }
 
             {/*<SuitesNavigator.Screen*/}
             {/*    name="Help"*/}
@@ -198,20 +297,32 @@ export const SuitesNavigationStack = ({auth = {}}) => {
             {/*        tabName: 'Help',*/}
             {/*    }}*/}
             {/*/>*/}
-
-            <SuitesNavigator.Screen
-                name="Settings"
-                component={SettingsNavigationStack}
+            {/* <SuitesNavigator.Screen
+                name="Lost Connection"
+                component={LostConnectionPage}
                 initialParams={{
-                    icon: SettingsIcon,
-                    tabName: 'Settings',
+                    icon: ConnectionIcon,
+                    tabName: 'Help',
                 }}
-            />
+            />*/}
+
+            {ViewSettings &&
+
+                <SuitesNavigator.Screen
+                    name="Settings"
+                    component={SettingsNavigationStack}
+                    initialParams={{
+                        icon: SettingsIcon,
+                        tabName: 'Settings',
+                    }}
+                />
+
+            }
 
         </SuitesNavigator.Navigator>
     );
 };
 
-const mapStateToProps = state => ({auth: state.auth});
+const mapStateToProps = (state) => ({ auth: state.auth });
 
 export default connect(mapStateToProps)(SuitesNavigationStack);

@@ -1,30 +1,32 @@
-import React,{ useState } from "react";
+import React,{ useEffect, useState } from "react";
 import { View, Text, StyleSheet } from "react-native";
 import InputField2 from "../common/Input Fields/InputField2";
 import OptionsField from "../common/Input Fields/OptionsField";
 import { MenuOptions, MenuOption } from 'react-native-popup-menu';
 import DateInputField from "../common/Input Fields/DateInputField";
 import moment from 'moment';
+import MultipleSelectionsField from "../common/Input Fields/MultipleSelectionsField";
+import { addCategory, getCategories } from "../../api/network";
+import { useModal } from "react-native-modalfy";
+import ConfirmationComponent from "../ConfirmationComponent";
+import SearchableOptionsField from "../common/Input Fields/SearchableOptionsField";
+import InputLabelComponent from "../common/InputLablel";
 
 
 
-const PhysiciansDetailsTab = ({ onFieldChange, fields, errorFields }) =>{
-
+const PhysiciansDetailsTab = ({ onFieldChange, fields, errorFields, setAboveOpen = () => {} }) =>{
+    const [attemptedSubmit, setAttemptedSubmit] = useState(false);
+    const [patientValue, setPatient] = useState(undefined);
+    const modal = useModal();
     const templateText = {
         true: "Yes",
         false: "No"
     }
-
     const [dateText, setDateText] = useState(fields['dob'])
     const [trnText, setTrnText] = useState(fields['trn'])
 
     const handleDateValidation = (date) => {
         onFieldChange('dob')(date)
-        // let dateRegex = /^([0-2][0-9]|(3)[0-1])(\/)(((0)[0-9])|((1)[0-2]))(\/)\d{4}/g
-        // if (dateRegex.test(date) || !date) {
-        //     onFieldChange('dob')(date)
-        // }
-        // setDateText(date)
     }
 
     const handleTrnValidation = (trnValue) => {
@@ -35,6 +37,91 @@ const PhysiciansDetailsTab = ({ onFieldChange, fields, errorFields }) =>{
         setTrnText(trnValue)
     }
 
+    // Category Search
+    const [categories, setCategories] = useState([])
+    const [categorySearchValue, setCategorySearchValue] = useState();
+    const [categorySearchResults, setCategorySearchResult] = useState([]);
+
+    const [valueState, setValueState] = useState({ name: fields.field });
+    const [searchDocterFieldQuery, setSearchDocterFeildQuery] = useState({});
+    const [docterFeild, setDocterFeild] = useState('');
+    const [docterFieldResult, setDocterFieldResult] = useState([]);
+
+    const handleCategorySelected = (checkCategories) => {
+        const categoryIds = [];
+
+        checkCategories.map((name) => {
+            const value = categories.find(item => item.name === name);
+            value && categoryIds.push(value._id);
+        });
+
+        onFieldChange('categories')(categoryIds);
+    }
+    
+    const fetchCategories = () => {
+        getCategories("staff", 1000, docterFeild)
+            .then(categoriesData => {
+                const { data = [], page } = categoriesData
+                const fulldata = data.map(cats => {
+                    const { _id = '', name = '', status = '' } = cats
+                    return { _id: _id, name: name, status: status }
+                });
+                
+                setDocterFieldResult(fulldata || []);
+            })
+            .catch(error => {
+                console.log('Unable to retrieve physician category items: ', error);
+            });
+    }
+
+    useEffect(() => {
+        fetchCategories();
+    }, [docterFeild]);
+    
+    const createCategory = (name, handlePatientFunc, setSelectedValueFunc) => {
+        if(!name) return;
+        addCategory({ name: name, type: "staff" })
+            .then(_ => {
+                setAboveOpen(false);
+                handlePatientFunc({ name: name, type: "staff" });
+                setSelectedValueFunc({ name: name, type: "staff" })
+                setDocterFeild("");
+                fetchCategories();
+                modal.openModal('ConfirmationModal', {
+                    content: <ConfirmationComponent
+                        isEditUpdate={false}
+                        isError={false}
+                        onCancel={() => {
+                            modal.closeModals('ConfirmationModal');
+                        }}
+                        onAction={() => {
+                            modal.closeModals('ConfirmationModal');
+                        }}
+                    />,
+                    onClose: () => {
+                        modal.closeModals('ConfirmationModal');
+                    },
+                });
+            })
+            .catch(error => {
+                modal.openModal('ConfirmationModal', {
+                    content: <ConfirmationComponent
+                        isEditUpdate={false}
+                        isError={true}
+                        onCancel={() => {
+                            modal.closeModals('ConfirmationModal');
+                        }}
+                        onAction={() => {
+                            modal.closeModals('ConfirmationModal');
+                        }}
+                    />,
+                    onClose: () => {
+                        modal.closeModals('ConfirmationModal');
+                    },
+                });
+                console.log(error);
+            })
+    };
 
     return (
         <View style={styles.sectionContainer}>
@@ -85,57 +172,40 @@ const PhysiciansDetailsTab = ({ onFieldChange, fields, errorFields }) =>{
                         errorMessage = "Please provide contact."
                     />
                 </View>
-
+                
             </View>
-
-            {/*<View*/}
-            {/*    style={{*/}
-            {/*        height: 2,*/}
-            {/*        backgroundColor: '#CCD6E0',*/}
-            {/*        marginBottom: 20*/}
-            {/*    }}*/}
-            {/*/>*/}
 
             <View style={styles.row}>
-
-
-
-                {/*<View style={styles.inputWrapper}>*/}
-                    {/*<DateInputField*/}
-                    {/*    label={"Date of Birth"}*/}
-                    {/*    value={fields['dob']}*/}
-                    {/*    onClear={() => onFieldChange('dob')('')}*/}
-                    {/*    keyboardType="number-pad"*/}
-                    {/*    mode={'date'}*/}
-                    {/*    format={"YYYY-MM-DD"}*/}
-                    {/*    placeholder="YYYY/MM/DD"*/}
-                    {/*    hasError={errorFields['dob']}*/}
-                    {/*    errorMessage={errorFields['dob']}*/}
-                    {/*    onDateChange={handleDateValidation}*/}
-                    {/*    maxDate = {new Date(moment().subtract(1, 'days'))}*/}
-                    {/*/>*/}
-                {/*</View>*/}
-
+                <View style={styles.inputWrapper}>
+                    <InputLabelComponent label={'Specialization'} />
+                    <SearchableOptionsField
+                        setIsOpen={setAboveOpen}
+                        isMedium={true}
+                        value={valueState}
+                        onClear={() => {
+                            setSearchDocterFeildQuery(" ")
+                            setDocterFeild("")
+                            onFieldChange('field')('')
+                            setValueState("")
+                        }}
+                        onChangeText={(value) => {
+                            setDocterFeild(value)
+                        }}
+                        oneOptionsSelected={(value) => {
+                            onFieldChange('field')(value.name)
+                        }}
+                        options={docterFieldResult}
+                        showActionButton={true}
+                        updateDB={createCategory}
+                        isPopoverOpen={searchDocterFieldQuery}
+                        handlePatient={(value) => {
+                            setValueState(value)
+                            onFieldChange('field')(value.name)
+                        }}
+                        text={docterFeild}
+                    />
+                </View>
             </View>
-
-            {/*<View style={styles.row}>*/}
-
-            {/*    <View style={styles.inputWrapper}>*/}
-            {/*        <OptionsField*/}
-            {/*            label={"Gender"}*/}
-            {/*            text={fields['gender']}*/}
-            {/*            oneOptionsSelected={onFieldChange('gender')}*/}
-            {/*            menuOption={<MenuOptions>*/}
-            {/*                <MenuOption value={'Male'} text='Male'/>*/}
-            {/*                <MenuOption value={'Female'} text='Female'/>*/}
-            {/*            </MenuOptions>}*/}
-            {/*            hasError = {errorFields['gender']}*/}
-            {/*            // errorMessage = "Select a gender from list."*/}
-            {/*        />*/}
-            {/*    </View>*/}
-
-            {/*</View>*/}
-
         </View>
     )
 }
@@ -156,6 +226,15 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         marginBottom: 20,
+    },
+    rightRow: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        marginBottom: 20,
+        display: 'flex',
+        marginLeft: 'auto',
+        zIndex: 10
+
     },
     inputWrapper: {
         width: 260,

@@ -257,7 +257,8 @@ function TransferItemDialog({onCancel, onCreated, selectedLocation, variant}) {
                             isError={false}
                             onCancel={() => modal.closeAllModals()}
                             onAction={() => { modal.closeAllModals(); onCreated(); }}
-                            message="You will need to manually move these items from the system once the have been removed from records."
+                            message="You will need to manually move these items from the system once the have been removed from records." 
+                            textPadding={30}
                         />,
                         onClose: () => { modal.closeModals('ConfirmationModal'); }
                     }
@@ -330,9 +331,11 @@ function TransferItemDialog({onCancel, onCreated, selectedLocation, variant}) {
                 </FieldContainer>
             </Row>
 
-            <Row zIndex={-1}>
+            <Row zIndex={-1} >
 
-                <FieldContainer>
+                <FieldContainer 
+                maxWidth='100%'
+                >
                     <SearchableOptionsField
                         label={'Destination'}
                         text={storageSearchValue}

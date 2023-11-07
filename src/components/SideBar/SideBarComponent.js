@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import {ScrollView, StyleSheet, Text, View, TouchableOpacity, Alert} from "react-native";
 import SvgIcon from "../../../assets/SvgIcon";
@@ -7,7 +7,8 @@ import MultipleShadowsContainer from '../common/MultipleShadowContainer';
 import jwtDecode from 'jwt-decode';
 import {connect} from 'react-redux'
 import QuickMenu from "../../../assets/svg/QuickMenu";
-import {useModal} from "react-native-modalfy";
+import { useModal } from "react-native-modalfy";
+import { getUserCall } from '../../api/network';
 
 const shadows = [
     {
@@ -24,10 +25,28 @@ const shadows = [
     },
 ];
 
-function SideBarComponent({routes, selectedIndex, screenDimensions, onTabPressed, onLogout, auth = {}}) {
-
+function SideBarComponent({routes, selectedIndex, screenDimensions, onTabPressed, onLogout, auth = {}}) { 
     const modal = useModal();
+    const userID = auth.user.user_id
 
+    const [userPermissions, setUserPermissions] = useState({});
+
+    const fetchUser = id => {
+        getUserCall(id)
+            .then(data => {
+                setUserPermissions(data.role?.permissions || {});
+            })
+            .catch(error => {
+                console.error('fetch.user.failed', error);
+            })
+            .finally();
+    };
+
+    useEffect(() => {
+        fetchUser(userID);
+    }, [userID]);
+
+    const createCase = userPermissions?.cases?.create
     const showLogoutDialog = () => {
         // Works on both Android and iOS
         Alert.alert(
@@ -56,7 +75,8 @@ function SideBarComponent({routes, selectedIndex, screenDimensions, onTabPressed
     const showQuickMenuModal = () => {
         modal.openModal('QuickActionsModal')
     }
-
+    
+    // renders the side bar menu
     return (
         <View style={{
             flexDirection: 'row',
@@ -90,15 +110,19 @@ function SideBarComponent({routes, selectedIndex, screenDimensions, onTabPressed
                 >
 
                     {/*QUICK MENU*/}
-                    <View style={{width: '100%'}} key={"QUICK_MENU"}>
+                    
+                    <View style={{width: '100%'}} key={"QUICK_MENU"}> 
+                    { createCase &&
                         <NavigationTab
                             icon={QuickMenu}
                             tabName={"Quick Menu"}
                             isTabSelected={false}
                             onTabPress={showQuickMenuModal}
-                        />
+                        /> 
+                    }
                     </View>
-
+                    
+                    
                     {
                         // Spread the navigation routes.
                         routes.map((route, tabIndex) => {

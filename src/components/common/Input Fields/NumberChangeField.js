@@ -30,6 +30,8 @@ const NumberContainer = styled.TextInput`
     padding : ${ ({theme}) => theme.space['--space-6']};
     padding-top : ${ ({theme}) => theme.space['--space-2']};
     padding-bottom : ${ ({theme}) => theme.space['--space-2']};
+    width: 30px;
+    text-align: center;
 `;
 const IconContainer = styled.View`
     height : 100%;
@@ -105,7 +107,7 @@ const styles = StyleSheet.create({
     },
     inputField : {
         height:30,
-        width:30,
+        width:'100%',
         borderWidth:1,
         borderRadius:4,
         // padding:5,

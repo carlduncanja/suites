@@ -31,9 +31,11 @@ const SuggestedTimesPopover = ({procedure, location, duration, date, numSuggesti
     };
 
     const renderDate = ({item}) => {
-        const formattedDate = new moment(item).format("DD MMMM, YYYY @  hh:mm A");
-
-
+        let utchMoment = new moment.utc(item)
+        const date  = utchMoment.format("Do MMMM, YYYY ")
+        const time = new moment(item).format("hh:mm A")
+        const formattedDate = date + "  @  " + time
+        
         return (
             <TouchableOpacity
                 style={styles.item}

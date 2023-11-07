@@ -1,9 +1,9 @@
-import React, {useState, useContext, useEffect} from 'react';
-import {View, Text, StyleSheet} from 'react-native';
+import React, { useState, useContext, useEffect } from 'react';
+import { View, Text, StyleSheet } from 'react-native';
 
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 import _ from 'lodash';
-import {withModal} from 'react-native-modalfy';
+import { withModal } from 'react-native-modalfy';
 import Page from '../components/common/Page/Page';
 import ListItem from '../components/common/List/ListItem';
 import RoundedPaginator from '../components/common/Paginators/RoundedPaginator';
@@ -27,21 +27,21 @@ import {
     handleUnauthorizedError
 } from '../helpers/caseFilesHelpers';
 
-import {setPhysicians} from '../redux/actions/physiciansActions';
-import {getPhysicians, removePhysicians} from '../api/network';
+import { setPhysicians } from '../redux/actions/physiciansActions';
+import { getPhysicians, removePhysicians } from '../api/network';
 
 import CreatePhysicianDialogContainer from '../components/Physicians/CreatePhyscianDialogContainer';
-import {LONG_PRESS_TIMER} from '../const';
+import { LONG_PRESS_TIMER } from '../const';
 import ConfirmationComponent from '../components/ConfirmationComponent';
 import DataItem from '../components/common/List/DataItem';
 
-import {PageSettingsContext} from '../contexts/PageSettingsContext';
+import { PageSettingsContext } from '../contexts/PageSettingsContext';
 
 
 const Physicians = props => {
     // ############# Const data
-
-    const recordsPerPage = 10;
+    const userPermissions = props.route.params.permissions;
+    const recordsPerPage = 12;
     const listHeaders = [
         {
             name: 'Name',
@@ -53,7 +53,7 @@ const Physicians = props => {
         },
         {
             name: 'Cases',
-            alignment: 'center'
+            alignment: 'flex-start'
         },
         {
             name: 'Status',
@@ -64,7 +64,7 @@ const Physicians = props => {
 
     //  ############ Props
 
-    const {physicians, setPhysicians, navigation, modal} = props;
+    const { physicians, setPhysicians, navigation, modal } = props;
 
     //  ############ State
 
@@ -140,7 +140,7 @@ const Physicians = props => {
     };
 
     const handleOnCheckBoxPress = item => () => {
-        const {_id} = item;
+        const { _id } = item;
         const updatedPhysiciansList = checkboxItemPress(_id, selectedPhysiciansId);
         setSelectedPhysiciansId(updatedPhysiciansList);
     };
@@ -152,6 +152,7 @@ const Physicians = props => {
         props.navigation.navigate('PhysicianPage', {
             initial: false,
             physician: item,
+            updatePhysicians: userPermissions.update,
             isEdit: isOpenEditable,
             reloadPhysicians: () => fetchPhysiciansData(currentPagePosition)
         });
@@ -206,7 +207,7 @@ const Physicians = props => {
         setFetchingData(true);
         getPhysicians(searchValue, recordsPerPage, currentPosition)
             .then(physicianResult => {
-                const {data = [], pages = 0} = physicianResult;
+                const { data = [], pages = 0 } = physicianResult;
 
                 if (pages === 1) {
                     setPreviousDisabled(true);
@@ -232,7 +233,7 @@ const Physicians = props => {
                 console.log('failed to get physicians', error);
 
                 handleUnauthorizedError(error?.response?.status, setPhysicians);
-                setPageSettingState({...pageSettingState, isDisabled: true});
+                setPageSettingState({ ...pageSettingState, isDisabled: true });
 
                 setTotalPages(1);
                 setPreviousDisabled(true);
@@ -256,7 +257,7 @@ const Physicians = props => {
     const statusColor = status => (status === 'Active' ? '#4E5664' : '#E53E3E');
 
     const physiciansItem = item => {
-        const {_id = '', surname = '', field: type = 'Neurosurgeon', status = 'Active', casesCount = 0} = item;
+        const { _id = '', surname = '', field: type = '', status = 'Active', casesCount = 0 } = item;
         return (
             <>
                 <View style={[styles.item, {}]}>
@@ -268,7 +269,7 @@ const Physicians = props => {
                         }]}
                     >Dr. {surname}</Text>
                 </View>
-                <View style={[styles.item, {alignItems: 'flex-start'}]}>
+                <View style={[styles.item, { alignItems: 'flex-start' }]}>
                     <Text
                         numberOfLines={1}
                         style={[styles.itemText, {
@@ -278,8 +279,8 @@ const Physicians = props => {
                     >{type}</Text>
                 </View>
                 <DataItem flex={1} text={casesCount} color="--color-blue-600" fontStyle="--text-sm-medium"
-                          align="center"/>
-                <View style={[styles.item, {alignItems: 'center'}]}>
+                    align="center" />
+                <View style={[styles.item, { alignItems: 'center' }]}>
                     <Text
                         numberOfLines={1}
                         style={[styles.itemText, {
@@ -294,13 +295,13 @@ const Physicians = props => {
 
     const getFabActions = () => {
         const deleteAction = (
-            <LongPressWithFeedback
+            userPermissions.delete &&  <LongPressWithFeedback
                 pressTimer={LONG_PRESS_TIMER.MEDIUM}
                 onLongPress={removePhysiciansLongPress}
             >
-                <ActionItem
+                 <ActionItem
                     title="Hold to Delete"
-                    icon={<WasteIcon/>}
+                    icon={<WasteIcon />}
                     onPress={() => {
                     }}
                     touchable={false}
@@ -323,9 +324,10 @@ const Physicians = props => {
         //     />
         // );
         const createActionPhysician = (
-            <ActionItem
+            
+            userPermissions.create &&  <ActionItem
                 title="Add Physician"
-                icon={<AddIcon/>}
+                icon={<AddIcon />}
                 onPress={openCreatePhysicians}
             />
         );
@@ -343,7 +345,7 @@ const Physicians = props => {
 
     const removePhysiciansLongPress = () => {
         // Done with one or more ids selected
-        if (selectedPhysiciansId.length > 0) openDeletionConfirm({ids: [...selectedPhysiciansId]});
+        if (selectedPhysiciansId.length > 0) openDeletionConfirm({ ids: [...selectedPhysiciansId] });
         else openErrorConfirmation();
     };
 
@@ -431,7 +433,7 @@ const Physicians = props => {
                 .openModal(
                     'OverlayModal',
                     {
-                        content: <CreateWorkItemDialog onCancel={() => setFloatingAction(false)}/>,
+                        content: <CreateWorkItemDialog onCancel={() => setFloatingAction(false)} />,
                         onClose: () => setFloatingAction(false)
                     }
                 );
@@ -451,7 +453,6 @@ const Physicians = props => {
                             onCancel={() => setFloatingAction(false)}
                             onCreated={item => {
                                 handleOnItemPress(item, true);
-                                console.log("Phys item: ", item)
                             }}
                         />,
                         onClose: () => setFloatingAction(false)
@@ -465,6 +466,7 @@ const Physicians = props => {
     const physiciansToDisplay = [...physicians];
     // physiciansToDisplay = physiciansToDisplay.slice(currentPageListMin, currentPageListMax);
 
+    console.log('jsljkd', (userPermissions.create||userPermissions.delete) )
     return (
         <PageSettingsContext.Provider value={{
             pageSettingState,
@@ -474,7 +476,7 @@ const Physicians = props => {
             <NavPage
                 isFetchingData={isFetchingData}
                 onRefresh={handleDataRefresh}
-                placeholderText="Search by Physician"
+                placeholderText="Search by Physician or phone number"
                 changeText={onSearchInputChange}
                 inputText={searchValue}
                 routeName="Physicians"
@@ -490,7 +492,7 @@ const Physicians = props => {
                 isDisabled={isFloatingActionDisabled}
                 toggleActionButton={toggleActionButton}
                 hasPaginator={true}
-                hasActionButton={true}
+                hasActionButton={( (userPermissions.create||userPermissions.delete) === false) ? false : true}
                 hasActions={true}
                 isNextDisabled={isNextDisabled}
                 isPreviousDisabled={isPreviousDisabled}
@@ -507,16 +509,16 @@ const mapStateToProps = state => {
         // status : 'Active'
     }));
 
-    return {physicians};
+    return { physicians };
     // physicians: state.physicians
 };
 
-const mapDispatcherToProp = {setPhysicians};
+const mapDispatcherToProp = { setPhysicians };
 
 export default connect(mapStateToProps, mapDispatcherToProp)(withModal(Physicians));
 
 const styles = StyleSheet.create({
-    item: {flex: 1},
+    item: { flex: 1 },
     itemText: {},
     footer: {
         flex: 1,

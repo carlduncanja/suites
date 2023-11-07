@@ -10,14 +10,14 @@ import InputField2 from '../common/Input Fields/InputField2';
 import styled, { css } from '@emotion/native';
 import { useTheme } from 'emotion-theming';
 import { PageContext } from '../../contexts/PageContext';
-import { updateInventoryGroupById, getCategories } from '../../api/network';
+import { updateInventoryGroupById, getCategories, addCategory } from '../../api/network';
 import TextArea from '../common/Input Fields/TextArea';
 import ConfirmationComponent from '../ConfirmationComponent';
 import Footer from '../common/Page/Footer';
 import { useModal } from 'react-native-modalfy';
 import MultipleSearchableOptionsField from '../common/Input Fields/MultipleSearchableOptionsField';
 import _ from "lodash";
-
+import MultipleSelectionsField from '../common/Input Fields/MultipleSelectionsField';
 const FieldWrapper = styled.View`
     flex: 0.5;
     margin-bottom : ${({ isEditMode }) => isEditMode ? `32px` : 0};
@@ -35,16 +35,18 @@ function InventoryGroupGeneral({
 
     const baseStateRef = useRef();
 
-    const { description = "", categories = [], name = "" } = inventoryGroup;
+    const { description = "", name = "" } = inventoryGroup;
+    //const categoriesList = inventoryGroup?.categories || []
     const theme = useTheme();
     const modal = useModal();
     const { pageState, setPageState } = useContext(PageContext);
     const { isEditMode } = pageState;
 
+    const [categories, setCategories] = useState(inventoryGroup?.categories || [])
     const [categorySearchValue, setCategorySearchValue] = useState();
     const [categorySearchResults, setCategorySearchResult] = useState([]);
-    const [initialCategories, setInitialCategpries] = useState(categories.map(category => category._id))
-    const [categorySearchQuery, setCategorySearchQuery] = useState({});
+    //const [initialCategories, setInitialCategpries] = useState(categories.map(category => category._id))
+    //const [categorySearchQuery, setCategorySearchQuery] = useState({});
 
 
     useEffect(() => {
@@ -59,39 +61,17 @@ function InventoryGroupGeneral({
     }, []);
 
     useEffect(() => {
-        if (!categorySearchValue) {
-            // empty search values and cancel any out going request.
-            setCategorySearchResult([]);
-            if (categorySearchQuery.cancel) categorySearchQuery.cancel();
-            return;
-        }
-
-        // wait 300ms before search. cancel any prev request before executing current.
-        const search = _.debounce(fetchCategories, 300);
-
-        setCategorySearchQuery(prevSearch => {
-            if (prevSearch && prevSearch.cancel) {
-                prevSearch.cancel();
-            }
-            return search;
-        });
-
-        search()
-    }, [categorySearchValue]);
+        fetchCategories();
+    }, [categorySearchValue, categories]);
 
     const fetchCategories = () => {
-        getCategories(categorySearchValue, 5)
-            .then((categoryData = []) => {
-
-                // console.log("Data: ", data)
-
-                setCategorySearchResult(categoryData || []);
-
-            })
+        getCategories("inventory", 1000, categorySearchValue)
+        .then(data => {
+            setCategorySearchResult(data.data.map(item => { return item.name }));
+            categories.length == 0 && setCategories(data.data)
+        })
             .catch(error => {
-                // TODO handle error
-                console.log("failed to get Suppliers", error);
-                setCategorySearchResult([]);
+                console.log('Unable to retrieve iventory category items: ', error);
             });
     };
 
@@ -113,6 +93,56 @@ function InventoryGroupGeneral({
         console.log("Updated categores: ", updatedCategories);
         handleCategories(updatedCategories);
     };
+    const createCategory = (name) => {
+        if (!name) return;
+        addCategory({ name: name, type: "inventory" })
+            .then(_ => {
+                setCategories([]);
+                setCategorySearchValue('');
+                fetchCategories();
+                modal.openModal('ConfirmationModal', {
+                    content: <ConfirmationComponent
+                        isEditUpdate={false}
+                        isError={false}
+                        onCancel={() => {
+                            modal.closeModals('ConfirmationModal');
+                        }}
+                        onAction={() => {
+                            modal.closeModals('ConfirmationModal');
+                        }}
+                    />,
+                    onClose: () => {
+                        modal.closeModals('ConfirmationModal');
+                    },
+                });
+            })
+            .catch(error => {
+                modal.openModal('ConfirmationModal', {
+                    content: <ConfirmationComponent
+                        isEditUpdate={false}
+                        isError={true}
+                        onCancel={() => {
+                            modal.closeModals('ConfirmationModal');
+                        }}
+                        onAction={() => {
+                            modal.closeModals('ConfirmationModal');
+                        }}
+                    />,
+                    onClose: () => {
+                        modal.closeModals('ConfirmationModal');
+                    },
+                });
+                console.log(error);
+            })
+    }
+    const handleCategorySelected = (checkCategories) => {
+        const categoryIds = [];
+        checkCategories.map((name) => {
+            const value = categories.find(item => item.name === name);
+            value && categoryIds.push(value._id);
+        })
+        onFieldChange('categories')(categoryIds)
+    }
 
     return (
         <>
@@ -139,32 +169,34 @@ function InventoryGroupGeneral({
                     useTextArea={true}
                     editMode={isEditMode}
                     editable={true}
-                    flex={0.8}
+                    flex={1}
                 />
 
             </Row>
 
             <Row>
-
-                <ListTextRecord
-                    recordTitle="Category"
-                    titleStyle={'--text-xs-medium'}
-                    values={initialCategories}
-                    editMode={isEditMode}
-                    text={categorySearchValue}
-                    oneOptionsSelected={(item) => { onCategorySelect(item); }}
-                    onChangeText={value => { setCategorySearchValue(value) }}
-                    onClear={() => {
-                        setCategorySearchValue('');
-                    }}
-                    onSelectShownIten={onSelectShownItem}
-                    selectedItems={groupCategories}
+                {isEditMode ? 
+                    <MultipleSelectionsField
+                    label={"Categories"}
+                    value={fields?.['categories']?.map(x=> x.name)}
+                    onOptionsSelected={(value) => handleCategorySelected(value)}
                     options={categorySearchResults}
+                    createNew={() => createCategory(categorySearchValue)}
+                    searchText={categorySearchValue}
+                    onSearchChangeText={(value) => setCategorySearchValue(value)}
+                    onClear={() => { setCategorySearchValue('') }}
                     handlePopovers={() => { }}
-                    isPopoverOpen={categorySearchQuery}
-                    maxNumItemsShown={4}
-
-                />
+                    isPopoverOpen={true}
+                    boxDirection={'column'}
+                    boxAlign={''}
+                /> :
+                <Record
+                        recordTitle="Categories"
+                        recordValue={fields?.['categories']?.map(x => x.name).join(', ')}
+                        flex={0.8}
+                    />
+                }
+                
             </Row>
 
             <Footer

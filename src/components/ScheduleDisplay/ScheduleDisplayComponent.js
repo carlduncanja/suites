@@ -1,17 +1,30 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { View, StyleSheet, ScrollView, Text, TouchableOpacity } from "react-native";
+import { checkboxItemPress } from '../../helpers/caseFilesHelpers';
 import moment from 'moment';
 
 function ScheduleDisplayComponent({
     appointments = [],
-    date = new Date()
-}) {
-    const timerRef = useRef(0); // using ref to keep track of timer.
+    date = new Date(),
+    onPress,  
+    updatePhysician,
+    updateTheatre,
+    idData,
+    procedureStep
 
-    const startOfDate = moment(date).startOf('day') // set to 12:00 am
-    const isToday = moment().isSame(date, 'day');
+}) {
+
+    const timerRef = useRef(0); // using ref to keep track of timer.
+    //const isoDate = date.toISOString;
+    const startOfDate = moment().startOf('day') // set to 12:00 am
+    const isToday = moment().isSame(date.split()[1], 'day');
+
     const timelineDate = [];
     const [currentTime, setCurrentTime] = useState(moment);
+    const [selectedIds, setSelectedIds] = useState([])
+    const [selected, setSelected] = useState();
+     
+    console.log("the dater that is sent ",date)
     useEffect(() => {
         updateTime()
 
@@ -57,6 +70,18 @@ function ScheduleDisplayComponent({
         return position
     }
 
+    const onCheckBoxPress = item => {
+        const { _id } = item;
+        if (selected === _id) {
+            setSelected('')
+            idData([])
+        } else {
+            setSelected(_id)
+            idData([_id])
+        }
+        
+    }
+
     return (
 
         <View style={styles.container}>
@@ -80,7 +105,7 @@ function ScheduleDisplayComponent({
 
                 {/* TIME LINE*/}
                 {
-                    timelineDate.map((item, index) => <TimeBlock key={index} time={item} />)
+                    timelineDate.map((item, index) => <TimeBlock key={index} time={item} onPress ={onPress} updatePhysician={updatePhysician}  updateTheatre={updateTheatre}/>)
                 }
 
 
@@ -97,7 +122,12 @@ function ScheduleDisplayComponent({
                                         position: "absolute"
                                     }}
                                 >
-                                    <Event{...item}/>
+                                    <Event {...item}
+                                        onPress={ event => {
+                                            onCheckBoxPress(item)
+                                        }}
+                                        procedureStep = {procedureStep}
+                                        isSelected={selected === item._id} />
                                 </View>
                             )
                         })
@@ -176,14 +206,14 @@ const CurrentTimeIndicator = () => (
     </View>
 )
 
-const TimeBlock = ({ time }) => {
+const TimeBlock = ({ time, onPress, updatePhysician, updateTheatre }) => {
 
     const timeToDisplay = moment(time).format('h: mm')
     const hour = moment(time).hour();
 
     const isEven = (hour % 2 === 0)
 
-    return <View style={{
+    return <TouchableOpacity onPress={(updatePhysician || updateTheatre) ? onPress : undefined} style={{
         flexDirection: "row",
         justifyContent: "flex-start"
     }}>
@@ -222,7 +252,7 @@ const TimeBlock = ({ time }) => {
             backgroundColor: isEven ? '#F8FAFB' : '#FFFFFF',
         }} />
 
-    </View>
+    </TouchableOpacity>
 }
 
 
@@ -254,7 +284,8 @@ export const EVENT_TYPES = {
     GONE: 3
 }
 
-function Event({ startTime, endTime, type, title, subTitle }) {
+function Event({ startTime, endTime, type, title, subTitle, isSelected = true, onPress, procedureStep }) {
+
 
     const start = moment(startTime);
     const end = moment(endTime)
@@ -294,11 +325,20 @@ function Event({ startTime, endTime, type, title, subTitle }) {
                 }
             ]}
         >
-            <View>
+            <View style={eventStyleSheet.rowContianer}>
                 <Text style={[
                     eventStyleSheet.title,
                     { color: textColor }
                 ]}>{title}</Text>
+
+
+               { !procedureStep && <TouchableOpacity style={eventStyleSheet.CircleShape} onPress={onPress}>
+                    {isSelected ?
+                        <View style={eventStyleSheet.circleSelected}></View>
+                        :
+                        <View style={eventStyleSheet.CircleShapeUnSelcted}></View>
+                    }
+                </TouchableOpacity>}
             </View>
 
 
@@ -351,5 +391,38 @@ const eventStyleSheet = StyleSheet.create({
     }
     , paginator: {
 
+    },
+    rowContianer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between'
+    },
+    CircleShape: {
+        width: 20,
+        height: 20,
+        borderRadius: 20 / 2,
+        backgroundColor: '#FFFFFF',
+        borderWidth: 1,
+        borderColor: "#63B3ED",
+        justifyContent: 'center'
+    },
+
+    CircleShapeUnSelcted: {
+        width: 12,
+        height: 12,
+        borderRadius: 12 / 2,
+        backgroundColor: '#FFFFFF',
+        borderWidth: 1,
+        borderColor: "#FFFFFF",
+        alignSelf: 'center'
+    },
+    circleSelected: {
+        width: 12,
+        height: 12,
+        borderRadius: 12 / 2,
+        backgroundColor: '#63B3ED',
+        borderWidth: 1,
+        borderColor: "#63B3ED",
+        alignSelf: 'center'
     }
+
 })

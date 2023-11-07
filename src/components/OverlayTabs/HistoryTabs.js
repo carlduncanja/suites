@@ -34,17 +34,17 @@ const headers = [
     },
     {
         name: 'Recovery',
-        alignment: 'center',
+        alignment: 'flex-start',
         flex:1,
     },
     {
         name: 'Duration',
-        alignment: 'center',
+        alignment: 'flex-start',
         flex:1,
     },
     {
         name: 'Date',
-        alignment: 'flex-end',
+        alignment: 'flex-start',
         flex:1
     }, 
 ];
@@ -64,11 +64,12 @@ const HistoryTabs = ({ cases = testData, selectedItems = [], onCheckboxPress = (
 
     const listItem = ({name, isRecovery, duration, date}) => {
         let recoveryColor = isRecovery ? '--color-green-600' : '--color-orange-500';
+     
         return (
             <ItemWrapper theme={theme}>
                 <DataItem flex={2} color="--color-blue-600" text={name} fontStyle="--text-base-medium"/>
                 <DataItem align="center" color={recoveryColor} text={isRecovery ? 'Yes' : 'No'} fontStyle="--text-base-medium"/>
-                <DataItem align="center" color="--color-gray-800" text={`${duration} hrs`} fontStyle="--text-base-regular"/>
+                <DataItem align="center" color="--color-gray-800" text={`${parseInt(duration)} hrs`} fontStyle="--text-base-regular"/>
                 <DataItem align="flex-end" color="--color-gray-800" text={formatDate(date, 'MM/DD/YYYY')} fontStyle="--text-base-regular"/>
                 {/* <View style={[styles.item, {alignItems: 'flex-start', flex:2, backgroundColor:'red'}]}>
                     <Text style={[styles.itemText, {color: "#3182CE"}]}>{name}</Text>

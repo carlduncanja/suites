@@ -61,6 +61,7 @@ function FrameTitle(props) {
                 <TitleContainer>
                     <FrameIcon fillColor={color}/>
                     <TitleText theme={theme} color={color}>{frameTitle}</TitleText>
+                    
                 </TitleContainer>
 
 

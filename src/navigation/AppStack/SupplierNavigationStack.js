@@ -10,11 +10,14 @@ import ArchivedSuppliers from '../../page/ArchivedSuppliers/ArchivedSuppliersPag
 import ArchivedSupplier from '../../page/ArchivedSuppliers/ArchivedSupplier';
 import SupplierProductPage from '../../page/Suppliers/SupplierProductPage';
 import SupplierProductCreationPage from '../../page/Suppliers/SupplierProductCreationPage';
+import Orders from '../../page/PurchaseOrders/Orders';
 
 const Stack = createStackNavigator();
 
 export default (props) => {
     const isAdmin = props.route.params.isAdmin || false;
+    const purchaseOrderPermissions = props.route.params.userPermissions.purchase_orders
+    const suppplierPermissions = props.route.params.userPermissions.suppliers
 
     return (
         <Stack.Navigator
@@ -26,7 +29,7 @@ export default (props) => {
                 options={{
                     headerShown: false
                 }}
-                initialParams={{ isAdmin }}
+                initialParams={{ isAdmin, suppplierPermissions }}
             />
 
 
@@ -45,6 +48,10 @@ export default (props) => {
 
                     },
                     headerTitle: ''
+                }} 
+                initialParams={{
+                    purchaseOrderPermissions,
+                    updateSuppliers : suppplierPermissions.update
                 }}
             />
 
@@ -137,6 +144,24 @@ export default (props) => {
                 }}
             />
 
-        </Stack.Navigator>
+            <Stack.Screen
+                name="purchase-order"
+                component={Orders}
+                options={{
+                    headerShown: false,
+                    headerLeft: (props) => (
+                        <HeaderBackComponent
+                            {...props}
+                        />
+                    ),
+                    headerStyle: {
+                        height: 100,
+
+                    },
+                    headerTitle: ''
+                }}
+            />
+
+            </Stack.Navigator>
     );
 };

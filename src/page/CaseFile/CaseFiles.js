@@ -1,12 +1,13 @@
-import React, {useState, useEffect} from 'react';
-import {View} from 'react-native';
+// CaseFiles.js
+import React, { useState, useEffect } from 'react';
+import { View } from 'react-native';
 
-import {connect} from 'react-redux';
-import _, {isEmpty} from 'lodash';
-import {useModal} from 'react-native-modalfy';
+import { connect } from 'react-redux';
+import _, { isEmpty } from 'lodash';
+import { useModal } from 'react-native-modalfy';
 import moment from 'moment';
-import styled, {css} from '@emotion/native';
-import {useTheme} from 'emotion-theming';
+import styled, { css } from '@emotion/native';
+import { useTheme } from 'emotion-theming';
 import ListItem from '../../components/common/List/ListItem';
 import ActionContainer from '../../components/common/FloatingAction/ActionContainer';
 import ActionItem from '../../components/common/ActionItem';
@@ -14,8 +15,8 @@ import AddIcon from '../../../assets/svg/addIcon';
 import ArchiveIcon from '../../../assets/svg/archiveIcon';
 import DraftItem from '../../components/common/List/DraftItem';
 
-import {setCaseFiles} from '../../redux/actions/caseFilesActions';
-import {getCaseFiles, removeCaseFiles} from '../../api/network';
+import { setCaseFiles } from '../../redux/actions/caseFilesActions';
+import { deleteCaseFile, getCaseFiles, removeCaseFiles, removeCaseFilesId } from '../../api/network';
 
 import {
     useNextPaginator,
@@ -23,19 +24,21 @@ import {
     selectAll,
     checkboxItemPress, handleUnauthorizedError,
 } from '../../helpers/caseFilesHelpers';
-import {currencyFormatter, formatDate} from '../../utils/formatter';
+import { currencyFormatter, formatDate } from '../../utils/formatter';
 
 import NavPage from '../../components/common/Page/NavPage';
 import DataItem from '../../components/common/List/DataItem';
 import MultipleTextDataItem from '../../components/common/List/MultipleTextDataItem';
-import {emptyFn, LONG_PRESS_TIMER} from "../../const";
-import {PageSettingsContext} from '../../contexts/PageSettingsContext';
+import { emptyFn, LONG_PRESS_TIMER } from "../../const";
+import { PageSettingsContext } from '../../contexts/PageSettingsContext';
 import LongPressWithFeedback from "../../components/common/LongPressWithFeedback";
 import WasteIcon from "../../../assets/svg/wasteIcon";
-import {removeDraft} from "../../redux/actions/draftActions";
+import { removeDraft } from "../../redux/actions/draftActions";
 import Button from '../../components/common/Buttons/Button';
 import ConfirmationComponent from '../../components/ConfirmationComponent';
+import { userPassword } from '../../const/suitesEndpoints';
 
+// controls the title headers for case
 const listHeaders = [
     {
         name: 'Patient',
@@ -55,6 +58,7 @@ const listHeaders = [
     },
 ];
 
+// style for the top left "view archive button"
 const ButtonContainer = styled.View`
     width: 105px;
     height: 26px;
@@ -68,9 +72,10 @@ function CaseFiles(props) {
     //######## const
     const modal = useModal();
     const theme = useTheme();
+    const userPermissions = props.route.params.permissions;
 
     // const router = useRouter
-    const recordsPerPage = 10;
+    const recordsPerPage = 12;
 
     //######## Props
 
@@ -96,7 +101,7 @@ function CaseFiles(props) {
     const [isPreviousDisabled, setPreviousDisabled] = useState(true);
     const [hasDraft, setHasDraft] = useState(true);
     const [pageSettingState, setPageSettingState] = useState({});
-    const {isDisabled} = pageSettingState;
+    const { isDisabled } = pageSettingState;
 
     const routeName = route.name;
 
@@ -131,7 +136,8 @@ function CaseFiles(props) {
         }
 
         // wait 300ms before search. cancel any prev request before executing current.
-
+        // controls how long the search takes to trigger
+        // 300 ms
         const search = _.debounce(fetchCaseFilesData, 300);
 
         setSearchQuery(prevSearch => {
@@ -149,17 +155,18 @@ function CaseFiles(props) {
 
     const goToNextPage = () => {
         if (currentPagePosition < totalPages) {
-            console.log('Next page');
+            console.log('Next page',currentPage);
             const {
                 currentPage,
                 currentListMin,
                 currentListMax
-            } = useNextPaginator(currentPagePosition, recordsPerPage, currentPageListMin, currentPageListMax);
+            } = useNextPaginator(currentPagePosition, recordsPerPage, currentPageListMin, currentPageListMax); 
+            console.log('Next page',currentPage);
             setCurrentPagePosition(currentPage);
             setCurrentPageListMin(currentListMin);
             setCurrentPageListMax(currentListMax);
             fetchCaseFilesData(currentPage);
-            setNextDisabled(false);
+            //setNextDisabled(false);
         }
     };
 
@@ -178,6 +185,9 @@ function CaseFiles(props) {
         fetchCaseFilesData(currentPage);
     };
 
+    // checks if patient info is empty
+    // if not pops up the case page
+    // else create case page
     const handleOnItemPress = (item, isOpenEditable) => () => {
         if (item !== null) {
             isEmpty(item?.patient?.medicalInfo) ?
@@ -194,13 +204,14 @@ function CaseFiles(props) {
     };
 
     const handleOnCheckBoxPress = caseItem => () => {
-        const {_id, id} = caseItem; // account for both drafts and created cases.
+        const { _id, id } = caseItem; // account for both drafts and created cases.
         const updatedCases = checkboxItemPress(_id || id, selectedCaseIds);
         setSelectedCaseIds(updatedCases);
     };
 
     const handleOnSelectAll = () => {
         const updatedCases = selectAll(caseFiles, selectedCaseIds);
+        console.log("box clicked")
         setSelectedCaseIds(updatedCases);
     };
 
@@ -232,8 +243,10 @@ function CaseFiles(props) {
 
         setFetchingCaseFiles(true);
         getCaseFiles(searchValue, recordsPerPage, currentPosition)
-            .then(caseResult => {
-                const {data = [], pages = 0} = caseResult;
+            .then(caseResult => { 
+
+                console.log("this all the data i will ever neeed",caseResult.data[0].caseProcedures)
+                const { data = [], pages = 0 } = caseResult;
 
                 if (pages === 1) {
                     setPreviousDisabled(true);
@@ -252,14 +265,15 @@ function CaseFiles(props) {
                     setPreviousDisabled(true);
                 }
                 setCaseFiles(data);
-                setTotalPages(pages);
-                // data.length === 0 ? setTotalPages(1) : setTotalPages(pages);
+                //setTotalPages(pages);
+                setPageSettingState({ ...pageSettingState, isDisabled: false });
+                data.length === 0 ? setTotalPages(1) : setTotalPages(pages);
             })
             .catch(error => {
                 console.log('failed to get case files', error);
 
                 handleUnauthorizedError(error?.response?.status, setCaseFiles);
-                setPageSettingState({...pageSettingState, isDisabled: true});
+                setPageSettingState({ ...pageSettingState, isDisabled: true });
                 setTotalPages(1);
                 setPreviousDisabled(true);
                 setNextDisabled(true);
@@ -270,18 +284,18 @@ function CaseFiles(props) {
     };
 
     const renderFn = item => {
-        const {patient = {}} = item;
+        const { patient = {} } = item;
 
         // console.log("what's pssed to render?", item.patient);
-
+        // displays the case files in a list format
         return <>
             <ListItem
                 hasCheckBox={true}
                 isChecked={selectedCaseIds.includes(item._id || item.id)}
                 onCheckBoxPress={handleOnCheckBoxPress(item)}
                 onItemPress={handleOnItemPress(item, false)}
-                itemView={ item.isDraft  ? renderDraft(item) : caseItem(item)}//add ternary here to account for draft
-                //items passed here should be deciphered whether it is a draft or not
+                itemView={item.isDraft ? renderDraft(item) : caseItem(item)}//add ternary here to account for draft
+            //items passed here should be deciphered whether it is a draft or not
             />
             {/* */}
         </>;
@@ -306,10 +320,10 @@ function CaseFiles(props) {
 
     const renderDraft = item => {
         if (item !== null) {
-            const {patient = {}} = item || {};
+            const { patient = {} } = item || {};
 
             return (<DraftItem
-                text={`${patient?.firstName ? `${patient?.firstName || ''} ${patient?.surname || ''}` : 'N/A'} `}/>);
+                text={`${patient?.firstName ? `${patient?.firstName || ''} ${patient?.surname || ''}` : 'N/A'} `} />);
         }
     };
 
@@ -326,16 +340,19 @@ function CaseFiles(props) {
             physicianName;
         // console.log("Item: ", item.chargeSheet)
 
-        const {total = 0} = item.chargeSheet || {};
-        const {leadPhysician} = staff;
+        const { total = 0 } = item.chargeSheet || {};
+        const { leadPhysician } = staff;
 
         patient ? name = `${patient.firstName} ${patient.surname}` : name = '';
         leadPhysician ? physicianName = `Dr. ${leadPhysician.surname}` : physicianName = '';
-
+        
+       
         const dates = caseProcedures.map(item => {
-            const {appointment} = item;
-            const {startTime} = appointment;
-            return moment(startTime);
+           
+            const { appointment } = item;
+            const  startTime  = appointment?.["startTime"]
+            
+           return moment( startTime );
         });
 
         const nextVisit = getDate(dates);
@@ -346,9 +363,9 @@ function CaseFiles(props) {
                     primaryText={`# ${caseNumber}`}
                     secondaryText={name}
                 />
-                <DataItem text={`$ ${currencyFormatter(total)}`}/>
-                <DataItem text={physicianName}/>
-                <DataItem text={formatDate(nextVisit, 'MMM DD, YYYY') || 'n/a'}/>
+                <DataItem text={`$ ${currencyFormatter(total)}`} />
+                <DataItem text={physicianName} />
+                <DataItem text={formatDate(nextVisit, 'MMM DD, YYYY') || 'n/a'} />
             </>
         );
     };
@@ -367,7 +384,7 @@ function CaseFiles(props) {
                     <ConfirmationComponent
                         isError={false}//boolean to show whether an error icon or success icon
                         isEditUpdate={true}
-                        onCancel={() => modal.closeAllModals() }
+                        onCancel={() => modal.closeAllModals()}
                         onAction={() => {
                             modal.closeAllModals();
                             handleArchiveCases();
@@ -392,7 +409,7 @@ function CaseFiles(props) {
                         <ConfirmationComponent
                             isError={false}//boolean to show whether an error icon or success icon
                             isEditUpdate={false}
-                            onCancel={() => modal.closeAllModals() }
+                            onCancel={() => modal.closeAllModals()}
                             onAction={() => {
                                 modal.closeAllModals();
                                 handleDataRefresh();
@@ -411,20 +428,105 @@ function CaseFiles(props) {
                         <ConfirmationComponent
                             isError={true}//boolean to show whether an error icon or success icon
                             isEditUpdate={false}
-                            onCancel={() => modal.closeAllModals() }
-                            onAction={() => modal.closeAllModals() }
+                            onCancel={() => modal.closeAllModals()}
+                            onAction={() => modal.closeAllModals()}
                         />
                     )
                 })
             })
     };
 
+    const openErrorConfirmation = () => {
+        modal.openModal(
+            'ConfirmationModal',
+            {
+                content: <ConfirmationComponent
+                    isError={true}
+                    isEditUpdate={false}
+                    onCancel={() => modal.closeModals('ConfirmationModal')}
+                />,
+                onClose: () => {
+                    modal.closeModals('ConfirmationModal');
+                }
+            }
+        );
+    };
+
+    const handleRemoveCase = async (id) => {
+        openDeletionConfirm({ ids: [...selectedCaseIds] })
+    }
+
+    const removeCaseFilesCall = data => {
+        removeCaseFilesId(data)
+            .then(_ => {
+                modal.openModal(
+                    'ConfirmationModal',
+                    {
+                        content: <ConfirmationComponent
+                            isError={false}
+                            isEditUpdate={false}
+                            onAction={() => {
+                                modal.closeModals('ConfirmationModal');
+                                setTimeout(() => {
+                                    modal.closeModals('ActionContainerModal');
+                                    handleDataRefresh();
+                                }, 200);
+                            }}
+                        />,
+                        onClose: () => {
+                            modal.closeModals('ConfirmationModal');
+                        }
+                    }
+                );
+
+                setSelectedCaseIds([]);
+            })
+            .catch(error => {
+                openErrorConfirmation();
+                setTimeout(() => {
+                    modal.closeModals('ActionContainerModal');
+                }, 200);
+                console.log('Failed to remove case file: ', error);
+            })
+            .finally(_ => {
+                setFloatingAction(false);
+            });
+    }
+
+    const openDeletionConfirm = data => {
+        modal.openModal(
+            'ConfirmationModal',
+            {
+                content: <ConfirmationComponent
+                    isError={false}
+                    isEditUpdate={true}
+                    onCancel={() => modal.closeModals('ConfirmationModal')}
+                    onAction={() => {
+                        modal.closeModals('ConfirmationModal');
+                        removeCaseFilesCall(data);
+
+                    }}
+                    // onAction = { () => confirmAction()}
+                    message="Do you want to delete these item(s)?"
+                />,
+                onClose: () => {
+
+                    modal.closeModals('ConfirmationModal');
+                }
+            }
+        );
+
+    };
+
     const getFabActions = () => {
+        const actionArray = []
+
+        console.log("this is to check the user permissions", userPermissions)
         const disabled = !!isEmpty(selectedCaseIds);
         const archiveCase = (
             <ActionItem
                 title="Archive Case"
-                icon={<ArchiveIcon strokeColor={disabled ? theme.colors['--color-gray-600'] : theme.colors['--company']}/>}
+                icon={<ArchiveIcon strokeColor={disabled ? theme.colors['--color-gray-600'] : theme.colors['--company']} />}
                 onPress={onArchivePress}
                 disabled={disabled}
                 touchable={!disabled}
@@ -435,35 +537,62 @@ function CaseFiles(props) {
         const strokeColor = !enabled ? theme.colors['--color-gray-600'] : theme.colors['--color-red-700'];
 
         const deleteDraftAction = (<View style={{
+            borderRadius: 6,
+            flex: 1,
+            overflow: 'hidden'
+        }}
+        >
+            <LongPressWithFeedback
+                pressTimer={LONG_PRESS_TIMER.LONG}
+                onLongPress={() => { handleRemoveDraft(selectedCaseIds[0]) }}
+                isDisabled={!enabled}
+            >
+                <ActionItem
+                    title="Hold to Delete Draft"
+                    icon={<WasteIcon strokeColor={strokeColor} />}
+                    disabled={!enabled}
+                    touchable={false}
+                />
+            </LongPressWithFeedback>
+        </View>
+        );
+
+
+        const createNewCase = <ActionItem title="New Case" icon={<AddIcon />} onPress={openCreateCaseFile} />;
+
+        const deleteAction = (
+            <View style={{
                 borderRadius: 6,
                 flex: 1,
                 overflow: 'hidden'
             }}
             >
                 <LongPressWithFeedback
-                    pressTimer={LONG_PRESS_TIMER.LONG}
-                    onLongPress={() => {handleRemoveDraft(selectedCaseIds[0])}}
-                    isDisabled={!enabled}
+                    pressTimer={LONG_PRESS_TIMER.MEDIUM}
+                    isDisabled={disabled}
+                    onLongPress={() => handleRemoveCase(selectedCaseIds[0])}
                 >
                     <ActionItem
-                        title="Hold to Delete Draft"
-                        icon={<WasteIcon strokeColor={strokeColor}/>}
-                        disabled={!enabled}
-                        touchable={false}
+                        title="Hold to Delete Case"
+                        icon={(
+                            <WasteIcon
+                                strokeColor={disabled ? theme.colors['--color-gray-600'] : theme.colors['--color-red-700']}
+                            />
+                        )}
+                         touchable={false}
+                         disabled={disabled}
                     />
                 </LongPressWithFeedback>
             </View>
         );
 
-        const createNewCase = <ActionItem title="New Case" icon={<AddIcon/>} onPress={openCreateCaseFile}/>;
+        userPermissions.delete && actionArray.push(deleteDraftAction, deleteAction)
+        userPermissions.create && actionArray.push(createNewCase)
+        userPermissions.update && actionArray.push(archiveCase)
 
         return <ActionContainer
-            floatingActions={[
-                archiveCase,
-                deleteDraftAction,
-                createNewCase,
-            ]}
-            title="CASE ACTIONS"
+            floatingActions={actionArray}
+             title="CASE ACTIONS"
         />;
     };
 
@@ -492,6 +621,7 @@ function CaseFiles(props) {
             setPageSettingState
         }}
         >
+
             <NavPage
                 isFetchingData={isFetchingCaseFiles}
                 onRefresh={handleDataRefresh}
@@ -503,7 +633,7 @@ function CaseFiles(props) {
                 TopButton={() => (
                     <ButtonContainer theme={theme}>
                         <Button
-                            title="View Archive"
+                            title="Archives"
                             color={theme.colors['--color-gray-500']}
                             font="--text-sm-regular"
                             buttonPress={openViewArchivedCases}
@@ -529,13 +659,13 @@ function CaseFiles(props) {
                 isNextDisabled={isNextDisabled}
                 isPreviousDisabled={isPreviousDisabled}
             />
-        </PageSettingsContext.Provider>
+         </PageSettingsContext.Provider>
     );
 }
 
 const mapStateToProps = state => {
-    let {caseFiles} = state;
-    const {drafts} = state;
+    let { caseFiles } = state;
+    const { drafts } = state;
 
     if (drafts && drafts.length) caseFiles = [...drafts, ...caseFiles];
 
@@ -545,6 +675,6 @@ const mapStateToProps = state => {
     };
 };
 
-const mapDispatcherToProp = {setCaseFiles, removeDraft};
+const mapDispatcherToProp = { setCaseFiles, removeDraft };
 
 export default connect(mapStateToProps, mapDispatcherToProp)(CaseFiles);

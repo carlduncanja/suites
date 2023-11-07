@@ -67,7 +67,7 @@ border-radius:0px 0px 6px 6px;
 
 `
 
-function EquipmentGroupGeneralTab({ equipmentGroup = {}, equipments = [], suppliers = [], modal, goToAddEquipment }) {
+function EquipmentGroupGeneralTab({ equipmentGroup = {}, updateEquipment, equipments = [], suppliers = [], modal, goToAddEquipment }) {
 
 
     const theme = useTheme();
@@ -77,14 +77,6 @@ function EquipmentGroupGeneralTab({ equipmentGroup = {}, equipments = [], suppli
     const categories = equipmentGroup?.categories || [];
     let equipmentToDisplay = [...equipments]
     let supplierToDisplay = [...suppliers]
-
-    console.log('categories', categories);
-
-    const getCategories = () => {
-        categories.map(item => {
-            return item._id
-        })
-    }
 
 
     const getFabActions = () => {
@@ -106,9 +98,7 @@ function EquipmentGroupGeneralTab({ equipmentGroup = {}, equipments = [], suppli
         return (
             <ActionContainer
                 floatingActions={[
-                    editGroup,
                     assignEquipment,
-
                 ]}
                 title={"EQUIPMENT ACTIONS"}
             />
@@ -144,7 +134,7 @@ function EquipmentGroupGeneralTab({ equipmentGroup = {}, equipments = [], suppli
             <Row>
                 <Record
                     recordTitle="Description"
-                    recordValue={description}
+                    recordValue={description || '--'}
                     flex={0.8}
 
                 />
@@ -160,6 +150,13 @@ function EquipmentGroupGeneralTab({ equipmentGroup = {}, equipments = [], suppli
             </View>
             <Row>
                 <Record
+                    recordTitle="Categories"
+                    recordValue={categories.length > 0 ? categories.map(x => x.name).join(', ') : '--'}
+                    flex={0.8}
+                />
+            </Row>
+            <Row>
+                <Record
                     recordTitle="Supplier"
                     recordValue={isEmpty(getSuppliers()) ? "--" : getSuppliers()}
                     flex={0.8}
@@ -167,7 +164,7 @@ function EquipmentGroupGeneralTab({ equipmentGroup = {}, equipments = [], suppli
                 />
             </Row>
             <Footer
-                hasActionButton={true}
+                hasActionButton={updateEquipment}
                 hasPaginator={false}
                 toggleActionButton={toggleActionButton}
             />

@@ -246,27 +246,32 @@ function AddChargeSheetItem({navigation, route}) {
     };
 
     const onFooterPress = () => {
-        modal.openModal('ConfirmationModal', {
-            content: (
-                <ConfirmationComponent
-                    isError={false}
-                    isEditUpdate={true}
-                    onCancel={() => {
-                        modal.closeAllModals();
-                    }}
-                    onAction={() => {
-                        onBackPress();
-                        onAddItem(configureData(data));
-                        modal.closeAllModals();
-                    }}
-                    message={"Do you want to save these item(s)?"}
+        onBackPress();
+        onAddItem(configureData(data));
+        modal.closeAllModals();
 
-                />
-            ),
-            onClose: () => {
-                console.log('Modal closed');
-            },
-        });
+
+        // modal.openModal('ConfirmationModal', {
+        //     content: (
+        //         <ConfirmationComponent
+        //             isError={false}
+        //             isEditUpdate={true}
+        //             onCancel={() => {
+        //                 modal.closeAllModals();
+        //             }}
+        //             onAction={() => {
+        //                 onBackPress();
+        //                 onAddItem(configureData(data));
+        //                 modal.closeAllModals();
+        //             }}
+        //             message={"Do you want to save these item(s)?"}
+
+        //         />
+        //     ),
+        //     onClose: () => {
+        //         console.log('Modal closed');
+        //     },
+        // });
     };
 
 

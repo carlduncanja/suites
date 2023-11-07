@@ -2,31 +2,31 @@
   "expo": {
     "name": "Suites",
     "slug": "smsja-suites",
-    "owner": "smart-mobile-solutions",
     "privacy": "public",
-    "platforms": [
-      "ios"
-    ],
-    "version": "1.0.4",
+    "platforms": ["ios"],
+    "version": "2.1.6",
     "orientation": "portrait",
-    "icon": "./assets/TheSuitesLogo2.png",
+    "icon": "./assets/MedopsLogo.png",
     "splash": {
-      "image": "./assets/splashPortrait.png",
+      "image": "./assets/MedopsSplashPortrait.png",
       "resizeMode": "contain",
       "backgroundColor": "#1866C8"
     },
     "updates": {
       "fallbackToCacheTimeout": 0
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.smsja.suites",
-      "buildNumber": "1.3.1",
+      "buildNumber": "1.5.3",
       "config": {
         "usesNonExemptEncryption": false
+      }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "36952d6f-ced1-4294-bfa8-2e20e9226601"
       }
     }
   }

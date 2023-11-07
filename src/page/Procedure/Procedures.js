@@ -20,7 +20,7 @@ import AddIcon from '../../../assets/svg/addIcon';
 import {useNextPaginator, usePreviousPaginator, checkboxItemPress, selectAll, handleUnauthorizedError} from '../../helpers/caseFilesHelpers';
 
 import {setProcedures} from '../../redux/actions/proceduresActions';
-import {bulkUploadProcedureRequest, getProcedures, removeProcedures} from '../../api/network';
+import {bulkUploadProcedureRequest, getAllPhysicianById, getPhysicians, getProcedures, removeProcedures} from '../../api/network';
 
 import {DISABLED_COLOR, LONG_PRESS_TIMER} from '../../const';
 import ConfirmationComponent from '../../components/ConfirmationComponent';
@@ -31,10 +31,13 @@ import TouchableDataItem from '../../components/common/List/TouchableDataItem';
 import { PageSettingsContext } from '../../contexts/PageSettingsContext';
 import ExportIcon from "../../../assets/svg/exportIcon";
 import FileUploadComponent from "../../components/FileUploadComponent";
+import ConfirmationCheckBoxComponent from '../../components/ConfirmationCheckBoxComponent';
 
 const Procedures = props => {
     // ############# Const data
-    const recordsPerPage = 10;
+    const recordsPerPage = 12;
+
+    const procedurePermissions = props.route.params.procedurePermissions
 
     const modal = useModal();
     const theme = useTheme();
@@ -52,7 +55,7 @@ const Procedures = props => {
         },
         {
             name: 'Duration',
-            alignment: 'center',
+            alignment: 'flex-start',
             flex: 1
         }
     ];
@@ -78,7 +81,6 @@ const Procedures = props => {
     const [selectedProcedures, setSelectedProcedures] = useState([]);
 
     const [pageSettingState, setPageSettingState] = useState({});
-
 
     // const routeName = route.name;
     // ############# Lifecycle methods
@@ -136,9 +138,15 @@ const Procedures = props => {
 
     const handleOnItemPress = (item, isOpenEditable) => () => {
         console.log('Open');
-        navigation.navigate('Procedures List', {
+        navigation.navigate('Procedure', {
             screen: 'Procedure',
             initial: false,
+            procedure: item,
+            procedure: item,
+            isOpenEditable,
+            onUpdate: () => {
+                handleDataRefresh();
+            },
             params: {
                 procedure: item,
                 isOpenEditable,
@@ -228,20 +236,27 @@ const Procedures = props => {
             });
     };
 
-    const renderProcedureFn = item => (
-        <ListItem
+    const renderProcedureFn = item => {
+        return <ListItem
             hasCheckBox={true}
             isChecked={selectedProcedures.includes(item._id)}
             onCheckBoxPress={handleOnCheckBoxPress(item)}
             onItemPress={handleOnItemPress(item, false)}
             itemView={procedureItem(item)}
         />
-    );
+    };
 
-    const procedureItem = item => {
-        const {physician = {}} = item;
-        const {firstName = '', surname = ''} = physician;
-        const physicianName = firstName && surname ? `Dr. ${firstName} ${surname}` : 'Unassigned';
+    const procedureItem = (item)=> {
+        const {physicians = []} = item;
+
+        const firstName = physicians[0]?.firstName || '';
+        const surname = physicians[0]?.surname || '';
+        let physicianName = `${firstName} ${surname}`;
+
+        if (firstName === '' || surname === '') {
+            physicianName = 'Unassigned'
+        }
+
         return (
             <>
                 <RightBorderDataItem flex={1.5} fontStyle="--text-base-regular" color="--color-gray-800" text={item?.name}/>
@@ -289,6 +304,7 @@ const Procedures = props => {
     };
 
     const getFabActions = () => {
+        actionsArray =[]
         const isDeleteDisabled = selectedProcedures.length < 1; // displayed if no items are selected.
         const deleteAction = (
             <LongPressWithFeedback
@@ -327,14 +343,11 @@ const Procedures = props => {
 
         const uploadProcedures = <ActionItem title="Upload Procedures" icon={<ExportIcon/>}
                                             onPress={openUploadProceduresModal}/>;
-
+        
+        procedurePermissions.create && actionsArray.push(createCopy, createNewProcedure, uploadProcedures)
+        procedurePermissions.delete && actionsArray.push(deleteAction,)
         return <ActionContainer
-            floatingActions={[
-                deleteAction,
-                createCopy,
-                createNewProcedure,
-                uploadProcedures
-            ]}
+            floatingActions={actionsArray}
             title="PROCEDURES ACTIONS"
         />;
     };
@@ -349,7 +362,7 @@ const Procedures = props => {
         modal.openModal(
             'ConfirmationModal',
             {
-                content: <ConfirmationComponent
+                content: <ConfirmationCheckBoxComponent
                     isError={false}
                     isEditUpdate={true}
                     onCancel={() => modal.closeModals('ConfirmationModal')}
@@ -445,15 +458,17 @@ const Procedures = props => {
         modal.closeModals('ActionContainerModal');
 
         const procedureCopy = {...item};
-
+        //console.log("this is jus a maker",item )
+        
         // modify copy object to manage attributes which can be copied
         procedureCopy.procedureReferenceName = procedureCopy.name;
         procedureCopy.procedureReference = procedureCopy._id;
         procedureCopy.name = `${procedureCopy.name} - Copy`;
-        procedureCopy.physician = {
+        procedureCopy.physician = procedureCopy.physicians
+        /*{
             _id: procedureCopy.physician._id,
             name: `Dr. ${procedureCopy.physician.surname}`
-        };
+        };*/
 
         navigation.navigate('CreateProcedure', {
             screen: 'CreateProcedure',
@@ -470,7 +485,8 @@ const Procedures = props => {
                 setTimeout(() => {
                     handleOnItemPress(createdItem, false)();
                 }, 300);
-            },
+            }, 
+           
         });
 
         // navigation.navigate('Procedures List', {
@@ -488,8 +504,10 @@ const Procedures = props => {
         //             setFloatingAction(false);
         //         }
         //     },
-        // });
-    };
+        // }); 
+
+         
+    }; 
 
     // ############# Prepare list data
 
@@ -521,7 +539,7 @@ const Procedures = props => {
                 isDisabled={isFloatingActionDisabled}
                 toggleActionButton={toggleActionButton}
                 hasPaginator={true}
-                hasActionButton={true}
+                hasActionButton={procedurePermissions.create || procedurePermissions.delete}
                 hasActions={true}
                 isNextDisabled={isNextDisabled}
                 isPreviousDisabled={isPreviousDisabled}

@@ -86,6 +86,7 @@ function AddItems({ addProcedure, navigation, route}){
         {
             name : "Unit Price",
             alignment : "center"
+            
         },
         {
             name : "Action",

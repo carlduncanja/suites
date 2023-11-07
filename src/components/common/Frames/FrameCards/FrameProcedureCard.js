@@ -31,7 +31,8 @@ const ProcedureCardContent = styled.View`
 `
 
 
-const getAppointmentFields = ({location, startTime, endTime}) => {
+const getAppointmentFields = ({location, startTime, endTime}) => { 
+
     return {
         location,
         startTime,
@@ -159,9 +160,9 @@ const FrameProcedureCard = ({
                         frameTitle={`${title} - ${subject}`}
                         ActionComponent={
                             <IconButton
-                                Icon={<WasteIcon strokeColor={!isEdit ? "#B3BDC6" : "#C53030"}/>}
+                                Icon={<WasteIcon strokeColor={!isEdit ? "transparent" : "#C53030"}/>}
                                 onPress={onRemoveProcedure}
-                                disabled={isEdit}
+                                disabled={!isEdit}
                             />
                         }
                     />

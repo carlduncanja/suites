@@ -19,7 +19,7 @@ function EquipmentGroupDetailsPage(props) {
     const modal = props.modal;
     const {
         data = {}, onCreated = () => {
-        }
+        }, updatesEquipment
     } = props.route.params;
     const {name = "", _id = "", equipments = [], suppliers = [], description = '', categories = [], unitPrice = 0} = data
     const tabs = ["Details", "Items"];
@@ -31,6 +31,7 @@ function EquipmentGroupDetailsPage(props) {
 
     useEffect(() => {
         fetchEquipmentGroup(_id)
+       
     }, []);
 
     useEffect(() => {
@@ -49,8 +50,8 @@ function EquipmentGroupDetailsPage(props) {
         setPageLoading(true)
         getEquipmentTypeById(id)
             .then(data => {
-                console.log("Dta: ", data);
                 setSelectedEquipment(data)
+                setFields({...fields, categories: data.categories})
             })
             .catch(error => {
                 console.log("Failed to get procedure", error)
@@ -188,8 +189,6 @@ function EquipmentGroupDetailsPage(props) {
                 )
             }).finally(_ => {
             })
-
-
     }
 
     // ##### Event Handlers
@@ -225,6 +224,7 @@ function EquipmentGroupDetailsPage(props) {
                     />
                     :
                     <EquipmentGroupGeneralTab
+                        updateEquipment = {updatesEquipment}
                         goToAddEquipment={goToAddEquipment}
                         equipmentGroup={selectedEquipment}
                         equipments={equipments}
@@ -242,6 +242,7 @@ function EquipmentGroupDetailsPage(props) {
         <PageContext.Provider value={{pageState, setPageState}}>
             <DetailsPage
                 headerChildren={[name]}
+                isEditable={updatesEquipment}
                 onBackPress={() => props.navigation.navigate("Equipment")}
                 pageTabs={
                     <TabsContainerComponent

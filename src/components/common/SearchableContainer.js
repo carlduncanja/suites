@@ -27,30 +27,33 @@ const SearchableContainer = ({ options, onCheckboxPress, checkedList, searchText
                     onChangeText={(text) => onSearchChangeText(text)}
                     keyboardType={"default"}
                 />
-                <View style={{ alignItems: 'center', paddingLeft: 5, paddingRight: 5 }}>
+                {searchText !== '' ? (
+                    <View style={{ alignItems: 'center', paddingLeft: 5, paddingRight: 5 }}>
                     <IconButton
                         Icon={<ClearIcon />}
                         onPress={() => { onClear() }}
                     />
                 </View>
-
+                ) : <></>}
             </View>
 
 
             <ScrollView
                 bounces={false}
-                contentContainerStyle={{ flexDirection: "column", paddingBottom: 50 }}
+                contentContainerStyle={{ flexDirection: "column", paddingBottom: 50, paddingTop: 10 }}
 
             >
                 {options.map((option, index) => {
-
                     return (
                         <View key={index} style={styles.optionWrapper}>
                             <CheckBoxComponent
                                 isCheck={checkedList.includes(option)}
                                 onPress={onCheckboxPress(option)}
+                                paddingLeft={'0px'}
+                                paddingRight={'8px'}
+                                paddingTop={'2px'}
                             />
-                            <Text style={{ color: "#323843", fontSize: 14, paddingLeft: 6 }}>{option}</Text>
+                            <Text style={{ color: "#323843", fontSize: 14, paddingLeft: 0, marginBottom: 15 }}>{option}</Text>
                         </View>
                     )
                 })}
@@ -82,7 +85,6 @@ const styles = StyleSheet.create({
     },
     optionWrapper: {
         flexDirection: 'row',
-        // padding:10,
         alignItems: 'center'
     },
     footer: {

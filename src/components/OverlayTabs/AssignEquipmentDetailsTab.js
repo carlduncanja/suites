@@ -1,10 +1,10 @@
-import React, {useState, useEffect} from 'react';
-import {View, Text, DatePickerIOS} from 'react-native';
-import styled, {css} from '@emotion/native';
-import {withModal} from 'react-native-modalfy';
-import {MenuOptions, MenuOption} from 'react-native-popup-menu';
-import _, {isEmpty} from 'lodash';
-import {Divider} from 'react-native-paper';
+import React, { useState, useEffect } from 'react';
+import { View, Text, DatePickerIOS } from 'react-native';
+import styled, { css } from '@emotion/native';
+import { withModal } from 'react-native-modalfy';
+import { MenuOptions, MenuOption } from 'react-native-popup-menu';
+import _, { isEmpty } from 'lodash';
+import { Divider } from 'react-native-paper';
 import moment from 'moment';
 import Record from '../common/Information Record/Record';
 import ListTextRecord from '../common/Information Record/ListTextRecord';
@@ -13,7 +13,7 @@ import InputField2 from '../common/Input Fields/InputField2';
 import DropdownField from '../common/Input Fields/DropdownField';
 import DropdownInputField from '../common/Input Fields/DropdownInputField';
 import OptionsField from '../common/Input Fields/OptionsField';
-import {getTheatres, getPhysicians, getStorage} from '../../api/network';
+import { getTheatres, getPhysicians, getStorage } from '../../api/network';
 
 import SearchableOptionsField from '../common/Input Fields/SearchableOptionsField';
 
@@ -23,7 +23,7 @@ import MultipleSelectionsField from '../common/Input Fields/MultipleSelectionsFi
 
 const InputWrapper = styled.View`
 height:30px;
-width:260px;
+width:380px;
 margin-right:30px;
 
 `;
@@ -49,27 +49,28 @@ align-self:center;
 align-items:center;
 justify-self:flex-end;
 justify-content:center;
-background-color:${({theme}) => theme.colors['--color-blue-500']};
+background-color:${({ theme }) => theme.colors['--color-blue-500']};
 `;
 
 const DoneButtonText = styled.Text`
-font:${({theme}) => theme.font['--text-base-bold']};
-color:${({theme}) => theme.colors['--default-shade-white']};
+font:${({ theme }) => theme.font['--text-base-bold']};
+color:${({ theme }) => theme.colors['--default-shade-white']};
 `;
 
 function AssignEquipmentDetailsTab({
-                                       data,
-                                       errors = {},
-                                       onFieldChange,
-                                       locations,
-                                       physicians,
-                                       theatres,
-                                       onLocationUpdate,
-                                       onTheatreUpdate,
-                                       onPhysicianUpdate,
-                                       equipmentDetails,
-                                       onDonePress
-                                   }) {
+    data,
+    errors = {},
+    onFieldChange,
+    locations,
+    physicians,
+    theatres,
+    onLocationUpdate,
+    onTheatreUpdate,
+    onPhysicianUpdate,
+    equipmentDetails,
+    onDonePress,
+    setErrors
+}) {
     const [searchValue, setSearchValue] = useState('');
     const [searchResults, setSearchResults] = useState([]);
     const [searchQuery, setSearchQuery] = useState();
@@ -102,7 +103,7 @@ function AssignEquipmentDetailsTab({
     const fetchStorageLocations = () => {
         getStorage(searchValue, 5)
             .then((storageLocationResult = []) => {
-                const {data = [], pages = 0} = storageLocationResult;
+                const { data = [], pages = 0 } = storageLocationResult;
                 const results = data.map(item => ({
                     name: item.name,
                     ...item
@@ -119,7 +120,7 @@ function AssignEquipmentDetailsTab({
     const fetchTheatres = () => {
         getTheatres(searchValue, 5)
             .then((theatreResult = []) => {
-                const {data = [], pages = 0} = theatreResult;
+                const { data = [], pages = 0 } = theatreResult;
                 const results = data.map(item => ({
                     name: item.name,
                     ...item
@@ -136,7 +137,7 @@ function AssignEquipmentDetailsTab({
     const fetchPhysicians = () => {
         getPhysicians(searchValue, 5)
             .then((physicianResult = []) => {
-                const {data = [], pages = 0} = physicianResult;
+                const { data = [], pages = 0 } = physicianResult;
                 const results = data.map(item => ({
                     name: `Dr. ${item.surname}`,
                     ...item
@@ -154,6 +155,24 @@ function AssignEquipmentDetailsTab({
         onFieldChange('date')(date);
     };
 
+    const validateFields = () => {
+        let errors = {};
+        let isValid = true;
+        const requiredFields = data.assignment === "Location" ?  ['assignment', 'assigned'] :  ['assignment', 'assigned', 'date', 'duration']
+        for (const requiredField of requiredFields) {
+            if (!data[requiredField]) {
+                errors = {
+                    ...errors,
+                    [requiredField]: "Value is Required"
+                }
+                isValid = false;
+            }
+        }
+
+        setErrors(errors)
+        if (isValid) onDonePress();
+    }
+
     return (
         <>
             <View style={{
@@ -165,7 +184,7 @@ function AssignEquipmentDetailsTab({
                 justifyContent: 'flex-start'
             }}>
 
-                <Row style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
+                <Row style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
                     <InputWrapper>
                         <InputField2
                             value=""
@@ -175,46 +194,37 @@ function AssignEquipmentDetailsTab({
                             enabled={false}
                         />
                     </InputWrapper>
-
-                    <InputWrapper>
-                        {/*<MultipleSelectionsField*/}
-                        {/*    disabled={true}*/}
-                        {/*    labelWidth={80}*/}
-                        {/*    onOptionsSelected={() => {*/}
-                        {/*    }}*/}
-                        {/*    label="Category"*/}
-                        {/*    value={!equipmentDetails?.categories ? '--' : equipmentDetails.categories}*/}
-
-                        {/*/>*/}
-                    </InputWrapper>
-                </Row>
-                <Row zIndex={2}>
                     <InputWrapper>
                         <OptionsField
                             key={data.assignment}
                             labelWidth={80}
                             label="Assignment"
                             text={data.assignment}
-                            oneOptionsSelected={onFieldChange('assignment')}
+                            oneOptionsSelected={
+                                    onFieldChange('assignment')
+                                }
                             menuOption={(
                                 <MenuOptions>
-                                    <MenuOption value="Location" text="Location"/>
-                                    <MenuOption value="Theatre" text="Theatre"/>
-                                    <MenuOption value="Person" text="Person"/>
+                                    <MenuOption value="Location" text="Location" />
+                                    <MenuOption value="Theatre" text="Theatre" />
+                                    <MenuOption value="Person" text="Person" />
                                 </MenuOptions>
                             )}
+                            hasError={errors['assignment']}
+                            errorMessage={errors['assignment']}
 
                         />
                     </InputWrapper>
-
+                </Row>
+                <Row>
                     <InputWrapper>
                         <SearchableOptionsField
                             label="Assigned"
                             labelWidth={80}
                             value={data.assignment === 'Location' ? locations : data.assignment === 'Theatre' ? theatres : physicians}
                             text={searchValue}
-                            hasError={errors.assignment}
-                            errorMessage={'Assignment Needed'}
+                            hasError={errors['assigned']}
+                            errorMessage={errors['assigned']}
                             oneOptionsSelected={value => {
                                 const location = {
                                     _id: value._id,
@@ -241,35 +251,34 @@ function AssignEquipmentDetailsTab({
                         />
                     </InputWrapper>
 
-                </Row>
-                <Row>
                     {
                         data.assignment !== 'Location' && <InputWrapper>
                             <DateInputField
                                 label="From"
                                 labelWidth={80}
                                 value={data.date}
-                                errorMessage={'Date and Time Required'}
-                                hasError={errors.data}
+                                errorMessage={errors['date']}
+                                hasError={errors['date']}
                                 onClear={() => onFieldChange('date')('')}
-                                mode="date"
-                                format="YYYY-MM-DD"
+                                mode="datetime"
                                 keyboardType="number-pad"
                                 placeholder="YYYY/MM/DD"
                                 minDate={moment().add(1, 'days').toDate()}
                                 maxDate={null}
                                 onDateChange={onDateChange}
+                                borderColor={errors['date'] ? '--color-red-700' : '--color-gray-300'}
                             />
                         </InputWrapper>
                     }
-
+                </Row>
+                <Row>
                     {
                         data.assignment !== 'Location' && <InputWrapper>
                             <InputUnitField
                                 label="Duration"
-                                labelWidth={70}
-                                errorMessage={'Duration Required'}
-                                hasError={errors.duration}
+                                labelWidth={80}
+                                hasError={errors['duration']}
+                                errorMessage={errors['duration']}
                                 onChangeText={value => {
                                     if (/^\d+$/g.test(value) || !value) {
                                         onFieldChange('duration')(value);
@@ -281,12 +290,11 @@ function AssignEquipmentDetailsTab({
                             />
                         </InputWrapper>
                     }
-
                 </Row>
 
             </View>
-            <Divider/>
-            <DoneButtonWrapper onPress={onDonePress}>
+            <Divider />
+            <DoneButtonWrapper onPress={validateFields}>
                 <DoneButtonText>DONE</DoneButtonText>
             </DoneButtonWrapper>
         </>

@@ -1,6 +1,6 @@
-import React, {useState} from 'react';
-import {useTheme} from 'emotion-theming';
-import styled, {css} from '@emotion/native';
+import React, { useState } from 'react';
+import { useTheme } from 'emotion-theming';
+import styled, { css } from '@emotion/native';
 import RoleTypeGroupComponent from './RoleTypeGroupComponent';
 import DataItem from '../common/List/DataItem';
 import ContentDataItem from '../common/List/ContentDataItem';
@@ -15,15 +15,19 @@ const ActionRow = styled.View`
   justify-content: space-between;
   align-items: center;
   
-  height: ${({theme}) => theme.space['--space-20']};
-  margin-bottom: ${({theme}) => theme.space['--space-20']};
+  height: ${({ theme }) => theme.space['--space-20']};
+  margin-bottom: ${({ theme }) => theme.space['--space-20']};
 `;
 
-const ActionTitle = styled.Text(({theme, color = '--color-gray-700', font = '--text-base-regular'}) => ({
+const ActionTitle = styled.Text(({ theme, color = '--color-gray-700', font = '--text-base-regular' }) => ({
     ...theme.font[font],
     color: theme.colors[color]
 }));
-
+// seems to directly affect permissions
+// so the name and what a role can do
+// eg:
+// case files: being able to create a new case file
+// * guess you could add more permissions here. not confirmed
 const ROLE_GROUPS = [
     {
         group: 'cases',
@@ -51,6 +55,29 @@ const ROLE_GROUPS = [
             }
         ]
     },
+    {
+        group: 'patients',
+        name: 'Patients',
+        actions: [
+            {
+                key: 'create',
+                title: 'New patient'
+            },
+            {
+                key: 'read',
+                title: 'View patient'
+            },
+            {
+                key: 'update',
+                title: 'Edit patient'
+            },
+            {
+                key: 'delete',
+                title: 'Remove patient'
+            }
+        ]
+    }
+    ,
     {
         group: 'theatres',
         name: 'Theatres',
@@ -249,6 +276,33 @@ const ROLE_GROUPS = [
             }
         ]
     },
+    {
+        group: 'alerts',
+        name: 'Alerts',
+        actions: [
+
+            {
+                key: 'read',
+                title: 'View Alerts'
+            },
+            {
+                key: 'update',
+                title: 'Update Alerts'
+            }
+        ]
+    },
+    {
+        group: 'settings',
+        name: 'Settings',
+        actions: [
+
+            {
+                key: 'read',
+                title: 'View Settings'
+            },
+
+        ]
+    },
 ];
 
 function RolePermissionsList({
@@ -261,13 +315,13 @@ function RolePermissionsList({
 
     const roleHeader = name => (
         <>
-            <DataItem color="--color-blue-600" fontStyle="--text-sm-medium" flex={1} text={name}/>
+            <DataItem color="--color-blue-600" fontStyle="--text-sm-medium" flex={1} text={name} />
             <ContentDataItem
                 align="flex-end"
                 flex={0.5}
                 content={(
                     <IconButton
-                        Icon={isCollapsed.includes(name.toLowerCase()) ? <ActionIcon/> : <CollapsedIcon/>}
+                        Icon={isCollapsed.includes(name.toLowerCase()) ? <ActionIcon /> : <CollapsedIcon />}
                         disabled={true}
                     />
                 )}
@@ -293,7 +347,7 @@ function RolePermissionsList({
         <>
             {
                 ROLE_GROUPS.map((roleGroup, index) => {
-                    const {group, name, actions} = roleGroup;
+                    const { group, name, actions } = roleGroup;
 
                     return <>
                         <RoleTypeGroupComponent
@@ -307,7 +361,7 @@ function RolePermissionsList({
                                     <ActionTitle theme={theme}>{action.title}</ActionTitle>
                                     <CustomSwitch
                                         isChecked={checkIfPermissionEnabled(group, action.key)}
-                                        onChange={checked => onUpdatePermission({group, key: action.key, value: checked})}
+                                        onChange={checked => onUpdatePermission({ group, key: action.key, value: checked })}
                                     />
                                 </ActionRow>
                             ))}

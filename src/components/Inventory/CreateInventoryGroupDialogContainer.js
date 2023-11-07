@@ -15,7 +15,7 @@ import CreatePreviousDoneFooter from '../common/DetailsPage/CreatePreviousDoneFo
 import { addCategory } from '../../api/network'
 import { connect } from "react-redux";
 import ArrowRightIcon from "../../../assets/svg/arrowRightIcon";
-import { createInventoryGroup, getInventories, getCategories, getSuppliers, } from "../../api/network";
+import { createInventoryGroup, getCategories} from "../../api/network";
 import { addInventory } from "../../redux/actions/InventorActions";
 import { MenuOptions, MenuOption } from 'react-native-popup-menu';
 import TextArea from '../common/Input Fields/TextArea';
@@ -23,10 +23,10 @@ import Row from '../common/Row';
 import FieldContainer from '../common/FieldContainerComponent';
 import ConfirmationComponent from '../ConfirmationComponent';
 import _ from "lodash";
-
 import styled, { css } from '@emotion/native';
 import { useTheme } from 'emotion-theming';
 import OverlayDialogContent from '../common/Dialog/OverlayContent';
+
 
 /**
  * Component to handle the create storage process.
@@ -86,6 +86,7 @@ function CreateInventoryGroupDialogContainer({ navigation, route }) {
         category: '',
         name: '',
         unit: '',
+        levels: {low:''},
         unitOfMeasurement: '',
         markup: ''
     });
@@ -98,36 +99,17 @@ function CreateInventoryGroupDialogContainer({ navigation, route }) {
     ])
 
     // Category Search
+    const [categories, setCategories] = useState([])
     const [categorySearchValue, setCategorySearchValue] = useState();
     const [categorySearchResults, setCategorySearchResult] = useState([]);
-    const [categorySearchQuery, setCategorySearchQuery] = useState({});
-
+    
 
     // ######### LIFECYCLE FUNCTIONS
 
     // Handle category search
     useEffect(() => {
-
-        if (!categorySearchValue) {
-            // empty search values and cancel any out going request.
-            fetchCategory()
-            if (categorySearchQuery.cancel) categorySearchQuery.cancel();
-            return;
-        }
-
-        // wait 300ms before search. cancel any prev request before executing current.
-
-        const search = _.debounce(fetchCategory, 300);
-
-        setCategorySearchQuery(prevSearch => {
-            if (prevSearch && prevSearch.cancel) {
-                prevSearch.cancel();
-            }
-            return search;
-        });
-
-        search()
-    }, [categorySearchValue]);
+        fetchCategories();
+    }, [categorySearchValue, categories])
 
 
     const fetchCategory = () => {
@@ -140,6 +122,68 @@ function CreateInventoryGroupDialogContainer({ navigation, route }) {
                 setCategorySearchResult([])
             })
 
+    }
+    const fetchCategories = () => {
+        getCategories("inventory", 1000, categorySearchValue)
+            .then(data => {
+                setCategorySearchResult(data.data.map(item => { return item.name }));
+                categories.length == 0 && setCategories(data.data);
+            })
+            .catch(error => {
+                console.log('Unable to retrieve iventory category items: ', error);
+            });
+    }
+
+    const createCategory = (name) => {
+        if(!name) return;
+        addCategory({ name: name, type: "inventory" })
+            .then(_ => {
+                setCategories([]);
+                setCategorySearchValue('');
+                fetchCategories();
+                modal.openModal('ConfirmationModal', {
+                    content: <ConfirmationComponent
+                        isEditUpdate={false}
+                        isError={false}
+                        onCancel={() => {
+                            modal.closeModals('ConfirmationModal');
+                        }}
+                        onAction={() => {
+                            modal.closeModals('ConfirmationModal');
+                        }}
+                    />,
+                    onClose: () => {
+                        modal.closeModals('ConfirmationModal');
+                    },
+                });
+            })
+            .catch(error => {
+                modal.openModal('ConfirmationModal', {
+                    content: <ConfirmationComponent
+                        isEditUpdate={false}
+                        isError={true}
+                        onCancel={() => {
+                            modal.closeModals('ConfirmationModal');
+                        }}
+                        onAction={() => {
+                            modal.closeModals('ConfirmationModal');
+                        }}
+                    />,
+                    onClose: () => {
+                        modal.closeModals('ConfirmationModal');
+                    },
+                });
+                console.log(error);
+            })
+    }
+
+    const handleCategorySelected = (checkCategories) => {
+        const categoryIds = [];
+        checkCategories.map((name) => {
+            const value = categories.find(item => item.name === name);
+            value && categoryIds.push(value._id);
+        })
+        onFieldChange('categories')(categoryIds)
     }
 
     // ######### EVENT HANDLERS
@@ -184,10 +228,19 @@ function CreateInventoryGroupDialogContainer({ navigation, route }) {
 
     const onFieldChange = (fieldName) => (value) => {
         const updatedFields = { ...fields }
-        setFields({
-            ...updatedFields,
-            [fieldName]: value
-        })
+        
+        if(fieldName == "levels") {
+            setFields({
+                ...updatedFields,
+                [fieldName]: {low:value}
+            })
+        }
+        else{
+            setFields({
+                ...updatedFields,
+                [fieldName]: value
+            })
+        }
 
 
         const updatedErrors = { ...errorFields }
@@ -325,28 +378,37 @@ function CreateInventoryGroupDialogContainer({ navigation, route }) {
                 <FieldContainer>
                     <InputField2
                         label={"Item Name"}
-                        onChangeText={onFieldChange('name')}
+                        onChangeText={(value) => {onFieldChange('name')(value)}}
                         value={fields['name']}
                         onClear={() => onFieldChange('name')('')}
                         hasError={errorFields['name']}
                         errorMessage="Name must be filled."
                     />
                 </FieldContainer>
+               
             </Row>
-
             <Row>
                 <FieldContainer>
-                    {/*<MultipleSelectionsField*/}
-                    {/*    label={"Category"}*/}
-                    {/*    onOptionsSelected={(value) => onFieldChange('category')(value)}*/}
-                    {/*    options={categorySearchResults}*/}
-                    {/*    createNew={createCateory}*/}
-                    {/*    searchText={categorySearchValue}*/}
-                    {/*    onSearchChangeText={(value) => setCategorySearchValue(value)}*/}
-                    {/*    onClear={() => { setCategorySearchValue('') }}*/}
-                    {/*    handlePopovers={(value) => handlePopovers(value)('category')}*/}
-                    {/*    isPopoverOpen={categorySearchQuery}*/}
-                    {/*/>*/}
+                <MultipleSelectionsField
+                        label={"Category"}
+                        onOptionsSelected={(value) => handleCategorySelected(value)}
+                        options={categorySearchResults}
+                        createNew={() => createCategory(categorySearchValue)}
+                        searchText={categorySearchValue}
+                        onSearchChangeText={(value) => setCategorySearchValue(value)}
+                        onClear={() => { setCategorySearchValue('') }}
+                        handlePopovers={() => { }}
+                        isPopoverOpen={true}
+                    />
+                </FieldContainer>
+                <FieldContainer>
+                    <InputField2
+                        label={"Low Stock"}
+                        onChangeText={(value) => {onFieldChange('levels')(value)}}
+                        value={fields.levels.low}
+                        onClear={() => onFieldChange('levels')('')}
+    
+                    />
                 </FieldContainer>
             </Row>
 

@@ -28,9 +28,10 @@ const TextInputContainer = styled.View`
     height : 100%;
     width : 100%;
     border-width: 1px;
-    border-color: ${ ({theme, hasError}) =>  hasError ? theme.colors['--color-red-600'] : theme.colors['--color-gray-300']};
+    border-color: ${({theme, hasError}) => hasError ? theme.colors['--color-red-700'] : theme.colors['--color-gray-300']};
     background-color : ${ ({theme, enabled}) => !enabled ? theme.colors['--color-gray-100'] : theme.colors['--default-shade-white']};
     border-radius: 4px;
+    box-shadow : ${({isFocussed, theme}) => isFocussed ? theme.shadow['--shadow-lg'] : null};
 `;
 
 const InputContainer = styled.View`
@@ -84,7 +85,7 @@ function InputUnitField({label, labelWidth, labelFont, labelColor, onChangeText,
             }
 
             <TextInputWrapper>
-                <TextInputContainer theme = {theme} enabled={enabled}>
+                <TextInputContainer theme = {theme} hasError={hasError} enabled={enabled}>
 
                     <InputContainer>
                         <Input

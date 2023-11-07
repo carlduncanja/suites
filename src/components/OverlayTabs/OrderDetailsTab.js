@@ -3,7 +3,7 @@ import { View, Text, StyleSheet } from "react-native";
 import Record from "../common/Information Record/Record";
 import Row from "../common/Row";
 import ResponsiveRecord from "../common/Information Record/ResponsiveRecord";
-import { formatDate } from "../../utils/formatter";
+import { formatDate, formatToCurrency, handleNumberValidation } from "../../utils/formatter";
 import { formatAmount } from "../../helpers/caseFilesHelpers";
 import { transformToSentence } from "../../hooks/useTextEditHook";
 import DateInputField from '../common/Input Fields/DateInputField';
@@ -53,10 +53,13 @@ const OrderDetailsTab = ({
         configStatus = "",
         approvedBy = {},
         receivedBy = {},
-        requestedBy = {}
+        requestedBy = {},
+        supplier_tax = 0,
+        shipping_cost = 0,
+        payment_method = "",
+        notes = "", 
+        
     } = order
-
-    // console.log("Order: ",deliveryDate)
 
     const { description = "", representatives = [] } = supplier;
     const { name = "" } = storageLocation || {};
@@ -65,6 +68,10 @@ const OrderDetailsTab = ({
         description,
         deliveryDate,
         storageLocation,
+        notes,
+        supplier_tax,
+        shipping_cost,
+        payment_method
     });
     const [isUpdated, setUpdated] = useState(false)
     const [locationSearchText, setLocationSearchText] = useState('');
@@ -77,6 +84,10 @@ const OrderDetailsTab = ({
             description,
             deliveryDate,
             storageLocation,
+            notes,
+            supplier_tax,
+            shipping_cost,
+            payment_method
         }
         return () => {
             baseStateRef.current = {}
@@ -88,6 +99,10 @@ const OrderDetailsTab = ({
             description,
             deliveryDate,
             storageLocation,
+            notes,
+            supplier_tax,
+            shipping_cost,
+            payment_method
         })
     }, [order])
 
@@ -130,11 +145,24 @@ const OrderDetailsTab = ({
         setUpdated(false);
     };
 
+    function formatNumberField(value) {
+        return value.toString().replace(/[^\d.]/g,'');
+    }
+
     const onFieldChange = (fieldName) => (value) => {
+       
+
+        let finalValue = value;
+        if (fieldName === 'supplier_tax' || fieldName === 'shipping_cost') {
+            const formattedValue = formatNumberField(value);
+            finalValue = formattedValue;
+        }
+
         setFields({
             ...fields,
-            [fieldName]: value
+            [fieldName]: finalValue
         });
+        
         setUpdated(true);
     };
 
@@ -185,12 +213,16 @@ const OrderDetailsTab = ({
         let updatedFields = {
             ...fields,
             deliveryDate: fields['deliveryDate'].toString(),
-            description: fields['description'],
-            storageLocation: fields.storageLocation._id,
+            description: fields['description'] ? fields['description'] : '',
+            storageLocation: fields.storageLocation && fields.storageLocation._id,
+            notes: fields['notes'] ? fields['notes'] : '',
+            supplier_tax: fields['supplier_tax'] ? fields['supplier_tax'] : 0,
+            shipping_cost: fields['shipping_cost'] ? fields['shipping_cost'] : 0,
+            payment_method: fields['payment_method'] ? fields['payment_method'] : ''
         }
+        
         updatePurchaseOrderDetails(_id, updatedFields)
             .then(_ => {
-                console.log("Success")
                 modal.openModal('ConfirmationModal',
                     {
                         content: <ConfirmationComponent
@@ -209,11 +241,10 @@ const OrderDetailsTab = ({
                     })
             })
             .catch(error => {
-                console.log("Update PO details error: ", error);
                 modal.openModal('ConfirmationModal',
                     {
                         content: <ConfirmationComponent
-                            isError={isError}
+                            isError={true}
                             isEditUpdate={false}
                             onAction={() => {
                                 modal.closeModals('ConfirmationModal')
@@ -237,7 +268,6 @@ const OrderDetailsTab = ({
                 onUpdate()
             })
     }
-
     return (
         <>
             <>
@@ -363,6 +393,67 @@ const OrderDetailsTab = ({
                         valueColor="#38A169"
                     />
 
+                </Row>
+
+                <LineDividerContainer theme={theme}>
+                    <LineDivider />
+                </LineDividerContainer>
+
+                <Row>
+                    <Record
+                        recordTitle="Payment Method"
+                        recordValue={fields['payment_method']}
+                        recordPlaceholder={'Edit to add key notes for this order'}
+                        editMode={isEditMode}
+                        editable={true}
+                        onClearValue={() => {
+                            onFieldChange('payment_method')('')
+                        }}
+                        onRecordUpdate={onFieldChange('payment_method')}
+                    />
+
+                    <Record
+                        recordTitle="Suppliers Tax"
+                        recordValue={isEditMode ? `${fields['supplier_tax']}` : `${fields['supplier_tax']}%`}
+                        recordPlaceholder={'Edit to add key notes for this order'}
+                        editMode={isEditMode}
+                        editable={true}
+                        onClearValue={() => {
+                            onFieldChange('supplier_tax')('')
+                        }}
+                        onRecordUpdate={onFieldChange('supplier_tax')}
+                    />
+
+                    <Record
+                        recordTitle="Shipping Cost"
+                        recordValue={isEditMode ? `${fields['shipping_cost']}` : formatToCurrency.format(fields['shipping_cost'])}
+                        recordPlaceholder={'--'}
+                        editMode={isEditMode}
+                        editable={true}
+                        onClearValue={() => {
+                            onFieldChange('shipping_cost')('')
+                        }}
+                        onRecordUpdate={onFieldChange('shipping_cost')}
+                    />
+                </Row>
+
+                <LineDividerContainer theme={theme}>
+                    <LineDivider />
+                </LineDividerContainer>
+
+                <Row>
+                    <Record
+                        recordTitle="Notes"
+                        recordValue={fields['notes']}
+                        editMode={isEditMode}
+                        recordPlaceholder={'Edit to add key notes for this order'}
+                        editable={true}
+                        useTextArea={true}
+                        onRecordUpdate={onFieldChange('notes')}
+                        onClearValue={() => {
+                            onFieldChange('notes')('')
+                        }}
+                    />
                 </Row>
 
             </>

@@ -11,7 +11,7 @@ import BottomSheetContainer from '../common/BottomSheetContainer';
 import {getAppointments, getPhysicianById, updatePhysician} from '../../api/network';
 import PaginatedSchedule from '../PaginatedSchedule';
 import {colors} from '../../styles';
-
+import Footer from "../common/Page/Footer";
 import {updatePhysicianRecord} from '../../redux/actions/physiciansActions';
 import {PageContext} from '../../contexts/PageContext';
 import DetailsPage from '../common/DetailsPage/DetailsPage';
@@ -19,8 +19,8 @@ import TabsContainer from '../common/Tabs/TabsContainerComponent';
 import ConfirmationComponent from '../ConfirmationComponent';
 
 function PhysicianPage({route, navigation}) {
-    const {physician, isOpenEditable, reloadPhysicians} = route.params;
-
+    const {physician, isOpenEditable, reloadPhysicians, updatePhysicians} = route.params;
+    console.log('jskjdsk', updatePhysicians)
     const currentTabs = ['Details', 'Case Files', 'Custom Procedures', 'Schedule'];
     const modal = useModal();
     const {
@@ -34,7 +34,8 @@ function PhysicianPage({route, navigation}) {
         emails,
         address,
         phones,
-        emergencyContact
+        emergencyContact,
+        field
     } = physician;
     // ##### States
 
@@ -57,13 +58,14 @@ function PhysicianPage({route, navigation}) {
         emails,
         address,
         phones,
-        emergencyContact
+        emergencyContact,
+        field
     });
 
     // ##### Lifecycle Methods
     useEffect(() => {
         fetchPhysician(_id);
-        console.log('and mek yuh touch yuh tonsil');
+        //console.log('and mek yuh touch yuh tonsil');
     }, []);
 
     useEffect(() => {
@@ -146,11 +148,13 @@ function PhysicianPage({route, navigation}) {
 
     // ##### Helper functions
 
+    // handles updating doctor info.
+    // so you'd click the edit button at the top right
+    // after clicking on a specific doctor
     const updatePhysicianCall = updatedFields => {
         updatePhysician(_id, updatedFields)
             .then(data => {
                 fetchPhysician(_id);
-                console.log('Physician data from db: ', data);
 
                 if (reloadPhysicians) reloadPhysicians();
 
@@ -165,7 +169,7 @@ function PhysicianPage({route, navigation}) {
                             onAction={() => {
                                 modal.closeAllModals();
                             }}
-                            message="Changes were successful."//general message you can send to be displayed
+                            message="Changes were successful"//general message you can send to be displayed
                             action="Yes"
                         />
                     ),
@@ -176,9 +180,28 @@ function PhysicianPage({route, navigation}) {
             })
             .catch(error => {
                 // todo handle error
+                errrorHandler()
                 console.log('failed to update physician', error);
             });
-    };
+    }; 
+
+    const  errrorHandler =()=>{
+        modal.openModal('ConfirmationModal', {
+            content: <ConfirmationComponent
+                isEditUpdate={false}
+                isError={true}
+                onCancel={() => {
+                    modal.closeModals('ConfirmationModal');
+                }}
+                onAction={() => {
+                    modal.closeModals('ConfirmationModal');
+                }}
+            />,
+            onClose: () => {
+                modal.closeModals('ConfirmationModal');
+            },
+        });
+    }
 
     const removeIds = array => {
         const updatedArray = array.map(obj => {
@@ -190,6 +213,10 @@ function PhysicianPage({route, navigation}) {
         return updatedArray;
     };
 
+    // once you click on a doctor's name
+    // you get several tabs to select from
+    // i suppose this handles what gets displayed
+    // when you click a specific tab
     const getTabContent = selectedTab => {
         const {cases = [], procedures = []} = selectedPhysician;
         switch (selectedTab) {
@@ -201,11 +228,11 @@ function PhysicianPage({route, navigation}) {
                     />
                 ) : <PhysiciansDetailsTab physician={selectedPhysician}/>;
             case 'Case Files':
-                return <CaseFilesTab cases={cases}/>;
+                return <CaseFilesTab setSelectedPhysician={setSelectedPhysician} updatePhysician = {updatePhysicians} selectedPhysician={selectedPhysician} cases={cases}/>;
             case 'Custom Procedures':
-                return <CustomProceduresTab procedures={procedures}/>;
+                return <CustomProceduresTab updatePhysician = {updatePhysicians} selectedPhysician={selectedPhysician} procedures={procedures} id = {_id} fetchPhysician = {fetchPhysician} setSelectedPhysician={setSelectedPhysician} />;
             case 'Schedule':
-                return <PaginatedSchedule ID={physician._id} isPhysician={true}/>;
+                return <PaginatedSchedule updatePhysician = {updatePhysicians} ID={physician._id} isPhysician={true}/>;
             default:
                 return <View/>;
         }
@@ -225,7 +252,6 @@ function PhysicianPage({route, navigation}) {
         getPhysicianById(id)
             .then(data => {
                 setSelectedPhysician(data);
-
                 const {firstName, surname} = data;
                 setName(`Dr. ${firstName} ${surname}`);
                 // setPhysician(data)
@@ -239,6 +265,7 @@ function PhysicianPage({route, navigation}) {
             });
     };
 
+    // happens when switching tabs
     const setPageLoading = value => {
         setPageState({
             ...pageState,
@@ -247,6 +274,9 @@ function PhysicianPage({route, navigation}) {
         });
     };
 
+    // takes in doctor id and their info
+    // allows you to edit it and save the new info 
+    // in a state
     const updatePhysicianFn = (id, data) => {
         updatePhysician(id, data)
             .then((data, id) => {
@@ -278,9 +308,11 @@ function PhysicianPage({route, navigation}) {
                 <DetailsPage
                     title={name}
                     subTitle=""
+                    isEditable={updatePhysicians}
                     headerChildren={[name]}
                     onBackPress={backTapped}
                     isArchive={getIsEditable()}
+                   
                     pageTabs={(
                         <TabsContainer
                             tabs={currentTabs}
@@ -292,7 +324,9 @@ function PhysicianPage({route, navigation}) {
 
                     {getTabContent(currentTab)}
 
-                </DetailsPage>
+                </DetailsPage> 
+                
+
             </PageContext.Provider>
         </>
     );

@@ -48,7 +48,7 @@ const CloseButtonWrapper = styled.View`
 //     width:540px;
     `;
 const CloseButtonContainer = styled.TouchableOpacity`
-    background-color:${({theme}) => theme.colors['--color-gray-300']};
+    background-color:${({theme}) => theme.colors['--color-blue-500']};
     width:68px;
     height:26px;
     padding:4px 14px;
@@ -56,7 +56,7 @@ const CloseButtonContainer = styled.TouchableOpacity`
     justify-content:center;
     `;
 const CloseText = styled.Text`
-    color:${({theme}) => theme.colors['--color-gray-600']};
+    color: white;
     font:${({theme}) => theme.font['--text-sm-bold']};
     `;
 
@@ -92,12 +92,18 @@ const AssignEquipmentPage = ({navigation, route}) => {
     const [currentTab, setCurrentTab] = useState(currentTabs[0]);
     const [isEditMode, setEditMode] = useState(false);
 
+    const [errors, setErrors] = useState({});
+
     const onFieldChange = fieldName => value => {
         const updateFields = {...equipmentData};
         setEquipmentData({
             ...updateFields,
             [fieldName]: value
         });
+
+        const updatedErrors = {...errors}
+        delete updatedErrors[fieldName]
+        setErrors(updatedErrors)
     };
 
     const onLocationUpdate = value => {
@@ -107,6 +113,7 @@ const AssignEquipmentPage = ({navigation, route}) => {
         updatedLocations[selectedIndex] = value;
         console.log('Updated Locations:', updatedLocations);
         setLocations(updatedLocations);
+        onFieldChange('assigned')(value);
     };
 
     const onTheatreUpdate = value => {
@@ -116,6 +123,7 @@ const AssignEquipmentPage = ({navigation, route}) => {
         updatedTheatres[selectedIndex] = value;
         console.log('Updated Theatres:', updatedTheatres);
         setTheatres(updatedTheatres);
+        onFieldChange('assigned')(value);
     };
 
     const onPhysicianUpdate = value => {
@@ -125,7 +133,9 @@ const AssignEquipmentPage = ({navigation, route}) => {
         console.log('Updated Physicians:', updatePhysicians);
         updatePhysicians[selectedIndex] = value;
         setPhysicians(updatePhysicians);
+        onFieldChange('assigned')(value)
     };
+    
 
     const onTabPress = selectedTab => {
         if (!isEditMode) setCurrentTab(selectedTab);
@@ -136,10 +146,6 @@ const AssignEquipmentPage = ({navigation, route}) => {
     };
 
     const onDonePress = () => {
-        // console.log('the equipment type', equipment.type);
-        // console.log('the equipment child', equipment._id);
-        // console.log('the equipment data', equipmentData);
-
         const evalAssignmentValues = assignment => {
             if (assignment === 'Location' && locations) {
                 return {type: 'location', referenceId: locations[0]._id};
@@ -153,10 +159,7 @@ const AssignEquipmentPage = ({navigation, route}) => {
         };
 
         const {type, referenceId} = evalAssignmentValues(equipmentData.assignment);
-
-        // console.log('the type', type);
-        // console.log('the referenceId', referenceId);
-
+        
         const fieldsToPass = {
             type,
             referenceId,
@@ -209,8 +212,7 @@ const AssignEquipmentPage = ({navigation, route}) => {
                             isEditUpdate={false}//use this specification to either get the confirm an edit or update
                             onCancel={onCancel}
                             onAction={createdSuccessfully}
-                            message="Successfully Assigned Equipment."//general message you can send to be displayed
-                            action="Archive"
+                            message="There was an issue performing this action"//general message you can send to be displayed
                         />
                     ),
                     onClose: () => {
@@ -236,6 +238,8 @@ const AssignEquipmentPage = ({navigation, route}) => {
                     onLocationUpdate={onLocationUpdate}
                     onTheatreUpdate={onTheatreUpdate}
                     onPhysicianUpdate={onPhysicianUpdate}
+                    errors={errors}
+                    setErrors={setErrors}
                 />;
             default:
                 return <View/>;

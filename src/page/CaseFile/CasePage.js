@@ -1,15 +1,15 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
-import {ActivityIndicator, Alert, StyleSheet, Text, View} from 'react-native';
+import { ActivityIndicator, Alert, StyleSheet, Text, View } from 'react-native';
 import * as FileSystem from 'expo-file-system';
 import * as Sharing from 'expo-sharing';
-import {useModal} from 'react-native-modalfy';
-import {connect} from 'react-redux';
-import {bindActionCreators} from 'redux';
+import { useModal } from 'react-native-modalfy';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import styled from '@emotion/native';
-import {useTheme} from 'emotion-theming';
+import { useTheme } from 'emotion-theming';
 import jwtDecode from 'jwt-decode';
-import {colors} from '../../styles';
+import { colors } from '../../styles';
 import SlideOverlay from '../../components/common/SlideOverlay/SlideOverlay';
 import CaseFileOverlayMenu from '../../components/CaseFiles/CaseFileOverlayMenu';
 import FloatingActionButton from '../../components/common/FloatingAction/FloatingActionButton';
@@ -42,7 +42,7 @@ import ActionItem from '../../components/common/ActionItem';
 import AddIcon from '../../../assets/svg/addIcon';
 import DeleteIcon from '../../../assets/svg/deleteIcon';
 import RemoveIcon from '../../../assets/svg/remove2';
-import {LONG_PRESS_TIMER, QUOTATION_STATUS, ROLES} from '../../const';
+import { LONG_PRESS_TIMER, QUOTATION_STATUS, ROLES } from '../../const';
 import EditIcon from '../../../assets/svg/editIcon';
 import DownloadIcon from '../../../assets/svg/DownloadIcon';
 import ActionContainer from '../../components/common/FloatingAction/ActionContainer';
@@ -53,14 +53,14 @@ import {
     Patient,
     Procedures
 } from '../../components/CaseFiles/navigation/screens';
-import {addNotification} from '../../redux/actions/NotificationActions';
+import { addNotification } from '../../redux/actions/NotificationActions';
 import CaseFilesBottomSheetContainer from '../../components/CaseFiles/CaseFilesBottomSheetContainer';
 import CreateProcedureDialogContainer from '../../components/Procedures/CreateProcedureDialogContainer';
-import {setCaseEdit} from '../../redux/actions/casePageActions';
+import { setCaseEdit } from '../../redux/actions/casePageActions';
 import DetailsPage from '../../components/common/DetailsPage/DetailsPage';
 import PageHeader from '../../components/common/DetailsPage/PageHeader';
 import TabsContainer from '../../components/common/Tabs/TabsContainerComponent';
-import {PageContext} from '../../contexts/PageContext';
+import { PageContext } from '../../contexts/PageContext';
 import AddNewItem from '../../components/CaseFiles/AddNewItem/AddNewItem';
 import ReportPreview from '../../components/CaseFiles/Reports/ReportPreview';
 import GenerateIcon from '../../../assets/svg/generateIcon';
@@ -69,56 +69,69 @@ import PreviewIcon from '../../../assets/svg/previewIcon';
 import ConfirmationComponent from '../../components/ConfirmationComponent';
 import LongPressWithFeedback from '../../components/common/LongPressWithFeedback';
 import WasteIcon from '../../../assets/svg/wasteIcon';
-import {currencyFormatter, formatDate} from '../../utils/formatter';
+import { currencyFormatter, formatDate } from '../../utils/formatter';
 import AcceptIcon from '../../../assets/svg/acceptIcon';
-import {CHARGE_SHEET_STATUSES} from '../../components/CaseFiles/navigation/screens/ChargeSheet';
+import { CHARGE_SHEET_STATUSES } from '../../components/CaseFiles/navigation/screens/ChargeSheet';
 import ApplyDiscountItem from './ApplyDiscountItem';
 import PayBalanceItem from './PayBalanceItem';
+import moment from 'moment';
 
 const overlayMenu = [
     {
         name: 'Patient',
-        overlayTabs: ['Details', 'Insurance', 'Diagnosis', 'Patient Risk', 'Covid Test'],
-        selectedIcon: <PatientSelectedIcon/>,
-        disabledIcon: <PatientDisabledIcon/>
+        overlayTabs: ['Details', 'Insurance', 'Diagnosis', 'Patient Comments', 'Covid Test'],
+        selectedIcon: <PatientSelectedIcon />,
+        disabledIcon: <PatientDisabledIcon />
     },
     {
         name: 'Medical Staff',
         overlayTabs: ['Details'],
-        selectedIcon: <StaffSelectedIcon/>,
-        disabledIcon: <StaffDisabledIcon/>
+        selectedIcon: <StaffSelectedIcon />,
+        disabledIcon: <StaffDisabledIcon />
     },
     {
         name: 'Medical History',
         authenticationRequired: 'cases.read_medical_history',
-        overlayTabs: ['Details', 'Family History', 'Lifestyle', 'Other'],
-        selectedIcon: <MedicalSelectedIcon/>,
-        disabledIcon: <MedicalDisabledIcon/>
+        overlayTabs: ['Details', 'Family History', 'Lifestyle'],
+        selectedIcon: <MedicalSelectedIcon />,
+        disabledIcon: <MedicalDisabledIcon />
     },
     {
         name: 'Procedures',
         overlayTabs: ['Details'],
-        selectedIcon: <ProcedureSelectedIcon/>,
-        disabledIcon: <ProcedureDisabledIcon/>
+        selectedIcon: <ProcedureSelectedIcon />,
+        disabledIcon: <ProcedureDisabledIcon />
     },
     {
         name: 'Charge Sheet',
         overlayTabs: ['Consumables', 'Equipment', 'Billing', 'Quotation', 'Invoices'],
-        selectedIcon: <ChargeSheetSelectedIcon/>,
-        disabledIcon: <ChargeSheetDisabledIcon/>
+        selectedIcon: <ChargeSheetSelectedIcon />,
+        disabledIcon: <ChargeSheetDisabledIcon />
     }
 ];
 
-const initialMenuItem = overlayMenu[0].name;
+
+
+let initialMenuItem = overlayMenu[0].name;
 const initialCurrentTabs = overlayMenu[0].overlayTabs;
 const initialSelectedTab = initialCurrentTabs[0];
 
-function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
+function CasePage({ auth = {}, route, addNotification, navigation, ...props }) {
+    const timeStamp = route.params.timeStamp
+    const appointmentObj = route.params.appointmentObj
     const modal = useModal();
     const theme = useTheme();
-    const chargeSheetRef = useRef();
+    const chargeSheetRef = useRef(); 
+    const casePermissions = route.params.permissions;
 
-    const {userToken} = auth;
+    // if(timeStamp){
+    //     console.log('ialkljekwrs ', timeStamp)
+    //     initialMenuItem = overlayMenu[4].name
+    // }
+
+
+
+    const { userToken } = auth;
     let authInfo = {};
     try {
         authInfo = jwtDecode(userToken);
@@ -126,7 +139,7 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
         console.log('failed to decode token', e);
     }
 
-    const {caseId} = route.params;
+    const { caseId } = route.params;
 
     const [isFloatingActionDisabled, setFloatingAction] = useState(false);
     const [updateInfo, setUpdateInfo] = useState([]);
@@ -142,18 +155,50 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
     const [selectedTab, setSelectedTab] = useState(initialSelectedTab);
     const [currentTabs, setCurrentTabs] = useState(initialCurrentTabs);
     const [selectedMenuItem, setSelectedMenuItem] = useState(initialMenuItem);
+    const [status, setStatus] = useState('')
 
     const [pageState, setPageState] = useState({
         isEditMode: false,
     });
     const [selectedCase, setSelectedCase] = useState({});
     const [userPermissions, setUserPermissions] = useState({});
-
+    let billable = []
     // ############### Lifecycle Methods
     useEffect(() => {
         fetchCase(caseId);
-        fetchUser(authInfo?.user_id);
+        fetchUser(authInfo?.user_id); 
+        
     }, []);
+
+    if (selectedCase){
+         billable = selectedCase.chargeSheet
+    }
+
+    const start = selectedCase.caseProcedures?.[0].appointment.startTime
+    const end = selectedCase.caseProcedures?.[0].appointment.endTime
+
+    useEffect(() => {
+        const info = getProgressStatus(start, end)
+        setStatus(info)
+        console.log('Case Page Create');
+    }, [start, end]);
+
+    const getProgressStatus = (startTime, endTime) => {
+        const now = moment();
+        const start = moment(startTime);
+        const end = moment(endTime);
+
+        if (now.isBefore(start)) {
+            return 'Not Yet Started';
+        }
+        if (now.isBefore(end)) {
+            return 'In Progress';
+        }
+        return 'Ended';
+    };
+
+
+    console.log('suodso t78878', billable?.inventories)
 
     // ############### Event Handlers
     const handleTabPressChange = tab => {
@@ -321,7 +366,7 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
 
     const onPreviewInvoice = () => {
         const billingData = getBillingData();
-        const {total = 0} = getBillingData();
+        const { total = 0 } = getBillingData();
 
         /**
          * Prepare Report Preview details from ChargeSheet data.
@@ -483,6 +528,8 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
     const onAppointmentCreated = value => fetchCase(caseId);
 
     const onPatientUpdated = data => fetchCase(caseId);
+
+    const onRiskUpdate = () => fetchCase(caseId)
 
     /**
      * Displays floating actions
@@ -830,29 +877,29 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
     };
 
     const addQuotationToCaseState = newQuotations => {
-        const {quotations = []} = selectedCase;
-        const updatedCase = {...selectedCase};
+        const { quotations = [] } = selectedCase;
+        const updatedCase = { ...selectedCase };
         updatedCase.quotations = [...quotations, newQuotations];
         setSelectedCase(updatedCase);
     };
 
     const addInvoiceToCaseState = newInvoices => {
-        const {invoices = []} = selectedCase;
-        const updatedCase = {...selectedCase};
+        const { invoices = [] } = selectedCase;
+        const updatedCase = { ...selectedCase };
         updatedCase.invoices = [...invoices, newInvoices];
         setSelectedCase(updatedCase);
     };
 
     const removeQuotationFromState = quotationId => {
-        const {quotations = []} = selectedCase;
-        const updatedCase = {...selectedCase};
+        const { quotations = [] } = selectedCase;
+        const updatedCase = { ...selectedCase };
         updatedCase.quotations = quotations.filter(item => item._id === quotationId);
         setSelectedCase(updatedCase);
     };
 
     const openAddItem = itemToAdd => {
-        const {chargeSheet = {}} = selectedCase;
-        const {proceduresBillableItems = []} = chargeSheet;
+        const { chargeSheet = {} } = selectedCase;
+        const { proceduresBillableItems = [] } = chargeSheet;
         const checkedList = itemToAdd === 'Consumables' ? selectedConsumableCaseProcedureIds : selectedEquipments;
         const filerObj = proceduresBillableItems.filter(item => item?.caseProcedureId === checkedList[0] || '')[0] || {};
 
@@ -865,8 +912,8 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
     };
 
     const onAddItem = itemToAdd => data => {
-        const {chargeSheet = {}} = selectedCase;
-        const {proceduresBillableItems = []} = chargeSheet;
+        const { chargeSheet = {} } = selectedCase;
+        const { proceduresBillableItems = [] } = chargeSheet;
 
         const checkedList = itemToAdd === 'Consumables' ? selectedConsumableCaseProcedureIds : selectedEquipments;
 
@@ -883,8 +930,8 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
 
         // console.log('Updated:', updatedObj);
         const updatedBillableItems = proceduresBillableItems.map(procedure => (procedure?.caseProcedureId === checkedList[0] ?
-            {...updatedObj} :
-            {...procedure}));
+            { ...updatedObj } :
+            { ...procedure }));
 
         // console.log(' Updated Case: ', updatedBillableItems);
 
@@ -911,16 +958,16 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
     };
 
     const handleRemoveConsumableItems = itemToRemove => {
-        const {chargeSheet = {}} = selectedCase;
-        const {proceduresBillableItems = []} = chargeSheet;
+        const { chargeSheet = {} } = selectedCase;
+        const { proceduresBillableItems = [] } = chargeSheet;
 
         let updatedItems = proceduresBillableItems;
         const selectedItemsArray = itemToRemove === 'Consumables' ? variantsConsumables : variantsEquipments;
         selectedItemsArray.map(item => {
-            const {_parentId = '', variants = []} = item;
+            const { _parentId = '', variants = [] } = item;
 
             const billableItem = updatedItems.filter(item => item?.caseProcedureId === _parentId)[0] || {};
-            const {inventories = [], equipments = []} = billableItem;
+            const { inventories = [], equipments = [] } = billableItem;
             let updatedList = itemToRemove === 'Consumables' ? inventories : equipments;
 
             variants.map(variant => {
@@ -941,8 +988,8 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
                     };
 
             updatedItems = updatedItems.map(procedure => (procedure?.caseProcedureId === _parentId ?
-                {...updatedProcedureObj} :
-                {...procedure}));
+                { ...updatedProcedureObj } :
+                { ...procedure }));
         });
         if (itemToRemove === 'Consumables') {
             setSelectedConsumables([]);
@@ -1171,7 +1218,7 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
                             >
                                 <ActionItem
                                     title="Hold to Delete"
-                                    icon={<WasteIcon/>}
+                                    icon={<WasteIcon />}
                                     onPress={() => {
                                     }}
                                     touchable={false}
@@ -1181,7 +1228,7 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
                         const downloadQuotation = (
                             <ActionItem
                                 title="Download Quotation"
-                                icon={<DownloadIcon/>}
+                                icon={<DownloadIcon />}
                                 onPress={() => downloadQuotationDocument(quotation)}
                             />
                         );
@@ -1205,7 +1252,7 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
                     const downloadInvoice = (
                         <ActionItem
                             title="Download Invoice"
-                            icon={<DownloadIcon/>}
+                            icon={<DownloadIcon />}
                             disabled={selectedInvoiceIds.length !== 1}
                             onPress={() => downloadInvoiceDocument(invoice)}
                         />
@@ -1214,7 +1261,7 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
                     const payBalanceAction = (
                         <ActionItem
                             title="Pay Balance"
-                            icon={<AcceptIcon/>}
+                            icon={<AcceptIcon />}
                             disabled={selectedInvoiceIds.length !== 1}
                             onPress={() => onPayInvoiceBalance(invoice?._id)}
                         />
@@ -1228,21 +1275,21 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
                     const applyDiscountAction = (
                         <ActionItem
                             title="Apply Discount"
-                            icon={<DiscountIcon/>}
+                            icon={<DiscountIcon />}
                             onPress={() => onApplyDiscount()}
                         />
                     );
                     const generateQuotationAction = (
                         <ActionItem
                             title="Generate Quotation"
-                            icon={<GenerateIcon/>}
+                            icon={<GenerateIcon />}
                             onPress={() => onGenerateQuotation()}
                         />
                     );
                     const generateInvoiceAction = (
                         <ActionItem
                             title="Generate Invoice"
-                            icon={<GenerateIcon/>}
+                            icon={<GenerateIcon />}
                             onPress={() => onGenerateInvoice()}
                         />
                     );
@@ -1250,7 +1297,7 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
                     const previewInvoice = (
                         <ActionItem
                             title="Preview Invoice"
-                            icon={<PreviewIcon/>}
+                            icon={<PreviewIcon />}
                             onPress={onPreviewInvoice}
                         />
                     );
@@ -1258,7 +1305,7 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
                     const payBalanceAction = (
                         <ActionItem
                             title="Pay Balance"
-                            icon={<AcceptIcon/>}
+                            icon={<AcceptIcon />}
                             onPress={() => onPayBalance()}
                         />
                     )
@@ -1271,18 +1318,18 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
             }
         } else if (selectedMenuItem === 'Procedures') {
             switch (selectedTab) {
-                case 'Details': {
-                    const addNewProcedure = (
-                        <ActionItem
-                            title="Add Appointment"
-                            icon={<AddIcon/>}
-                            onPress={openAddProcedure}
-                        />
-                    );
-                    floatingAction.push(addNewProcedure);
-                    title = 'APPOINTMENT ACTIONS';
-                    break;
-                }
+                // case 'Details': {
+                //     const addNewProcedure = (
+                //         <ActionItem
+                //             title="Add Appointment"
+                //             icon={<AddIcon />}
+                //             onPress={openAddProcedure}
+                //         />
+                //     );
+                //     floatingAction.push(addNewProcedure);
+                //     title = 'APPOINTMENT ACTIONS';
+                //     break;
+                // }
             }
         }
 
@@ -1317,15 +1364,15 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
                 console.log('Invoice Record:', data);
 
                 // update the quotation in state
-                const updatedCase = {...selectedCase};
-                let {quotations} = updatedCase;
+                const updatedCase = { ...selectedCase };
+                let { quotations } = updatedCase;
 
                 quotations = quotations.map(item => (item._id === quotationId ?
                     {
                         ...item,
                         status
                     } :
-                    {...item}));
+                    { ...item }));
 
                 updatedCase.quotations = quotations;
                 setSelectedCase(updatedCase);
@@ -1348,11 +1395,16 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
     };
 
     const getBillingData = () => {
-        const {invoices, chargeSheet = {}, caseProcedures: procedures = []} = selectedCase;
-        const {proceduresBillableItems = [], total = 0} = chargeSheet;
+        const { invoices, chargeSheet = {}, caseProcedures: procedures = [] } = selectedCase;
+        const { proceduresBillableItems = [], total = 0, lineItems } = chargeSheet;
+        let totalDiscount = 0
+
+        for(const discount of lineItems){
+            totalDiscount+= discount.unitPrice
+        }
 
         const LINE_ITEM_TYPES = {
-            DISCOUNT: 'discount',
+            DISCOUNT: 'discount', 
             SERVICE: 'service',
             PROCEDURES: 'procedures',
             PHYSICIANS: 'physician',
@@ -1361,13 +1413,13 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
         const billing = {
             total,
             hasDiscount: true,
-            discount: 0.15,
+            discount: totalDiscount,
             procedures: []
         };
 
         // todo: eval what's actually needed here
         for (const proceduresBillableItem of proceduresBillableItems) {
-            const {lineItems = [], inventories, equipments, caseProcedureId} = proceduresBillableItem;
+            const { lineItems = [], inventories, equipments, caseProcedureId } = proceduresBillableItem;
 
             const caseProcedure = procedures.find(item => item._id === proceduresBillableItem.caseProcedureId) || {};
             const caseAppointment = caseProcedure.appointment || {};
@@ -1428,8 +1480,8 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
     };
 
     const downloadInvoiceDocument = async invoice => {
-        const {invoices, chargeSheet = {}, caseProcedures: procedures = []} = selectedCase;
-        const {proceduresBillableItems = [], total = 0} = chargeSheet;
+        const { invoices, chargeSheet = {}, caseProcedures: procedures = [] } = selectedCase;
+        const { proceduresBillableItems = [], total = 0 } = chargeSheet;
 
         // preparing billing information
         const LINE_ITEM_TYPES = {
@@ -1448,7 +1500,7 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
 
         // todo: eval what's actually needed here
         for (const proceduresBillableItem of proceduresBillableItems) {
-            const {lineItems = [], inventories, equipments, caseProcedureId} = proceduresBillableItem;
+            const { lineItems = [], inventories, equipments, caseProcedureId } = proceduresBillableItem;
 
             const caseProcedure = procedures.find(item => item._id === proceduresBillableItem.caseProcedureId) || {};
             const caseAppointment = caseProcedure.appointment || {};
@@ -1505,7 +1557,7 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
             billing.procedures.push(billingItem);
         }
 
-        const {discount = 0, hasDiscount = false, tax = 0} = billing;
+        const { discount = 0, hasDiscount = false, tax = 0 } = billing;
 
         let data = {
             key: 'suites_invoice_generated',
@@ -1565,7 +1617,7 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
                 const consumabledetails = [];
 
                 inventoriesArray.map(inventory => {
-                    const {name, cost, amount} = inventory;
+                    const { name, cost, amount } = inventory;
 
                     consumabledetails.push({
                         name,
@@ -1610,10 +1662,10 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
                 fileUrl,
                 `${FileSystem.cacheDirectory}${filename}`
             )
-                .then(({uri}) => {
+                .then(({ uri }) => {
                     console.info(`download.path::${uri}`);
 
-                    Sharing.shareAsync(uri, {UTI: 'pdf'})
+                    Sharing.shareAsync(uri, { UTI: 'pdf' })
                         .then(result => console.info('sharing.success', result))
                         .catch(error => console.log('sharing.error', error));
                 })
@@ -1632,8 +1684,8 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
     };
 
     const downloadQuotationDocument = async quotation => {
-        const {quotations, chargeSheet = {}, caseProcedures: procedures = []} = selectedCase;
-        const {proceduresBillableItems = [], total = 0} = chargeSheet;
+        const { quotations, chargeSheet = {}, caseProcedures: procedures = [] } = selectedCase;
+        const { proceduresBillableItems = [], total = 0 } = chargeSheet;
 
         // preparing billing information
         const LINE_ITEM_TYPES = {
@@ -1652,7 +1704,7 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
 
         // todo: eval what's actually needed here
         for (const proceduresBillableItem of proceduresBillableItems) {
-            const {lineItems = [], inventories, equipments, caseProcedureId} = proceduresBillableItem;
+            const { lineItems = [], inventories, equipments, caseProcedureId } = proceduresBillableItem;
 
             const caseProcedure = procedures.find(item => item._id === proceduresBillableItem.caseProcedureId) || {};
             const caseAppointment = caseProcedure.appointment || {};
@@ -1709,7 +1761,7 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
             billing.procedures.push(billingItem);
         }
 
-        const {discount = 0, hasDiscount = false, tax = 0} = billing;
+        const { discount = 0, hasDiscount = false, tax = 0 } = billing;
 
         let data = {
             key: 'suites_quotation_generated',
@@ -1769,7 +1821,7 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
                 const consumabledetails = [];
 
                 inventoriesArray.map(inventory => {
-                    const {name, cost, amount} = inventory;
+                    const { name, cost, amount } = inventory;
 
                     consumabledetails.push({
                         name,
@@ -1813,10 +1865,10 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
                 fileUrl,
                 `${FileSystem.cacheDirectory}${filename}`
             )
-                .then(({uri}) => {
+                .then(({ uri }) => {
                     console.info(`download.path::${uri}`);
 
-                    Sharing.shareAsync(uri, {UTI: 'pdf'})
+                    Sharing.shareAsync(uri, { UTI: 'pdf' })
                         .then(result => console.info('sharing.success', result))
                         .catch(error => console.log('sharing.error', error));
                 })
@@ -1837,12 +1889,13 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
 
     const getIsEditable = () => {
         switch (selectedMenuItem) {
-            case 'Patient':
-                return selectedTab === 'Insurance' || selectedTab === 'Diagnosis' || selectedTab === 'Patient Risk';
             case 'Medical Staff':
-                return selectedTab === 'Details';
+                return selectedTab === 'Insurance' || selectedTab === 'Diagnosis' || selectedTab === 'Patient Comments';
             case 'Medical History':
-                return true;
+                true
+
+            case 'Medical Staff':
+                return selectedTab === 'Insurance' || selectedTab === 'Diagnosis' || selectedTab === 'Patient Comments';
             default:
                 return false;
         }
@@ -1857,8 +1910,11 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
             quotations = [],
             invoices = []
         } = selectedCase;
-        const {medicalInfo = {}} = patient;
-        const {proceduresBillableItems} = chargeSheet;
+        const { medicalInfo= {} } = patient;
+        const { proceduresBillableItems } = chargeSheet;
+
+        console.log('i anka dopor', caseProcedures)
+       // setBiilable(proceduresBillableItems)
 
         switch (selectedMenuItem) {
             case 'Patient':
@@ -1867,19 +1923,30 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
                     procedures={caseProcedures}
                     selectedTab={selectedTab}
                     onPatientUpdated={onPatientUpdated}
+                    onRiskUpdate={onRiskUpdate}
                     isEditMode={pageState.isEditMode}
                 />;
             case 'Medical Staff':
                 return <MedicalStaff
                     staff={staff}
                     selectedTab={selectedTab}
+                    isEditMode={pageState.isEditMode}
+                    modal={modal}
+                    caseId={caseId}
+                    refreshData={() => {fetchCase(caseId)}}
+
+
                 />;
             case 'Medical History':
                 return <MedicalHistory
                     medicalInfo={medicalInfo}
                     selectedTab={selectedTab}
+                    patient={patient}
+                    setPageState = {setPageState}
+                    fetchCase={() => fetchCase(caseId)}
                 />;
-            case 'Procedures':
+            case 'Procedures': 
+               
                 return <Procedures
                     procedures={caseProcedures}
                     proceduresBillableItems={proceduresBillableItems}
@@ -1901,11 +1968,11 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
                     handleInvoices={handleInvoices}
                 />;
             default:
-                return <View/>;
+                return <View />;
         }
     };
 
-    const {patient, caseNumber} = selectedCase;
+    const { patient, caseNumber } = selectedCase;
     const name = patient ? `${patient.firstName} ${patient.surname}` : '';
 
     return (
@@ -1917,10 +1984,18 @@ function CasePage({auth = {}, route, addNotification, navigation, ...props}) {
             }}
             >
                 <DetailsPage
-                    headerChildren={[name, `#${caseNumber}`]}
+                    isEditable={casePermissions.update}
+                    timeStamp = {timeStamp}
+                    status={status}
+                    appointmentObj = {appointmentObj || selectedCase.caseProcedures?.[0].appointment }
+                    caseId =  {caseId}
+                    proceduresBillableItemsInfo = {billable}
+                    headerChildren={[name, `#${caseNumber}`]} 
+                    updatePhysician={casePermissions.update}
                     onBackPress={() => {
                         navigation.navigate('CaseFiles');
                     }}
+                    selectedTab =  {selectedTab}
                     isArchive={getIsEditable()}
                     pageTabs={(
                         <TabsContainer
@@ -1955,19 +2030,19 @@ const mapDispatchTopProp = dispatch => bindActionCreators({
     setCaseEdit
 }, dispatch);
 
-const mapStateToProps = state => ({auth: state.auth});
+const mapStateToProps = state => ({ auth: state.auth });
 
 export default connect(mapStateToProps, mapDispatchTopProp)(CasePage);
 
 function CasePageContent({
-                             overlayContent,
-                             overlayMenu,
-                             userPermissions,
-                             selectedMenuItem,
-                             onOverlayTabPress,
-                             toggleActionButton,
-                             actionDisabled
-                         }) {
+    overlayContent,
+    overlayMenu,
+    userPermissions,
+    selectedMenuItem,
+    onOverlayTabPress,
+    toggleActionButton,
+    actionDisabled
+}) {
     useEffect(() => {
         console.log('Case Page Create');
     }, []);
@@ -2008,6 +2083,7 @@ function CasePageContent({
                     <FloatingActionButton
                         isDisabled={actionDisabled}
                         toggleActionButton={toggleActionButton}
+                        hasActions={true}
                     />
                 </FooterContainer>
             </FooterWrapper>

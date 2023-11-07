@@ -28,7 +28,9 @@ function TheatresPage({route, navigation}) {
         'Equipment',
         'Schedule',
     ];
-    const {theatre, reloadTheatres} = route.params;
+    const {theatre, reloadTheatres, tab} = route.params;
+
+    const updateTheatre =  route.params.updateTheatre;
     // ##### States
     const [currentTab, setCurrentTab] = useState(currentTabs[0]);
     const [selectedTheatre, setTheatre] = useState(theatre);
@@ -36,6 +38,14 @@ function TheatresPage({route, navigation}) {
 
     const {isEditMode} = pageState;
     // ##### Lifecycle Methods
+
+    tab ? useEffect(() => {
+        setTimeout(() => {
+            fetchTheatre(theatre._id);
+        }, 200);
+        setCurrentTab(currentTabs[4])
+    }, [tab]) : ''
+
 
     useEffect(() => {
         setTimeout(() => {
@@ -105,7 +115,7 @@ function TheatresPage({route, navigation}) {
     const getOverlayScreen = selectedOverlay => {
         switch (selectedOverlay) {
             case 'Details': {
-                // console.log('Theatre:', selectedTheatre);
+                console.log('Theatre:', selectedTheatre);
                 const appointments = selectedTheatre.appointments || [];
 
                 const {isActive, isRecovery} = isInUse(selectedTheatre.appointments || []);
@@ -263,7 +273,7 @@ function TheatresPage({route, navigation}) {
                 return <EquipmentsTab equipments={equipments}/>;
             }
             case 'Schedule':
-                return <PaginatedSchedule ID={theatre._id} isPhysician={false}/>;
+                return <PaginatedSchedule updateTheatre={updateTheatre} tab = {tab} ID={theatre._id} details = {theatre} isTheatre = {true} isPhysician={false}/>;
             default:
                 return <View/>;
         }
@@ -313,6 +323,7 @@ function TheatresPage({route, navigation}) {
                 <DetailsPage
                     headerChildren={[name, `${theatreNumber}`]}
                     onBackPress={onBackTapped}
+                    isEditable={updateTheatre}
                     isArchive={getIsEditable()}
                     pageTabs={(
                         <TabsContainer

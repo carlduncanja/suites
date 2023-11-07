@@ -1,0 +1,43 @@
+{
+  "cli": {
+    "version": ">= 3.2.1"
+  },
+  "build": {
+    "development": {
+      "developmentClient": true,
+      "distribution": "internal",
+      "env": {
+        "BASE_URL": "https://suites-uat.smssoftwarestudio.com",
+        "DOCUMENT_GENERATION_BASE_URL": "https://influx-dev.smssoftwarestudio.com/insight/document-generation-service",
+        "DOCUMENT_MANAGEMENT_BASE_URL": "https://influx-dev.smssoftwarestudio.com/insight/document-management-service"
+      },
+      "ios": {
+        "resourceClass": "m1-medium"
+      }
+    },
+    "preview": {
+      "distribution": "internal",
+      "env": {
+        "BASE_URL": "https://suites-uat.smssoftwarestudio.com",
+        "DOCUMENT_GENERATION_BASE_URL": "https://influx-dev.smssoftwarestudio.com/insight/document-generation-service",
+        "DOCUMENT_MANAGEMENT_BASE_URL": "https://influx-dev.smssoftwarestudio.com/insight/document-management-service"
+      },
+      "ios": {
+        "resourceClass": "m1-medium"
+      }
+    },
+    "production": {
+      "env": {
+        "BASE_URL": "https://suites-uat.smssoftwarestudio.com",
+        "DOCUMENT_GENERATION_BASE_URL": "https://influx-dev.smssoftwarestudio.com/insight/document-generation-service",
+        "DOCUMENT_MANAGEMENT_BASE_URL": "https://influx-dev.smssoftwarestudio.com/insight/document-management-service"
+      },
+      "ios": {
+        "resourceClass": "m1-medium"
+      }
+    }
+  },
+  "submit": {
+    "production": {}
+  }
+}

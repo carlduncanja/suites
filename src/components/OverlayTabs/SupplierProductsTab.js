@@ -33,6 +33,7 @@ import { getSupplierProducts, createPurchaseOrder, removeSupplierProducts } from
 import { addCartItem } from '../../redux/actions/cartActions';
 import LoadingIndicator from '../common/LoadingIndicator';
 import { PageContext } from '../../contexts/PageContext';
+import ConfirmationCheckBoxComponent from '../ConfirmationCheckBoxComponent';
 
 const SearchContainer = styled.View`
     margin-bottom : ${({ theme }) => theme.space['--space-20']};
@@ -70,11 +71,11 @@ const headers = [
     },
     {
         name: 'SKU',
-        alignment: 'center'
+        alignment: 'flex-start'
     },
     {
         name: 'Price',
-        alignment: 'flex-end'
+        alignment: 'flex-start'
     }
 ];
 
@@ -86,7 +87,8 @@ function SupplierProductsTab({
     onAddProducts,
     onProductsCreated,
     onRefresh,
-    isProductsLoading
+    isProductsLoading,
+    permissions
 }) {
     // ######## STATES
     const theme = useTheme();
@@ -110,8 +112,6 @@ function SupplierProductsTab({
     const [cartItems, setCartItems] = useState([]);
     const { pageState } = useContext(PageContext);
 
-    console.log("Products: ", products);
-
     // ######## CONST
 
     // ######## LIFECYCLE METHODS
@@ -121,6 +121,7 @@ function SupplierProductsTab({
             setCartItems(cart);
             setTotalPages(Math.ceil(productsState.length / recordsPerPage));
         }, 200);
+
     }, []);
 
     // ######## EVENT HANDLERS
@@ -202,6 +203,7 @@ function SupplierProductsTab({
     };
 
     const onListFooterPress = data => {
+        // here
         setLoading(true);
         const { purchaseOrders = [], deliveryDate = '' } = data;
         addCartItem(purchaseOrders);
@@ -211,7 +213,6 @@ function SupplierProductsTab({
     };
 
     const onCompleteOrder = data => {
-        // console.log("Oder data: ", data);
         const { purchaseOrders = [], deliveryDate = '', repeating, repeatingType } = data;
         const orderToCreate = {
             deliveryDate,
@@ -220,8 +221,10 @@ function SupplierProductsTab({
             repeating,
             repeatingType
         };
+        const payload = {
+            deliveryDate: deliveryDate,
 
-        console.log('Order: ', orderToCreate);
+        }
 
         createPurchaseOrder(orderToCreate)
             .then(_ => {
@@ -365,7 +368,7 @@ function SupplierProductsTab({
             >
                 <ActionItem
                     title="Hold to Delete"
-                    icon={<WasteIcon strokeColor={isDisabledColor}/>}
+                    icon={<WasteIcon strokeColor={isDisabledColor} />}
                     onPress={() => {
                     }}
                     touchable={false}
@@ -374,6 +377,7 @@ function SupplierProductsTab({
             </LongPressWithFeedback>
         );
         const addCart = (
+            
             <ActionItem
                 title="Add Item to Cart"
                 icon={<AddIcon
@@ -381,13 +385,14 @@ function SupplierProductsTab({
                 disabled={isDisabled}
                 touchable={!isDisabled}
                 onPress={addToCartAction}
-            />
+            /> 
+            
         );
         const addProduct = <ActionItem title="Create Product" icon={<AddIcon />} onPress={addProductAction} />;
         return <ActionContainer
             floatingActions={[
                 deleteProduct,
-                addCart,
+                permissions.create && addCart,
                 addProduct
             ]}
             title="SUPPLIER PRODUCTS ACTIONS"
@@ -468,7 +473,7 @@ function SupplierProductsTab({
         setTimeout(() => {
             modal.openModal('ConfirmationModal',
                 {
-                    content: <ConfirmationComponent
+                    content: <ConfirmationCheckBoxComponent
                         isError={false}
                         isEditUpdate={true}
                         onAction={() => {

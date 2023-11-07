@@ -94,6 +94,7 @@ function PrintSchedulePage({route, navigation}) {
             console.log('print payload: ', printDocumentPayload);
 
             // generate pdf for print schedule.
+            console.log("we here permanent")
             const response = await generateDocumentLink(printDocumentPayload);
 
             const fileUrl = response?.url;
@@ -122,6 +123,9 @@ function PrintSchedulePage({route, navigation}) {
 
         setLoading(false);
 
+    }; 
+    const getTime = (appointmentTime) => {
+        return formatDate(appointmentTime, "h : mm a")
     };
 
     /**
@@ -164,7 +168,7 @@ function PrintSchedulePage({route, navigation}) {
                         day: title,
                         appointments: appointmentForDay.map(appointment => ({
                             info: `${appointment.title} - ${appointment.subject}`,
-                            time: `${formatDate(appointment.startTime, "") - formatDate(appointment.endTime, "")}`,
+                            time: `${formatDate(appointment.startTime, "h:mm")}` + " - " + `${formatDate(appointment.endTime, "h:mm")}`,
                             color: `${appointment.type && appointment.type.color || 'gray'}`,
                         })),
                     }
@@ -184,7 +188,8 @@ function PrintSchedulePage({route, navigation}) {
     const getAppointmentsInRange = (startDate, endDate) => {
         setLoading(true);
         getAppointmentRequest({from: startDate, to: endDate})
-            .then(data => {
+            .then(data => { 
+                console.log("the data wee need to complete",data)
                 setAppointments(data);
             })
             .catch(error => {
@@ -196,7 +201,7 @@ function PrintSchedulePage({route, navigation}) {
             })
     }
 
-
+    
     return (
 
         <MainWrapper>

@@ -179,6 +179,7 @@ const CreateProcedureDialogContainer = ({onCancel, onCreated, addProcedure}) =>{
                 duration : parseInt(fields['duration']),
                 supportedRooms : fields['supportedRooms'].map(item => item._id)
             }
+
             console.log("Fields: ",updatedFields)
             createProcedureCall(updatedFields)
 

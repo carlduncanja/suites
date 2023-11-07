@@ -31,12 +31,12 @@ const storageHeader = [
     {
         name: 'In-Stock',
         alignment: 'center',
-        flex: 1
+        flex: 7
     },
     {
         name: 'Capacity',
         alignment: 'center',
-        flex: 1
+        flex: 5
     }
 ];
 
@@ -175,10 +175,12 @@ function InventoryStorageLocationsTab({
         };
         return <>
 
-            <DataItem text={locationName} flex={1.5} color="--color-blue-600" fontStyle="--text-base-medium"/>
-            <DataItem text={stock} color="--color-gray-700" fontStyle="--text-base-medium" align="center"/>
+            <DataItem text={locationName} flex={0.75} color="--color-blue-600" fontStyle="--text-base-medium" />
+            <DataItem text={stock} flex={0.6} color="--color-gray-700" fontStyle="--text-base-medium" align="center" /> 
+            
             <ContentDataItem
-                align="center"
+                align="center" 
+                flex={0.7}
                 content={(
                     <LevelIndicator
                         {...updatedLevels}
@@ -196,7 +198,7 @@ function InventoryStorageLocationsTab({
                 <Text style={styles.itemText}>
                     {stock}
                 </Text>
-            </View> */}
+             </View> */}
 
         </>;
     };

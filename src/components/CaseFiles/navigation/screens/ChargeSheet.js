@@ -54,22 +54,26 @@ const headers = [
     {
         name: 'Item Name',
         alignment: 'flex-start',
+        flex: 1,
         hasSort: true
 
     },
     {
         name: 'Category',
         alignment: 'center',
+        flex: 2,
         hasSort: true
 
     },
     {
         name: 'Quantity',
         alignment: 'center',
+        flex: 1.1,
     },
     {
         name: 'Unit Price',
-        alignment: 'flex-end'
+        alignment: 'center',
+        flex: 1,
     }
 ];
 
@@ -157,6 +161,7 @@ const ChargeSheet = React.forwardRef(({
     // region--------------------------- States
 
     const [caseProcedures, setCaseProcedure] = useState([]);
+    const [dataUpdateAt, setDataUpdatedAt] = useState({});
     const [chargeSheetStatus, setChargeSheetStatus] = useState(chargeSheet.status);
     const [caseProcedureChanges, setCaseProcedureChanges] = useState([]);
     const [isUpdated, setUpdated] = useState(false);
@@ -172,23 +177,36 @@ const ChargeSheet = React.forwardRef(({
     // endregion
 
     // --------------------------- Life Cycle
-
     useEffect(() => {
-        if (isUpdated && !isEditMode) {
+        if (isUpdated) {
             const isPendingState = (status === CHARGE_SHEET_STATUSES.PENDING_CHANGES)
             const update = isPendingState ? caseProcedureChanges : caseProcedures
             onUpdateChargeSheet(update);
             setUpdated(false);
+            setPageState({
+                isEditMode: false,
+            })
         }
+            
     }, [isEditMode]);
 
     useEffect(() => {
         // preparing billing information
         console.log("charge sheet prop updated", chargeSheet);
-
+        setDataUpdatedAt({updatedAt: chargeSheet.updatedAt, createdAt: chargeSheet.createdAt})
         const billing = configureBillableItems(chargeSheet.updatedAt, total, chargeSheet.updatedBy, procedures, proceduresBillableItems);
+        let array = []
+        if(chargeSheet.updatedAt == chargeSheet.createdAt){
+            console.log('dajdhsjdh')
+            for (const x of billing.procedures[0].inventories){
+                x.amount = 0
+                array.push(x)
+            }
+            setCaseProcedure(array)
+        } else {
+            setCaseProcedure(billing.procedures)
+        }
         setCaseProcedure(billing.procedures)
-
         const billingUpdates = configureBillableItems(null, 0, null, procedures, proceduresBillableItemsChanges);
         setCaseProcedureChanges(billingUpdates.procedures)
 
@@ -240,7 +258,6 @@ const ChargeSheet = React.forwardRef(({
     // region Event Handlers
 
     const handleConsumableUpdate = (index, procedureInventories) => {
-        console.log('onConsumablesUpdate', index, procedureInventories);
         const updatedCaseProcedures = [...caseProcedures];
         if (updatedCaseProcedures[index]) {
             updatedCaseProcedures[index].inventories = procedureInventories;
@@ -319,6 +336,7 @@ const ChargeSheet = React.forwardRef(({
 
     const handleCaseProcedureUpdate = caseProcedures => {
         console.log('Procedure update: ', caseProcedures);
+        
         setCaseProcedure(caseProcedures);
         setUpdated(true);
     };
@@ -457,6 +475,9 @@ const ChargeSheet = React.forwardRef(({
         } else {
             setCaseProcedure(procedureToUpdate)
         }
+        setPageState({
+            isEditMode: true,
+        })
         setUpdated(true);
     };
 
@@ -657,7 +678,7 @@ const ChargeSheet = React.forwardRef(({
             }
 
         } else {
-            const isDisabled = !(selectedCaseProcedureIds.length === 1 && isEditMode)
+            const isDisabled = !(selectedCaseProcedureIds.length === 1 )
 
             const addNewItem = (
                 <ActionItem
@@ -894,6 +915,7 @@ const ChargeSheet = React.forwardRef(({
             } else {
                 return<Consumables
                     headers={headers}
+                    dataUpdateAt={dataUpdateAt}
                     allItems={equipmentList}
                     equipments={procedureEquipments}
                     caseProceduresFilters={consumableProcedures}
@@ -901,6 +923,7 @@ const ChargeSheet = React.forwardRef(({
                     onConsumablesUpdate={handleConsumableUpdate}
                     isEditMode={isEditMode}
                     handleEditDone={handleEditDone}
+                    isUpdated ={isUpdated}                    
                     onSelectConsumables={consumables => {
                         setSelectedConsumables(consumables);
                     }}
@@ -979,6 +1002,7 @@ const ChargeSheet = React.forwardRef(({
             if (isClosed) return <EmptyChargeSheetComponent/>;
             return <BillingCaseCard
                 tabDetails={billing}
+                quotations = {quotations}
                 caseProcedures={caseProcedures}
                 isEditMode={isEditMode}
                 caseId={caseId}

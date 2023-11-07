@@ -42,6 +42,7 @@ function FileUploadComponent({
     // Event functions
 
     const onClickUpload = () => {
+        console.log("hey")
         DocumentPicker.getDocumentAsync()
             .then((res) => {
                 const testUri = (res.uri).match(/[^.]*$/g)[0] || '';
