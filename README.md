@@ -103,4 +103,12 @@ Follow the following steps for setting up this project on ur local maching.
 
 *TBD: Scripts used*
 
+## Prettier Code Formatter
 
+- If once the project environment is fully setup and there are issues in getting the prettier extension to work correctly, please refer to the folowing:
+   - Ensure the prettier and prettier eslint extension are properly installed 
+   - Check VS code setting through either the navigation on the bottom left or the shortcut (ctrl + ,) and searching prettier in the search field
+      - Change the "Default Formatter" to prettier 
+      - Search "Format on Paste" and "Format on Save" in the searchbar and click the option box on each
+- If you still have issues please refer to the following link and the current suites team 
+   - (https://blog.yogeshchavan.dev/automatically-format-code-on-file-save-in-visual-studio-code-using-prettier)

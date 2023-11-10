@@ -3,7 +3,7 @@ import {View, Text, StyleSheet, FlatList} from 'react-native';
 import {useModal, withModal} from 'react-native-modalfy';
 import moment from 'moment';
 import Record from '../common/Information Record/Record';
-import ResponsiveRecord from '../common/Information Record/ResponsiveRecord';
+import TouchableRecord from '../common/Information Record/TouchableRecord';
 import ColumnSection from '../common/ColumnSection';
 import ColumnSectionsList from '../common/ColumnsSectionsList';
 import FloatingActionButton from '../common/FloatingAction/FloatingActionButton';
@@ -62,7 +62,7 @@ const EquipmentDetails = ({equipment = {}, navigation, groupInfo, name}) => {
     const {assignmentName, futureTime: availableOn, storageLocationName} = evalRecentAssignment(equipment?.assignments);
 
     const assignedRecord = (
-        <ResponsiveRecord
+        <TouchableRecord
             recordTitle="Assigned"
             recordValue={assignmentName || (storageLocationName ? `(${storageLocationName})` : '--')}
             handleRecordPress={() => {

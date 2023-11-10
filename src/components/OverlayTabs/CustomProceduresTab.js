@@ -10,8 +10,9 @@ import ActionContainer from '../common/FloatingAction/ActionContainer';
 import RoundedPaginator from '../common/Paginators/RoundedPaginator';
 import ConfirmationComponent from '../ConfirmationComponent';
 import ConfirmationCheckBoxComponent from '../../components/ConfirmationCheckBoxComponent';
-import { removeProcedures } from '../../api/network'
-
+import { removeProcedures } from '../../api/network' 
+import EmptyState from "../../../assets/svg/emptyState";
+import styled, { css } from '@emotion/native';
 import WasteIcon from "../../../assets/svg/wasteIcon";
 import AddIcon from "../../../assets/svg/addIcon";
 import AssignIcon from "../../../assets/svg/assignIcon";
@@ -61,7 +62,31 @@ const testData = [
     }
 ];
 
-const CustomProceduresTab = ({ selectedPhysician, updatePhysician, procedures, setSelectedPhysician, id, fetchPhysician = () => {}}) => {
+const EmptyWrapper = styled.View`
+  display: flex;
+  flex: 1;
+  justify-content: center;
+  align-items: center;
+`
+
+const PageContent = styled.View`
+ align-items: center; 
+ justify-content: center;
+ padding-bottom: ${({ theme }) => theme.space['--space-72']};
+`
+const IconWrapper = styled.View`
+   margin-bottom: ${({ theme }) => theme.space['--space-40']};
+   
+`
+const MessageWrapper = styled.Text(({ theme }) => ({
+    ...theme.font['--text-base-bold'],
+    color: theme.colors['--color-gray-600'],
+    marginBottom: 20
+}))
+
+
+
+const CustomProceduresTab = ({ selectedPhysician, updatePhysician, procedures, setSelectedPhysician, id, fetchPhysician = () => { } }) => {
 
     const recordsPerPage = 10;
     const modal = useModal();
@@ -76,23 +101,23 @@ const CustomProceduresTab = ({ selectedPhysician, updatePhysician, procedures, s
     const [isFloatingActionDisabled, setIsFloatingActionDisabled] = useState(false);
     const [isIndeterminate, setIsIndeterminate] = useState(false)
 
-    const [data, setData] = useState( () => {
-            const itemContainer = []
-            selectedPhysician.procedures.map(item => {
-                const recovery = item.hasRecovery ? "Yes" : "No";
-                if(item.custom) {
-                    itemContainer.push( {
-                        id: item._id,
-                        procedure: item.name,
-                        theatre: "Operating Room 1",
-                        recovery: recovery,
-                        duration: item.duration,
-                    });
-                }
-            });
+    const [data, setData] = useState(() => {
+        const itemContainer = []
+        selectedPhysician.procedures.map(item => {
+            const recovery = item.hasRecovery ? "Yes" : "No";
+            if (item.custom) {
+                itemContainer.push({
+                    id: item._id,
+                    procedure: item.name,
+                    theatre: "Operating Room 1",
+                    recovery: recovery,
+                    duration: item.duration,
+                });
+            }
+        });
 
-            return itemContainer;
-        }
+        return itemContainer;
+    }
     );
 
     useEffect(() => {
@@ -130,7 +155,7 @@ const CustomProceduresTab = ({ selectedPhysician, updatePhysician, procedures, s
     }
 
     const handleOnCheckBoxPress = (item) => {
-        
+
         const { id } = item;
         let updatedCases = [...selectedIds];
 
@@ -165,12 +190,12 @@ const CustomProceduresTab = ({ selectedPhysician, updatePhysician, procedures, s
 
     const listItemFormat = item => (
         <>
-            <DataItem flex={2.5}  text={item?.procedure} color="--color-blue-600" fontStyle="--text-base-medium" />
-            <DataItem flex={1.8}  text={item?.theatre} color="--color-blue-600" fontStyle="--text-base-medium" />
-            <DataItem flex={1.24}  text={item.recovery} color={RECOVERY_COLORS[item.recovery]} fontStyle="--text-base-medium" />
-            <DataItem flex={0.5}  text={`${item.duration} hrs`} color="--color-gray-800" fontStyle="--text-base-regular" />
+            <DataItem flex={2.5} text={item?.procedure} color="--color-blue-600" fontStyle="--text-base-medium" />
+            <DataItem flex={1.8} text={item?.theatre} color="--color-blue-600" fontStyle="--text-base-medium" />
+            <DataItem flex={1.24} text={item.recovery} color={RECOVERY_COLORS[item.recovery]} fontStyle="--text-base-medium" />
+            <DataItem flex={0.5} text={`${item.duration} hrs`} color="--color-gray-800" fontStyle="--text-base-regular" />
 
-           
+
         </>
     );
 
@@ -226,7 +251,7 @@ const CustomProceduresTab = ({ selectedPhysician, updatePhysician, procedures, s
     }
 
     const openDeletionConfirm = data => {
-        
+
         modal.openModal(
             'ConfirmationModal',
             {
@@ -253,7 +278,7 @@ const CustomProceduresTab = ({ selectedPhysician, updatePhysician, procedures, s
                 }
             }
         );
-    } 
+    }
 
     function updatePage() {
         const container = [];
@@ -265,7 +290,7 @@ const CustomProceduresTab = ({ selectedPhysician, updatePhysician, procedures, s
 
         const clonePhysician = selectedPhysician;
         clonePhysician.procedures = container;
-        setSelectedPhysician(clonePhysician, 
+        setSelectedPhysician(clonePhysician,
             setData(
                 selectedPhysician.procedures.map(item => {
                     const recovery = item.hasRecovery ? "Yes" : "No";
@@ -278,45 +303,45 @@ const CustomProceduresTab = ({ selectedPhysician, updatePhysician, procedures, s
                     };
                 })
             ));
-        
+
     }
 
-    const removeCustomProcedure =(data)=>{
+    const removeCustomProcedure = (data) => {
         // here
         removeProcedures(data)
-        .then(_=>{
-            modal.openModal(
-                'ConfirmationModal', {
-                content: <ConfirmationComponent
-                    isError={false}
-                    isEditUpdate={false}
-                    onAction={() => {
-                        modal.closeModals('ConfirmationModal');
-                        updatePage();
-                        setTimeout(() => {
-                            modal.closeModals('ActionContainerModal')
-                        }, 200)
-                    }}
-                />,
-                onClose: () => {
-                    modal.closeModal('ConfirmationModal')
+            .then(_ => {
+                modal.openModal(
+                    'ConfirmationModal', {
+                    content: <ConfirmationComponent
+                        isError={false}
+                        isEditUpdate={false}
+                        onAction={() => {
+                            modal.closeModals('ConfirmationModal');
+                            updatePage();
+                            setTimeout(() => {
+                                modal.closeModals('ActionContainerModal')
+                            }, 200)
+                        }}
+                    />,
+                    onClose: () => {
+                        modal.closeModal('ConfirmationModal')
+                    }
                 }
-            }
-            );
-            
-            setSelectedIds([]);
-        })
-        .catch(error => {
-            openErrorConfirmation();
-            setTimeout(() => {
-                modal.closeModals('ActionContainerModal');
-            }, 200)
-            console.log('failed to delete these item(s)', error)
-        })
-        .finally(_ => {
-            setIsFloatingActionDisabled(false)
+                );
 
-        });
+                setSelectedIds([]);
+            })
+            .catch(error => {
+                openErrorConfirmation();
+                setTimeout(() => {
+                    modal.closeModals('ActionContainerModal');
+                }, 200)
+                console.log('failed to delete these item(s)', error)
+            })
+            .finally(_ => {
+                setIsFloatingActionDisabled(false)
+
+            });
 
 
     }
@@ -345,28 +370,48 @@ const CustomProceduresTab = ({ selectedPhysician, updatePhysician, procedures, s
     dataToDisplay = dataToDisplay.slice(currentPageListMin, currentPageListMax);
 
     return (
-        <>
-            <Table
-                data={dataToDisplay}
-                listItemFormat={renderItem}
-                headers={headers}
-                isCheckbox={true}
-                toggleHeaderCheckbox={onSelectAll}
-                itemSelected={selectedIds}
+        dataToDisplay?.length < 1 ?
 
-            />
-            <Footer
-                hasActions={true}
-                hasActionButton={updatePhysician}
-                totalPages={totalPages}
-                currentPage={currentPagePosition}
-                goToNextPage={goToNextPage}
-                goToPreviousPage={goToPreviousPage}
-                toggleActionButton={toggleActionButton}
-            />
-            
-        </>
+            <EmptyWrapper theme={theme}>
+                <PageContent theme={theme}>
+                    {/*    ICON     */}
+                    <IconWrapper theme={theme}>
+                        <EmptyState />
+                    </IconWrapper>
+
+                    {/*    MESSAGE HEADER  */}
+                    <MessageWrapper theme={theme}>{'No Records Found'}</MessageWrapper>
+
+                </PageContent>
+            </EmptyWrapper>
+
+
+            :
+            <>
+
+                <Table
+                    data={dataToDisplay}
+                    listItemFormat={renderItem}
+                    headers={headers}
+                    isCheckbox={true}
+                    toggleHeaderCheckbox={onSelectAll}
+                    itemSelected={selectedIds}
+
+                />
+                <Footer
+                    hasActions={true}
+                    hasActionButton={updatePhysician}
+                    totalPages={totalPages}
+                    currentPage={currentPagePosition}
+                    goToNextPage={goToNextPage}
+                    goToPreviousPage={goToPreviousPage}
+                    toggleActionButton={toggleActionButton}
+                />
+
+            </>
+
     );
+
 };
 
 export default withModal(CustomProceduresTab);

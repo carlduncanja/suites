@@ -14,7 +14,25 @@ export const handleNumberValidation = (value, maxLength = 0) => {
 
 export const formatTrn = value => value?.replace(/(\d{3})(\d{3})(\d{3})/, '$1-$2-$3');
 
-export const formatPhoneNumber = value => value?.replace(/(\d{3})(\d{3})(\d{4})/, '$1 $2 $3');
+/**
+ * Formats 10- and 11-digit phone numbers to include hyphens. It strips the phone number of any
+ * non-numeric characters before formatting.
+ * @param {string} phoneNumber - The telephone number to edit.
+ */
+export const formatPhoneNumber = phoneNumber => {
+    const sanitizationRegex = /\D/g;
+    const formattingRegex = /^(1)?(\d{3})(\d{3})(\d{4})$/;
+
+    const sanitizedPhoneNum = phoneNumber.replace(sanitizationRegex, "");
+    
+    return sanitizedPhoneNum.replace(formattingRegex, (match, prefix, part1, part2, part3) => {
+        if(phoneNumber.length === 11){
+            return `${prefix}-${part1}-${part2}-${part3}`;
+        } else {
+            return `${part1}-${part2}-${part3}`;
+        }
+    })
+}
 
 export const isValidDOB = date => moment(date)
     .isBefore(new Date());

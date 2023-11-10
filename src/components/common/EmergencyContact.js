@@ -2,7 +2,7 @@ import React,{  } from "react";
 import { View, Text } from 'react-native';
 import ColumnSection from './ColumnSection';
 import Record from './Information Record/Record';
-import ResponsiveRecord from './Information Record/ResponsiveRecord';
+import TouchableRecord from './Information Record/TouchableRecord';
 
 const EmergencyContact = ({contacts}) => {
     const emergencyContacts = []
@@ -11,12 +11,12 @@ const EmergencyContact = ({contacts}) => {
             recordTitle = "Emergency Contact Name"
             recordValue = {contact.name}
         />
-        const number = <ResponsiveRecord
+        const number = <TouchableRecord
             recordTitle = "Emergency Contact Number"
             recordValue = {contact.number}
             handleRecordPress = {contact.handlePress}
         />
-        const email = <ResponsiveRecord
+        const email = <TouchableRecord
             recordTitle = "Emergency Contact Email"
             recordValue = {contact.number}
             handleRecordPress = {contact.handlePress}

@@ -1,14 +1,13 @@
 // Details.js
 import React, {useContext, useEffect, useRef, useState} from 'react';
-import {ScrollView, View, StyleSheet, TouchableOpacity} from 'react-native';
-import moment from 'moment';
-import {useModal, withModal} from 'react-native-modalfy';
-import styled, {css} from '@emotion/native';
+import {ScrollView, View } from 'react-native';
+import {useModal } from 'react-native-modalfy';
+import styled from '@emotion/native';
 import {useTheme} from 'emotion-theming';
 import {MenuOption, MenuOptions} from 'react-native-popup-menu';
 import BMIConverter from '../../BMIConverter';
-import {PersonalRecord, ContactRecord, MissingValueRecord} from '../../../common/Information Record/RecordStyles';
-import ResponsiveRecord from '../../../common/Information Record/ResponsiveRecord';
+import {PersonalRecord } from '../../../common/Information Record/RecordStyles';
+import TouchableRecord from '../../../common/Information Record/TouchableRecord';
 import ContentResponsiveRecord from '../../../common/Information Record/ContentResponsiveRecord';
 import PatientBMIChart from '../../PatientBMIChart';
 import {
@@ -17,7 +16,8 @@ import {
     handleNumberValidation,
     formatPhoneNumber,
     isValidEmail,
-    checkObjectProperty
+    checkObjectProperty,
+    _formatPhoneNumber
 } from '../../../../utils/formatter';
 import Row from '../../../common/Row';
 import Record from '../../../common/Information Record/Record';
@@ -55,12 +55,45 @@ const bmiScale = [
     }
 ];
 
-const itemWidth = `${100 / 3}%`;
+/**
+ * @typedef {Object} TabDetails
+ * @property {string} _id
+ * @property {string} firstName
+ * @property {string} middleName
+ * @property {string} surname
+ * @property {string} height
+ * @property {string} weight
+ * @property {string} dob
+ * @property {string} gender
+ * @property {string} ethnicity
+ * @property {string} bloodType
+ * @property {string} nextVisit
+ * @property {Object} contactInfo //TO-DO: to refine
+ * @property {string} passport
+ * @property {string} other
+ * @property {string} national
+ * @property {Object[]} address //TO-DO: to refine
+ * 
+ */
 
+/**
+ * @callback onUpdated
+ * @returns {void}
+ */
+
+/**
+ * @typedef {Object} DetailProps
+ * @property {TabDetails} tabDetails
+ * @property {onUpdated} onUpdated
+ */
+
+/**
+ * @param {DetailProps} props 
+ * @returns {JSX.Element}
+ */
 const Details = ({
                      tabDetails,
-                     onUpdated = () => {
-                     }
+                     onUpdated = () => {}
                  }) => {
     const theme = useTheme();
     const modal = useModal();
@@ -721,7 +754,7 @@ const Details = ({
                             </FieldContainer>
                         ) : (
                             <FieldContainer>
-                                <ResponsiveRecord
+                                <TouchableRecord
                                     recordTitle="Cell Phone Number"
                                     isPhone={true}
                                     recordValue={formatPhoneNumber(cellPhoneRecordValue)}
@@ -750,7 +783,7 @@ const Details = ({
                             </FieldContainer>
                         ) : (
                             <FieldContainer>
-                                <ResponsiveRecord
+                                <TouchableRecord
                                     recordTitle="Home Phone Number"
                                     isPhone={true}
                                     recordValue={formatPhoneNumber(homePhoneRecordValue)}
@@ -779,7 +812,7 @@ const Details = ({
                             </FieldContainer>
                         ) : (
                             <FieldContainer>
-                                <ResponsiveRecord
+                                <TouchableRecord
                                     recordTitle="Work Phone Number"
                                     recordValue={formatPhoneNumber(workPhoneRecordValue)}
                                     handleRecordPress={() => {
@@ -807,7 +840,7 @@ const Details = ({
                             </FieldContainer>
                         ) : (
                             <FieldContainer>
-                            <ResponsiveRecord
+                            <TouchableRecord
                                 recordTitle="Primary Email"
                                 isEmail={true}
                                 recordValue={primaryEmailRecordValue}
@@ -834,7 +867,7 @@ const Details = ({
                             </FieldContainer>
                         ) : (
                             <FieldContainer>
-                                <ResponsiveRecord
+                                <TouchableRecord
                                     recordTitle="Alternate Email"
                                     recordValue={otherEmailRecordValue}
                                     handleRecordPress={() => {
@@ -860,7 +893,7 @@ const Details = ({
                             </FieldContainer>
                         ) : (
                             <FieldContainer>
-                                <ResponsiveRecord
+                                <TouchableRecord
                                     recordTitle="Work Email"
                                     isEmail={true}
                                     recordValue={workEmailRecordValue}
@@ -1000,7 +1033,7 @@ const Details = ({
                                     </FieldContainer>
 
                                     <FieldContainer>
-                                        <ResponsiveRecord
+                                        <TouchableRecord
                                             recordTitle="Emergency Contact Phone"
                                             recordValue={formatPhoneNumber(phone)}
                                             handleRecordPress={() => {
@@ -1010,7 +1043,7 @@ const Details = ({
                                     </FieldContainer>
                                     
                                     <FieldContainer>
-                                    <ResponsiveRecord
+                                    <TouchableRecord
                                         recordTitle="Emergency Contact Email"
                                         recordValue={email}
                                         handleRecordPress={() => {
@@ -1029,24 +1062,3 @@ const Details = ({
 };
 
 export default Details;
-
-const styles = StyleSheet.create({
-    separator: {
-        height: 1,
-        backgroundColor: '#CCD6E0',
-        borderRadius: 2,
-        marginTop: 10,
-        //marginBottom:10
-    },
-    rowContainer: {
-        flex: 1,
-        flexDirection: 'row',
-        // backgroundColor:'green',
-        // marginLeft:10,
-        // marginRight:10,
-        marginBottom: 20,
-        // alignItems:'flex-start',
-        justifyContent: 'space-between'
-    },
-    rowItem: {width: itemWidth}
-});

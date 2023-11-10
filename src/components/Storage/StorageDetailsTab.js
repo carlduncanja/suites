@@ -1,20 +1,21 @@
-import React, {useContext, useEffect, useRef, useState} from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
-import {View, Text, StyleSheet} from 'react-native';
+import { View, Text, StyleSheet, Button,TouchableWithoutFeedback} from 'react-native';
 import moment from 'moment';
-import {useModal} from 'react-native-modalfy';
-import {formatDate} from '../../utils/formatter';
+import { useModal } from 'react-native-modalfy';
+import { formatDate } from '../../utils/formatter';
 import InputField2 from '../common/Input Fields/InputField2';
 import TextArea from '../common/Input Fields/TextArea';
 import SearchableOptionsField from '../common/Input Fields/SearchableOptionsField';
-import {addCategory, getCategories, updateStorageLocationCall} from '../../api/network';
+import { addCategory, getCategories, updateStorageLocationCall } from '../../api/network';
 import ConfirmationComponent from '../ConfirmationComponent';
-import {PageContext} from '../../contexts/PageContext';
+import { PageContext } from '../../contexts/PageContext';
 import Row from '../common/Row';
 import FieldContainer from '../common/FieldContainerComponent';
 import Record from '../common/Information Record/Record';
 import Footer from '../common/Page/Footer';
 import MultipleSelectionsField from '../common/Input Fields/MultipleSelectionsField';
+import { event } from 'react-native-reanimated';
 
 function StorageDetailsTab({
     storageLocationId,
@@ -29,9 +30,11 @@ function StorageDetailsTab({
     const [categories, setCategories] = useState(storageCategories || [])
     const [categorySearchValue, setCategorySearchValue] = useState();
     const [categorySearchResults, setCategorySearchResult] = useState([]);
+    const [allCategories, setAllCategories] = useState([]);
+    const [isOpen, setIsOpen] = useState(true)
     const modal = useModal();
-    const {pageState, setPageState} = useContext(PageContext);
-    const {isEditMode} = pageState;
+    const { pageState, setPageState } = useContext(PageContext);
+    const { isEditMode } = pageState;
 
     const [fields, setFields] = useState({
         description,
@@ -49,6 +52,17 @@ function StorageDetailsTab({
         });
         setUpdated(true);
     };
+
+
+    const closeMenue = async event => {
+        setIsOpen(false)
+
+        //setTimeout(setIsOpen(true),
+            //2000)
+
+        console.log("this is a test to see", isOpen)
+    }
+
 
     useEffect(() => {
         baseStateRef.current = {
@@ -97,7 +111,7 @@ function StorageDetailsTab({
     };
 
     const updateStorageLocation = () => {
-        const data = {...fields};
+        const data = { ...fields };
 
         setLoading(true);
         updateStorageLocationCall(storageLocationId, data)
@@ -151,37 +165,37 @@ function StorageDetailsTab({
                 setLoading(false);
             });
     };
-    const [allCategories, setAllCategories] = useState([]);
+
     const fetchCategories = () => {
         getCategories("storage", 1000, categorySearchValue)
-        .then(data => {
-            let clone = [...categories];
-            const container = [];
-            data.data.filter(item => {
-                clone.map((res, index) => {
-                    if (item._id === res) {
-                        container.push({_id: res, name: item.name})
-                    }
-                })
-            })
-
-            setAllCategories(data.data)
-            if (typeof categories[0] === 'string') {
-                const newCategories = [];
-
-                container.map(item => {
-                    categories.map(result => {
-                        if (item._id === result) {
-                            newCategories.push(item);
+            .then(data => {
+                let clone = [...categories];
+                const container = [];
+                data.data.filter(item => {
+                    clone.map((res, index) => {
+                        if (item._id === res) {
+                            container.push({ _id: res, name: item.name })
                         }
                     })
-                });
-                
-                setCategories(newCategories)
-            }
+                })
 
-            setCategorySearchResult(data.data.map(item => { return item.name }));
-        })
+                setAllCategories(data.data)
+                if (typeof categories[0] === 'string') {
+                    const newCategories = [];
+
+                    container.map(item => {
+                        categories.map(result => {
+                            if (item._id === result) {
+                                newCategories.push(item);
+                            }
+                        })
+                    });
+
+                    setCategories(newCategories)
+                }
+
+                setCategorySearchResult(data.data.map(item => { return item.name }));
+            })
             .catch(error => {
                 console.log('Unable to retrieve iventory category items: ', error);
             });
@@ -190,7 +204,7 @@ function StorageDetailsTab({
     useEffect(() => {
         fetchCategories();
     }, [categorySearchValue, categories]);
-   
+
 
     const createCategory = (name) => {
         if (!name) return;
@@ -242,20 +256,23 @@ function StorageDetailsTab({
 
         checkCategories.map((name) => {
             const value = allCategories.find(item => item.name === name);
-            
+
             value && categoryIds.push(value._id);
         })
 
-        if (checkCategories.length === 0)
-        {
+        if (checkCategories.length === 0) {
             categoryIds = []
         }
 
         onFieldChange('categories')(categoryIds)
     }
-    
-    return (
-        <>
+
+    return ( 
+       
+        <>  
+        
+            
+            
             <Row>
                 <Record
                     recordTitle="Description"
@@ -268,7 +285,7 @@ function StorageDetailsTab({
                     flex={1}
                 />
             </Row>
-
+            
             <Row>
                 <Record
                     recordTitle="Room Name"
@@ -281,37 +298,40 @@ function StorageDetailsTab({
                 />
             </Row>
 
+
             <Row>
-                {isEditMode ? 
+                {isEditMode ?
                     <MultipleSelectionsField
-                    boxDirection={'column'}
-                    boxAlign={''}
-                    label={"Categories"}
-                    value={categories.map(x=> x.name)}
-                    onOptionsSelected={(value) => handleCategorySelected(value)}
-                    options={categorySearchResults}
-                    createNew={() => createCategory(categorySearchValue)}
-                    searchText={categorySearchValue}
-                    onSearchChangeText={(value) => setCategorySearchValue(value)}
-                    onClear={() => { setCategorySearchValue('')}}
-                    handlePopovers={() => { }}
-                    isPopoverOpen={true}
-                /> :
-                <Record
+                        boxDirection={'column'}
+                        boxAlign={''}
+                        label={"Categories"}
+                        value={categories.map(x => x.name)}
+                        onOptionsSelected={(value) => handleCategorySelected(value)}
+                        options={categorySearchResults}
+                        createNew={() => createCategory(categorySearchValue)}
+                        searchText={categorySearchValue}
+                        onSearchChangeText={(value) => setCategorySearchValue(value)}
+                        onClear={() => { setCategorySearchValue('') }}
+                        handlePopovers={() => { }}
+                        isPopoverOpen={isOpen}
+                    /> :
+                    <Record
                         recordTitle="Categories"
                         recordValue={categories.length > 0 ? categories.map(x => x.name).join(', ') : '--'}
                         flex={1}
                     />
                 }
-                
+
             </Row>
 
             <Footer
                 hasActionButton={true}
                 hasActions={false}
                 hasPaginator={false}
-            />
-        </>
+            /> 
+            
+        </> 
+       
     );
 }
 
@@ -346,7 +366,7 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontWeight: 'normal',
     },
-    textLink: {color: '#3182CE'}
+    textLink: { color: '#3182CE' }
 });
 
 export default StorageDetailsTab;

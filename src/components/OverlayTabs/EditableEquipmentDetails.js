@@ -12,7 +12,7 @@ import Row from "../common/Row";
 import _ from "lodash";
 import { useTheme } from "emotion-theming";
 import TextArea from '../common/Input Fields/TextArea';
-import ResponsiveRecord from "../common/Information Record/ResponsiveRecord";
+import TouchableRecord from "../common/Information Record/TouchableRecord";
 import Record from "../common/Information Record/Record";
 
 
@@ -80,7 +80,7 @@ const EditableEquipmentDetails = ({ fields, onFieldChange, handlePopovers, popov
 
                     <InputWrapper>
                         <LabelText theme={theme}>Assigned</LabelText>
-                        <ResponsiveRecord
+                        <TouchableRecord
                             recordValue={fields['assigned']}
                             handleRecordPress={() => { }}
                         />

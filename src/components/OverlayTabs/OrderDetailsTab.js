@@ -2,7 +2,7 @@ import React, { useRef, useContext, useState, useEffect } from "react";
 import { View, Text, StyleSheet } from "react-native";
 import Record from "../common/Information Record/Record";
 import Row from "../common/Row";
-import ResponsiveRecord from "../common/Information Record/ResponsiveRecord";
+import TouchableRecord from "../common/Information Record/TouchableRecord";
 import { formatDate, formatToCurrency, handleNumberValidation } from "../../utils/formatter";
 import { formatAmount } from "../../helpers/caseFilesHelpers";
 import { transformToSentence } from "../../hooks/useTextEditHook";
@@ -288,7 +288,7 @@ const OrderDetailsTab = ({
                 </Row>
 
                 <Row>
-                    <ResponsiveRecord
+                    <TouchableRecord
                         recordTitle="Invoice"
                         recordValue={invoice?.invoiceNumber || ""}
                     />
@@ -348,7 +348,7 @@ const OrderDetailsTab = ({
                                     onChangeText={onLocationSearchTextUpdated}
                                 />
                             </InputWrapper>
-                            : <ResponsiveRecord
+                            : <TouchableRecord
                                 recordTitle="Storage Location"
                                 recordValue={fields?.storageLocation?.name || '--'}
                             />

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext, useRef } from "react";
 import { View, Text, StyleSheet } from "react-native";
 import Record from '../common/Information Record/Record';
-import ResponsiveRecord from '../common/Information Record/ResponsiveRecord';
+import TouchableRecord from '../common/Information Record/TouchableRecord';
 import Row from '../common/Row';
 import LineDivider from '../common/LineDivider';
 
@@ -303,13 +303,9 @@ const SupplierDetailsTab = ({ supplierId, onUpdated, order, refresh = () => { } 
                     {
 
                         !isEditMode
-                            ? <ResponsiveRecord
+                            ? <Record
                                 recordTitle="Telephone"
                                 recordValue={fields['phone']}
-                                handleRecordPress={() => {
-                                }}
-                                editMode={isEditMode}
-                                isPhone={true}
                             />
 
                             : <InputWrapper>
@@ -344,7 +340,7 @@ const SupplierDetailsTab = ({ supplierId, onUpdated, order, refresh = () => { } 
 
                     {
                         !isEditMode
-                            ? <ResponsiveRecord
+                            ? <TouchableRecord
                                 recordTitle="Email"
                                 recordValue={fields['email']}
                                 handleRecordPress={() => {
@@ -377,14 +373,11 @@ const SupplierDetailsTab = ({ supplierId, onUpdated, order, refresh = () => { } 
                                     recordTitle="Representative"
                                     recordValue={item.name}
                                 />
-                                <ResponsiveRecord
+                                <Record
                                     recordTitle="Rep. Telephone"
                                     recordValue={item.phone}
-                                    handleRecordPress={() => {
-                                    }}
-                                    isPhone={true}
                                 />
-                                <ResponsiveRecord
+                                <TouchableRecord
                                     recordTitle="Rep. Email"
                                     recordValue={item.email}
                                     handleRecordPress={() => {

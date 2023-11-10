@@ -7,7 +7,7 @@ import ColumnSectionsList from '../common/ColumnsSectionsList';
 import Record from '../common/Information Record/Record';
 import ColumnSection from '../common/ColumnSection';
 import {transformToSentence, formatDate, calcAge, formatTrn} from '../../utils/formatter';
-import ResponsiveRecord from '../common/Information Record/ResponsiveRecord';
+import TouchableRecord from '../common/Information Record/TouchableRecord';
 import InputField2 from '../common/Input Fields/InputField2';
 import Footer from '../common/Page/Footer';
 import Row from '../common/Row';
@@ -98,21 +98,21 @@ const PhysiciansDetailsTab = ({physician}) => {
     ];
 
     const contactData = [
-        <ResponsiveRecord
+        <TouchableRecord
             recordTitle="Primary Email"
             recordValue={emailObject.primary}
             handleRecordPress={() => {
             }}
             isEmail={true}
         />,
-        <ResponsiveRecord
+        <TouchableRecord
             recordTitle="Alternate Email"
             recordValue={emailObject.other}
             handleRecordPress={() => {
             }}
             isEmail={true}
         />,
-        <ResponsiveRecord
+        <TouchableRecord
             recordTitle="Work Email"
             recordValue={emailObject.work}
             isEmail={true}
@@ -133,13 +133,13 @@ const PhysiciansDetailsTab = ({physician}) => {
                 <Record
                     recordTitle="Emergency Name 1"
                 />,
-                <ResponsiveRecord
+                <TouchableRecord
                     recordTitle="Emergency Number 1"
                     handleRecordPress={() => {
                     }}
                     isPhone={true}
                 />,
-                <ResponsiveRecord
+                <TouchableRecord
                     recordTitle="Emergency Email 1"
                     handleRecordPress={() => {
                     }}
@@ -156,14 +156,14 @@ const PhysiciansDetailsTab = ({physician}) => {
                         recordTitle={`Emergency Name ${index + 1}`}
                         recordValue={`${contact.name && contact.relation ? `${contact.name} (${contact.relation})` : contact.name ? contact.name : '--'} `}
                     />,
-                    <ResponsiveRecord
+                    <TouchableRecord
                         recordTitle={`Emergency Number ${index + 1}`}
                         recordValue={contact.phone}
                         handleRecordPress={() => {
                         }}
                         isPhone={true}
                     />,
-                    <ResponsiveRecord
+                    <TouchableRecord
                         recordTitle={`Emergency Email ${index + 1}`}
                         recordValue={contact.email}
                         handleRecordPress={() => {
@@ -182,7 +182,7 @@ const PhysiciansDetailsTab = ({physician}) => {
             numOfColumns={3}
         />,
         <Row>
-            <ResponsiveRecord
+            <TouchableRecord
                 recordTitle="Cell Phone Number"
                 recordValue={phoneObject.cell}
                 handleRecordPress={() => {
@@ -190,14 +190,14 @@ const PhysiciansDetailsTab = ({physician}) => {
                 isPhone={true}
 
             />
-            <ResponsiveRecord
+            <TouchableRecord
                 recordTitle="Home Phone Number"
                 recordValue={phoneObject.home}
                 handleRecordPress={() => {
                 }}
                 isPhone={true}
             />
-            <ResponsiveRecord
+            <TouchableRecord
                 recordTitle="Work Phone Number"
                 recordValue={phoneObject.work}
                 handleRecordPress={() => {

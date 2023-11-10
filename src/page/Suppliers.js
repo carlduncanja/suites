@@ -266,7 +266,7 @@ const Suppliers = props => {
                 flex={2}
                 color="--color-gray-800"
             />
-            <TouchableDataItem
+            <DataItem
                 text={item.phone}
                 onPress={() => {
                 }}
