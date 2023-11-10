@@ -2,7 +2,7 @@ import React, { useRef, useContext, useState, useEffect } from "react";
 import { View, Text, StyleSheet } from "react-native";
 import Record from "../common/Information Record/Record";
 import Row from "../common/Row";
-import ResponsiveRecord from "../common/Information Record/ResponsiveRecord";
+import TouchableRecord from "../common/Information Record/TouchableRecord";
 import { formatDate } from "../../utils/formatter";
 import { formatAmount } from "../../helpers/caseFilesHelpers";
 import { transformToSentence } from "../../hooks/useTextEditHook";
@@ -220,7 +220,7 @@ const InvoiceDetailsTab =({
                 </Row>
 
                 <Row>
-                    <ResponsiveRecord
+                    <TouchableRecord
                         recordTitle="Purchase Order ID"
                         recordValue={purchaseOrder?.purchaseOrderNumber|| ""}
                     />
@@ -247,7 +247,7 @@ const InvoiceDetailsTab =({
                         recordTitle="Delivered On"
                         recordValue={ formatDate(updatedAt, 'DD/MM/YYYY')}
                     /> 
-                    <ResponsiveRecord
+                    <TouchableRecord
                                 recordTitle="Storage Location"
                                 recordValue={'--'}
                             />

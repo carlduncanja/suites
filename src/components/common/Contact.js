@@ -2,27 +2,27 @@ import React,{  } from "react";
 import { View, Text } from 'react-native';
 import ColumnSection from './ColumnSection';
 import Record from './Information Record/Record';
-import ResponsiveRecord from './Information Record/ResponsiveRecord';
+import TouchableRecord from './Information Record/TouchableRecord';
 
 const Contact = ({contacts}) => {
     const personContacts = []
     contacts.map( contact =>{
-        const cell = <ResponsiveRecord
+        const cell = <TouchableRecord
             recordTitle = "Cell Phone"
             recordValue = {contact.phone.cell}
             handleRecordPress = {contact.phone.handlePress}
         />
-        const home = <ResponsiveRecord
+        const home = <TouchableRecord
             recordTitle = "Home Phone Number"
             recordValue = {contact.phone.home}
             handleRecordPress = {contact.phone.handlePress}
         />
-        const work = <ResponsiveRecord
+        const work = <TouchableRecord
             recordTitle = "Work Phone Number"
             recordValue = {contact.phone.work}
             handleRecordPress = {contact.phone.handlePress}
         />
-        const primaryEmail = <ResponsiveRecord
+        const primaryEmail = <TouchableRecord
             recordTitle = "Primary Email"
             recordValue = {contact.email.primary}
             handleRecordPress = {contact.email.handlePress}
@@ -31,7 +31,7 @@ const Contact = ({contacts}) => {
             recordTitle = "Alternate Email"
             recordValue = {contact.email.alternate}
         />
-        const workEmail = <ResponsiveRecord
+        const workEmail = <TouchableRecord
             recordTitle = "Work Email"
             recordValue = {contact.email.work}
             handleRecordPress = {contact.email.handlePress}

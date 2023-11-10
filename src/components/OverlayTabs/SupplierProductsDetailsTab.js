@@ -1,7 +1,7 @@
 import React, {useState, useEffect, useContext} from "react";
 import {View, Text, StyleSheet} from "react-native";
 import Record from '../common/Information Record/Record';
-import ResponsiveRecord from '../common/Information Record/ResponsiveRecord';
+import TouchableRecord from '../common/Information Record/TouchableRecord';
 import Row from '../common/Row';
 import LineDivider from '../common/LineDivider';
 

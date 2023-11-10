@@ -5,7 +5,7 @@ import {withModal, useModal} from 'react-native-modalfy';
 import _ from 'lodash';
 import Record from '../common/Information Record/Record';
 import Footer from '../common/Page/Footer';
-import ResponsiveRecord from '../common/Information Record/ResponsiveRecord';
+import TouchableRecord from '../common/Information Record/TouchableRecord';
 import ColumnSection from '../common/ColumnSection';
 import FloatingActionButton from '../common/FloatingAction/FloatingActionButton';
 import ActionContainer from '../common/FloatingAction/ActionContainer';

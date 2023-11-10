@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import styled, { css } from '@emotion/native';
 import { useTheme } from 'emotion-theming';
 import * as Linking from 'expo-linking';
+import * as Device from 'expo-device'
 import { useModal } from 'react-native-modalfy';
 import ConfirmationComponent from '../../ConfirmationComponent';
 
@@ -30,7 +31,7 @@ const TitleWrapper = styled.View`
     justify-content: center;
 `;
 
-function ResponsiveRecord({
+function TouchableRecord({
     recordTitle = "",
     recordValue = '--',
     titleStyle = "--text-xs-medium",
@@ -50,26 +51,30 @@ function ResponsiveRecord({
     const modal = useModal();
 
     const toggleError = () => {
-        modal.openModal(
-            'ConfirmationModal',
-            {
-                content: <ConfirmationComponent
-                    isEditUpdate={false}
-                    titleText={'Error'}
-                    isError={true}
-                    onCancel={() => {
-                        modal.closeAllModals();
-                    }}
-                    onAction={() => {
-                        modal.closeAllModals();
-                    }}
-                    message={`There was an issue launching the ${isEmail ? "Email" : "Phone"} client application.`}
-                />,
-                onClose: () => {
-                    modal.closeModals('ConfirmationModal');
+        const { isDevice } = Device// => false if simulator
+        isDevice ?
+            modal.openModal(
+                'ConfirmationModal',
+                {
+                    content: <ConfirmationComponent
+                        isEditUpdate={false}
+                        titleText={'Error'}
+                        isError={true}
+                        onCancel={() => {
+                            modal.closeAllModals();
+                        }}
+                        onAction={() => {
+                            modal.closeAllModals();
+                        }}
+                        message={`There was an issue launching the ${isEmail ? "Email" : "Phone"} client application.`}
+                    />,
+                    onClose: () => {
+                        modal.closeModals('ConfirmationModal');
+                    }
                 }
-            }
-        );
+            )
+            : 
+            null
     }
 
     const togglePhoneCall = (phoneNumber) => {
@@ -106,14 +111,14 @@ function ResponsiveRecord({
                 </TitleWrapper>
 
 
-                <ValueText theme={theme} valueStyle={valueStyle}
+                <ValueText testID={`${recordTitle}-value`} theme={theme} valueStyle={valueStyle}
                     valueColor={valueColor}>{recordValue === "" ? "--" : recordValue}</ValueText>
             </RecordContainer>
         </RecordWrapper>
     );
 }
 
-export default ResponsiveRecord;
+export default TouchableRecord;
 
 const styles = StyleSheet.create({
     container: { flexDirection: 'column' },

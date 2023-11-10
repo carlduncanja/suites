@@ -209,7 +209,7 @@ function Storage(props) {
         setFetchingData(true);
         getStorage(searchValue, recordsPerPage, currentPosition)
             .then(storageResult => {
-                const { data = [], pages = 0 } = storageResult;
+                const { data = [], pages = 0 } = storageResult; 
                 if (pages === 1) {
                     setPreviousDisabled(true);
                     setNextDisabled(true);
