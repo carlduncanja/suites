@@ -23,35 +23,7 @@ const NavPageContainer = styled.View`
  */
 
 /**
- * @typedef {Object} NavPageProps
- * @property {boolean} isFetchingData
- * @property {JSX.Element} TopButton
- * @property {VoidCallback} onRefresh
- * @property {string} placeholderText
- * @property {VoidCallback} changeText
- * @property {string} inputText
- * @property {string} routeName
- * @property {Array} listData
- * @property {Array} listHeaders
- * @property {Array} itemsSelected
- * @property {VoidCallback} onSelectAll
- * @property {JSXCallback} listItemFormat
- *
- * @property {number} totalPages
- * @property {number} currentPage
- * @property {VoidCallback} goToNextPage
- * @property {VoidCallback} goToPreviousPage
- * @property {boolean} isDisabled
- * @property {VoidCallback} toggleActionButton
- * @property {boolean} hasPaginator
- * @property {boolean} hasActionButton
- * @property {boolean} hasActions
- * @property {boolean} isNextDisabled
- * @property {boolean} isPreviousDisabled
- * @property {Object} navigation
- * @property {boolean} hasEmpty - what does this mean?
- * @property {boolean} hasList
- * @property {string} emptyTitle
+ * @typedef {PageProps & FooterProps} NavPageProps
  */
 
 /**
@@ -60,69 +32,69 @@ const NavPageContainer = styled.View`
  * @returns {JSX.Element}
  */
 function NavPage({
-    isFetchingData = () => {},
-    TopButton = null,
-    onRefresh = () => {},
-    placeholderText = "",
     changeText = () => {},
+    emptyTitle,
+    hasEmpty = false,
+    hasList,
     inputText = "",
-    routeName = "",
+    isFetchingData = () => {},
+    itemsSelected = [],
     listData = [],
     listHeaders = [],
-    itemsSelected = [],
-    onSelectAll = () => {},
     listItemFormat = () => {},
+    navigation,
+    onRefresh = () => {},
+    onSelectAll = () => {},
+    placeholderText = "", //for what?
+    routeName = "",
+    TopButton = null,
 
-    totalPages = 0,
     currentPage = 0,
     goToNextPage = () => {},
     goToPreviousPage = () => {},
-    isDisabled = false,
-    toggleActionButton = () => {},
-    hasPaginator = true,
     hasActionButton = true,
     hasActions = true,
-    isNextDisabled = () => {},
-    isPreviousDisabled = () => {},
-    navigation,
-    hasEmpty = false,
-    hasList,
-    emptyTitle,
+    hasPaginator = true,
+    isDisabled = false,
+    isNextDisabled = true,
+    isPreviousDisabled = true,
+    toggleActionButton = () => {},
+    totalPages = 0,
 }) {
     return (
         <NavPageWrapper>
             <NavPageContainer>
                 <Page
-                    isFetchingData={isFetchingData}
-                    onRefresh={onRefresh}
-                    placeholderText={placeholderText}
                     changeText={changeText}
-                    inputText={inputText}
-                    routeName={routeName}
-                    listData={listData}
-                    TopButton={TopButton}
-                    listHeaders={listHeaders}
-                    itemsSelected={itemsSelected}
-                    onSelectAll={onSelectAll}
-                    listItemFormat={listItemFormat}
-                    navigation={navigation}
+                    emptyTitle={emptyTitle}
                     hasEmpty={hasEmpty}
                     hasList={hasList}
-                    emptyTitle={emptyTitle}
+                    inputText={inputText}
+                    isFetchingData={isFetchingData}
+                    itemsSelected={itemsSelected}
+                    listData={listData}
+                    listHeaders={listHeaders}
+                    listItemFormat={listItemFormat}
+                    navigation={navigation}
+                    onRefresh={onRefresh}
+                    onSelectAll={onSelectAll}
+                    placeholderText={placeholderText}
+                    routeName={routeName}
+                    TopButton={TopButton}
                 />
 
                 <Footer
-                    totalPages={totalPages}
                     currentPage={currentPage}
                     goToNextPage={goToNextPage}
                     goToPreviousPage={goToPreviousPage}
-                    isDisabled={isDisabled}
-                    toggleActionButton={toggleActionButton}
-                    hasPaginator={hasPaginator}
                     hasActionButton={hasActionButton}
                     hasActions={hasActions}
+                    hasPaginator={hasPaginator}
+                    isDisabled={isDisabled}
                     isNextDisabled={isNextDisabled}
                     isPreviousDisabled={isPreviousDisabled}
+                    toggleActionButton={toggleActionButton}
+                    totalPages={totalPages}
                 />
             </NavPageContainer>
         </NavPageWrapper>

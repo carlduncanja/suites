@@ -62,7 +62,28 @@ const MessageWrapper = styled.Text(({ theme }) => ({
 }));
 
 /**
- * @returns {*}
+ * @typedef {Object} PageProps
+ * @property {VoidCallback} changeText
+ * @property {string} emptyTitle
+ * @property {boolean} hasEmpty - what does this mean?
+ * @property {boolean} hasList
+ * @property {string} inputText
+ * @property {boolean} isFetchingData
+ * @property {Array} itemsSelected
+ * @property {Array} listData
+ * @property {Array} listHeaders
+ * @property {JSXCallback} listItemFormat
+ * @property {Object} navigation
+ * @property {VoidCallback} onRefresh
+ * @property {VoidCallback} onSelectAll
+ * @property {string} placeholderText
+ * @property {string} routeName
+ * @property {JSX.Element} TopButton
+ */
+
+/**
+ * @param {PageProps} props
+ * @returns {JSX.Element}
  * @constructor
  */
 function Page(props) {
