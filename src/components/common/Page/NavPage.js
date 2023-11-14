@@ -12,6 +12,53 @@ const NavPageContainer = styled.View`
     height: 100%;
 `;
 
+/**
+ * @callback VoidCallback
+ * @returns {void}
+ */
+
+/**
+ * @callback JSXCallback
+ * @returns {JSX.Element}
+ */
+
+/**
+ * @typedef {Object} NavPageProps
+ * @property {boolean} isFetchingData
+ * @property {JSX.Element} TopButton
+ * @property {VoidCallback} onRefresh
+ * @property {string} placeholderText
+ * @property {VoidCallback} changeText
+ * @property {string} inputText
+ * @property {string} routeName
+ * @property {Array} listData
+ * @property {Array} listHeaders
+ * @property {Array} itemsSelected
+ * @property {VoidCallback} onSelectAll
+ * @property {JSXCallback} listItemFormat
+ *
+ * @property {number} totalPages
+ * @property {number} currentPage
+ * @property {VoidCallback} goToNextPage
+ * @property {VoidCallback} goToPreviousPage
+ * @property {boolean} isDisabled
+ * @property {VoidCallback} toggleActionButton
+ * @property {boolean} hasPaginator
+ * @property {boolean} hasActionButton
+ * @property {boolean} hasActions
+ * @property {boolean} isNextDisabled
+ * @property {boolean} isPreviousDisabled
+ * @property {Object} navigation
+ * @property {boolean} hasEmpty - what does this mean?
+ * @property {boolean} hasList
+ * @property {string} emptyTitle
+ */
+
+/**
+ *
+ * @param {NavPage} props
+ * @returns {JSX.Element}
+ */
 function NavPage({
     isFetchingData = () => {},
     TopButton = null,
