@@ -1,22 +1,8 @@
-import React, { useState } from "react";
-import { View, Text, StyleSheet } from "react-native";
+import React from "react";
+import { View, StyleSheet } from "react-native";
 import RoundedPaginator from "../Paginators/RoundedPaginator";
 import FloatingActionButton from "../FloatingAction/FloatingActionButton";
 import DisabledFloatingButton from "../../../../assets/svg/disabledFloatingButton";
-import styled, { css } from "@emotion/native";
-import { useTheme } from "emotion-theming";
-
-const FooterWrapper = styled.View`
-    width: 100%;
-    position: absolute;
-    bottom: 20;
-    right: 20;
-`;
-const FooterContainer = styled.View`
-    display: flex;
-    flex-direction: row;
-    align-self: flex-end;
-`;
 
 /**
  * @typedef {Object} FooterProps
@@ -29,7 +15,6 @@ const FooterContainer = styled.View`
  */
 
 /**
- *
  * @param {FooterProps} props
  * @returns {JSX.Element}
  */
@@ -46,45 +31,45 @@ function Footer({
     isNextDisabled = false,
     isPreviousDisabled = false,
 }) {
-    const theme = useTheme();
+    const styles = StyleSheet.create({
+        container: {
+            width: "100%",
+            position: "absolute",
+            alignItems: "center",
+            bottom: 20,
+            justifyContent: "center",
+        },
+        fab: {
+            position: "absolute",
+            right: 32,
+            justifyContent: "center",
+        },
+    });
 
     return (
-        <FooterWrapper>
-            <FooterContainer>
-                {hasPaginator && (
-                    <RoundedPaginator
-                        totalPages={totalPages}
-                        currentPage={currentPage}
-                        goToNextPage={goToNextPage}
-                        goToPreviousPage={goToPreviousPage}
-                        isNextDisabled={isNextDisabled}
-                        isPreviousDisabled={isPreviousDisabled}
-                    />
-                )}
-                {hasActionButton && (
+        <View style={styles.container}>
+            {hasPaginator && (
+                <RoundedPaginator
+                    totalPages={totalPages}
+                    currentPage={currentPage}
+                    goToNextPage={goToNextPage}
+                    goToPreviousPage={goToPreviousPage}
+                    isNextDisabled={isNextDisabled}
+                    isPreviousDisabled={isPreviousDisabled}
+                />
+            )}
+            {hasActionButton && (
+                <View style={styles.fab}>
                     <FloatingActionButton
                         isDisabled={isDisabled}
                         toggleActionButton={toggleActionButton}
                         hasActions={hasActions}
                     />
-                )}
-                {!hasActionButton ? <DisabledFloatingButton /> : <View />}
-            </FooterContainer>
-        </FooterWrapper>
+                </View>
+            )}
+            {!hasActionButton ? <DisabledFloatingButton /> : <View />}
+        </View>
     );
 }
 
 export default Footer;
-
-const styles = StyleSheet.create({
-    footer: {
-        flex: 1,
-        alignSelf: "flex-end",
-        flexDirection: "row",
-        position: "absolute",
-        bottom: 0,
-        marginBottom: 20,
-        right: 0,
-        marginRight: 30,
-    },
-});

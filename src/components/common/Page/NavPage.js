@@ -2,14 +2,12 @@ import React from "react";
 import Page from "./Page";
 import Footer from "./Footer";
 import styled from "@emotion/native";
-
 const NavPageWrapper = styled.View`
-    height: 100%;
     width: 100%;
 `;
 const NavPageContainer = styled.View`
     display: flex;
-    height: 100%;
+    align-items: "center";
 `;
 
 /**

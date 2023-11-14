@@ -15,6 +15,7 @@ import NetInfo from "@react-native-community/netinfo";
 const PageWrapper = styled.View`
     display: flex;
     height: 100%;
+    width: 100%;
     flex-direction: column;
     margin-left: 0px;
     padding-left: ${({ theme }) => theme.space["--space-32"]};
