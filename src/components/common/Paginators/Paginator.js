@@ -1,49 +1,70 @@
-import React, {Component, useContext} from 'react';
-import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
-import styled, {css} from '@emotion/native';
-import {useTheme} from 'emotion-theming';
-import SvgIcon from '../../../../assets/SvgIcon';
-import PaginatorRight from '../../../../assets/svg/paginationRight';
-import PaginatorLeft from '../../../../assets/svg/paginationLeft';
-import IconButton from '../Buttons/IconButton';
-import PaginatorNumbers from './PaginatorNumbers'; 
+import React from "react";
+import { StyleSheet } from "react-native";
+import styled from "@emotion/native";
+import { useTheme } from "emotion-theming";
+import RightArrow from "../../../../assets/svg/paginationRight";
+import LeftArrow from "../../../../assets/svg/paginationLeft";
+import IconButton from "../Buttons/IconButton";
+import PaginatorNumbers from "./PaginatorNumbers";
 
 const PaginatorWrapper = styled.View`
-  height: 100%;
-  width: 100%;
+    height: 100%;
+    width: 100%;
 `;
 const PaginatorContainer = styled.View`
-  height: 100%;
-  flex-direction : row;
-  align-items: center;
-  justify-content: center;
+    height: 100%;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
 `;
 
+/**
+ * @typedef {Object} PaginatorAndFooterProps
+ * @property {number} currentPage
+ * @property {VoidCallback} goToNextPage
+ * @property {VoidCallback} goToPreviousPage
+ * @property {boolean} isNextDisabled
+ * @property {boolean} isPreviousDisabled
+ * @property {number} totalPages
+ */
+
+/**
+ * @typedef {Object} PaginatorProps
+ * @extends PaginatorAndFooterProps
+ * @property {boolean} hasNumberBorder
+ * */
+
+/**
+ *
+ * @param {PaginatorProps} props
+ * @returns {JSX.Element}
+ */
 function Paginator({
     currentPage = 0,
-    totalPages = 0,
+    goToNextPage: onPressRightArrow = () => {},
+    goToPreviousPage: onPressLeftArrow = () => {},
     hasNumberBorder = true,
-    goToNextPage = () => {
-    },
-    goToPreviousPage = () => {
-    },
-    isNextDisabled = false,
-    isPreviousDisabled = false,
+    isNextDisabled: isRightArrowDisabled = false,
+    isPreviousDisabled: isLeftArrowDisabled = false,
+    totalPages = 0,
 }) {
     const theme = useTheme();
+
+    const leftArrowColor = isLeftArrowDisabled
+        ? theme.colors["--color-gray-400"]
+        : theme.colors["--company"];
+
+    const rightArrowColor = isRightArrowDisabled
+        ? theme.colors["--color-gray-400"]
+        : theme.colors["--company"];
 
     return (
         <PaginatorWrapper>
             <PaginatorContainer>
-
                 <IconButton
-                    Icon={(
-                        <PaginatorLeft
-                            strokeColor={isPreviousDisabled ? theme.colors['--color-gray-400'] : theme.colors['--company']}
-                        />
-                    )}
-                    onPress={goToPreviousPage}
-                    disabled={isPreviousDisabled}
+                    Icon={<LeftArrow strokeColor={leftArrowColor} />}
+                    onPress={onPressLeftArrow}
+                    disabled={isLeftArrowDisabled}
                 />
 
                 <PaginatorNumbers
@@ -53,18 +74,12 @@ function Paginator({
                 />
 
                 <IconButton
-                    Icon={(
-                        <PaginatorRight
-                            strokeColor={isNextDisabled ? theme.colors['--color-gray-400'] : theme.colors['--company']}
-                        />
-                    )}
-                    onPress={goToNextPage}
-                    disabled={isNextDisabled}
+                    Icon={<RightArrow strokeColor={rightArrowColor} />}
+                    onPress={onPressRightArrow}
+                    disabled={isRightArrowDisabled}
                 />
-
             </PaginatorContainer>
         </PaginatorWrapper>
-
     );
 }
 
@@ -72,15 +87,15 @@ export default Paginator;
 
 const styles = StyleSheet.create({
     container: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'center',
-        backgroundColor: 'yellow',
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "center",
+        backgroundColor: "yellow",
     },
     numbersContainer: {
-        backgroundColor: '#FAFAFA',
+        backgroundColor: "#FAFAFA",
         borderWidth: 1,
-        borderColor: '#CCD6E0',
+        borderColor: "#CCD6E0",
         borderRadius: 4,
         paddingLeft: 7,
         paddingRight: 7,
@@ -88,10 +103,10 @@ const styles = StyleSheet.create({
         paddingTop: 2,
         marginLeft: 10,
         marginRight: 10,
-        flexDirection: 'row',
+        flexDirection: "row",
     },
     numbers: {
         fontSize: 14,
-        color: '#313539',
+        color: "#313539",
     },
 });

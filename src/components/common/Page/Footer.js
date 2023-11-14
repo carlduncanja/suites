@@ -20,17 +20,12 @@ const FooterContainer = styled.View`
 
 /**
  * @typedef {Object} FooterProps
- * @property {number} currentPage
- * @property {VoidCallback} goToNextPage
- * @property {VoidCallback} goToPreviousPage
+ * @extends import("../Paginators/Paginator").PaginatorAndFooterProps
  * @property {boolean} hasActionButton
  * @property {boolean} hasActions
  * @property {boolean} hasPaginator
  * @property {boolean} isDisabled
- * @property {boolean} isNextDisabled
- * @property {boolean} isPreviousDisabled
  * @property {VoidCallback} toggleActionButtonß
- * @property {number} totalPages
  */
 
 /**
