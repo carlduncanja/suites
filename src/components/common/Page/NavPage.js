@@ -62,7 +62,6 @@ function NavPage({
                     hasEmpty={hasEmpty}
                     hasList={hasList}
                     emptyTitle={emptyTitle}
-                    // onClear = {onClear}
                 />
 
                 <Footer

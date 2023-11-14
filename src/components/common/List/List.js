@@ -1,9 +1,8 @@
 import React from "react";
-import { StyleSheet, FlatList } from "react-native";
+import { FlatList } from "react-native";
 import Header from "../Table/Header";
 
 import styled from "@emotion/native";
-import { useTheme } from "emotion-theming";
 
 /**
  * @param listData array of objects
@@ -39,8 +38,6 @@ function List({
     keyExtractor = (item) =>
         (item?.id || "" || item?._id || "") + new Date().getTime(),
 }) {
-    const theme = useTheme();
-
     const isIndeterminate =
         itemsSelected.length > 0 && itemsSelected.length !== listData.length;
 
@@ -72,10 +69,3 @@ function List({
 }
 
 export default List;
-
-const styles = StyleSheet.create({
-    header: {
-        marginBottom: 25,
-    },
-    data: {},
-});

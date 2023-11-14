@@ -1,5 +1,4 @@
 import React, { useContext, useEffect, useState } from "react";
-import { StyleSheet } from "react-native";
 import PageTitle from "./PageTitle";
 import Search from "../Search";
 import List from "../List/List";
@@ -9,7 +8,7 @@ import { PageSettingsContext } from "../../../contexts/PageSettingsContext";
 import PropTypes from "prop-types";
 import styled from "@emotion/native";
 import { useTheme } from "emotion-theming";
-import { useNavigation, useRoute } from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
 import LostConnectionPage from "./LostConnectionPage";
 import NetInfo from "@react-native-community/netinfo";
 
@@ -85,7 +84,6 @@ function Page(props) {
         TopButton,
         hasSearch = true,
         pageContent,
-        // navigation
     } = props;
 
     const navigation = useNavigation();
