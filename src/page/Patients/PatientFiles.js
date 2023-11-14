@@ -358,9 +358,6 @@ function PatientFiles(props) {
         const actionArray = [];
         const disabled = !!isEmpty(selectedPatientds);
         const enabled = selectedPatientds.length === 1;
-        const strokeColor = !enabled
-            ? theme.colors["--color-gray-600"]
-            : theme.colors["--color-red-700"];
         const deleteAction = (
             <View
                 style={{
