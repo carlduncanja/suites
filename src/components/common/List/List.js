@@ -44,8 +44,6 @@ function List({
     const isIndeterminate =
         itemsSelected.length > 0 && itemsSelected.length !== listData.length;
 
-    // should list fill remaining space or as much as content ?
-
     return (
         <ListWrapper>
             <ListContainer>

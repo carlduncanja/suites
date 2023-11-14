@@ -67,7 +67,6 @@ const MessageWrapper = styled.Text(({ theme }) => ({
  * @constructor
  */
 function Page(props) {
-    // const [state, dispatch] = useContext(SuitesContext);
     const theme = useTheme();
     const { pageSettingState } = useContext(PageSettingsContext);
     const { isDisabled } = pageSettingState;
@@ -83,22 +82,15 @@ function Page(props) {
         onRefresh,
         onSelectAll,
         itemsSelected,
-        onClear,
         TopButton,
-        hasList = true,
         hasSearch = true,
         pageContent,
-        hasEmpty,
-        emptyTitle,
         // navigation
     } = props;
 
     const navigation = useNavigation();
-    const route = useRoute();
 
     const [lostConnection, setLostConnection] = useState("false");
-
-    const isAdmin = route?.params?.isAdmin || false;
 
     useEffect(() => {
         NetInfo.addEventListener((state) => {
@@ -200,28 +192,3 @@ Page.propTypes = {
     onSelectAll: PropTypes.any,
     itemsSelected: PropTypes.any,
 };
-Page.defaultProps = {};
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        flexDirection: "column",
-        marginLeft: 5,
-        padding: 15,
-        backgroundColor: "#FAFAFA",
-    },
-    header: {},
-    list: {
-        flex: 1,
-    },
-    footer: {
-        flex: 1,
-        alignSelf: "flex-end",
-        flexDirection: "row",
-        position: "absolute",
-        bottom: 0,
-        marginBottom: 20,
-        right: 0,
-        marginRight: 30,
-    },
-});

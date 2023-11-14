@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { StyleSheet } from "react-native";
 import styled from "@emotion/native";
 import { useTheme } from "emotion-theming";
 import CheckBoxComponent from "../Checkbox";
@@ -58,21 +57,3 @@ function Header({
 }
 
 export default Header;
-
-const styles = StyleSheet.create({
-    headersContainer: {
-        //flex:1,
-        // marginLeft: 10,
-        flexDirection: "row",
-        //width:'100%'
-    },
-    item: {
-        flex: 1,
-        alignItems: "flex-start",
-        justifyContent: "center",
-    },
-    headerText: {
-        fontSize: 16,
-        color: "#718096",
-    },
-});

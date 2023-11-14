@@ -2,7 +2,6 @@ import React from "react";
 import Page from "./Page";
 import Footer from "./Footer";
 import styled from "@emotion/native";
-import { useTheme } from "emotion-theming";
 
 const NavPageWrapper = styled.View`
     height: 100%;
@@ -12,7 +11,7 @@ const NavPageContainer = styled.View`
     display: flex;
     height: 100%;
 `;
-// wow whole component dedicated to search?
+
 function NavPage({
     isFetchingData = () => {},
     TopButton = null,
@@ -38,14 +37,11 @@ function NavPage({
     hasActions = true,
     isNextDisabled = () => {},
     isPreviousDisabled = () => {},
-    onClear = () => {},
     navigation,
     hasEmpty = false,
     hasList,
     emptyTitle,
 }) {
-    const theme = useTheme();
-
     return (
         <NavPageWrapper>
             <NavPageContainer>
