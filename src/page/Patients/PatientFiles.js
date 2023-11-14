@@ -1,48 +1,54 @@
-import React, { useState, useEffect } from 'react';
-import { View } from 'react-native';
-import {useNavigation} from '@react-navigation/native'
-import { connect } from 'react-redux';
-import _, { isEmpty } from 'lodash';
-import { useModal } from 'react-native-modalfy';
-import moment from 'moment';
-import styled, { css } from '@emotion/native';
-import { useTheme } from 'emotion-theming';
-import ListItem from '../../components/common/List/ListItem';
-import ActionContainer from '../../components/common/FloatingAction/ActionContainer';
-import ActionItem from '../../components/common/ActionItem';
-import AddIcon from '../../../assets/svg/addIcon';
-import ArchiveIcon from '../../../assets/svg/archiveIcon';
-import DraftItem from '../../components/common/List/DraftItem';
+import React, { useState, useEffect } from "react";
+import { View } from "react-native";
+import { useNavigation } from "@react-navigation/native";
+import { connect } from "react-redux";
+import _, { isEmpty } from "lodash";
+import { useModal } from "react-native-modalfy";
+import moment from "moment";
+import styled, { css } from "@emotion/native";
+import { useTheme } from "emotion-theming";
+import ListItem from "../../components/common/List/ListItem";
+import ActionContainer from "../../components/common/FloatingAction/ActionContainer";
+import ActionItem from "../../components/common/ActionItem";
+import AddIcon from "../../../assets/svg/addIcon";
+import ArchiveIcon from "../../../assets/svg/archiveIcon";
+import DraftItem from "../../components/common/List/DraftItem";
 
-import { setCaseFiles } from '../../redux/actions/caseFilesActions';
-import { deleteCaseFile, getCaseFiles, removeCaseFiles, removeCaseFilesId } from '../../api/network';
+import { setCaseFiles } from "../../redux/actions/caseFilesActions";
+import {
+    deleteCaseFile,
+    getCaseFiles,
+    removeCaseFiles,
+    removeCaseFilesId,
+} from "../../api/network";
 
 import {
     useNextPaginator,
     usePreviousPaginator,
     selectAll,
-    checkboxItemPress, handleUnauthorizedError,
-} from '../../helpers/caseFilesHelpers';
-import { currencyFormatter, formatDate } from '../../utils/formatter';
+    checkboxItemPress,
+    handleUnauthorizedError,
+} from "../../helpers/caseFilesHelpers";
+import { currencyFormatter, formatDate } from "../../utils/formatter";
 
-import NavPage from '../../components/common/Page/NavPage';
-import DataItem from '../../components/common/List/DataItem';
+import NavPage from "../../components/common/Page/NavPage";
+import DataItem from "../../components/common/List/DataItem";
 import RightBorderDataItem from "../../components/common/List/RightBorderDataItem";
-import MultipleTextDataItem from '../../components/common/List/MultipleTextDataItem';
+import MultipleTextDataItem from "../../components/common/List/MultipleTextDataItem";
 import { emptyFn, LONG_PRESS_TIMER } from "../../const";
-import { PageSettingsContext } from '../../contexts/PageSettingsContext';
+import { PageSettingsContext } from "../../contexts/PageSettingsContext";
 import LongPressWithFeedback from "../../components/common/LongPressWithFeedback";
 import WasteIcon from "../../../assets/svg/wasteIcon";
 import { removeDraft } from "../../redux/actions/draftActions";
-import Button from '../../components/common/Buttons/Button';
-import ConfirmationComponent from '../../components/ConfirmationComponent';
-import { userPassword } from '../../const/suitesEndpoints';
-import { getPatients, deletePatient, } from '../../api/network';
-import patient from '../../../assets/svg/newCasePatient';
+import Button from "../../components/common/Buttons/Button";
+import ConfirmationComponent from "../../components/ConfirmationComponent";
+import { userPassword } from "../../const/suitesEndpoints";
+import { getPatients, deletePatient } from "../../api/network";
+import patient from "../../../assets/svg/newCasePatient";
 const ButtonContainer = styled.View`
     width: 105px;
     height: 26px;
-    border: 1px solid #A0AEC0;
+    border: 1px solid #a0aec0;
     box-sizing: border-box;
     border-radius: 6px;
     padding-top: 2px;
@@ -50,26 +56,26 @@ const ButtonContainer = styled.View`
 
 const listHeaders = [
     {
-        name: 'Name',
-        aligment: 'flex-start',
-        flex: 2
+        name: "Name",
+        aligment: "flex-start",
+        flex: 2,
     },
     {
-        name: 'Gender',
-        aligment: 'flex-end',
+        name: "Gender",
+        aligment: "flex-end",
         flex: 1,
     },
     {
         name: "Contact #",
-        aligment: 'flex-start',
+        aligment: "flex-start",
         flex: 1,
     },
     {
-        name: 'TRN',
+        name: "TRN",
         aligment: "flex-start",
         flex: 1,
-    }
-]
+    },
+];
 
 function PatientFiles(props) {
     //######## const
@@ -77,35 +83,34 @@ function PatientFiles(props) {
     const theme = useTheme();
     const recordsPerPage = 12;
 
-    const {
-        navigation
-    } = props
-
+    const { navigation } = props;
 
     // States
     const [selectedPatientds, setSelectedPatientIds] = useState([]);
     const [isFloatingActionDisabled, setFloatingAction] = useState(false);
-    const [searchValue, setSearchValue] = useState('');
+    const [searchValue, setSearchValue] = useState("");
     const [isFetchingPatients, setFetchingPatients] = useState(false);
-    const [patientData, setPatientData] = useState([])
+    const [patientData, setPatientData] = useState([]);
     const [searchResults, setSearchResult] = useState([]);
     const [searchQuery, setSearchQuery] = useState({});
     // pagination
     const [totalPages, setTotalPages] = useState(1);
     const [currentPageListMin, setCurrentPageListMin] = useState(0);
-    const [currentPageListMax, setCurrentPageListMax] = useState(recordsPerPage);
+    const [currentPageListMax, setCurrentPageListMax] =
+        useState(recordsPerPage);
     const [currentPagePosition, setCurrentPagePosition] = useState(1);
     const [isNextDisabled, setNextDisabled] = useState(false);
     const [isPreviousDisabled, setPreviousDisabled] = useState(true);
-    const [currentPage, setCurrentPage] = useState(1)
+    const [currentPage, setCurrentPage] = useState(1);
 
     useEffect(() => {
         if (!patientData.length) {
             fetchPatientFiles(currentPagePosition);
         }
         setTotalPages(
-            patientData.length === 0 ? 1 :
-                Math.ceil(patientData.length / recordsPerPage)
+            patientData.length === 0
+                ? 1
+                : Math.ceil(patientData.length / recordsPerPage)
         );
     }, []);
 
@@ -122,7 +127,7 @@ function PatientFiles(props) {
 
         const search = _.debounce(fetchPatientFiles, 300);
 
-        setSearchQuery(prevSearch => {
+        setSearchQuery((prevSearch) => {
             if (prevSearch && prevSearch.cancel) {
                 prevSearch.cancel();
             }
@@ -133,58 +138,59 @@ function PatientFiles(props) {
         // setCurrentPagePosition(1);
     }, [searchValue]);
 
-    const onSearchChange = input => {
+    const onSearchChange = (input) => {
         setSearchValue(input);
     };
 
+    const handleOnSelectAll = () => {
+        const updatedPatientData = selectAll(patientData, selectedPatientds);
+        setSelectedPatientIds(updatedPatientData);
+    };
+
     const goToNextPage = () => {
-        if (currentPagePosition < totalPages) { 
-            
-            
-            const {
-                currentPage,
-                currentListMin,
-                currentListMax
-            } = useNextPaginator(currentPagePosition, recordsPerPage, currentPageListMin, currentPageListMax);
-            
-            
-           
+        if (currentPagePosition < totalPages) {
+            const { currentPage, currentListMin, currentListMax } =
+                useNextPaginator(
+                    currentPagePosition,
+                    recordsPerPage,
+                    currentPageListMin,
+                    currentPageListMax
+                );
+
             setCurrentPagePosition(currentPagePosition);
             setCurrentPage(currentPage);
-            
-            
+
             setCurrentPageListMin(currentListMin);
             setCurrentPageListMax(currentListMax);
-            
+
             fetchPatientFiles(currentPage);
         }
     };
- 
-    
 
-    const goToPreviousPage = () => { 
-        const {
-            currentPage,
-            currentListMin,
-            currentListMax
-        } = usePreviousPaginator(currentPagePosition, recordsPerPage, currentPageListMin, currentPageListMax);
+    const goToPreviousPage = () => {
+        const { currentPage, currentListMin, currentListMax } =
+            usePreviousPaginator(
+                currentPagePosition,
+                recordsPerPage,
+                currentPageListMin,
+                currentPageListMax
+            );
         setCurrentPagePosition(currentPage);
- 
+
         setCurrentPageListMin(currentListMin);
         setCurrentPageListMax(currentListMax);
         fetchPatientFiles(currentPage);
     };
 
-    const fetchPatientFiles = pagePosition => {
+    const fetchPatientFiles = (pagePosition) => {
         const currentPosition = pagePosition || 1;
-        setCurrentPagePosition(currentPagePosition) 
-        setFetchingPatients(true) 
-        
-         
+        setCurrentPagePosition(currentPagePosition);
+        setFetchingPatients(true);
+
         getPatients(searchValue, recordsPerPage, currentPosition)
-            .then(patientResults => {
-                const { data = [], pages = 0 } = patientResults 
-                
+            .then((patientResults) => {
+                const { data = [], pages = 0 } = patientResults;
+
                 if (pages === 1) {
                     setPreviousDisabled(true);
                     setNextDisabled(true);
@@ -200,264 +206,277 @@ function PatientFiles(props) {
                 } else {
                     setNextDisabled(true);
                     setPreviousDisabled(true);
-                } 
-                setCurrentPagePosition(currentPosition)
+                }
+                setCurrentPagePosition(currentPosition);
                 setPatientData(data);
-                data.length === 0 ? setTotalPages(1) : setTotalPages(pages); 
-                
+                data.length === 0 ? setTotalPages(1) : setTotalPages(pages);
             })
-            .catch(error => {
+            .catch((error) => {
                 setTotalPages(1);
                 setPreviousDisabled(true);
                 setNextDisabled(true);
-                console.log("failed to get the data", error)
+                console.log("failed to get the data", error);
             })
-            .finally(_ => {
-                setFetchingPatients(false)
-            })
-    }
-    const patientItem = item => {
-        const {
-            firstName,
-            middleName,
-            surname,
-            gender,
-            contactInfo,
-            trn
-        } = item || {}
+            .finally((_) => {
+                setFetchingPatients(false);
+            });
+    };
+    const patientItem = (item) => {
+        const { firstName, middleName, surname, gender, contactInfo, trn } =
+            item || {};
 
-        const genderLetter = gender == 'Male' ? "M" : "F"
+        const genderLetter = gender == "Male" ? "M" : "F";
         //console.log("we are here", contactInfo.phones[0])
 
-        const phoneNumber = contactInfo?.phones[0]?.['phone'] || "--"
+        const phoneNumber = contactInfo?.phones[0]?.["phone"] || "--";
         return (
             <>
-                <RightBorderDataItem text={`${firstName} ${middleName === undefined ? "" : middleName} ${surname}`} flex={2} />
-                <DataItem text={genderLetter} color={"--color-blue-700"} flex={0.7} align={'flex-end'} />
-                <DataItem text={phoneNumber} color={"--color-blue-700"} flex={1.2} textAlign='center' />
+                <RightBorderDataItem
+                    text={`${firstName} ${
+                        middleName === undefined ? "" : middleName
+                    } ${surname}`}
+                    flex={2}
+                />
+                <DataItem
+                    text={genderLetter}
+                    color={"--color-blue-700"}
+                    flex={0.7}
+                    align={"flex-end"}
+                />
+                <DataItem
+                    text={phoneNumber}
+                    color={"--color-blue-700"}
+                    flex={1.2}
+                    textAlign="center"
+                />
                 <DataItem text={trn} color={"--color-blue-700"} flex={1} />
             </>
-        )
-    }
+        );
+    };
 
     const handleOnItemPress = (item, isOpenEditable) => () => {
-       
         if (item !== null) {
-                navigation.navigate('patient', {
-                    initial: false,
-                    patientPage: true,
-                    patientId: item._id,
-                    isEdit: isOpenEditable
-                });
+            navigation.navigate("patient", {
+                initial: false,
+                patientPage: true,
+                patientId: item._id,
+                isEdit: isOpenEditable,
+            });
         } else return;
     };
 
-    const renderFn = item => {
-        return <>
+    const renderFn = (item) => {
+        return (
+            <>
+                {console.log("i a, iajksj", item)}
 
-            {console.log('i a, iajksj', item)}
-
-            <ListItem
-                hasCheckBox={true}
-                isChecked={selectedPatientds.includes(item._id || item.id)}
-                itemView={patientItem(item)}
-                onItemPress={handleOnItemPress(item, false)}
-                onCheckBoxPress={handleOnCheckBoxPress(item)}
-            />
-        </>
-
-    }
+                <ListItem
+                    hasCheckBox={true}
+                    isChecked={selectedPatientds.includes(item._id || item.id)}
+                    itemView={patientItem(item)}
+                    onItemPress={handleOnItemPress(item, false)}
+                    onCheckBoxPress={handleOnCheckBoxPress(item)}
+                />
+            </>
+        );
+    };
 
     const openErrorConfirmation = () => {
-        modal.openModal(
-            'ConfirmationModal',
-            {
-                content: <ConfirmationComponent
+        modal.openModal("ConfirmationModal", {
+            content: (
+                <ConfirmationComponent
                     isError={true}
                     isEditUpdate={false}
-                    onCancel={() => modal.closeModals('ConfirmationModal')}
-                />,
-                onClose: () => {
-                    modal.closeModals('ConfirmationModal');
-                }
-            }
-        );
+                    onCancel={() => modal.closeModals("ConfirmationModal")}
+                />
+            ),
+            onClose: () => {
+                modal.closeModals("ConfirmationModal");
+            },
+        });
     };
 
     const handleDataRefresh = () => {
         fetchPatientFiles();
     };
 
-    const removePatientsCall = data => {
+    const removePatientsCall = (data) => {
         deletePatient(data)
-            .then(_ => {
-                modal.openModal(
-                    'ConfirmationModal',
-                    {
-                        content: <ConfirmationComponent
+            .then((_) => {
+                modal.openModal("ConfirmationModal", {
+                    content: (
+                        <ConfirmationComponent
                             isError={false}
                             isEditUpdate={false}
                             onAction={() => {
-                                modal.closeModals('ConfirmationModal');
+                                modal.closeModals("ConfirmationModal");
                                 setTimeout(() => {
-                                    modal.closeModals('ActionContainerModal');
+                                    modal.closeModals("ActionContainerModal");
                                     handleDataRefresh();
                                 }, 200);
                             }}
-                        />,
-                        onClose: () => {
-                            modal.closeModals('ConfirmationModal');
-                        }
-                    }
-                );
+                        />
+                    ),
+                    onClose: () => {
+                        modal.closeModals("ConfirmationModal");
+                    },
+                });
 
                 setSelectedPatientIds([]);
             })
-            .catch(error => {
+            .catch((error) => {
                 openErrorConfirmation();
                 setTimeout(() => {
-                    modal.closeModals('ActionContainerModal');
+                    modal.closeModals("ActionContainerModal");
                 }, 200);
-                console.log('Failed to remove case file: ', error);
+                console.log("Failed to remove case file: ", error);
             })
-            .finally(_ => {
+            .finally((_) => {
                 setFloatingAction(false);
             });
-    }
+    };
 
-    const openDeletionConfirm = data => {
-        modal.openModal(
-            'ConfirmationModal',
-            {
-                content: <ConfirmationComponent
+    const openDeletionConfirm = (data) => {
+        modal.openModal("ConfirmationModal", {
+            content: (
+                <ConfirmationComponent
                     isError={false}
                     isEditUpdate={true}
-                    onCancel={() => modal.closeModals('ConfirmationModal')}
+                    onCancel={() => modal.closeModals("ConfirmationModal")}
                     onAction={() => {
-                        modal.closeModals('ConfirmationModal');
+                        modal.closeModals("ConfirmationModal");
                         removePatientsCall(data);
-
                     }}
                     // onAction = { () => confirmAction()}
                     message="Do you want to delete these item(s)?"
-                />,
-                onClose: () => {
-
-                    modal.closeModals('ConfirmationModal');
-                }
-            }
-        );
-
+                />
+            ),
+            onClose: () => {
+                modal.closeModals("ConfirmationModal");
+            },
+        });
     };
 
     const handleRemovePatient = async (id) => {
-        
-        openDeletionConfirm({ patientIds: [...selectedPatientds] })
-    }
+        openDeletionConfirm({ patientIds: [...selectedPatientds] });
+    };
 
-    const handleOnCheckBoxPress = item => () => {
+    const handleOnCheckBoxPress = (item) => () => {
         const { _id, id } = item; // account for both drafts and created cases.
         const updateditems = checkboxItemPress(_id || id, selectedPatientds);
         setSelectedPatientIds(updateditems);
     };
 
     const openCreatePatient = () => {
-        modal.closeModals('ActionContainerModal');
-        navigation.navigate('PatientCreation', {
+        modal.closeModals("ActionContainerModal");
+        navigation.navigate("PatientCreation", {
             initial: false,
             draftItem: null,
-            intialPage: "Patient"
+            intialPage: "Patient",
         });
-    } 
+    };
 
-    const handleAddProcedure =()=>{
-        modal.closeModals('ActionContainerModal');
-        navigation.navigate('AddProcedure', {
+    const handleAddProcedure = () => {
+        modal.closeModals("ActionContainerModal");
+        navigation.navigate("AddProcedure", {
             initial: false,
             draftItem: null,
-            patientId:selectedPatientds[0]
+            patientId: selectedPatientds[0],
         });
-    }
+    };
 
     const getFabActions = () => {
-        const actionArray = []
+        const actionArray = [];
         const disabled = !!isEmpty(selectedPatientds);
-        const enabled = selectedPatientds.length === 1
-        const strokeColor = !enabled ? theme.colors['--color-gray-600'] : theme.colors['--color-red-700'];
+        const enabled = selectedPatientds.length === 1;
+        const strokeColor = !enabled
+            ? theme.colors["--color-gray-600"]
+            : theme.colors["--color-red-700"];
         const deleteAction = (
-            <View style={{
-                borderRadius: 6,
-                flex: 1,
-                overflow: 'hidden'
-            }}
+            <View
+                style={{
+                    borderRadius: 6,
+                    flex: 1,
+                    overflow: "hidden",
+                }}
             >
                 <LongPressWithFeedback
                     pressTimer={LONG_PRESS_TIMER.MEDIUM}
                     isDisabled={disabled}
-                    onLongPress={() => handleRemovePatient(selectedPatientds[0])}
+                    onLongPress={() =>
+                        handleRemovePatient(selectedPatientds[0])
+                    }
                 >
                     <ActionItem
                         title="Hold to Delete Patient"
-                        icon={(
+                        icon={
                             <WasteIcon
-                                strokeColor={disabled ? theme.colors['--color-gray-600'] : theme.colors['--color-red-700']}
+                                strokeColor={
+                                    disabled
+                                        ? theme.colors["--color-gray-600"]
+                                        : theme.colors["--color-red-700"]
+                                }
                             />
-                        )}
+                        }
                         touchable={false}
                         disabled={disabled}
                     />
                 </LongPressWithFeedback>
-
             </View>
         );
 
         const createPatient = (
             <ActionItem
-                title=' Create Patient'
+                title=" Create Patient"
                 icon={<AddIcon />}
                 onPress={openCreatePatient}
-            />)
+            />
+        );
 
         const addProcedure = (
             <ActionItem
-                title='Add Procedure'
-                icon={<AddIcon 
-                    strokeColor={!enabled ? theme.colors['--color-gray-600'] : theme.colors['--color-green-700']}
-                />} 
+                title="Add Procedure"
+                icon={
+                    <AddIcon
+                        strokeColor={
+                            !enabled
+                                ? theme.colors["--color-gray-600"]
+                                : theme.colors["--color-green-700"]
+                        }
+                    />
+                }
                 disabled={!enabled}
                 onPress={handleAddProcedure}
-            />) 
+            />
+        );
 
-        actionArray.push(addProcedure)
-        actionArray.push(createPatient)
-        actionArray.push(deleteAction)
+        actionArray.push(addProcedure);
+        actionArray.push(createPatient);
+        actionArray.push(deleteAction);
 
-
-
-        return <ActionContainer
-            floatingActions={actionArray}
-            title="CASE ACTIONS"
-        />;
-
-    }
+        return (
+            <ActionContainer
+                floatingActions={actionArray}
+                title="CASE ACTIONS"
+            />
+        );
+    };
 
     const toggleActionButton = () => {
         setFloatingAction(true);
-        modal.openModal('ActionContainerModal',
-            {
-                actions: getFabActions(),
-                title: 'PATIENT ACTIONS',
-                onClose: () => {
-                    setFloatingAction(false);
-                }
-            });
+        modal.openModal("ActionContainerModal", {
+            actions: getFabActions(),
+            title: "PATIENT ACTIONS",
+            onClose: () => {
+                setFloatingAction(false);
+            },
+        });
     };
 
     return (
-
         <NavPage
             isFetchingData={isFetchingPatients}
-            routeName='Patients'
+            routeName="Patients"
             placeholderText="Search Patient by First Name, Surname ,Contact Number or T.R.N"
             listData={patientData}
             changeText={onSearchChange}
@@ -468,14 +487,15 @@ function PatientFiles(props) {
                 <ButtonContainer theme={theme}>
                     <Button
                         title="Archives"
-                        color={theme.colors['--color-gray-500']}
+                        color={theme.colors["--color-gray-500"]}
                         font="--text-sm-regular"
                     />
-                </ButtonContainer>)}
+                </ButtonContainer>
+            )}
             listHeaders={listHeaders}
             isDisabled={isFloatingActionDisabled}
             toggleActionButton={toggleActionButton}
-
+            onSelectAll={handleOnSelectAll}
             totalPages={totalPages}
             currentPage={currentPagePosition}
             goToNextPage={goToNextPage}
@@ -486,15 +506,10 @@ function PatientFiles(props) {
             isNextDisabled={isNextDisabled}
             isPreviousDisabled={isPreviousDisabled}
         />
-
-
-    )
-
+    );
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {};
+const mapDispatcherToProp = {};
 
-}
-const mapDispatcherToProp = {}
-
-export default connect(mapStateToProps, mapDispatcherToProp)(PatientFiles)
+export default connect(mapStateToProps, mapDispatcherToProp)(PatientFiles);
