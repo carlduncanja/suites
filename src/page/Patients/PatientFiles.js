@@ -1,50 +1,30 @@
 import React, { useState, useEffect } from "react";
 import { View } from "react-native";
-import { useNavigation } from "@react-navigation/native";
-import { connect } from "react-redux";
 import _, { isEmpty } from "lodash";
 import { useModal } from "react-native-modalfy";
-import moment from "moment";
-import styled, { css } from "@emotion/native";
+import styled from "@emotion/native";
 import { useTheme } from "emotion-theming";
 import ListItem from "../../components/common/List/ListItem";
 import ActionContainer from "../../components/common/FloatingAction/ActionContainer";
 import ActionItem from "../../components/common/ActionItem";
 import AddIcon from "../../../assets/svg/addIcon";
-import ArchiveIcon from "../../../assets/svg/archiveIcon";
-import DraftItem from "../../components/common/List/DraftItem";
-
-import { setCaseFiles } from "../../redux/actions/caseFilesActions";
-import {
-    deleteCaseFile,
-    getCaseFiles,
-    removeCaseFiles,
-    removeCaseFilesId,
-} from "../../api/network";
 
 import {
     useNextPaginator,
     usePreviousPaginator,
     selectAll,
     checkboxItemPress,
-    handleUnauthorizedError,
 } from "../../helpers/caseFilesHelpers";
-import { currencyFormatter, formatDate } from "../../utils/formatter";
 
 import NavPage from "../../components/common/Page/NavPage";
 import DataItem from "../../components/common/List/DataItem";
 import RightBorderDataItem from "../../components/common/List/RightBorderDataItem";
-import MultipleTextDataItem from "../../components/common/List/MultipleTextDataItem";
-import { emptyFn, LONG_PRESS_TIMER } from "../../const";
-import { PageSettingsContext } from "../../contexts/PageSettingsContext";
+import { LONG_PRESS_TIMER } from "../../const";
 import LongPressWithFeedback from "../../components/common/LongPressWithFeedback";
 import WasteIcon from "../../../assets/svg/wasteIcon";
-import { removeDraft } from "../../redux/actions/draftActions";
 import Button from "../../components/common/Buttons/Button";
 import ConfirmationComponent from "../../components/ConfirmationComponent";
-import { userPassword } from "../../const/suitesEndpoints";
 import { getPatients, deletePatient } from "../../api/network";
-import patient from "../../../assets/svg/newCasePatient";
 const ButtonContainer = styled.View`
     width: 105px;
     height: 26px;
@@ -78,22 +58,19 @@ const listHeaders = [
 ];
 
 function PatientFiles(props) {
-    //######## const
     const modal = useModal();
     const theme = useTheme();
     const recordsPerPage = 12;
 
     const { navigation } = props;
 
-    // States
     const [selectedPatientds, setSelectedPatientIds] = useState([]);
     const [isFloatingActionDisabled, setFloatingAction] = useState(false);
     const [searchValue, setSearchValue] = useState("");
     const [isFetchingPatients, setFetchingPatients] = useState(false);
     const [patientData, setPatientData] = useState([]);
-    const [searchResults, setSearchResult] = useState([]);
     const [searchQuery, setSearchQuery] = useState({});
-    // pagination
+
     const [totalPages, setTotalPages] = useState(1);
     const [currentPageListMin, setCurrentPageListMin] = useState(0);
     const [currentPageListMax, setCurrentPageListMax] =
@@ -101,7 +78,6 @@ function PatientFiles(props) {
     const [currentPagePosition, setCurrentPagePosition] = useState(1);
     const [isNextDisabled, setNextDisabled] = useState(false);
     const [isPreviousDisabled, setPreviousDisabled] = useState(true);
-    const [currentPage, setCurrentPage] = useState(1);
 
     useEffect(() => {
         if (!patientData.length) {
@@ -117,7 +93,6 @@ function PatientFiles(props) {
     useEffect(() => {
         if (!searchValue) {
             // empty search values and cancel any out going request.
-            setSearchResult([]);
             fetchPatientFiles(1);
             if (searchQuery.cancel) searchQuery.cancel();
             return;
@@ -135,7 +110,6 @@ function PatientFiles(props) {
         });
 
         search();
-        // setCurrentPagePosition(1);
     }, [searchValue]);
 
     const onSearchChange = (input) => {
@@ -158,7 +132,6 @@ function PatientFiles(props) {
                 );
 
             setCurrentPagePosition(currentPagePosition);
-            setCurrentPage(currentPage);
 
             setCurrentPageListMin(currentListMin);
             setCurrentPageListMax(currentListMax);
@@ -226,7 +199,6 @@ function PatientFiles(props) {
             item || {};
 
         const genderLetter = gender == "Male" ? "M" : "F";
-        //console.log("we are here", contactInfo.phones[0])
 
         const phoneNumber = contactInfo?.phones[0]?.["phone"] || "--";
         return (
@@ -268,8 +240,6 @@ function PatientFiles(props) {
     const renderFn = (item) => {
         return (
             <>
-                {console.log("i a, iajksj", item)}
-
                 <ListItem
                     hasCheckBox={true}
                     isChecked={selectedPatientds.includes(item._id || item.id)}
@@ -329,7 +299,7 @@ function PatientFiles(props) {
                 setTimeout(() => {
                     modal.closeModals("ActionContainerModal");
                 }, 200);
-                console.log("Failed to remove case file: ", error);
+                console.log("Failed to remove patient file: ", error);
             })
             .finally((_) => {
                 setFloatingAction(false);
@@ -347,7 +317,6 @@ function PatientFiles(props) {
                         modal.closeModals("ConfirmationModal");
                         removePatientsCall(data);
                     }}
-                    // onAction = { () => confirmAction()}
                     message="Do you want to delete these item(s)?"
                 />
             ),
@@ -357,7 +326,7 @@ function PatientFiles(props) {
         });
     };
 
-    const handleRemovePatient = async (id) => {
+    const handleRemovePatient = async () => {
         openDeletionConfirm({ patientIds: [...selectedPatientds] });
     };
 
@@ -403,9 +372,7 @@ function PatientFiles(props) {
                 <LongPressWithFeedback
                     pressTimer={LONG_PRESS_TIMER.MEDIUM}
                     isDisabled={disabled}
-                    onLongPress={() =>
-                        handleRemovePatient(selectedPatientds[0])
-                    }
+                    onLongPress={() => handleRemovePatient()}
                 >
                     <ActionItem
                         title="Hold to Delete Patient"
@@ -457,7 +424,7 @@ function PatientFiles(props) {
         return (
             <ActionContainer
                 floatingActions={actionArray}
-                title="CASE ACTIONS"
+                title="PATIENT ACTIONS"
             />
         );
     };
@@ -509,7 +476,4 @@ function PatientFiles(props) {
     );
 }
 
-const mapStateToProps = (state) => {};
-const mapDispatcherToProp = {};
-
-export default connect(mapStateToProps, mapDispatcherToProp)(PatientFiles);
+export default PatientFiles;
