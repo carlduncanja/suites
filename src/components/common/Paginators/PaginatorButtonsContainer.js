@@ -27,33 +27,73 @@ function PaginatorNumbersContainer({
     totalPages = 0,
     onPressPageNumber,
 }) {
-    const maxNumButtonsBeforeEllipses = 6;
+    const maxButtonsPreEllipsis = 6;
 
-    const numButtonsToRenderBeforeEllipses =
-        totalPages > maxNumButtonsBeforeEllipses
-            ? maxNumButtonsBeforeEllipses
-            : totalPages;
+    const numButtonsPreEllipsis =
+        totalPages > maxButtonsPreEllipsis ? maxButtonsPreEllipsis : totalPages;
 
-    const areEllipsesVisible = totalPages > maxNumButtonsBeforeEllipses + 1;
-    const reference = new Array(numButtonsToRenderBeforeEllipses).fill(null);
+    const isEllipsisVisible =
+        totalPages > maxButtonsPreEllipsis + 1 && currentPage < totalPages - 1;
+    const isFinalButtonVisible =
+        isEllipsisVisible || currentPage <= totalPages - 1;
+    const preEllipsisButtonsReference = new Array(numButtonsPreEllipsis).fill(
+        null
+    );
 
     const styles = StyleSheet.create({
         container: {
             flexDirection: "row",
+            alignItems: "center",
+        },
+        ellipsis: {
+            justifyContent: "center",
+            marginHorizontal: 6,
         },
     });
 
+    const getPageNumber = (index) => {
+        if (currentPage <= maxButtonsPreEllipsis) {
+            return index + 1;
+        } else {
+            const overflow = currentPage - maxButtonsPreEllipsis;
+            return index + 1 + overflow;
+        }
+    };
+
+    const isSelected = (index) => {
+        if (currentPage <= maxButtonsPreEllipsis) {
+            return currentPage === index + 1;
+        } else {
+            const overflow = currentPage - maxButtonsPreEllipsis;
+            return currentPage === index + 1 + overflow;
+        }
+    };
+
     return (
         <View style={styles.container}>
-            {reference.map((_, index) => (
-                <Pressable onPress={() => onPressPageNumber(index + 1)}>
+            {preEllipsisButtonsReference.map((_, index) => (
+                <Pressable
+                    onPress={() => onPressPageNumber(getPageNumber(index))}
+                >
                     <PaginatorNumberButton
-                        number={index + 1}
-                        isSelected={currentPage === index + 1}
+                        number={getPageNumber(index)}
+                        isSelected={isSelected(index)}
                     />
                 </Pressable>
             ))}
-            {true && <Ellipsis fill="#f00" height={13} width={16} />}
+            {isEllipsisVisible && (
+                <View style={styles.ellipsis}>
+                    <Ellipsis fill="#313539" height={13} width={16} />
+                </View>
+            )}
+            {isFinalButtonVisible && (
+                <Pressable onPress={() => onPressPageNumber(totalPages)}>
+                    <PaginatorNumberButton
+                        number={totalPages}
+                        isSelected={currentPage === totalPages}
+                    />
+                </Pressable>
+            )}
         </View>
     );
 }

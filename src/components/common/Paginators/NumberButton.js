@@ -21,7 +21,7 @@ const PaginatorNumberButton = ({ number, isSelected }) => {
             backgroundColor: isSelected ? "#4299E1" : "#F9F9F9",
             justifyContent: "center",
             alignItems: "center",
-            marginHorizontal: 12,
+            marginHorizontal: 6,
         },
         number: {
             color: isSelected ? "#fff" : "#313539",
