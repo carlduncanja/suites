@@ -14,6 +14,7 @@ function IconButton({
         container: {
             flex: 1,
             paddingHorizontal: 10,
+            borderRadius: 4,
         },
         icon: {
             height: "100%",

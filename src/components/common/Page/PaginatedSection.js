@@ -77,10 +77,6 @@ function PaginatedSection({
         left: true,
         right: true,
     });
-    const [listBounds, setListBounds] = useState({
-        min: 0,
-        max: RECORDS_PER_PAGE,
-    });
 
     const isLeftArrowDisabled = (nextPage) => nextPage === 1;
 
@@ -90,11 +86,6 @@ function PaginatedSection({
 
     const onPressPageNumber = async (nextPage) => {
         setCurrentPage(nextPage);
-        const pageDifference = nextPage - currentPage;
-        setListBounds((bounds) => ({
-            min: bounds.min + pageDifference * RECORDS_PER_PAGE,
-            max: bounds.max + pageDifference * RECORDS_PER_PAGE,
-        }));
         setAreArrowsDisabled({
             left: isLeftArrowDisabled(nextPage),
             right: isRightArrowDisabled(nextPage),
@@ -104,18 +95,8 @@ function PaginatedSection({
 
     const onPressRightButton = async () => {
         if (!(currentPage < totalPages)) return;
-        const {
-            currentPage: nextPage,
-            currentListMin: nextListMin,
-            currentListMax: nextListMax,
-        } = useNextPaginator(
-            currentPage,
-            RECORDS_PER_PAGE,
-            listBounds.min,
-            listBounds.max
-        );
+        const nextPage = currentPage + 1;
         setCurrentPage(nextPage);
-        setListBounds({ min: nextListMin, max: nextListMax });
         setAreArrowsDisabled({
             left: isLeftArrowDisabled(nextPage),
             right: isRightArrowDisabled(nextPage),
@@ -126,18 +107,8 @@ function PaginatedSection({
     const onPressLeftButton = async () => {
         if (currentPage === 1) return;
 
-        const {
-            currentPage: nextPage,
-            currentListMin: nextListMin,
-            currentListMax: nextListMax,
-        } = usePreviousPaginator(
-            currentPage,
-            RECORDS_PER_PAGE,
-            listBounds.min,
-            listBounds.max
-        );
+        const nextPage = currentPage - 1;
         setCurrentPage(nextPage);
-        setListBounds({ min: nextListMin, max: nextListMax });
         setAreArrowsDisabled({
             left: isLeftArrowDisabled(nextPage),
             right: isRightArrowDisabled(nextPage),
@@ -166,14 +137,15 @@ function PaginatedSection({
 
     /** Initial fetch */
     useEffect(() => {
-        fetchSectionDataWrapper(currentPage).then(({ pages }) => {
-            if (pages > 1)
-                setAreArrowsDisabled((flags) => ({
-                    ...flags,
-                    right: false,
-                }));
-        });
-        if (sectionRecords.length) {
+        if (!sectionRecords.length) {
+            fetchSectionDataWrapper(currentPage).then(({ pages }) => {
+                if (pages > 1)
+                    setAreArrowsDisabled((flags) => ({
+                        ...flags,
+                        right: false,
+                    }));
+            });
+        } else {
             setTotalPages(Math.ceil(sectionRecords.length / RECORDS_PER_PAGE));
         }
     }, [routeName]);
