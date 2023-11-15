@@ -2,10 +2,6 @@ import React, { useState, useEffect } from "react";
 import Page from "./Page";
 import Footer from "./Footer";
 import styled from "@emotion/native";
-import {
-    useNextPaginator,
-    usePreviousPaginator,
-} from "../../../helpers/caseFilesHelpers";
 import { RECORDS_PER_PAGE } from "../../../const";
 const NavPageWrapper = styled.View`
     width: 100%;
@@ -67,7 +63,6 @@ function PaginatedSection({
     hasActions = true,
     hasPaginator = true,
     isDisabled = false,
-    sectionRecords = [],
     toggleActionButton = () => {},
 }) {
     const [isFetchingData, setFetchingData] = useState(false);
@@ -137,7 +132,7 @@ function PaginatedSection({
 
     /** Initial fetch */
     useEffect(() => {
-        if (!sectionRecords.length) {
+        if (!listData.length) {
             fetchSectionDataWrapper(currentPage).then(({ pages }) => {
                 if (pages > 1)
                     setAreArrowsDisabled((flags) => ({
@@ -146,7 +141,7 @@ function PaginatedSection({
                     }));
             });
         } else {
-            setTotalPages(Math.ceil(sectionRecords.length / RECORDS_PER_PAGE));
+            setTotalPages(Math.ceil(listData.length / RECORDS_PER_PAGE));
         }
     }, [routeName]);
 

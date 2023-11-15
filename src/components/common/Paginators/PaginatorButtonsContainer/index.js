@@ -34,7 +34,8 @@ function PaginatorButtonsContainer({
     const isEllipsisVisible =
         totalPages > maxButtonsPreEllipsis + 1 && currentPage < totalPages - 1;
     const isFinalButtonVisible =
-        isEllipsisVisible || currentPage <= totalPages - 1;
+        isEllipsisVisible ||
+        (currentPage <= totalPages - 1 && totalPages > maxButtonsPreEllipsis);
     const preEllipsisButtonsReference = new Array(numButtonsPreEllipsis).fill(
         null
     );
