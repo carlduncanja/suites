@@ -77,10 +77,10 @@ function PaginatedSection({
     const [isLeftArrowDisabled, setIsLeftArrowDisabled] = useState(true);
 
     const isLArrowDisabled = (pages) =>
-        !(currentPage === pages || currentPage < pages);
+        currentPage === pages || !(currentPage < pages);
 
     const isRArrowDisabled = (pages) =>
-        !(currentPage === 1 || currentPage < pages);
+        (currentPage === 1) & (pages === 1) || !(currentPage < pages);
 
     const onPressRightButton = () => {
         if (currentPage < totalPages) {
@@ -126,6 +126,7 @@ function PaginatedSection({
             setFetchingData(true);
             fetchSectionDataCb(currentPage)
                 .then(({ pages, data }) => {
+                    console.log({ pages, currentPage });
                     if (data.length > 0) setTotalPages(pages);
                     setIsLeftArrowDisabled(isLArrowDisabled(pages));
                     setIsRightArrowDisabled(isRArrowDisabled(pages));
