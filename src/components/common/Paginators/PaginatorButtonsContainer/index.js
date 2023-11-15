@@ -1,7 +1,7 @@
 import React from "react";
 import { Pressable, StyleSheet, View } from "react-native";
 import PaginatorNumberButton from "./NumberButton";
-import Ellipsis from "../../../../assets/svg/ellipsis.svg";
+import Ellipsis from "../../../../../assets/svg/ellipsis.svg";
 
 /**
  * @callback onPressPageNumber
@@ -13,7 +13,6 @@ import Ellipsis from "../../../../assets/svg/ellipsis.svg";
  * @typedef {Object} PaginatorNumbersProps
  * @property {number} currentPage
  * @property {number} totalPages
- * @property {boolean} hasNumberBorder
  * @property {onPressPageNumber} onPressPageNumber
  */
 
@@ -22,7 +21,7 @@ import Ellipsis from "../../../../assets/svg/ellipsis.svg";
  * @returns {JSX.Element}
  */
 
-function PaginatorNumbersContainer({
+function PaginatorButtonsContainer({
     currentPage = 0,
     totalPages = 0,
     onPressPageNumber,
@@ -82,7 +81,7 @@ function PaginatorNumbersContainer({
                 </Pressable>
             ))}
             {isEllipsisVisible && (
-                <View style={styles.ellipsis}>
+                <View testID="pag-ellipsis" style={styles.ellipsis}>
                     <Ellipsis fill="#313539" height={13} width={16} />
                 </View>
             )}
@@ -98,4 +97,4 @@ function PaginatorNumbersContainer({
     );
 }
 
-export default PaginatorNumbersContainer;
+export default PaginatorButtonsContainer;

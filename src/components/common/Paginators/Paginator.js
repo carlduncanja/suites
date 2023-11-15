@@ -4,7 +4,7 @@ import { useTheme } from "emotion-theming";
 import RightArrow from "../../../../assets/svg/paginationRight";
 import LeftArrow from "../../../../assets/svg/paginationLeft";
 import IconButton from "../Buttons/IconButton";
-import PaginatorNumbersContainer from "./PaginatorButtonsContainer";
+import PaginatorButtonsContainer from "./PaginatorButtonsContainer";
 import { View } from "react-native";
 
 /**
@@ -20,7 +20,6 @@ import { View } from "react-native";
 /**
  * @typedef {Object} PaginatorProps
  * @extends PaginatorAndFooterProps
- * @property {boolean} hasNumberBorder
  * @property {onPressPageNumber} onPressPageNumber
  * */
 
@@ -33,7 +32,6 @@ function Paginator({
     currentPage = 0,
     goToNextPage: onPressRightArrow = () => {},
     goToPreviousPage: onPressLeftArrow = () => {},
-    hasNumberBorder = true,
     isNextDisabled: isRightArrowDisabled = false,
     isPreviousDisabled: isLeftArrowDisabled = false,
     onPressPageNumber,
@@ -67,10 +65,9 @@ function Paginator({
                 />
             </View>
 
-            <PaginatorNumbersContainer
+            <PaginatorButtonsContainer
                 currentPage={currentPage}
                 totalPages={totalPages}
-                hasNumberBorder={hasNumberBorder}
                 onPressPageNumber={onPressPageNumber}
             />
 
