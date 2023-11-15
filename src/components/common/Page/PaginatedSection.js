@@ -2,6 +2,11 @@ import React, { useState, useEffect } from "react";
 import Page from "./Page";
 import Footer from "./Footer";
 import styled from "@emotion/native";
+import {
+    useNextPaginator,
+    usePreviousPaginator,
+} from "../../../helpers/caseFilesHelpers";
+import { RECORDS_PER_PAGE } from "../../../const";
 const NavPageWrapper = styled.View`
     width: 100%;
 `;
@@ -65,43 +70,46 @@ function PaginatedSection({
     sectionRecords = [],
     toggleActionButton = () => {},
 }) {
-    const recordsPerPage = 12;
-
     const [isFetchingData, setFetchingData] = useState(false);
     const [totalPages, setTotalPages] = useState(1);
-    const [currentPageListMin, setCurrentPageListMin] = useState(0);
-    const [currentPageListMax, setCurrentPageListMax] =
-        useState(recordsPerPage);
     const [currentPage, setCurrentPage] = useState(1);
-    const [isRightArrowDisabled, setIsRightArrowDisabled] = useState(false);
-    const [isLeftArrowDisabled, setIsLeftArrowDisabled] = useState(true);
+    const [areArrowsDisabled, setAreArrowsDisabled] = useState({
+        left: true,
+        right: true,
+    });
+    const [listBounds, setListBounds] = useState({
+        listMin: 0,
+        listMax: RECORDS_PER_PAGE,
+    });
 
-    const isLArrowDisabled = (pages) =>
-        currentPage === pages || !(currentPage < pages);
+    const isLArrowDisabled = (nextPage) => nextPage === 1;
 
-    const isRArrowDisabled = (pages) =>
-        (currentPage === 1) & (pages === 1) || !(currentPage < pages);
-
-    const onPressRightButton = () => {
-        if (currentPage < totalPages) {
-            const {
-                currentPage: nextPage,
-                currentListMin: nextListMin,
-                currentListMax: nextListMax,
-            } = useNextPaginator(
-                currentPage,
-                recordsPerPage,
-                currentPageListMin,
-                currentPageListMax
-            );
-            setCurrentPage(nextPage);
-            setCurrentPageListMin(nextListMin);
-            setCurrentPageListMax(nextListMax);
-            fetchSectionDataCb(nextPage);
-        }
+    const isRArrowDisabled = (nextPage) => {
+        return nextPage === totalPages;
     };
 
-    const onPressLeftButton = () => {
+    const onPressRightButton = async () => {
+        if (!(currentPage < totalPages)) return;
+        const {
+            currentPage: nextPage,
+            currentListMin: nextListMin,
+            currentListMax: nextListMax,
+        } = useNextPaginator(
+            currentPage,
+            RECORDS_PER_PAGE,
+            listBounds.listMin,
+            listBounds.listMax
+        );
+        setCurrentPage(nextPage);
+        setListBounds({ listMin: nextListMin, listMax: nextListMax });
+        setAreArrowsDisabled((_) => ({
+            left: isLArrowDisabled(nextPage),
+            right: isRArrowDisabled(nextPage),
+        }));
+        await fetchSectionDataWrapper(nextPage);
+    };
+
+    const onPressLeftButton = async () => {
         if (currentPage === 1) return;
 
         const {
@@ -110,41 +118,51 @@ function PaginatedSection({
             currentListMax: nextListMax,
         } = usePreviousPaginator(
             currentPage,
-            recordsPerPage,
-            currentPageListMin,
-            currentPageListMax
+            RECORDS_PER_PAGE,
+            listBounds.listMin,
+            listBounds.listMax
         );
         setCurrentPage(nextPage);
-        setCurrentPageListMin(nextListMin);
-        setCurrentPageListMax(nextListMax);
-        fetchSuppliersData(nextPage);
+        setListBounds({ listMin: nextListMin, listMax: nextListMax });
+        setAreArrowsDisabled((_) => ({
+            left: isLArrowDisabled(nextPage),
+            right: isRArrowDisabled(nextPage),
+        }));
+        await fetchSectionDataWrapper(nextPage);
+    };
+
+    const fetchSectionDataWrapper = async (page) => {
+        return fetchSectionDataCb(page)
+            .then(({ pages, data }) => {
+                if (data.length > 0) {
+                    setTotalPages(pages);
+                }
+                return { pages, data };
+            })
+            .catch((error) => {
+                console.error(`Failed to get data for ${routeName} `, error);
+                setTotalPages(1);
+                setAreArrowsDisabled({ left: true, right: true });
+            })
+            .finally(() => {
+                setFetchingData(false);
+            });
     };
 
     /** Initial fetch */
     useEffect(() => {
         if (!sectionRecords.length) {
             setFetchingData(true);
-            fetchSectionDataCb(currentPage)
-                .then(({ pages, data }) => {
-                    console.log({ pages, currentPage });
-                    if (data.length > 0) setTotalPages(pages);
-                    setIsLeftArrowDisabled(isLArrowDisabled(pages));
-                    setIsRightArrowDisabled(isRArrowDisabled(pages));
-                })
-                .catch((error) => {
-                    console.error(
-                        `Failed to get data for ${routeName} `,
-                        error
-                    );
-                    setTotalPages(1);
-                    setIsLeftArrowDisabled(true);
-                    setIsRightArrowDisabled(true);
-                })
-                .finally(() => {
-                    setFetchingData(false);
-                });
+            fetchSectionDataWrapper(currentPage).then(({ pages }) => {
+                console.log({ pages });
+                if (pages > 1)
+                    setAreArrowsDisabled((flags) => ({
+                        ...flags,
+                        right: false,
+                    }));
+            });
         } else {
-            setTotalPages(Math.ceil(sectionRecords.length / recordsPerPage));
+            setTotalPages(Math.ceil(sectionRecords.length / RECORDS_PER_PAGE));
         }
     }, []);
 
@@ -178,8 +196,8 @@ function PaginatedSection({
                     hasActions={hasActions}
                     hasPaginator={hasPaginator}
                     isDisabled={isDisabled}
-                    isNextDisabled={isRightArrowDisabled}
-                    isPreviousDisabled={isLeftArrowDisabled}
+                    isNextDisabled={areArrowsDisabled.right}
+                    isPreviousDisabled={areArrowsDisabled.left}
                     toggleActionButton={toggleActionButton}
                     totalPages={totalPages}
                 />
