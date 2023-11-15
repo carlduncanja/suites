@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from "react";
-import { View, StyleSheet, Text, FlatList, ScrollView } from "react-native";
+import React, { useState } from "react";
+import { View, FlatList } from "react-native";
 
 import { connect } from "react-redux";
 import { useModal } from "react-native-modalfy";
-import styled, { css } from "@emotion/native";
+import styled from "@emotion/native";
 import { useTheme } from "emotion-theming";
 import _ from "lodash";
 import IconButton from "../../components/common/Buttons/IconButton";
@@ -11,10 +11,7 @@ import LevelIndicator from "../../components/common/LevelIndicator/LevelIndicato
 import LongPressWithFeedback from "../../components/common/LongPressWithFeedback";
 import ActionItem from "../../components/common/ActionItem";
 import ActionContainer from "../../components/common/FloatingAction/ActionContainer";
-import CreateInventoryDialogContainer from "../../components/Inventory/CreateInventoryDialogContainer";
 import CollapsibleListItem from "../../components/common/List/CollapsibleListItem";
-import CreateInventoryGroupDialogContainer from "../../components/Inventory/CreateInventoryGroupDialogContainer";
-import NavPage from "../../components/common/Page/NavPage";
 import Item from "../../components/common/Table/Item";
 import DataItem from "../../components/common/List/DataItem";
 import RightBorderDataItem from "../../components/common/List/RightBorderDataItem";
@@ -24,9 +21,7 @@ import MultipleShadowsContainer from "../../components/common/MultipleShadowCont
 
 import CollapsedIcon from "../../../assets/svg/closeArrow";
 import ActionIcon from "../../../assets/svg/dropdownIcon";
-import SvgIcon from "../../../assets/SvgIcon";
 import WasteIcon from "../../../assets/svg/wasteIcon";
-import TransferIcon from "../../../assets/svg/transferIcon";
 import AddIcon from "../../../assets/svg/addIcon";
 import ExportIcon from "../../../assets/svg/exportIcon";
 
@@ -35,13 +30,10 @@ import { setInventory } from "../../redux/actions/InventorActions";
 import {
     getInventoriesGroup,
     getInventoriesGroupBulkUploadRequest,
-    removeInventoryGroup,
     removeInventoryGroups,
     removeInventoryVariants,
 } from "../../api/network";
 import {
-    useNextPaginator,
-    usePreviousPaginator,
     selectAll,
     checkboxItemPress,
     handleUnauthorizedError,
@@ -77,33 +69,26 @@ function Inventory(props) {
         navigation.navigate("InventoryPage", {
             screen: "InventoryPage",
             initial: false,
-            // params : {
             data: item,
             isGroup: true,
             isEdit: false,
             inventoryPermissions: inventoryPermissions.update,
-
-            // }
         });
     };
 
     const onItemVariantPress = (item, parentItem) => () => {
-        // console.log("parent: ", parentItem)
         const updatedItem = {
             ...item,
             name: item?.itemName,
             groupId: parentItem?._id,
             groupName: parentItem?.name,
         };
-        // console.log("Updated item: ", updatedItem);
         navigation.navigate("InventoryVariantPage", {
             screen: "InventoryVariantPage",
             initial: false,
-            // params : {
             data: updatedItem,
             isEdit: false,
             inventoryPermissions: inventoryPermissions.update,
-            // }
         });
     };
 
@@ -125,9 +110,7 @@ function Inventory(props) {
         });
     };
 
-    // ####### PARENT CHECKBOXPRESS
-
-    const onCheckBoxPress = (item) => () => {
+    const onPressParentCheckbox = (item) => () => {
         const { _id, variants = [] } = item;
         // const variantIds = [];
 
@@ -154,24 +137,19 @@ function Inventory(props) {
         // }
     };
 
-    // ####### CHILD CHECK BOX PRESS
-
-    const onChildCheckBoxPress = (inventoryVariant, inventoryGroup) => () => {
+    const onPressChildCheckbox = (inventoryVariant, inventoryGroup) => () => {
         const { _id } = inventoryVariant;
         const { _id: groupId } = inventoryGroup;
 
-        // get ids for variants
         const variantIds = selectedVariants.map((variantObj) => variantObj._id);
         const updatedChildIds = checkboxItemPress(_id, variantIds);
 
-        // set selected variant
         const updatedSelectedVariants = updatedChildIds.map((_id) => ({
             _id,
             groupId: inventoryGroup._id,
         }));
         setSelectedVariants(updatedSelectedVariants);
 
-        // unselect group when child is selected
         const updatedIds = selectedIds.filter((id) => id !== groupId);
         setSelectedIds(updatedIds);
     };
@@ -183,8 +161,6 @@ function Inventory(props) {
             setExpandedItems([...expandedItems, key]);
         }
     };
-
-    // ##### Helper functions
 
     const getFabActions = () => {
         actionsArray = [];
@@ -266,25 +242,6 @@ function Inventory(props) {
                 onPress={openCreateGroupDialog}
             />
         );
-        const itemTransfer = (
-            <ActionItem
-                title="Item Transfer"
-                icon={
-                    <TransferIcon
-                        strokeColor={
-                            isRemoveGroupsDisabled
-                                ? theme.colors["--color-gray-600"]
-                                : theme.colors["--color-orange-700"]
-                        }
-                    />
-                }
-                onPress={() => {
-                    // handleTransferItems()
-                }}
-                disabled={isRemoveGroupsDisabled}
-                touchable={!isRemoveGroupsDisabled}
-            />
-        );
         const uploadInventory = (
             <ActionItem
                 title="Upload Inventory"
@@ -324,17 +281,14 @@ function Inventory(props) {
         navigation.navigate("CreateInventoryDialogContainer", {
             screen: "CreateInventoryDialogContainer",
             initial: false,
-            // params : {
             onCreated: () => {
                 setFloatingAction(false);
-                // navigation.goBack();
                 onRefresh();
             },
             onCancel: () => {
                 setFloatingAction(false);
                 navigation.goBack();
             },
-            // }
         });
     };
 
@@ -362,7 +316,6 @@ function Inventory(props) {
                 overlayContent: (
                     <FileUploadComponent
                         onCreated={() => {
-                            // refresh inventory view.
                             setFloatingAction(false);
                             modal.openModal("ConfirmationModal", {
                                 content: (
@@ -484,10 +437,7 @@ function Inventory(props) {
         </>
     );
 
-    const inventoryVariantItem = (
-        { itemName, stock, levels, locations },
-        onActionPress
-    ) => (
+    const inventoryVariantItem = ({ itemName, stock, levels, locations }) => (
         <>
             <RightBorderDataItem
                 text={itemName}
@@ -497,7 +447,6 @@ function Inventory(props) {
             />
             <DataItem
                 text={numberFormatter(stock)}
-                //flex={}
                 color="--color-gray-700"
                 fontStyle="--text-base-regular"
                 align="center"
@@ -537,14 +486,13 @@ function Inventory(props) {
                 itemView={inventoryVariantItem(item, onActionPress)}
                 hasCheckBox={true}
                 isChecked={variantIds.includes(_id)}
-                onCheckBoxPress={onChildCheckBoxPress(item, parentItem)}
+                onCheckBoxPress={onPressChildCheckbox(item, parentItem)}
                 onItemPress={onItemVariantPress(item, parentItem)}
             />
         );
     };
 
-    const renderItem = (item, index) => {
-        // console.log("Render ite:",item)
+    const renderItem = (item) => {
         const formattedItem = {
             _id: item?._id,
             name: item?.name || "",
@@ -553,12 +501,9 @@ function Inventory(props) {
             levels: item?.levels,
         };
 
-        // console.log("Item: ", formattedItem);
-
         let { variants = [] } = item;
 
         variants = variants.map((item) => {
-            // console.log("Variant item: ", item);
             const { storageLocations = [] } = item;
             const levels = getLevels(storageLocations);
             const stock = getStock(storageLocations) || 0;
@@ -580,7 +525,7 @@ function Inventory(props) {
         return (
             <CollapsibleListItem
                 isChecked={selectedIds.includes(item._id)}
-                onCheckBoxPress={onCheckBoxPress(item)}
+                onCheckBoxPress={onPressParentCheckbox(item)}
                 hasCheckBox={true}
                 isIndeterminate={isIndeterminate}
                 onItemPress={onItemPress(item)}
@@ -597,7 +542,6 @@ function Inventory(props) {
             >
                 <FlatList
                     data={variants}
-                    // nestedScrollEnabled={true}
                     renderItem={({ item }) =>
                         renderChildItemView(item, formattedItem, () => {})
                     }
@@ -634,7 +578,6 @@ function Inventory(props) {
                         modal.closeModals("ConfirmationModal");
                         callbackFn();
                     }}
-                    // onAction = { () => confirmAction()}
                     message="Do you want to delete these item(s)?"
                 />
             ),
@@ -783,9 +726,6 @@ function Inventory(props) {
     );
 }
 
-Inventory.propTypes = {};
-Inventory.defaultProps = {};
-
 const mapStateToProps = (state) => {
     const getLevels = (variants = []) => {
         const levelsTotal = {
@@ -829,7 +769,6 @@ const mapStateToProps = (state) => {
         return count;
     };
 
-    // REMAPPING INVENTORY ITEMS
     const inventory = state.inventory.map((item) => {
         const { variants = [] } = item;
 
@@ -839,11 +778,9 @@ const mapStateToProps = (state) => {
 
         return {
             ...item,
-            // id: item._id,
             stock,
             locations,
             levels,
-            // storageLocations: inventoryLocations
         };
     });
 
