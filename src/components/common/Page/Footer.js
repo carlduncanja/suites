@@ -11,7 +11,8 @@ import DisabledFloatingButton from "../../../../assets/svg/disabledFloatingButto
  * @property {boolean} hasActions
  * @property {boolean} hasPaginator
  * @property {boolean} isDisabled
- * @property {VoidCallback} toggleActionButtonß
+ * @property {VoidCallback} toggleActionButton
+ * @property {onPressPageNumber} onPressPageNumber
  */
 
 /**
@@ -30,6 +31,7 @@ function Footer({
     hasActions = true,
     isNextDisabled = false,
     isPreviousDisabled = false,
+    onPressPageNumber,
 }) {
     const styles = StyleSheet.create({
         container: {
@@ -56,6 +58,7 @@ function Footer({
                     goToPreviousPage={goToPreviousPage}
                     isNextDisabled={isNextDisabled}
                     isPreviousDisabled={isPreviousDisabled}
+                    onPressPageNumber={onPressPageNumber}
                 />
             )}
             {hasActionButton && (

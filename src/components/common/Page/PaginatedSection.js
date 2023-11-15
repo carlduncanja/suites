@@ -78,14 +78,28 @@ function PaginatedSection({
         right: true,
     });
     const [listBounds, setListBounds] = useState({
-        listMin: 0,
-        listMax: RECORDS_PER_PAGE,
+        min: 0,
+        max: RECORDS_PER_PAGE,
     });
 
-    const isLArrowDisabled = (nextPage) => nextPage === 1;
+    const isLeftArrowDisabled = (nextPage) => nextPage === 1;
 
-    const isRArrowDisabled = (nextPage) => {
+    const isRightArrowDisabled = (nextPage) => {
         return nextPage === totalPages;
+    };
+
+    const onPressPageNumber = async (nextPage) => {
+        setCurrentPage(nextPage);
+        const pageDifference = nextPage - currentPage;
+        setListBounds((bounds) => ({
+            min: bounds.min + pageDifference * RECORDS_PER_PAGE,
+            max: bounds.max + pageDifference * RECORDS_PER_PAGE,
+        }));
+        setAreArrowsDisabled({
+            left: isLeftArrowDisabled(nextPage),
+            right: isRightArrowDisabled(nextPage),
+        });
+        fetchSectionDataWrapper(nextPage);
     };
 
     const onPressRightButton = async () => {
@@ -97,16 +111,16 @@ function PaginatedSection({
         } = useNextPaginator(
             currentPage,
             RECORDS_PER_PAGE,
-            listBounds.listMin,
-            listBounds.listMax
+            listBounds.min,
+            listBounds.max
         );
         setCurrentPage(nextPage);
-        setListBounds({ listMin: nextListMin, listMax: nextListMax });
-        setAreArrowsDisabled((_) => ({
-            left: isLArrowDisabled(nextPage),
-            right: isRArrowDisabled(nextPage),
-        }));
-        await fetchSectionDataWrapper(nextPage);
+        setListBounds({ min: nextListMin, max: nextListMax });
+        setAreArrowsDisabled({
+            left: isLeftArrowDisabled(nextPage),
+            right: isRightArrowDisabled(nextPage),
+        });
+        fetchSectionDataWrapper(nextPage);
     };
 
     const onPressLeftButton = async () => {
@@ -119,19 +133,20 @@ function PaginatedSection({
         } = usePreviousPaginator(
             currentPage,
             RECORDS_PER_PAGE,
-            listBounds.listMin,
-            listBounds.listMax
+            listBounds.min,
+            listBounds.max
         );
         setCurrentPage(nextPage);
-        setListBounds({ listMin: nextListMin, listMax: nextListMax });
-        setAreArrowsDisabled((_) => ({
-            left: isLArrowDisabled(nextPage),
-            right: isRArrowDisabled(nextPage),
-        }));
-        await fetchSectionDataWrapper(nextPage);
+        setListBounds({ min: nextListMin, max: nextListMax });
+        setAreArrowsDisabled({
+            left: isLeftArrowDisabled(nextPage),
+            right: isRightArrowDisabled(nextPage),
+        });
+        fetchSectionDataWrapper(nextPage);
     };
 
     const fetchSectionDataWrapper = async (page) => {
+        setFetchingData(true);
         return fetchSectionDataCb(page)
             .then(({ pages, data }) => {
                 if (data.length > 0) {
@@ -152,9 +167,7 @@ function PaginatedSection({
     /** Initial fetch */
     useEffect(() => {
         if (!sectionRecords.length) {
-            setFetchingData(true);
             fetchSectionDataWrapper(currentPage).then(({ pages }) => {
-                console.log({ pages });
                 if (pages > 1)
                     setAreArrowsDisabled((flags) => ({
                         ...flags,
@@ -198,6 +211,7 @@ function PaginatedSection({
                     isDisabled={isDisabled}
                     isNextDisabled={areArrowsDisabled.right}
                     isPreviousDisabled={areArrowsDisabled.left}
+                    onPressPageNumber={onPressPageNumber}
                     toggleActionButton={toggleActionButton}
                     totalPages={totalPages}
                 />

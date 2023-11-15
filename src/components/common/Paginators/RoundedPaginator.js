@@ -41,6 +41,7 @@ function RoundedPaginator({
     goToPreviousPage = () => {},
     isNextDisabled = false,
     isPreviousDisabled = false,
+    onPressPageNumber,
 }) {
     const theme = useTheme();
 
@@ -54,6 +55,7 @@ function RoundedPaginator({
                     goToPreviousPage={goToPreviousPage}
                     isNextDisabled={isNextDisabled}
                     isPreviousDisabled={isPreviousDisabled}
+                    onPressPageNumber={onPressPageNumber}
                 />
             </RoundedPaginatorContainer>
         </MultipleShadowContainer>

@@ -21,6 +21,7 @@ import { View } from "react-native";
  * @typedef {Object} PaginatorProps
  * @extends PaginatorAndFooterProps
  * @property {boolean} hasNumberBorder
+ * @property {onPressPageNumber} onPressPageNumber
  * */
 
 /**
@@ -35,6 +36,7 @@ function Paginator({
     hasNumberBorder = true,
     isNextDisabled: isRightArrowDisabled = false,
     isPreviousDisabled: isLeftArrowDisabled = false,
+    onPressPageNumber,
     totalPages = 0,
 }) {
     const theme = useTheme();
@@ -69,6 +71,7 @@ function Paginator({
                 currentPage={currentPage}
                 totalPages={totalPages}
                 hasNumberBorder={hasNumberBorder}
+                onPressPageNumber={onPressPageNumber}
             />
 
             <View>

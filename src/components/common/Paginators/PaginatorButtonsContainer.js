@@ -1,12 +1,19 @@
 import React from "react";
-import { StyleSheet, View } from "react-native";
+import { Pressable, StyleSheet, View } from "react-native";
 import PaginatorNumberButton from "./NumberButton";
+
+/**
+ * @callback onPressPageNumber
+ * @param {number} pageNumber
+ * @returns {void}
+ */
 
 /**
  * @typedef {Object} PaginatorNumbersProps
  * @property {number} currentPage
  * @property {number} totalPages
  * @property {boolean} hasNumberBorder
+ * @property {onPressPageNumber} onPressPageNumber
  */
 
 /**
@@ -14,7 +21,11 @@ import PaginatorNumberButton from "./NumberButton";
  * @returns {JSX.Element}
  */
 
-function PaginatorNumbersContainer({ currentPage = 0, totalPages = 0 }) {
+function PaginatorNumbersContainer({
+    currentPage = 0,
+    totalPages = 0,
+    onPressPageNumber,
+}) {
     const maxNumButtonsBeforeEllipses = 4;
 
     const numButtonsToRenderBeforeEllipses =
@@ -34,10 +45,12 @@ function PaginatorNumbersContainer({ currentPage = 0, totalPages = 0 }) {
     return (
         <View style={styles.container}>
             {reference.map((_, index) => (
-                <PaginatorNumberButton
-                    number={index + 1}
-                    isSelected={currentPage === index + 1}
-                />
+                <Pressable onPress={() => onPressPageNumber(index + 1)}>
+                    <PaginatorNumberButton
+                        number={index + 1}
+                        isSelected={currentPage === index + 1}
+                    />
+                </Pressable>
             ))}
         </View>
     );
