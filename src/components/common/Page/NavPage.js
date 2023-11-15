@@ -1,8 +1,7 @@
-import React from 'react';
-import Page from './Page';
+import React from "react";
+import Page from "./Page";
 import Footer from "./Footer";
-import styled, { css } from '@emotion/native';
-import { useTheme } from 'emotion-theming';
+import styled from "@emotion/native";
 
 const NavPageWrapper = styled.View`
     height: 100%;
@@ -12,43 +11,38 @@ const NavPageContainer = styled.View`
     display: flex;
     height: 100%;
 `;
-// wow whole component dedicated to search?
+
 function NavPage({
-    isFetchingData = () => { },
+    isFetchingData = () => {},
     TopButton = null,
-    onRefresh = () => { },
+    onRefresh = () => {},
     placeholderText = "",
-    changeText = () => { },
+    changeText = () => {},
     inputText = "",
     routeName = "",
     listData = [],
     listHeaders = [],
     itemsSelected = [],
-    onSelectAll = () => { },
-    listItemFormat = () => { },
+    onSelectAll = () => {},
+    listItemFormat = () => {},
 
     totalPages = 0,
     currentPage = 0,
-    goToNextPage = () => { },
-    goToPreviousPage = () => { },
+    goToNextPage = () => {},
+    goToPreviousPage = () => {},
     isDisabled = false,
-    toggleActionButton = () => { },
+    toggleActionButton = () => {},
     hasPaginator = true,
     hasActionButton = true,
     hasActions = true,
-    isNextDisabled = () => { },
-    isPreviousDisabled = () => { },
-    onClear = () => { },
+    isNextDisabled = () => {},
+    isPreviousDisabled = () => {},
     navigation,
     hasEmpty = false,
     hasList,
-    emptyTitle
+    emptyTitle,
 }) {
-    const theme = useTheme();
-
-
     return (
-
         <NavPageWrapper>
             <NavPageContainer>
                 <Page
@@ -65,10 +59,9 @@ function NavPage({
                     onSelectAll={onSelectAll}
                     listItemFormat={listItemFormat}
                     navigation={navigation}
-                    hasEmpty= {hasEmpty} 
+                    hasEmpty={hasEmpty}
                     hasList={hasList}
                     emptyTitle={emptyTitle}
-                // onClear = {onClear}
                 />
 
                 <Footer
@@ -86,8 +79,7 @@ function NavPage({
                 />
             </NavPageContainer>
         </NavPageWrapper>
-
-    )
+    );
 }
 
-export default NavPage
+export default NavPage;
