@@ -73,6 +73,7 @@ function PaginatorButtonsContainer({
             {preEllipsisButtonsReference.map((_, index) => (
                 <Pressable
                     onPress={() => onPressPageNumber(getPageNumber(index))}
+                    key={index}
                 >
                     <PaginatorNumberButton
                         number={getPageNumber(index)}
