@@ -1,6 +1,7 @@
 import React from "react";
 import { Pressable, StyleSheet, View } from "react-native";
 import PaginatorNumberButton from "./NumberButton";
+import Ellipsis from "../../../../assets/svg/ellipsis.svg";
 
 /**
  * @callback onPressPageNumber
@@ -26,7 +27,7 @@ function PaginatorNumbersContainer({
     totalPages = 0,
     onPressPageNumber,
 }) {
-    const maxNumButtonsBeforeEllipses = 4;
+    const maxNumButtonsBeforeEllipses = 6;
 
     const numButtonsToRenderBeforeEllipses =
         totalPages > maxNumButtonsBeforeEllipses
@@ -52,6 +53,7 @@ function PaginatorNumbersContainer({
                     />
                 </Pressable>
             ))}
+            {true && <Ellipsis fill="#f00" height={13} width={16} />}
         </View>
     );
 }

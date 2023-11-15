@@ -166,18 +166,17 @@ function PaginatedSection({
 
     /** Initial fetch */
     useEffect(() => {
-        if (!sectionRecords.length) {
-            fetchSectionDataWrapper(currentPage).then(({ pages }) => {
-                if (pages > 1)
-                    setAreArrowsDisabled((flags) => ({
-                        ...flags,
-                        right: false,
-                    }));
-            });
-        } else {
+        fetchSectionDataWrapper(currentPage).then(({ pages }) => {
+            if (pages > 1)
+                setAreArrowsDisabled((flags) => ({
+                    ...flags,
+                    right: false,
+                }));
+        });
+        if (sectionRecords.length) {
             setTotalPages(Math.ceil(sectionRecords.length / RECORDS_PER_PAGE));
         }
-    }, []);
+    }, [routeName]);
 
     return (
         <NavPageWrapper>

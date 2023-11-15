@@ -664,7 +664,6 @@ function Inventory(props) {
         return getInventoriesGroup(searchValue, recordsPerPage, pagePosition)
             .then((inventoryResult) => {
                 const { data = [] } = inventoryResult;
-                console.log("rahhhhhh");
                 setInventory(data);
                 return inventoryResult;
             })
