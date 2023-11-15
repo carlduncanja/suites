@@ -57,12 +57,12 @@ function PaginatedSection({
     routeName = "",
     TopButton = null,
 
-    sectionRecords = [],
     fetchSectionDataCb, // returns the data and the number of pages;
     hasActionButton = true,
     hasActions = true,
     hasPaginator = true,
     isDisabled = false,
+    sectionRecords = [],
     toggleActionButton = () => {},
 }) {
     const recordsPerPage = 12;
@@ -146,8 +146,6 @@ function PaginatedSection({
             setTotalPages(Math.ceil(sectionRecords.length / recordsPerPage));
         }
     }, []);
-
-    useEffect(() => {}, [sectionRecords]);
 
     return (
         <NavPageWrapper>

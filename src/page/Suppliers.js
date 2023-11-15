@@ -1,21 +1,15 @@
-import React, { useEffect, useContext, useState } from "react";
-import { View, Text, StyleSheet } from "react-native";
+import React, { useState } from "react";
+import { View } from "react-native";
 
 import { connect } from "react-redux";
 import _, { isEmpty } from "lodash";
-import styled, { css } from "@emotion/native";
+import styled from "@emotion/native";
 import { useTheme } from "emotion-theming";
 import { withModal, useModal } from "react-native-modalfy";
-import { TouchableOpacity } from "react-native-gesture-handler";
-import Page from "../components/common/Page/Page";
 import ListItem from "../components/common/List/ListItem";
-import RoundedPaginator from "../components/common/Paginators/RoundedPaginator";
-import FloatingActionButton from "../components/common/FloatingAction/FloatingActionButton";
 import LongPressWithFeedback from "../components/common/LongPressWithFeedback";
 import ActionContainer from "../components/common/FloatingAction/ActionContainer";
 import ActionItem from "../components/common/ActionItem";
-import Footer from "../components/common/Page/Footer";
-import NavPage from "../components/common/Page/NavPage";
 import ConfirmationComponent from "../components/ConfirmationComponent";
 import ArchiveIcon from "../../assets/svg/archiveIcon";
 import AddIcon from "../../assets/svg/addIcon";
@@ -23,8 +17,6 @@ import RightBorderDataItem from "../components/common/List/RightBorderDataItem";
 import DataItem from "../components/common/List/DataItem";
 
 import {
-    useNextPaginator,
-    usePreviousPaginator,
     checkboxItemPress,
     selectAll,
     handleUnauthorizedError,
@@ -33,20 +25,17 @@ import {
 import { setSuppliers } from "../redux/actions/suppliersActions";
 import {
     getSuppliers,
-    archiveSupplier,
     archiveSuppliers,
     deleteSuppliersId,
 } from "../api/network";
 
-import suppliersTest from "../../data/Suppliers";
-import SuppliersBottomSheet from "./Suppliers/SupplierPage";
 import CreateSupplierDialogContainer from "../components/Suppliers/CreateSupplierDialogContainer";
-import Button from "../components/common/OverlayButtons/OverlayButton";
 import TouchableDataItem from "../components/common/List/TouchableDataItem";
 
 import { PageSettingsContext } from "../contexts/PageSettingsContext";
 import WasteIcon from "../../assets/svg/wasteIcon";
 import { LONG_PRESS_TIMER } from "../const";
+import PaginatedSection from "../components/common/Page/PaginatedSection";
 
 const ArchiveButton = styled.TouchableOpacity`
     align-items: center;
@@ -72,7 +61,6 @@ const ArchiveButtonText = styled.Text`
 const Suppliers = (props) => {
     const theme = useTheme();
     const suppplierPermissions = props.route.params.suppplierPermissions;
-    // ############# Const data
 
     const recordsPerPage = 12;
     const listHeaders = [
@@ -93,62 +81,13 @@ const Suppliers = (props) => {
         },
     ];
 
-    //  ############ Props
     const { suppliers = [], setSuppliers } = props;
     const modal = useModal();
 
-    //  ############ State
-    const [isFetchingData, setFetchingData] = useState(false);
     const [isFloatingActionDisabled, setFloatingAction] = useState(false);
-
-    const [totalPages, setTotalPages] = useState(1);
-    const [currentPageListMin, setCurrentPageListMin] = useState(0);
-    const [currentPageListMax, setCurrentPageListMax] =
-        useState(recordsPerPage);
-    const [currentPagePosition, setCurrentPagePosition] = useState(1);
-    const [isNextDisabled, setNextDisabled] = useState(false);
-    const [isPreviousDisabled, setPreviousDisabled] = useState(true);
-
     const [searchValue, setSearchValue] = useState("");
-    const [searchResults, setSearchResult] = useState([]);
-    const [searchQuery, setSearchQuery] = useState({});
-
     const [selectedSuppliers, setSelectedSuppliers] = useState([]);
-
     const [pageSettingState, setPageSettingState] = useState({});
-
-    // ############# Lifecycle methods
-
-    useEffect(() => {
-        if (!suppliers.length) fetchSuppliersData(currentPagePosition);
-        setTotalPages(Math.ceil(suppliers.length / recordsPerPage));
-    }, []);
-
-    useEffect(() => {
-        if (!searchValue) {
-            // empty search values and cancel any out going request.
-            setSearchResult([]);
-            fetchSuppliersData(1);
-            if (searchQuery.cancel) searchQuery.cancel();
-            return;
-        }
-
-        // wait 300ms before search. cancel any prev request before executing current.
-
-        const search = _.debounce(fetchSuppliersData, 300);
-
-        setSearchQuery((prevSearch) => {
-            if (prevSearch && prevSearch.cancel) {
-                prevSearch.cancel();
-            }
-            return search;
-        });
-
-        search();
-        setCurrentPagePosition(1);
-    }, [searchValue]);
-
-    // ############# Event Handlers
 
     const onSearchInputChange = (input) => {
         setSearchValue(input);
@@ -180,38 +119,6 @@ const Suppliers = (props) => {
         });
     };
 
-    const goToNextPage = () => {
-        if (currentPagePosition < totalPages) {
-            const { currentPage, currentListMin, currentListMax } =
-                useNextPaginator(
-                    currentPagePosition,
-                    recordsPerPage,
-                    currentPageListMin,
-                    currentPageListMax
-                );
-            setCurrentPagePosition(currentPage);
-            setCurrentPageListMin(currentListMin);
-            setCurrentPageListMax(currentListMax);
-            fetchSuppliersData(currentPage);
-        }
-    }; // TO-DO: To remove
-
-    const goToPreviousPage = () => {
-        if (currentPagePosition === 1) return;
-
-        const { currentPage, currentListMin, currentListMax } =
-            usePreviousPaginator(
-                currentPagePosition,
-                recordsPerPage,
-                currentPageListMin,
-                currentPageListMax
-            );
-        setCurrentPagePosition(currentPage);
-        setCurrentPageListMin(currentListMin);
-        setCurrentPageListMax(currentListMax);
-        fetchSuppliersData(currentPage);
-    }; // TO-DO: To remove
-
     const toggleActionButton = () => {
         setFloatingAction(true);
         modal.openModal("ActionContainerModal", {
@@ -223,49 +130,17 @@ const Suppliers = (props) => {
         });
     };
 
-    // ############# Helper functions
-
-    const fetchSuppliersData = (pagePosition) => {
-        const currentPosition = pagePosition || 1;
-        setCurrentPagePosition(currentPosition);
-
-        setFetchingData(true);
-        getSuppliers(searchValue, recordsPerPage, currentPosition)
+    const fetchSuppliersData = async (currentPage) => {
+        return getSuppliers(searchValue, recordsPerPage, currentPage)
             .then((suppliersInfo) => {
-                const { data = [], pages = 0 } = suppliersInfo;
-
-                if (pages === 1) {
-                    setPreviousDisabled(true);
-                    setNextDisabled(true);
-                } else if (currentPosition === 1) {
-                    setPreviousDisabled(true);
-                    setNextDisabled(false);
-                } else if (currentPosition === pages) {
-                    setNextDisabled(true);
-                    setPreviousDisabled(false);
-                } else if (currentPosition < pages) {
-                    setNextDisabled(false);
-                    setPreviousDisabled(false);
-                } else {
-                    setNextDisabled(true);
-                    setPreviousDisabled(true);
-                }
-
-                setSuppliers(data); // keep this
-                data.length === 0 ? setTotalPages(1) : setTotalPages(pages);
+                const { data = [] } = suppliersInfo;
+                setSuppliers(data);
+                return suppliersInfo;
             })
             .catch((error) => {
-                console.log("failed to get Suppliers", error); // TO-DO: get rid of this
-
                 handleUnauthorizedError(error?.response?.status, setSuppliers);
                 setPageSettingState({ ...pageSettingState, isDisabled: true });
-
-                setTotalPages(1); // TO-DO: get rid of these three
-                setPreviousDisabled(true);
-                setNextDisabled(true);
-            })
-            .finally((_) => {
-                setFetchingData(false);
+                throw error;
             });
     };
 
@@ -522,23 +397,6 @@ const Suppliers = (props) => {
         }, 200);
     };
 
-    // ############# Prepare list data
-
-    const suppliersToDisplay = [...suppliers];
-    // suppliersToDisplay = suppliersToDisplay.slice(currentPageListMin, currentPageListMax);
-
-    // ##### STYLED COMPONENTS
-
-    const SuppliersWrapper = styled.View`
-        height: 100%;
-        width: 100%;
-        background-color: green;
-    `;
-    const SuppliersContainer = styled.View`
-        display: flex;
-        height: 100%;
-    `;
-
     return (
         <PageSettingsContext.Provider
             value={{
@@ -546,14 +404,17 @@ const Suppliers = (props) => {
                 setPageSettingState,
             }}
         >
-            <NavPage
-                isFetchingData={isFetchingData}
-                onRefresh={handleDataRefresh}
-                placeholderText="Search by Supplxier"
+            <PaginatedSection
                 changeText={onSearchInputChange}
                 inputText={searchValue}
+                itemsSelected={selectedSuppliers}
+                listData={suppliers}
+                listHeaders={listHeaders}
+                listItemFormat={renderSupplierFn}
+                onRefresh={handleDataRefresh}
+                onSelectAll={handleOnSelectAll}
+                placeholderText="Search by Supplxier"
                 routeName="Suppliers"
-                listData={suppliersToDisplay}
                 TopButton={() => (
                     <ButtonContainer>
                         <ArchiveButton onPress={goToArchives} theme={theme}>
@@ -561,23 +422,15 @@ const Suppliers = (props) => {
                         </ArchiveButton>
                     </ButtonContainer>
                 )}
-                listHeaders={listHeaders}
-                itemsSelected={selectedSuppliers}
-                onSelectAll={handleOnSelectAll}
-                listItemFormat={renderSupplierFn}
-                totalPages={totalPages}
-                currentPage={currentPagePosition}
-                goToNextPage={goToNextPage}
-                goToPreviousPage={goToPreviousPage}
-                isDisabled={isFloatingActionDisabled}
-                toggleActionButton={toggleActionButton}
-                hasPaginator={true}
+                fetchSectionDataCb={fetchSuppliersData}
                 hasActionButton={
                     suppplierPermissions.create || suppplierPermissions.delete
                 }
                 hasActions={true}
-                isNextDisabled={isNextDisabled}
-                isPreviousDisabled={isPreviousDisabled}
+                hasPaginator={true}
+                isDisabled={isFloatingActionDisabled}
+                sectionRecords={suppliers}
+                toggleActionButton={toggleActionButton}
             />
         </PageSettingsContext.Provider>
     );
@@ -591,25 +444,3 @@ export default connect(
     mapStateToProps,
     mapDispatcherToProp
 )(withModal(Suppliers));
-
-const styles = StyleSheet.create({
-    item: {
-        // flex:1
-    },
-    itemText: { fontSize: 16 },
-    footer: {
-        flex: 1,
-        alignSelf: "flex-end",
-        flexDirection: "row",
-        position: "absolute",
-        bottom: 0,
-        marginBottom: 20,
-        right: 0,
-        marginRight: 30,
-    },
-    rowBorderRight: {
-        borderRightColor: "#E3E8EF",
-        borderRightWidth: 1,
-        // marginRight: 20,
-    },
-});
