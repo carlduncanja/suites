@@ -19,6 +19,7 @@ import ListItem from "../../components/common/List/ListItem";
 import LongPressWithFeedback from "../../components/common/LongPressWithFeedback";
 import PaginatedSection from "../../components/common/Page/PaginatedSection";
 import { LONG_PRESS_TIMER, RECORDS_PER_PAGE_MAIN } from "../../const";
+import { selectAll } from "../../helpers/caseFilesHelpers";
 
 const listHeaders = [
     {
@@ -58,7 +59,6 @@ function UsersPage(props) {
     const [selectedIds, setSelectedIds] = useState([]);
 
     const [searchValue, setSearchValue] = useState("");
-    const [searchResults, setSearchResult] = useState([]);
     const [searchQuery, setSearchQuery] = useState({});
 
     const [currentPagePosition, setCurrentPagePosition] = useState(1);
@@ -100,7 +100,10 @@ function UsersPage(props) {
         fetchUsers(currentPagePosition);
     };
 
-    const onSelectAll = () => {};
+    const onSelectAll = () => {
+        const updatedUserData = selectAll(users, selectedIds);
+        setSelectedIds(updatedUserData);
+    };
 
     const handleUserUpdate = (updatedUser) => {
         setUsers(
@@ -139,6 +142,12 @@ function UsersPage(props) {
             updateUser: usersPermissions.update,
         });
     };
+    navigation.navigate("UserPage", {
+        user: item,
+        onUserUpdate: handleUserUpdate,
+        editMode: true,
+        updateUser: usersPermissions.update,
+    });
 
     const onDeleteUsers = () => {
         modal.openModal("ConfirmationModal", {
@@ -160,6 +169,7 @@ function UsersPage(props) {
 
     const onNewUserPress = () => {
         modal.closeModals("ActionContainerModal");
+        modal.closeModals("ActionContainerModal");
 
         setTimeout(() => {
             modal.openModal("OverlayModal", {
@@ -168,6 +178,7 @@ function UsersPage(props) {
                         onCreated={(user) => {
                             addUserToState(user);
                             onItemPress(user)();
+                            setFloatingAction(false);
                             setFloatingAction(false);
                         }}
                         onCancel={() => {
@@ -201,6 +212,10 @@ function UsersPage(props) {
                         onPress={() => {
                             onActionPress(item);
                         }}
+                        Icon={<EditIcon />}
+                        onPress={() => {
+                            onActionPress(item);
+                        }}
                     />
                 }
             />
@@ -219,8 +234,10 @@ function UsersPage(props) {
                             isEditUpdate={false}
                             onCancel={() => {
                                 modal.closeAllModals();
+                                modal.closeAllModals();
                             }}
                             onAction={() => {
+                                modal.closeAllModals();
                                 modal.closeAllModals();
                             }}
                             message="User(s) successfully removed."
