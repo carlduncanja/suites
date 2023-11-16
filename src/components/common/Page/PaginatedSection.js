@@ -33,19 +33,19 @@ const NavPageContainer = styled.View`
  */
 
 /**
- * @typedef {PageProps & FooterProps} NavPageProps
+ * @typedef {Object} PagSectionProps
+ * @extends import("./Footer").FooterProps
+ * @extends import("./Page").PageProps
  */
 
 /**
  *
- * @param {NavPage} props
+ * @param {PagSectionProps} props
  * @returns {JSX.Element}
  */
 function PaginatedSection({
     changeText = () => {},
     emptyTitle,
-    hasEmpty = false,
-    hasList,
     inputText = "",
     itemsSelected = [],
     listData = [],
@@ -58,16 +58,17 @@ function PaginatedSection({
     routeName = "",
     TopButton = null,
 
+    currentPage,
+    setCurrentPage,
     fetchSectionDataCb, // returns the data and the number of pages;
     hasActionButton = true,
     hasActions = true,
     hasPaginator = true,
     isDisabled = false,
+    isFetchingData,
     toggleActionButton = () => {},
 }) {
-    const [isFetchingData, setFetchingData] = useState(false);
     const [totalPages, setTotalPages] = useState(1);
-    const [currentPage, setCurrentPage] = useState(1);
     const [areArrowsDisabled, setAreArrowsDisabled] = useState({
         left: true,
         right: true,
@@ -75,9 +76,7 @@ function PaginatedSection({
 
     const isLeftArrowDisabled = (nextPage) => nextPage === 1;
 
-    const isRightArrowDisabled = (nextPage) => {
-        return nextPage === totalPages;
-    };
+    const isRightArrowDisabled = (nextPage) => nextPage === totalPages;
 
     const onPressPageNumber = async (nextPage) => {
         setCurrentPage(nextPage);
@@ -112,7 +111,6 @@ function PaginatedSection({
     };
 
     const fetchSectionDataWrapper = async (page) => {
-        setFetchingData(true);
         return fetchSectionDataCb(page)
             .then(({ pages, data }) => {
                 if (data.length > 0) {
@@ -124,25 +122,19 @@ function PaginatedSection({
                 console.error(`Failed to get data for ${routeName} `, error);
                 setTotalPages(1);
                 setAreArrowsDisabled({ left: true, right: true });
-            })
-            .finally(() => {
-                setFetchingData(false);
             });
     };
 
     /** Initial fetch */
     useEffect(() => {
-        if (!listData.length) {
-            fetchSectionDataWrapper(currentPage).then(({ pages }) => {
-                if (pages > 1)
-                    setAreArrowsDisabled((flags) => ({
-                        ...flags,
-                        right: false,
-                    }));
-            });
-        } else {
-            setTotalPages(Math.ceil(listData.length / RECORDS_PER_PAGE));
-        }
+        fetchSectionDataWrapper(currentPage).then(({ pages }) => {
+            if (pages > 1)
+                setAreArrowsDisabled((flags) => ({
+                    ...flags,
+                    right: false,
+                }));
+        });
+        setTotalPages(Math.ceil(listData.length / RECORDS_PER_PAGE));
     }, [routeName]);
 
     return (
@@ -151,8 +143,6 @@ function PaginatedSection({
                 <Page
                     changeText={changeText}
                     emptyTitle={emptyTitle}
-                    hasEmpty={hasEmpty}
-                    hasList={hasList}
                     inputText={inputText}
                     isFetchingData={isFetchingData}
                     itemsSelected={itemsSelected}

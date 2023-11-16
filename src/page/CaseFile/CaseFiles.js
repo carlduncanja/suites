@@ -82,6 +82,8 @@ function CaseFiles(props) {
     } = props;
 
     const [selectedCaseIds, setSelectedCaseIds] = useState([]);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [isFetchingData, setIsFetchingData] = useState(false);
     const [isFloatingActionDisabled, setFloatingAction] = useState(false);
     const [pageSettingState, setPageSettingState] = useState({});
 
@@ -99,7 +101,7 @@ function CaseFiles(props) {
                       caseId: item._id,
                       isEdit: isOpenEditable,
                   });
-        } else return;
+        }
     };
 
     const handleOnCheckBoxPress = (caseItem) => () => {
@@ -133,6 +135,7 @@ function CaseFiles(props) {
     };
 
     const fetchCaseFilesData = async (pagePosition) => {
+        setIsFetchingData(true);
         return getCaseFiles(searchValue, RECORDS_PER_PAGE, pagePosition)
             .then((caseResult) => {
                 const { data = [] } = caseResult;
@@ -145,20 +148,21 @@ function CaseFiles(props) {
                 handleUnauthorizedError(error?.response?.status, setCaseFiles);
                 setPageSettingState({ ...pageSettingState, isDisabled: true });
                 throw error;
+            })
+            .finally(() => {
+                setIsFetchingData(false);
             });
     };
 
-    const renderFn = (item) => {
-        return (
-            <ListItem
-                hasCheckBox={true}
-                isChecked={selectedCaseIds.includes(item._id || item.id)}
-                onCheckBoxPress={handleOnCheckBoxPress(item)}
-                onItemPress={handleOnItemPress(item, false)}
-                itemView={item.isDraft ? renderDraft(item) : caseItem(item)}
-            />
-        );
-    };
+    const renderFn = (item) => (
+        <ListItem
+            hasCheckBox={true}
+            isChecked={selectedCaseIds.includes(item._id || item.id)}
+            onCheckBoxPress={handleOnCheckBoxPress(item)}
+            onItemPress={handleOnItemPress(item, false)}
+            itemView={item.isDraft ? renderDraft(item) : caseItem(item)}
+        />
+    );
 
     const getDate = (dates) => {
         let updatedDates = [...dates];
@@ -216,7 +220,7 @@ function CaseFiles(props) {
 
         const dates = caseProcedures.map((item) => {
             const { appointment } = item;
-            const startTime = appointment?.["startTime"];
+            const startTime = appointment?.startTime;
 
             return moment(startTime);
         });
@@ -467,10 +471,10 @@ function CaseFiles(props) {
             </View>
         );
 
-        userPermissions.delete &&
+        if (userPermissions.delete)
             actionArray.push(deleteDraftAction, deleteAction);
-        userPermissions.create && actionArray.push(createNewCase);
-        userPermissions.update && actionArray.push(archiveCase);
+        if (userPermissions.create) actionArray.push(createNewCase);
+        if (userPermissions.update) actionArray.push(archiveCase);
 
         return (
             <ActionContainer
@@ -504,13 +508,23 @@ function CaseFiles(props) {
         >
             <PaginatedSection
                 changeText={changeText}
+                currentPage={currentPage}
+                fetchSectionDataCb={fetchCaseFilesData}
+                hasActions={true}
+                hasActionButton={true}
+                hasPaginator={true}
                 inputText={searchValue}
+                isDisabled={isFloatingActionDisabled}
+                isFetchingData={isFetchingData}
                 itemsSelected={selectedCaseIds}
                 listData={caseFiles}
                 listHeaders={listHeaders}
                 listItemFormat={renderFn}
+                onRefresh={handleDataRefresh}
+                onSelectAll={handleOnSelectAll}
                 placeholderText="Search by Case ID, Patient, Staff"
                 routeName="Case Files"
+                setCurrentPage={setCurrentPage}
                 TopButton={() => (
                     <ButtonContainer theme={theme}>
                         <Button
@@ -521,14 +535,6 @@ function CaseFiles(props) {
                         />
                     </ButtonContainer>
                 )}
-                onRefresh={handleDataRefresh}
-                onSelectAll={handleOnSelectAll}
-                fetchSectionDataCb={fetchCaseFilesData}
-                hasActions={true}
-                hasActionButton={true}
-                hasPaginator={true}
-                isDisabled={isFloatingActionDisabled}
-                sectionRecords={caseFiles}
                 toggleActionButton={toggleActionButton}
             />
         </PageSettingsContext.Provider>

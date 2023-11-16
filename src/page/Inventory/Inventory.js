@@ -52,6 +52,8 @@ function Inventory(props) {
     const theme = useTheme();
     const recordsPerPage = 12;
 
+    const [currentPage, setCurrentPage] = useState(1);
+    const [isFetchingData, setIsFetchingData] = useState(false);
     const [isFloatingActionDisabled, setFloatingAction] = useState(false);
 
     const [selectedIds, setSelectedIds] = useState([]);
@@ -111,8 +113,7 @@ function Inventory(props) {
     };
 
     const onPressParentCheckbox = (item) => () => {
-        const { _id, variants = [] } = item;
-        // const variantIds = [];
+        const { _id } = item;
 
         const updatedInventory = checkboxItemPress(_id, selectedIds);
         setSelectedIds(updatedInventory);
@@ -121,20 +122,6 @@ function Inventory(props) {
             (obj) => obj.groupId !== _id
         );
         setSelectedVariants(removeChildren);
-
-        // if (selectedIds.includes(_id)) {
-        //     const removeChildren = selectedChildIds.filter(obj => obj.groupId !== _id);
-        //     setSelectedChildIs(removeChildren);
-        //     console.log("Remove children: ", removeChildren)
-        // } else {
-        //     variants.map(variant => variantIds.push(variant?._id));
-        //     const updatedIds = [...selectedChildIds, {
-        //         groupId: _id,
-        //         variantIds
-        //     }];
-        //     setSelectedChildIs(updatedIds);
-        //     console.log("Included: ", updatedIds)
-        // }
     };
 
     const onPressChildCheckbox = (inventoryVariant, inventoryGroup) => () => {
@@ -163,7 +150,7 @@ function Inventory(props) {
     };
 
     const getFabActions = () => {
-        actionsArray = [];
+        const actionsArray = [];
         const isRemoveGroupsDisabled = selectedIds.length === 0;
         const deleteAction = inventoryPermissions.delete && (
             <View
@@ -250,14 +237,17 @@ function Inventory(props) {
             />
         );
 
-        inventoryPermissions.delete &&
+        if (inventoryPermissions.delete) {
             actionsArray.push(
                 uploadInventory,
                 deleteAction,
                 deleteInventoryItemAction
             );
-        inventoryPermissions.create &&
+        }
+
+        if (inventoryPermissions.create) {
             actionsArray.push(uploadInventory, createAction, createGroup);
+        }
 
         return (
             <ActionContainer
@@ -604,6 +594,7 @@ function Inventory(props) {
     };
 
     const fetchInventory = async (pagePosition) => {
+        setIsFetchingData(true);
         return getInventoriesGroup(searchValue, recordsPerPage, pagePosition)
             .then((inventoryResult) => {
                 const { data = [] } = inventoryResult;
@@ -614,6 +605,9 @@ function Inventory(props) {
                 handleUnauthorizedError(error?.response?.status, setInventory);
                 setPageSettingState({ ...pageSettingState, isDisabled: true });
                 throw error;
+            })
+            .finally(() => {
+                setIsFetchingData(false);
             });
     };
 
@@ -703,7 +697,16 @@ function Inventory(props) {
         >
             <PaginatedSection
                 changeText={onSearchChange}
+                currentPage={currentPage}
+                fetchSectionDataCb={fetchInventory}
+                hasActionButton={
+                    inventoryPermissions.delete || inventoryPermissions.create
+                }
+                hasActions={true}
+                hasPaginator={true}
                 inputText={searchValue}
+                isDisabled={isFloatingActionDisabled}
+                isFetchingData={isFetchingData}
                 itemsSelected={selectedIds}
                 listData={inventory}
                 listHeaders={listHeaders}
@@ -712,13 +715,7 @@ function Inventory(props) {
                 onSelectAll={onSelectAll}
                 placeholderText="Search by item name."
                 routeName={pageTitle}
-                fetchSectionDataCb={fetchInventory}
-                hasActionButton={
-                    inventoryPermissions.delete || inventoryPermissions.create
-                }
-                hasActions={true}
-                hasPaginator={true}
-                isDisabled={isFloatingActionDisabled}
+                setCurrentPage={setCurrentPage}
                 toggleActionButton={toggleActionButton}
             />
         </PageSettingsContext.Provider>

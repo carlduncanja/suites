@@ -1,11 +1,10 @@
 import React from "react";
-import { StyleSheet } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { useTheme } from "emotion-theming";
 import RightArrow from "../../../../assets/svg/paginationRight";
 import LeftArrow from "../../../../assets/svg/paginationLeft";
 import IconButton from "../Buttons/IconButton";
 import PaginatorButtonsContainer from "./PaginatorButtonsContainer";
-import { View } from "react-native";
 
 /**
  * @typedef {Object} PaginatorAndFooterProps

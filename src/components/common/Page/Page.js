@@ -66,8 +66,6 @@ const MessageWrapper = styled.Text(({ theme }) => ({
  * @typedef {Object} PageProps
  * @property {VoidCallback} changeText
  * @property {string} emptyTitle
- * @property {boolean} hasEmpty - what does this mean?
- * @property {boolean} hasList
  * @property {string} inputText
  * @property {boolean} isFetchingData
  * @property {Array} itemsSelected

@@ -54,19 +54,17 @@ function PaginatorButtonsContainer({
     const getPageNumber = (index) => {
         if (currentPage <= maxButtonsPreEllipsis) {
             return index + 1;
-        } else {
-            const overflow = currentPage - maxButtonsPreEllipsis;
-            return index + 1 + overflow;
         }
+        const overflow = currentPage - maxButtonsPreEllipsis;
+        return index + 1 + overflow;
     };
 
     const isSelected = (index) => {
         if (currentPage <= maxButtonsPreEllipsis) {
             return currentPage === index + 1;
-        } else {
-            const overflow = currentPage - maxButtonsPreEllipsis;
-            return currentPage === index + 1 + overflow;
         }
+        const overflow = currentPage - maxButtonsPreEllipsis;
+        return currentPage === index + 1 + overflow;
     };
 
     return (

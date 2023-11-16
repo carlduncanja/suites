@@ -1,29 +1,25 @@
-import React, {useEffect, useState} from 'react';
-import {View} from "react-native"
-import {useTheme} from "emotion-theming"
-import NavPage from "../../components/common/Page/NavPage";
-import {useModal} from "react-native-modalfy";
-import {useNextPaginator, usePreviousPaginator} from "../../helpers/caseFilesHelpers";
-import ActionContainer from "../../components/common/FloatingAction/ActionContainer";
-import ListItem from "../../components/common/List/ListItem";
-import {deleteUserCall, getUsersCall} from "../../api/network";
-import jwtDecode from 'jwt-decode';
-import DataItem from "../../components/common/List/DataItem";
-import EditIcon from "../../../assets/svg/editIcon";
-import IconButton from "../../components/common/Buttons/IconButton";
-import ContentDataItem from "../../components/common/List/ContentDataItem";
-import LongPressWithFeedback from "../../components/common/LongPressWithFeedback";
-import {LONG_PRESS_TIMER} from "../../const";
-import ActionItem from "../../components/common/ActionItem";
-import WasteIcon from "../../../assets/svg/wasteIcon";
-import ConfirmationComponent from "../../components/ConfirmationComponent";
-import AddIcon from "../../../assets/svg/addIcon";
-import CreateUserOverlayDialog from "../../components/Users/CreateUserOverlayDialog";
-import {useNavigation} from "@react-navigation/native"
+import { useNavigation } from "@react-navigation/native";
+import { useTheme } from "emotion-theming";
 import _ from "lodash";
+import React, { useEffect, useState } from "react";
+import { View } from "react-native";
+import { useModal } from "react-native-modalfy";
+import AddIcon from "../../../assets/svg/addIcon";
+import EditIcon from "../../../assets/svg/editIcon";
+import WasteIcon from "../../../assets/svg/wasteIcon";
+import { deleteUserCall, getUsersCall } from "../../api/network";
+import ConfirmationComponent from "../../components/ConfirmationComponent";
+import CreateUserOverlayDialog from "../../components/Users/CreateUserOverlayDialog";
+import ActionItem from "../../components/common/ActionItem";
+import IconButton from "../../components/common/Buttons/IconButton";
+import ActionContainer from "../../components/common/FloatingAction/ActionContainer";
+import ContentDataItem from "../../components/common/List/ContentDataItem";
+import DataItem from "../../components/common/List/DataItem";
+import ListItem from "../../components/common/List/ListItem";
+import LongPressWithFeedback from "../../components/common/LongPressWithFeedback";
+import PaginatedSection from "../../components/common/Page/PaginatedSection";
+import { LONG_PRESS_TIMER } from "../../const";
 
-// this affects the header titles
-// for users page
 const listHeaders = [
     {
         name: "User",
@@ -48,17 +44,14 @@ const listHeaders = [
 ];
 
 function UsersPage(props) {
-
     const usersPermissions = props.route.params.usersPermissions;
 
     const theme = useTheme();
-    // affects page title top left
     const pageTitle = "Users";
     const navigation = useNavigation();
     const modal = useModal();
     const recordsPerPage = 12;
 
-    // ##### States
     const [isLoading, setFetchingData] = useState(false);
     const [isFloatingActionDisabled, setFloatingAction] = useState(false);
     const [users, setUsers] = useState([]);
@@ -69,34 +62,19 @@ function UsersPage(props) {
     const [searchResults, setSearchResult] = useState([]);
     const [searchQuery, setSearchQuery] = useState({});
 
-    // pagination
-    const [totalPages, setTotalPages] = useState(1);
-    const [currentPageListMin, setCurrentPageListMin] = useState(0);
-    const [currentPageListMax, setCurrentPageListMax] = useState(recordsPerPage);
     const [currentPagePosition, setCurrentPagePosition] = useState(1);
-    const [isNextDisabled, setNextDisabled] = useState(false);
-    const [isPreviousDisabled, setPreviousDisabled] = useState(true);
-
-    // region Lifecycle Methods
-    useEffect(() => {
-        if (!users.length) fetchUsers(currentPagePosition);
-        setTotalPages(Math.ceil(users.length / recordsPerPage));
-    }, []);
 
     useEffect(() => {
         if (!searchValue) {
-            // empty search values and cancel any out going request.
             setSearchResult([]);
             fetchUsers(1);
             if (searchQuery.cancel) searchQuery.cancel();
             return;
         }
 
-        // wait 300ms before search. cancel any prev request before executing current.
-
         const search = _.debounce(fetchUsers, 300);
 
-        setSearchQuery(prevSearch => {
+        setSearchQuery((prevSearch) => {
             if (prevSearch && prevSearch.cancel) {
                 prevSearch.cancel();
             }
@@ -107,11 +85,12 @@ function UsersPage(props) {
         setCurrentPagePosition(1);
     }, [searchValue]);
 
-    // endregion
-
-    // region Event Handlers
-    const onItemPress = (item, isOpenEditable) => () => {
-        navigation.navigate("UserPage", {user: item, onUserUpdate: handleUserUpdate, updateUser : usersPermissions.update})
+    const onItemPress = (item) => () => {
+        navigation.navigate("UserPage", {
+            user: item,
+            onUserUpdate: handleUserUpdate,
+            updateUser: usersPermissions.update,
+        });
     };
 
     const onSearchInputChange = (input) => {
@@ -122,53 +101,25 @@ function UsersPage(props) {
         fetchUsers(currentPagePosition);
     };
 
-    const onSelectAll = () => {
-    };
+    const onSelectAll = () => {};
 
     const handleUserUpdate = (updatedUser) => {
-        setUsers(users.map(user => user._id === updatedUser._id
-            ? {...user, ...updatedUser}
-            : {...user}
-        ))
-    }
-
-    const goToNextPage = () => {
-
-        if (currentPagePosition < totalPages) {
-            let {currentPage, currentListMin, currentListMax} = useNextPaginator(currentPagePosition, recordsPerPage, currentPageListMin, currentPageListMax);
-            setCurrentPagePosition(currentPage);
-            setCurrentPageListMin(currentListMin);
-            setCurrentPageListMax(currentListMax);
-            fetchUsers(currentPage)
-        }
-    };
-
-    const goToPreviousPage = () => {
-
-        if (currentPagePosition === 1) {
-            return
-        }
-        ;
-
-        let {currentPage, currentListMin, currentListMax} = usePreviousPaginator(currentPagePosition, recordsPerPage, currentPageListMin, currentPageListMax);
-        setCurrentPagePosition(currentPage);
-        setCurrentPageListMin(currentListMin);
-        setCurrentPageListMax(currentListMax);
-        fetchUsers(currentPage)
-
+        setUsers(
+            users.map((user) =>
+                user._id === updatedUser._id
+                    ? { ...user, ...updatedUser }
+                    : { ...user }
+            )
+        );
     };
 
     const onCheckBoxPress = (selectedItem) => () => {
         if (selectedIds.includes(selectedItem._id)) {
-            setSelectedIds(selectedIds.filter(id => selectedItem._id !== id))
+            setSelectedIds(selectedIds.filter((id) => selectedItem._id !== id));
         } else {
-            setSelectedIds([...selectedIds, selectedItem._id])
+            setSelectedIds([...selectedIds, selectedItem._id]);
         }
     };
-
-    const removeUsersFromState = (userIds) => {
-        setUsers(users.filter(user => !userIds.includes(user._id)))
-    }
 
     const toggleActionButton = () => {
         setFloatingAction(true);
@@ -182,41 +133,43 @@ function UsersPage(props) {
     };
 
     const onActionPress = (item) => {
-        navigation.navigate("UserPage", {user: item, onUserUpdate: handleUserUpdate, editMode: true, updateUser : usersPermissions.update})
-    }
+        navigation.navigate("UserPage", {
+            user: item,
+            onUserUpdate: handleUserUpdate,
+            editMode: true,
+            updateUser: usersPermissions.update,
+        });
+    };
 
     const onDeleteUsers = () => {
-        modal.openModal(
-            'ConfirmationModal',
-            {
-                content: <ConfirmationComponent
+        modal.openModal("ConfirmationModal", {
+            content: (
+                <ConfirmationComponent
                     isError={false}
                     isEditUpdate={true}
                     onCancel={modal.closeAllModals}
                     onAction={() => deleteUser(selectedIds)}
-                    action={"Yes"}
+                    action="Yes"
                     message="Are you sure you want to remove selected user(s)?"
-                />,
-                onClose: () => {
-                    modal.closeModals('ConfirmationModal');
-                }
-            }
-        );
-    }
+                />
+            ),
+            onClose: () => {
+                modal.closeModals("ConfirmationModal");
+            },
+        });
+    };
 
     const onNewUserPress = () => {
-        modal.closeModals('ActionContainerModal');
+        modal.closeModals("ActionContainerModal");
 
-        // For some reason there has to be a delay between closing a modal and opening another.
         setTimeout(() => {
-            modal.openModal('OverlayModal', {
+            modal.openModal("OverlayModal", {
                 content: (
                     <CreateUserOverlayDialog
                         onCreated={(user) => {
-                            //fetchUsers(currentPagePosition)
                             addUserToState(user);
                             onItemPress(user)();
-                            setFloatingAction(false)
+                            setFloatingAction(false);
                         }}
                         onCancel={() => {
                             setFloatingAction(false);
@@ -227,27 +180,28 @@ function UsersPage(props) {
                 onClose: () => setFloatingAction(false),
             });
         }, 200);
-    }
-
-    // endregion
-
-
-    // region Helper Methods
+    };
 
     const userItem = (name, email, groupName, item) => (
         <>
-            <DataItem flex={1.3} text={name} theme={theme}/>
-            <DataItem flex={2} text={email} theme={theme}/>
-            <DataItem flex={1} align={'center'} text={groupName} color={'--color-blue-600'}/>
+            <DataItem flex={1.3} text={name} theme={theme} />
+            <DataItem flex={2} text={email} theme={theme} />
+            <DataItem
+                flex={1}
+                align="center"
+                text={groupName}
+                color="--color-blue-600"
+            />
             <ContentDataItem
                 align="center"
                 flex={1}
                 content={
                     <IconButton
                         disabled={!usersPermissions.update}
-                        Icon={<EditIcon/>}
-                        onPress={()=> {onActionPress(item)}}
-                        
+                        Icon={<EditIcon />}
+                        onPress={() => {
+                            onActionPress(item);
+                        }}
                     />
                 }
             />
@@ -255,115 +209,103 @@ function UsersPage(props) {
     );
 
     const deleteUser = (userIds) => {
-        setFetchingData(true)
+        setFetchingData(true);
         deleteUserCall(userIds)
-            .then(data => {
-                // removeUsersFromState(userId);
+            .then(() => {
                 fetchUsers(currentPagePosition);
-                modal.openModal(
-                    'ConfirmationModal',
-                    {
-                        content: <ConfirmationComponent
+                modal.openModal("ConfirmationModal", {
+                    content: (
+                        <ConfirmationComponent
                             isError={false}
                             isEditUpdate={false}
                             onCancel={() => {
-                                modal.closeAllModals()
+                                modal.closeAllModals();
                             }}
                             onAction={() => {
-                                modal.closeAllModals()
+                                modal.closeAllModals();
                             }}
                             message="User(s) successfully removed."
-                        />,
-                        onClose: () => {
-                            modal.closeModals('ConfirmationModal');
-                        }
-                    }
-                );
+                        />
+                    ),
+                    onClose: () => {
+                        modal.closeModals("ConfirmationModal");
+                    },
+                });
             })
-            .catch(error => {
+            .catch((error) => {
                 console.log("Failed to remove user", error);
-                modal.openModal(
-                    'ConfirmationModal',
-                    {
-                        content: <ConfirmationComponent
+                modal.openModal("ConfirmationModal", {
+                    content: (
+                        <ConfirmationComponent
                             isError={true}
                             isEditUpdate={false}
                             onCancel={modal.closeAllModals}
                             onAction={modal.closeAllModals}
                             message="Failed to remove user."
-                        />,
-                        onClose: () => {
-                            modal.closeModals('ConfirmationModal');
-                        }
-                    }
-                );
+                        />
+                    ),
+                    onClose: () => {
+                        modal.closeModals("ConfirmationModal");
+                    },
+                });
             })
-            .finally(_ => {
-                setFetchingData(false)
-            })
-    }
+            .finally((_) => {
+                setFetchingData(false);
+            });
+    };
 
     const getFabActions = () => {
-
         const isUsersSelected = selectedIds?.length;
-        const deleteColor = !isUsersSelected ? theme.colors['--color-gray-600'] : theme.colors['--color-red-700']
+        const deleteColor = !isUsersSelected
+            ? theme.colors["--color-gray-600"]
+            : theme.colors["--color-red-700"];
 
-        const DeleteUserAction = usersPermissions.delete && <View style={{
-            borderRadius: 6,
-            flex: 1,
-            overflow: 'hidden'
-        }}>
-            <LongPressWithFeedback
-                pressTimer={LONG_PRESS_TIMER.LONG}
-                isDisabled={!isUsersSelected}
-                onLongPress={onDeleteUsers}
+        const DeleteUserAction = usersPermissions.delete && (
+            <View
+                style={{
+                    borderRadius: 6,
+                    flex: 1,
+                    overflow: "hidden",
+                }}
             >
-                {/*a part of the botton at the bottom right for deleting users*/}
-                <ActionItem
-                    title="Hold to Delete"
-                    icon={<WasteIcon strokeColor={deleteColor}/>}
-                    disabled={!isUsersSelected}
-                    touchable={false}
-                />
-            </LongPressWithFeedback>
-        </View>
+                <LongPressWithFeedback
+                    pressTimer={LONG_PRESS_TIMER.LONG}
+                    isDisabled={!isUsersSelected}
+                    onLongPress={onDeleteUsers}
+                >
+                    <ActionItem
+                        title="Hold to Delete"
+                        icon={<WasteIcon strokeColor={deleteColor} />}
+                        disabled={!isUsersSelected}
+                        touchable={false}
+                    />
+                </LongPressWithFeedback>
+            </View>
+        );
 
-        // button apart of the popup
-        // at the bottom right
-        const CreateUserAction = 
-        usersPermissions.create && <ActionItem
-            title="New User"
-            icon={<AddIcon/>}
-            onPress={onNewUserPress}
-            touchable={true}
-        />
+        const CreateUserAction = usersPermissions.create && (
+            <ActionItem
+                title="New User"
+                icon={<AddIcon />}
+                onPress={onNewUserPress}
+                touchable={true}
+            />
+        );
 
-        // popup at the bottom right 
-        // on users page
-        // used to create and delete users
         return (
-             <ActionContainer
+            <ActionContainer
                 floatingActions={[DeleteUserAction, CreateUserAction]}
-                title={"USERS ACTIONS"}
+                title="USERS ACTIONS"
             />
         );
     };
 
-
     const renderItem = (item = {}) => {
-
-        // console.log("Formatted Item: ", formattedItem)
-
-        const onActionClick = () => {
-        };
-
-        const userName = `${item['first_name']} ${item['last_name']}`
-        const group = item.role?.name
+        const userName = `${item.first_name} ${item.last_name}`;
+        const group = item.role?.name;
 
         const itemView = userItem(userName, item.email, group, item);
 
-        // selectedIds.includes() checks if an id is within the array
-        // the below component seems to handle box ticks
         return (
             <ListItem
                 isChecked={selectedIds.includes(item._id)}
@@ -375,39 +317,24 @@ function UsersPage(props) {
     };
 
     const fetchUsers = (pagePosition) => {
-        // gets called when using search bar
-        // in top search bar
         setFetchingData(true);
-        // searchValue is a state
-        // taken from search box upon form submit
-        // page position probably tracks page number
-        // basic pagination
-        getUsersCall(searchValue, pagePosition, recordsPerPage)
-            .then(data => {
-                let currentPosition = pagePosition ? pagePosition : 1;
-                setCurrentPagePosition(currentPosition)
-
-                setUsers(data?.data || [])
-                setTotalPages(data?.totalPages)
+        return getUsersCall(searchValue, pagePosition, recordsPerPage)
+            .then((data) => {
+                setUsers(data?.data || []);
+                return { ...data, pages: data.totalPages };
             })
-            .catch(error => {
-                console.log("Failed to get users")
-            })
-            .finally(_ => {
-                setFetchingData(false)
-            })
+            .finally((_) => {
+                setFetchingData(false);
+            });
     };
 
     const addUserToState = (user) => {
-        setUsers([user, ...users])
-    }
+        setUsers([user, ...users]);
+    };
 
-    // endregion
-
-    // this looks like the search bar at the top of the users page
     return (
-        <NavPage
-            placeholderText={"Search by user name or email."}
+        <PaginatedSection
+            placeholderText="Search by user name or email."
             routeName={pageTitle}
             listData={users}
             listItemFormat={renderItem}
@@ -418,24 +345,16 @@ function UsersPage(props) {
             onRefresh={onRefresh}
             isFetchingData={isLoading}
             onSelectAll={onSelectAll}
-
-            totalPages={totalPages}
             currentPage={currentPagePosition}
-            goToNextPage={goToNextPage}
-            goToPreviousPage={goToPreviousPage}
-
+            fetchSectionDataCb={fetchUsers}
+            setCurrentPage={setCurrentPagePosition}
             isDisabled={isFloatingActionDisabled}
             toggleActionButton={toggleActionButton}
             hasPaginator={true}
             hasActionButton={usersPermissions.delete || usersPermissions.create}
             hasActions={true}
-            isNextDisabled={isNextDisabled}
-            isPreviousDisabled={isPreviousDisabled}
         />
     );
 }
-
-UsersPage.propTypes = {};
-UsersPage.defaultProps = {};
 
 export default UsersPage;

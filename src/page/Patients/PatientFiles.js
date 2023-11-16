@@ -59,7 +59,9 @@ function PatientFiles(props) {
 
     const { navigation } = props;
 
+    const [currentPage, setCurrentPage] = useState(1);
     const [selectedPatientds, setSelectedPatientIds] = useState([]);
+    const [isFetchingData, setIsFetchingData] = useState(false);
     const [isFloatingActionDisabled, setFloatingAction] = useState(false);
     const [searchValue, setSearchValue] = useState("");
     const [patientData, setPatientData] = useState([]);
@@ -74,21 +76,24 @@ function PatientFiles(props) {
     };
 
     const fetchPatientFiles = async (pagePosition) => {
-        return getPatients(searchValue, recordsPerPage, pagePosition).then(
-            (patientResults) => {
+        setIsFetchingData(true);
+        return getPatients(searchValue, recordsPerPage, pagePosition)
+            .then((patientResults) => {
                 const { data = [] } = patientResults;
                 setPatientData(data);
                 return patientResults;
-            }
-        );
+            })
+            .finally(() => {
+                setIsFetchingData(false);
+            });
     };
     const patientItem = (item) => {
         const { firstName, middleName, surname, gender, contactInfo, trn } =
             item || {};
 
-        const genderLetter = gender == "Male" ? "M" : "F";
+        const genderLetter = gender === "Male" ? "M" : "F";
 
-        const phoneNumber = contactInfo?.phones[0]?.["phone"] || "--";
+        const phoneNumber = contactInfo?.phones[0]?.phone || "--";
         return (
             <>
                 <RightBorderDataItem
@@ -99,17 +104,17 @@ function PatientFiles(props) {
                 />
                 <DataItem
                     text={genderLetter}
-                    color={"--color-blue-700"}
+                    color="--color-blue-700"
                     flex={0.7}
-                    align={"flex-end"}
+                    align="flex-end"
                 />
                 <DataItem
                     text={phoneNumber}
-                    color={"--color-blue-700"}
+                    color="--color-blue-700"
                     flex={1.2}
                     textAlign="center"
                 />
-                <DataItem text={trn} color={"--color-blue-700"} flex={1} />
+                <DataItem text={trn} color="--color-blue-700" flex={1} />
             </>
         );
     };
@@ -122,7 +127,7 @@ function PatientFiles(props) {
                 patientId: item._id,
                 isEdit: isOpenEditable,
             });
-        } else return;
+        }
     };
 
     const renderFn = (item) => {
@@ -326,7 +331,14 @@ function PatientFiles(props) {
     return (
         <PaginatedSection
             changeText={onSearchChange}
+            currentPage={currentPage}
+            fetchSectionDataCb={fetchPatientFiles}
+            hasActionButton={true}
+            hasActions={true}
+            hasPaginator={true}
             inputText={searchValue}
+            isDisabled={isFloatingActionDisabled}
+            isFetchingData={isFetchingData}
             itemsSelected={selectedPatientds}
             listData={patientData}
             listHeaders={listHeaders}
@@ -334,6 +346,7 @@ function PatientFiles(props) {
             onSelectAll={handleOnSelectAll}
             placeholderText="Search Patient by First Name, Surname ,Contact Number or T.R.N"
             routeName="Patients"
+            setCurrentPage={setCurrentPage}
             TopButton={() => (
                 <ButtonContainer theme={theme}>
                     <Button
@@ -343,11 +356,6 @@ function PatientFiles(props) {
                     />
                 </ButtonContainer>
             )}
-            fetchSectionDataCb={fetchPatientFiles}
-            hasActionButton={true}
-            hasActions={true}
-            hasPaginator={true}
-            isDisabled={isFloatingActionDisabled}
             toggleActionButton={toggleActionButton}
         />
     );
