@@ -50,11 +50,7 @@ export const getDaysInRange = (startDate, endDate) => {
  * @param {string} defaultString - default string shown if firstname and surname values are null.
  * @return {string}
  */
-export const formatPhysician = (
-    physician = {},
-    showFull = true,
-    defaultString = "Unassigned"
-) => {
+export const formatPhysician = (physician = {}, showFull = true) => {
     const { firstName = "", surname = "" } =
         physician.length > 0 ? physician[0] : [];
 
@@ -65,11 +61,4 @@ export const formatPhysician = (
             : `Dr. ${firstName[0]}. ${surname}`;
     else if (firstName) return `Dr. ${firstName}`;
     else return `Dr. ${surname}`;
-};
-
-//TO-DO: Come up with a better name
-export const handleThenForFetch = (fetchResult, dispatcher) => {
-    const { data = [] } = fetchResult;
-    dispatcher(data);
-    return data;
 };

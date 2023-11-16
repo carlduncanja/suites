@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { View } from "react-native";
 import _, { isEmpty } from "lodash";
 import { useModal } from "react-native-modalfy";
@@ -9,14 +9,8 @@ import ActionContainer from "../../components/common/FloatingAction/ActionContai
 import ActionItem from "../../components/common/ActionItem";
 import AddIcon from "../../../assets/svg/addIcon";
 
-import {
-    useNextPaginator,
-    usePreviousPaginator,
-    selectAll,
-    checkboxItemPress,
-} from "../../helpers/caseFilesHelpers";
+import { selectAll, checkboxItemPress } from "../../helpers/caseFilesHelpers";
 
-import NavPage from "../../components/common/Page/NavPage";
 import DataItem from "../../components/common/List/DataItem";
 import RightBorderDataItem from "../../components/common/List/RightBorderDataItem";
 import { LONG_PRESS_TIMER } from "../../const";
@@ -25,6 +19,7 @@ import WasteIcon from "../../../assets/svg/wasteIcon";
 import Button from "../../components/common/Buttons/Button";
 import ConfirmationComponent from "../../components/ConfirmationComponent";
 import { getPatients, deletePatient } from "../../api/network";
+import PaginatedSection from "../../components/common/Page/PaginatedSection";
 const ButtonContainer = styled.View`
     width: 105px;
     height: 26px;
@@ -67,50 +62,7 @@ function PatientFiles(props) {
     const [selectedPatientds, setSelectedPatientIds] = useState([]);
     const [isFloatingActionDisabled, setFloatingAction] = useState(false);
     const [searchValue, setSearchValue] = useState("");
-    const [isFetchingPatients, setFetchingPatients] = useState(false);
     const [patientData, setPatientData] = useState([]);
-    const [searchQuery, setSearchQuery] = useState({});
-
-    const [totalPages, setTotalPages] = useState(1);
-    const [currentPageListMin, setCurrentPageListMin] = useState(0);
-    const [currentPageListMax, setCurrentPageListMax] =
-        useState(recordsPerPage);
-    const [currentPagePosition, setCurrentPagePosition] = useState(1);
-    const [isNextDisabled, setNextDisabled] = useState(false);
-    const [isPreviousDisabled, setPreviousDisabled] = useState(true);
-
-    useEffect(() => {
-        if (!patientData.length) {
-            fetchPatientFiles(currentPagePosition);
-        }
-        setTotalPages(
-            patientData.length === 0
-                ? 1
-                : Math.ceil(patientData.length / recordsPerPage)
-        );
-    }, []);
-
-    useEffect(() => {
-        if (!searchValue) {
-            // empty search values and cancel any out going request.
-            fetchPatientFiles(1);
-            if (searchQuery.cancel) searchQuery.cancel();
-            return;
-        }
-
-        // wait 300ms before search. cancel any prev request before executing current.
-
-        const search = _.debounce(fetchPatientFiles, 300);
-
-        setSearchQuery((prevSearch) => {
-            if (prevSearch && prevSearch.cancel) {
-                prevSearch.cancel();
-            }
-            return search;
-        });
-
-        search();
-    }, [searchValue]);
 
     const onSearchChange = (input) => {
         setSearchValue(input);
@@ -121,78 +73,14 @@ function PatientFiles(props) {
         setSelectedPatientIds(updatedPatientData);
     };
 
-    const goToNextPage = () => {
-        if (currentPagePosition < totalPages) {
-            const { currentPage, currentListMin, currentListMax } =
-                useNextPaginator(
-                    currentPagePosition,
-                    recordsPerPage,
-                    currentPageListMin,
-                    currentPageListMax
-                );
-
-            setCurrentPagePosition(currentPagePosition);
-
-            setCurrentPageListMin(currentListMin);
-            setCurrentPageListMax(currentListMax);
-
-            fetchPatientFiles(currentPage);
-        }
-    };
-
-    const goToPreviousPage = () => {
-        const { currentPage, currentListMin, currentListMax } =
-            usePreviousPaginator(
-                currentPagePosition,
-                recordsPerPage,
-                currentPageListMin,
-                currentPageListMax
-            );
-        setCurrentPagePosition(currentPage);
-
-        setCurrentPageListMin(currentListMin);
-        setCurrentPageListMax(currentListMax);
-        fetchPatientFiles(currentPage);
-    };
-
-    const fetchPatientFiles = (pagePosition) => {
-        const currentPosition = pagePosition || 1;
-        setCurrentPagePosition(currentPagePosition);
-        setFetchingPatients(true);
-
-        getPatients(searchValue, recordsPerPage, currentPosition)
-            .then((patientResults) => {
-                const { data = [], pages = 0 } = patientResults;
-
-                if (pages === 1) {
-                    setPreviousDisabled(true);
-                    setNextDisabled(true);
-                } else if (currentPosition === 1) {
-                    setPreviousDisabled(true);
-                    setNextDisabled(false);
-                } else if (currentPosition === pages) {
-                    setNextDisabled(true);
-                    setPreviousDisabled(false);
-                } else if (currentPosition < pages) {
-                    setNextDisabled(false);
-                    setPreviousDisabled(false);
-                } else {
-                    setNextDisabled(true);
-                    setPreviousDisabled(true);
-                }
-                setCurrentPagePosition(currentPosition);
+    const fetchPatientFiles = async (pagePosition) => {
+        return getPatients(searchValue, recordsPerPage, pagePosition).then(
+            (patientResults) => {
+                const { data = [] } = patientResults;
                 setPatientData(data);
-                data.length === 0 ? setTotalPages(1) : setTotalPages(pages);
-            })
-            .catch((error) => {
-                setTotalPages(1);
-                setPreviousDisabled(true);
-                setNextDisabled(true);
-                console.log("failed to get the data", error);
-            })
-            .finally((_) => {
-                setFetchingPatients(false);
-            });
+                return patientResults;
+            }
+        );
     };
     const patientItem = (item) => {
         const { firstName, middleName, surname, gender, contactInfo, trn } =
@@ -239,15 +127,13 @@ function PatientFiles(props) {
 
     const renderFn = (item) => {
         return (
-            <>
-                <ListItem
-                    hasCheckBox={true}
-                    isChecked={selectedPatientds.includes(item._id || item.id)}
-                    itemView={patientItem(item)}
-                    onItemPress={handleOnItemPress(item, false)}
-                    onCheckBoxPress={handleOnCheckBoxPress(item)}
-                />
-            </>
+            <ListItem
+                hasCheckBox={true}
+                isChecked={selectedPatientds.includes(item._id || item.id)}
+                itemView={patientItem(item)}
+                onItemPress={handleOnItemPress(item, false)}
+                onCheckBoxPress={handleOnCheckBoxPress(item)}
+            />
         );
     };
 
@@ -299,7 +185,7 @@ function PatientFiles(props) {
                 setTimeout(() => {
                     modal.closeModals("ActionContainerModal");
                 }, 200);
-                console.log("Failed to remove patient file: ", error);
+                console.error("Failed to remove patient file: ", error);
             })
             .finally((_) => {
                 setFloatingAction(false);
@@ -358,9 +244,6 @@ function PatientFiles(props) {
         const actionArray = [];
         const disabled = !!isEmpty(selectedPatientds);
         const enabled = selectedPatientds.length === 1;
-        const strokeColor = !enabled
-            ? theme.colors["--color-gray-600"]
-            : theme.colors["--color-red-700"];
         const deleteAction = (
             <View
                 style={{
@@ -441,15 +324,16 @@ function PatientFiles(props) {
     };
 
     return (
-        <NavPage
-            isFetchingData={isFetchingPatients}
-            routeName="Patients"
-            placeholderText="Search Patient by First Name, Surname ,Contact Number or T.R.N"
-            listData={patientData}
+        <PaginatedSection
             changeText={onSearchChange}
-            itemsSelected={selectedPatientds}
             inputText={searchValue}
+            itemsSelected={selectedPatientds}
+            listData={patientData}
+            listHeaders={listHeaders}
             listItemFormat={renderFn}
+            onSelectAll={handleOnSelectAll}
+            placeholderText="Search Patient by First Name, Surname ,Contact Number or T.R.N"
+            routeName="Patients"
             TopButton={() => (
                 <ButtonContainer theme={theme}>
                     <Button
@@ -459,19 +343,12 @@ function PatientFiles(props) {
                     />
                 </ButtonContainer>
             )}
-            listHeaders={listHeaders}
-            isDisabled={isFloatingActionDisabled}
-            toggleActionButton={toggleActionButton}
-            onSelectAll={handleOnSelectAll}
-            totalPages={totalPages}
-            currentPage={currentPagePosition}
-            goToNextPage={goToNextPage}
-            goToPreviousPage={goToPreviousPage}
-            hasPaginator={true}
+            fetchSectionDataCb={fetchPatientFiles}
             hasActionButton={true}
             hasActions={true}
-            isNextDisabled={isNextDisabled}
-            isPreviousDisabled={isPreviousDisabled}
+            hasPaginator={true}
+            isDisabled={isFloatingActionDisabled}
+            toggleActionButton={toggleActionButton}
         />
     );
 }

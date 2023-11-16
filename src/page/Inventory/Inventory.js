@@ -719,7 +719,6 @@ function Inventory(props) {
                 hasActions={true}
                 hasPaginator={true}
                 isDisabled={isFloatingActionDisabled}
-                sectionRecords={inventory}
                 toggleActionButton={toggleActionButton}
             />
         </PageSettingsContext.Provider>

@@ -204,7 +204,6 @@ const Suppliers = (props) => {
     };
 
     const archiveSupplierClick = () => {
-        //fetchSuppliersData(currentPagePosition);
         const selected = { ids: [...selectedSuppliers] };
         modal.closeAllModals("ConfirmationModal");
 
@@ -429,7 +428,6 @@ const Suppliers = (props) => {
                 hasActions={true}
                 hasPaginator={true}
                 isDisabled={isFloatingActionDisabled}
-                sectionRecords={suppliers}
                 toggleActionButton={toggleActionButton}
             />
         </PageSettingsContext.Provider>
