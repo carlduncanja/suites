@@ -1,50 +1,55 @@
-import styled from "@emotion/native";
-import { useTheme } from "emotion-theming";
-import { isEmpty } from "lodash";
-import React, { useState } from "react";
-import { useModal, withModal } from "react-native-modalfy";
-import { connect } from "react-redux";
+import React, { Component, useState, useEffect } from 'react';
+import { useTheme } from 'emotion-theming';
 import RestoreIcon from "../../../assets/svg/RestoreIcon";
-import {
-    getArchivedSuppliers,
-    restoreArchivedSuppliers,
-} from "../../api/network";
-import ConfirmationComponent from "../../components/ConfirmationComponent";
+import ListItem from '../../components/common/List/ListItem';
+import styled, { css } from '@emotion/native';
+import NavPage from '../../components/common/Page/NavPage';
+import { Text, View, StyleSheet } from 'react-native';
+import { withModal, useModal } from 'react-native-modalfy';
+import DataItem from '../../components/common/List/DataItem';
 import ActionItem from "../../components/common/ActionItem";
 import ActionContainer from "../../components/common/FloatingAction/ActionContainer";
-import DataItem from "../../components/common/List/DataItem";
-import ListItem from "../../components/common/List/ListItem";
+import { SetArchivedSuppliers } from "../../redux/actions/archivedSupplierActions"
+import { archiveSuppliers, getArchivedSuppliers, restoreArchivedSuppliers } from "../../api/network";
+import { formatDate, transformToSentence } from "../../utils/formatter";
 import RightBorderDataItem from "../../components/common/List/RightBorderDataItem";
-import PaginatedSection from "../../components/common/Page/PaginatedSection";
-import { checkboxItemPress, selectAll } from "../../helpers/caseFilesHelpers";
-import { SetArchivedSuppliers } from "../../redux/actions/archivedSupplierActions";
+import { useNextPaginator, usePreviousPaginator, checkboxItemPress, selectAll } from "../../helpers/caseFilesHelpers";
+import Button from '../../components/common/OverlayButtons/OverlayButton';
+import { connect } from 'react-redux';
+import ConfirmationComponent from "../../components/ConfirmationComponent";
+import { isEmpty } from 'lodash';
+
+
 
 const ArchiveButton = styled.TouchableOpacity`
-    align-items: center;
-    border-width: 1px;
-    justify-content: center;
-    border-color: ${({ theme }) => theme.colors["--accent-line"]};
-    background-color: ${({ theme }) => theme.colors["--accent-line"]};
-    width: 100px;
-    height: 26px;
-    border-radius: 6px;
-    margin-right: 5px;
+align-items:center;
+border-width:1px;
+justify-content:center;
+border-color:${({ theme }) => theme.colors["--accent-line"]};
+background-color:${({ theme }) => theme.colors["--accent-line"]};
+width:100px;
+height:26px;
+border-radius:6px;
+margin-right:5px;
+
 `;
 const ButtonContainer = styled.View`
-    width: 70%;
-    height: 100%;
-    align-items: flex-end;
+width:70%;
+height:100%;
+align-items:flex-end;
+
 `;
 
 const ArchiveButtonText = styled.Text`
-    align-items: center;
-    color: ${({ theme }) => theme.colors["--default-shade-white"]};
-    font: ${({ theme }) => theme.font["--text-sm-regular"]};
-`;
+align-items: center; 
+color:${({ theme }) => theme.colors["--default-shade-white"]}; 
+ font:${({ theme }) => theme.font["--text-sm-regular"]};
+`
+
 
 function ArchivedSuppliersPage(props) {
     const { archivedSuppliers = [], SetArchivedSuppliers, route } = props;
-    const { refreshSuppliers } = route.params;
+    const {refreshSuppliers} = route.params;
     const theme = useTheme();
     const modal = useModal();
 
@@ -52,101 +57,159 @@ function ArchivedSuppliersPage(props) {
         {
             name: "Name",
             alignment: "flex-start",
-            flex: 2,
+            flex: 2
         },
         {
             name: "Phone",
             alignment: "center",
-            flex: 1,
+            flex: 1
         },
         {
             name: "Email",
             alignment: "center",
-            flex: 2,
-        },
+            flex: 2
+        }
     ];
+
+    useEffect(() => {
+        fetchArchivedSuppliersData(currentPagePosition);
+        if (!archivedSuppliers.length) fetchArchivedSuppliersData(currentPagePosition)
+        setTotalPages(Math.ceil(archivedSuppliers.length / recordsPerPage))
+    }, []);
+
+    const recordsPerPage = 5;
 
     const [isFetchingData, setFetchingData] = useState(false);
     const [searchValue, setSearchValue] = useState("");
     const [selectedSuppliers, setSelectedSuppliers] = useState([]);
+    const [totalPages, setTotalPages] = useState(0);
+    const [currentPageListMin, setCurrentPageListMin] = useState(0)
+    const [currentPageListMax, setCurrentPageListMax] = useState(recordsPerPage)
     const [currentPagePosition, setCurrentPagePosition] = useState(1);
+    const [isNextDisabled, setNextDisabled] = useState(true);
+    const [isPreviousDisabled, setPreviousDisabled] = useState(true);
     const [isFloatingActionDisabled, setFloatingAction] = useState(false);
 
+
+
     const handleDataRefresh = () => {
+        console.log("Data being refreshed");
         fetchArchivedSuppliersData(currentPagePosition);
     };
 
     const onSearchInputChange = (input) => {
-        setSearchValue(input);
-    };
+        setSearchValue(input)
+    }
 
     const handleOnItemPress = (item) => {
-        props.navigation.navigate("ArchivedSupplier", {
-            initial: false,
-            supplier: item,
-            floatingActions: getFabActions,
-        });
-    };
+        props.navigation.navigate("ArchivedSupplier", { initial: false, supplier: item, floatingActions: getFabActions });
+
+    }
+
 
     const handleOnSelectAll = () => {
-        const updatedSuppliersList = selectAll(
-            archivedSuppliers,
-            selectedSuppliers
-        );
-        setSelectedSuppliers(updatedSuppliersList);
-    };
+        let updatedSuppliersList = selectAll(archivedSuppliers, selectedSuppliers)
+        setSelectedSuppliers(updatedSuppliersList)
+    }
 
     const handleOnCheckBoxPress = (item) => () => {
         const { _id } = item;
-        const updatedSuppliersList = checkboxItemPress(_id, selectedSuppliers);
+        let updatedSuppliersList = checkboxItemPress(_id, selectedSuppliers)
 
-        setSelectedSuppliers(updatedSuppliersList);
+        setSelectedSuppliers(updatedSuppliersList)
+    }
+
+    const goToNextPage = () => {
+        if (currentPagePosition < totalPages) {
+            let { currentPage, currentListMin, currentListMax } = useNextPaginator(currentPagePosition, recordsPerPage, currentPageListMin, currentPageListMax)
+            setCurrentPagePosition(currentPage);
+            setCurrentPageListMin(currentListMin);
+            setCurrentPageListMax(currentListMax);
+            fetchArchivedSuppliersData(currentPage)
+        }
     };
 
+    const goToPreviousPage = () => {
+        if (currentPagePosition === 1) return;
+
+        let { currentPage, currentListMin, currentListMax } = usePreviousPaginator(currentPagePosition, recordsPerPage, currentPageListMin, currentPageListMax)
+        setCurrentPagePosition(currentPage);
+        setCurrentPageListMin(currentListMin);
+        setCurrentPageListMax(currentListMax);
+        fetchArchivedSuppliersData(currentPage)
+
+    };
     const cancelClicked = () => {
         modal.closeAllModals("ConfirmationModal");
-    };
+    }
 
-    const fetchArchivedSuppliersData = () => {
-        setFetchingData(true);
+    const fetchArchivedSuppliersData = (pagePosition) => {
+
+        let currentPosition = pagePosition ? pagePosition : 1;
+        setCurrentPagePosition(currentPosition)
+
+        setFetchingData(true)
         getArchivedSuppliers()
-            .then((suppliersInfo) => {
-                const { data = [] } = suppliersInfo;
+            .then(suppliersInfo => {
+                const { data = [] } = suppliersInfo
+                setTotalPages(1);
+
+                // if (pages === 1) {
+                //     setPreviousDisabled(true);
+                //     setNextDisabled(true);
+                // } else if (currentPosition === 1) {
+                //     setPreviousDisabled(true);
+                //     setNextDisabled(false);
+                // } else if (currentPosition === pages) {
+                //     setNextDisabled(true);
+                //     setPreviousDisabled(false);
+                // } else if (currentPosition < pages) {
+                //     setNextDisabled(false);
+                //     setPreviousDisabled(false)
+                // } else {
+                //     setNextDisabled(true);
+                //     setPreviousDisabled(true);
+                // }
+
                 SetArchivedSuppliers(data);
-                return suppliersInfo;
+                //data.length === 0 ? setTotalPages(0) : setTotalPages(pages)
+
             })
-            .catch((error) => {
+            .catch(error => {
+                console.log("failed to get archived Suppliers", error);
                 modal.openModal("ConfirmationModal", {
                     content: (
                         <ConfirmationComponent
-                            isError={true}
-                            isEditUpdate={false}
+                            isError={true}//boolean to show whether an error icon or success icon
+                            isEditUpdate={false}//use this specification to either get the confirm an edit or update
                             onCancel={cancelClicked}
                             onAction={ArchiveSupplier}
-                            message="Are you sure you want to Archive the supplier(s)"
+                            message="Are you sure you want to Archive the supplier(s)"//general message you can send to be displayed
                             action="Archive"
                         />
-                    ),
-                });
+                    )
+                })
             })
-            .finally((_) => {
-                setFetchingData(false);
-            });
+            .finally(_ => {
+                setFetchingData(false)
+            })
     };
+
 
     const toggleActionButton = () => {
-        setFloatingAction(true);
-        modal.openModal("ActionContainerModal", {
-            actions: getFabActions(),
-            title: "SUPPLIER ACTIONS",
-            onClose: () => {
-                setFloatingAction(false);
-            },
-        });
-    };
+        setFloatingAction(true)
+        modal.openModal("ActionContainerModal",
+            {
+                actions: getFabActions(),
+                title: "SUPPLIER ACTIONS",
+                onClose: () => {
+                    setFloatingAction(false)
+                }
+            })
+    }
 
-    const renderArchivedSupplierFn = (item) => (
-        <ListItem
+    const renderArchivedSupplierFn = (item) => {
+        return <ListItem
             isArchive={true}
             hasCheckBox={true}
             isChecked={selectedSuppliers.includes(item._id)}
@@ -154,94 +217,95 @@ function ArchivedSuppliersPage(props) {
             onItemPress={() => handleOnItemPress(item, false)}
             itemView={supplierArchivedItem(item)}
         />
-    );
+    }
 
-    const supplierArchivedItem = (item) => (
-        <>
-            <RightBorderDataItem
-                text={item.name}
-                fontStyle="--text-sm-medium"
-                flex={2}
-            />
-            <DataItem
-                text={item.phone}
-                fontStyle="--text-sm-medium"
-                flex={1}
-                color="--color-blue-600"
-            />
-            <DataItem
-                text={item.email}
-                fontStyle="--text-sm-medium"
-                flex={2}
-                color="--color-blue-600"
-            />
-        </>
-    );
+
+    const supplierArchivedItem = (item) => {
+
+        return (
+            <>
+                <RightBorderDataItem text={item.name} fontStyle="--text-sm-medium" flex={2} />
+                <DataItem text={item.phone} fontStyle="--text-sm-medium" flex={1} color={"--color-blue-600"} />
+                <DataItem text={item.email} fontStyle="--text-sm-medium" flex={2} color={"--color-blue-600"} />
+
+                {/* <View style={[styles.item, { ...styles.rowBorderRight, flex: 2 }]}>
+                    <Text numberOfLines={1} style={[styles.itemText, { color: "#323843" }]}>{item.name}</Text>
+                </View>
+                <View style={[styles.item, { flex: 1, alignItems: 'center' }]}>
+                    <Text numberOfLines={1} style={[styles.itemText, { color: "#3182CE" }]}>{item.phone}</Text>
+                </View>
+                <View style={[styles.item, { flex: 2, alignItems: 'center' }]}>
+                    <Text numberOfLines={1} style={[styles.itemText, { color: "#3182CE" }]}>{item.email}</Text>
+                </View> */}
+            </>
+        )
+
+    }
     const backToSuppliers = () => {
         props.navigation.navigate("Suppliers");
-    };
+    }
 
     const onRestoreSuppliers = (isMultiple = false) => {
-        modal.closeModals("ActionContainerModal");
+        modal.closeModals('ActionContainerModal');
 
         setTimeout(() => {
-            modal.openModal("ConfirmationModal", {
+            modal.openModal('ConfirmationModal', {
                 content: (
                     <ConfirmationComponent
-                        isError={false}
+                        isError={false}//boolean to show whether an error icon or success icon
                         isEditUpdate={true}
-                        onCancel={() => modal.closeAllModals()}
+                        onCancel={() => modal.closeAllModals() }
                         onAction={() => {
                             modal.closeAllModals();
-                            isMultiple
-                                ? handleRestoreAllSuppliers()
-                                : handleRestoreSuppliers();
+                            isMultiple ? handleRestoreAllSuppliers() : handleRestoreSuppliers();
                         }}
-                        message="Do you want to restore this supplier/s ?" //general message you can send to be displayed
+                        message="Do you want to restore this supplier/s ?"//general message you can send to be displayed
                         action="Yes"
                     />
-                ),
-            });
+                )
+            })
         }, 200);
-    };
+    }
 
     const handleRestoreAllSuppliers = () => {
+        console.log('Archived suppliers: ', archiveSuppliers);
         handleRestoreSuppliers([...archivedSuppliers]);
     };
 
     const handleRestoreSuppliers = (suppliers = selectedSuppliers) => {
-        restoreArchivedSuppliers({ ids: [...suppliers] })
-            .then((_) => {
-                modal.openModal("ConfirmationModal", {
+        console.log('Selected suppliers:', selectedSuppliers);
+        restoreArchivedSuppliers({ids: [...suppliers]})
+            .then(_ => {
+                modal.openModal('ConfirmationModal', {
                     content: (
                         <ConfirmationComponent
-                            isError={false}
+                            isError={false}//boolean to show whether an error icon or success icon
                             isEditUpdate={false}
-                            onCancel={() => modal.closeAllModals()}
+                            onCancel={() => modal.closeAllModals() }
                             onAction={() => {
                                 modal.closeAllModals();
                                 handleDataRefresh();
                             }}
                             action="Yes"
                         />
-                    ),
-                });
+                    )
+                })
             })
-            .catch((_) => {
-                modal.openModal("ConfirmationModal", {
+            .catch(_ => {
+                modal.openModal('ConfirmationModal', {
                     content: (
                         <ConfirmationComponent
-                            isError={true}
+                            isError={true}//boolean to show whether an error icon or success icon
                             isEditUpdate={false}
-                            onCancel={() => modal.closeAllModals()}
-                            onAction={() => modal.closeAllModals()}
+                            onCancel={() => modal.closeAllModals() }
+                            onAction={() => modal.closeAllModals() }
                         />
-                    ),
-                });
+                    )
+                })
             })
-            .finally((_) => {
+            .finally(_ => {
                 refreshSuppliers();
-            });
+            })
     };
 
     const getFabActions = () => {
@@ -250,91 +314,97 @@ function ArchivedSuppliersPage(props) {
 
         const restoreSupplier = (
             <ActionItem
-                title="Restore Supplier"
-                icon={
-                    <RestoreIcon
-                        strokeColor={
-                            disabled
-                                ? theme.colors["--color-gray-600"]
-                                : theme.colors["--accent-line"]
-                        }
-                    />
-                }
-                onPress={() => {
-                    onRestoreSuppliers();
-                }}
+                title={"Restore Supplier"}
+                icon={<RestoreIcon strokeColor={disabled ? theme.colors['--color-gray-600'] : theme.colors['--accent-line']} />}
+                onPress={() => { onRestoreSuppliers(); }} 
                 disabled={disabled}
                 touchable={!disabled}
             />
         );
-        const restoreAllSuppliers = (
+        const restoreAllSuppliers= (
             <ActionItem
-                title="Restore All Suppliers"
-                icon={
-                    <RestoreIcon
-                        strokeColor={
-                            allDisabled
-                                ? theme.colors["--color-gray-600"]
-                                : theme.colors["--accent-line"]
-                        }
-                    />
-                }
-                onPress={() => {
-                    onRestoreSuppliers(true);
-                }}
+                title={"Restore All Suppliers"}
+                icon={<RestoreIcon strokeColor={allDisabled ? theme.colors['--color-gray-600'] : theme.colors['--accent-line']} />}
+                onPress={() => { onRestoreSuppliers(true); }} 
             />
         );
 
-        return (
-            <ActionContainer
-                floatingActions={[restoreSupplier, restoreAllSuppliers]}
-                title="SUPPLIER ACTIONS"
-            />
-        );
+
+        return <ActionContainer
+            floatingActions={[
+                restoreSupplier,
+                restoreAllSuppliers
+            ]}
+            title={"SUPPLIER ACTIONS"}
+        />
     };
+    let suppliersToDisplay = [...archivedSuppliers];
+
     return (
-        <PaginatedSection
+        <NavPage
             isFetchingData={isFetchingData}
             onRefresh={handleDataRefresh}
-            placeholderText="Search by Supplier name"
+            placeholderText={"Search by Supplier name"}
             changeText={onSearchInputChange}
             inputText={searchValue}
-            routeName="Archived Suppliers"
-            listData={archivedSuppliers}
+            routeName={"Archived Suppliers"}
+            listData={suppliersToDisplay}
             TopButton={() => {
-                return (
-                    <ButtonContainer>
-                        <ArchiveButton theme={theme} onPress={backToSuppliers}>
-                            <ArchiveButtonText>Close Archive</ArchiveButtonText>
-                        </ArchiveButton>
-                    </ButtonContainer>
-                );
+                return (<ButtonContainer><ArchiveButton theme={theme} onPress={backToSuppliers}>
+                    <ArchiveButtonText>Close Archive</ArchiveButtonText>
+                </ArchiveButton></ButtonContainer>)
             }}
             listHeaders={listHeaders}
             itemsSelected={selectedSuppliers}
             onSelectAll={handleOnSelectAll}
             listItemFormat={renderArchivedSupplierFn}
-            fetchSectionDataCb={fetchArchivedSuppliersData}
+            totalPages={totalPages}
             currentPage={currentPagePosition}
-            setCurrentPage={setCurrentPagePosition}
+            goToNextPage={goToNextPage}
+            goToPreviousPage={goToPreviousPage}
             isDisabled={isFloatingActionDisabled}
             toggleActionButton={toggleActionButton}
             hasPaginator={true}
             hasActionButton={true}
             hasActions={true}
+            isNextDisabled={isNextDisabled}
+            isPreviousDisabled={isPreviousDisabled}
         />
-    );
+
+    )
 }
 
 const mapStateToProps = (state) => ({
-    archivedSuppliers: state.archivedSuppliers,
+    archivedSuppliers: state.archivedSuppliers
 });
 
 const mapDispatcherToProp = {
-    SetArchivedSuppliers,
+    SetArchivedSuppliers
 };
 
-export default connect(
-    mapStateToProps,
-    mapDispatcherToProp
-)(withModal(ArchivedSuppliersPage));
+export default connect(mapStateToProps, mapDispatcherToProp)(withModal(ArchivedSuppliersPage));
+
+const styles = StyleSheet.create({
+    item: {
+        // flex:1
+
+    },
+    itemText: {
+        fontSize: 16
+    },
+    footer: {
+        flex: 1,
+        alignSelf: 'flex-end',
+        flexDirection: 'row',
+        position: 'absolute',
+        bottom: 0,
+        marginBottom: 20,
+        right: 0,
+        marginRight: 30,
+    },
+    rowBorderRight: {
+        borderRightColor: "#E3E8EF",
+        borderRightWidth: 2,
+        // marginRight: 20,
+    }
+})

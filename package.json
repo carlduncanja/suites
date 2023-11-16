@@ -14,7 +14,6 @@
   "dependencies": {
     "@emotion/core": "^10.0.21",
     "@emotion/native": "^10.0.14",
-    "@expo/metro-config": "^0.10.7",
     "@ismnoiet/react-native-dropdown": "0.0.2",
     "@react-native-async-storage/async-storage": "1.17.11",
     "@react-native-community/async-storage": "~1.12.0",
@@ -90,7 +89,6 @@
     "react-native-simple-animations": "^0.2.2",
     "react-native-sliding-drawer": "^1.0.1",
     "react-native-svg": "13.4.0",
-    "react-native-svg-transformer": "^1.1.0",
     "react-native-swipe-list-view": "^3.2.4",
     "react-native-timepicker": "^1.0.3",
     "react-native-vector-icons": "^6.6.0",

@@ -1,25 +1,29 @@
-import { useNavigation } from "@react-navigation/native";
-import { useTheme } from "emotion-theming";
-import _ from "lodash";
 import React, { useEffect, useState } from "react";
 import { View } from "react-native";
+import { useTheme } from "emotion-theming";
+import NavPage from "../../components/common/Page/NavPage";
 import { useModal } from "react-native-modalfy";
-import AddIcon from "../../../assets/svg/addIcon";
-import EditIcon from "../../../assets/svg/editIcon";
-import WasteIcon from "../../../assets/svg/wasteIcon";
-import { deleteUserCall, getUsersCall } from "../../api/network";
-import ConfirmationComponent from "../../components/ConfirmationComponent";
-import CreateUserOverlayDialog from "../../components/Users/CreateUserOverlayDialog";
-import ActionItem from "../../components/common/ActionItem";
-import IconButton from "../../components/common/Buttons/IconButton";
+import {
+    selectAll,
+    useNextPaginator,
+    usePreviousPaginator,
+} from "../../helpers/caseFilesHelpers";
 import ActionContainer from "../../components/common/FloatingAction/ActionContainer";
-import ContentDataItem from "../../components/common/List/ContentDataItem";
-import DataItem from "../../components/common/List/DataItem";
 import ListItem from "../../components/common/List/ListItem";
+import { deleteUserCall, getUsersCall } from "../../api/network";
+import DataItem from "../../components/common/List/DataItem";
+import EditIcon from "../../../assets/svg/editIcon";
+import IconButton from "../../components/common/Buttons/IconButton";
+import ContentDataItem from "../../components/common/List/ContentDataItem";
 import LongPressWithFeedback from "../../components/common/LongPressWithFeedback";
-import PaginatedSection from "../../components/common/Page/PaginatedSection";
-import { LONG_PRESS_TIMER, RECORDS_PER_PAGE_MAIN } from "../../const";
-import { selectAll } from "../../helpers/caseFilesHelpers";
+import { LONG_PRESS_TIMER } from "../../const";
+import ActionItem from "../../components/common/ActionItem";
+import WasteIcon from "../../../assets/svg/wasteIcon";
+import ConfirmationComponent from "../../components/ConfirmationComponent";
+import AddIcon from "../../../assets/svg/addIcon";
+import CreateUserOverlayDialog from "../../components/Users/CreateUserOverlayDialog";
+import { useNavigation } from "@react-navigation/native";
+import _ from "lodash";
 
 const listHeaders = [
     {
@@ -51,6 +55,7 @@ function UsersPage(props) {
     const pageTitle = "Users";
     const navigation = useNavigation();
     const modal = useModal();
+    const recordsPerPage = 12;
 
     const [isLoading, setFetchingData] = useState(false);
     const [isFloatingActionDisabled, setFloatingAction] = useState(false);
@@ -61,15 +66,28 @@ function UsersPage(props) {
     const [searchValue, setSearchValue] = useState("");
     const [searchQuery, setSearchQuery] = useState({});
 
+    const [totalPages, setTotalPages] = useState(1);
+    const [currentPageListMin, setCurrentPageListMin] = useState(0);
+    const [currentPageListMax, setCurrentPageListMax] =
+        useState(recordsPerPage);
     const [currentPagePosition, setCurrentPagePosition] = useState(1);
+    const [isNextDisabled] = useState(false);
+    const [isPreviousDisabled] = useState(true);
+
+    useEffect(() => {
+        if (!users.length) fetchUsers(currentPagePosition);
+        setTotalPages(Math.ceil(users.length / recordsPerPage));
+    }, []);
 
     useEffect(() => {
         if (!searchValue) {
-            setSearchResult([]);
+            // empty search values and cancel any out going request.
             fetchUsers(1);
             if (searchQuery.cancel) searchQuery.cancel();
             return;
         }
+
+        // wait 300ms before search. cancel any prev request before executing current.
 
         const search = _.debounce(fetchUsers, 300);
 
@@ -115,6 +133,39 @@ function UsersPage(props) {
         );
     };
 
+    const goToNextPage = () => {
+        if (currentPagePosition < totalPages) {
+            let { currentPage, currentListMin, currentListMax } =
+                useNextPaginator(
+                    currentPagePosition,
+                    recordsPerPage,
+                    currentPageListMin,
+                    currentPageListMax
+                );
+            setCurrentPagePosition(currentPage);
+            setCurrentPageListMin(currentListMin);
+            setCurrentPageListMax(currentListMax);
+            fetchUsers(currentPage);
+        }
+    };
+
+    const goToPreviousPage = () => {
+        if (currentPagePosition === 1) {
+            return;
+        }
+        let { currentPage, currentListMin, currentListMax } =
+            usePreviousPaginator(
+                currentPagePosition,
+                recordsPerPage,
+                currentPageListMin,
+                currentPageListMax
+            );
+        setCurrentPagePosition(currentPage);
+        setCurrentPageListMin(currentListMin);
+        setCurrentPageListMax(currentListMax);
+        fetchUsers(currentPage);
+    };
+
     const onCheckBoxPress = (selectedItem) => () => {
         if (selectedIds.includes(selectedItem._id)) {
             setSelectedIds(selectedIds.filter((id) => selectedItem._id !== id));
@@ -142,12 +193,6 @@ function UsersPage(props) {
             updateUser: usersPermissions.update,
         });
     };
-    navigation.navigate("UserPage", {
-        user: item,
-        onUserUpdate: handleUserUpdate,
-        editMode: true,
-        updateUser: usersPermissions.update,
-    });
 
     const onDeleteUsers = () => {
         modal.openModal("ConfirmationModal", {
@@ -157,7 +202,7 @@ function UsersPage(props) {
                     isEditUpdate={true}
                     onCancel={modal.closeAllModals}
                     onAction={() => deleteUser(selectedIds)}
-                    action="Yes"
+                    action={"Yes"}
                     message="Are you sure you want to remove selected user(s)?"
                 />
             ),
@@ -169,7 +214,6 @@ function UsersPage(props) {
 
     const onNewUserPress = () => {
         modal.closeModals("ActionContainerModal");
-        modal.closeModals("ActionContainerModal");
 
         setTimeout(() => {
             modal.openModal("OverlayModal", {
@@ -178,7 +222,6 @@ function UsersPage(props) {
                         onCreated={(user) => {
                             addUserToState(user);
                             onItemPress(user)();
-                            setFloatingAction(false);
                             setFloatingAction(false);
                         }}
                         onCancel={() => {
@@ -198,9 +241,9 @@ function UsersPage(props) {
             <DataItem flex={2} text={email} theme={theme} />
             <DataItem
                 flex={1}
-                align="center"
+                align={"center"}
                 text={groupName}
-                color="--color-blue-600"
+                color={"--color-blue-600"}
             />
             <ContentDataItem
                 align="center"
@@ -208,10 +251,6 @@ function UsersPage(props) {
                 content={
                     <IconButton
                         disabled={!usersPermissions.update}
-                        Icon={<EditIcon />}
-                        onPress={() => {
-                            onActionPress(item);
-                        }}
                         Icon={<EditIcon />}
                         onPress={() => {
                             onActionPress(item);
@@ -234,10 +273,8 @@ function UsersPage(props) {
                             isEditUpdate={false}
                             onCancel={() => {
                                 modal.closeAllModals();
-                                modal.closeAllModals();
                             }}
                             onAction={() => {
-                                modal.closeAllModals();
                                 modal.closeAllModals();
                             }}
                             message="User(s) successfully removed."
@@ -311,13 +348,13 @@ function UsersPage(props) {
         return (
             <ActionContainer
                 floatingActions={[DeleteUserAction, CreateUserAction]}
-                title="USERS ACTIONS"
+                title={"USERS ACTIONS"}
             />
         );
     };
 
     const renderItem = (item = {}) => {
-        const userName = `${item.first_name} ${item.last_name}`;
+        const userName = `${item["first_name"]} ${item["last_name"]}`;
         const group = item.role?.name;
 
         const itemView = userItem(userName, item.email, group, item);
@@ -334,10 +371,16 @@ function UsersPage(props) {
 
     const fetchUsers = (pagePosition) => {
         setFetchingData(true);
-        return getUsersCall(searchValue, pagePosition, RECORDS_PER_PAGE_MAIN)
+        getUsersCall(searchValue, pagePosition, recordsPerPage)
             .then((data) => {
+                let currentPosition = pagePosition ? pagePosition : 1;
+                setCurrentPagePosition(currentPosition);
+
                 setUsers(data?.data || []);
-                return { ...data, pages: data.totalPages };
+                setTotalPages(data?.totalPages);
+            })
+            .catch(() => {
+                console.log("Failed to get users");
             })
             .finally((_) => {
                 setFetchingData(false);
@@ -349,26 +392,29 @@ function UsersPage(props) {
     };
 
     return (
-        <PaginatedSection
+        <NavPage
+            placeholderText={"Search by user name or email."}
+            routeName={pageTitle}
+            listData={users}
+            listItemFormat={renderItem}
+            inputText={searchValue}
+            itemsSelected={selectedIds}
+            listHeaders={listHeaders}
             changeText={onSearchInputChange}
+            onRefresh={onRefresh}
+            isFetchingData={isLoading}
+            onSelectAll={onSelectAll}
+            totalPages={totalPages}
             currentPage={currentPagePosition}
-            fetchSectionDataCb={fetchUsers}
+            goToNextPage={goToNextPage}
+            goToPreviousPage={goToPreviousPage}
+            isDisabled={isFloatingActionDisabled}
+            toggleActionButton={toggleActionButton}
+            hasPaginator={true}
             hasActionButton={usersPermissions.delete || usersPermissions.create}
             hasActions={true}
-            hasPaginator={true}
-            inputText={searchValue}
-            isDisabled={isFloatingActionDisabled}
-            isFetchingData={isLoading}
-            itemsSelected={selectedIds}
-            listData={users}
-            listHeaders={listHeaders}
-            listItemFormat={renderItem}
-            onRefresh={onRefresh}
-            onSelectAll={onSelectAll}
-            placeholderText="Search by user name or email."
-            routeName={pageTitle}
-            setCurrentPage={setCurrentPagePosition}
-            toggleActionButton={toggleActionButton}
+            isNextDisabled={isNextDisabled}
+            isPreviousDisabled={isPreviousDisabled}
         />
     );
 }
