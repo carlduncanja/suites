@@ -38,7 +38,7 @@ import CreateEquipmentTypeDialogContainer from "../../components/Equipment/Creat
 import IconButton from "../../components/common/Buttons/IconButton";
 import CollapsibleListItem from "../../components/common/List/CollapsibleListItem";
 import PaginatedSection from "../../components/common/Page/PaginatedSection";
-import { LONG_PRESS_TIMER } from "../../const";
+import { LONG_PRESS_TIMER, RECORDS_PER_PAGE_MAIN } from "../../const";
 import { PageSettingsContext } from "../../contexts/PageSettingsContext";
 const QuantityWrapper = styled.View`
     flex: 1.5;
@@ -80,7 +80,6 @@ const shadows = [
 const Equipment = (props) => {
     const equipmentPermissions = props.route.params.equipmentPermissions;
     const theme = useTheme();
-    const recordsPerPage = 12;
     const listHeaders = [
         {
             name: "Item ID",
@@ -252,7 +251,11 @@ const Equipment = (props) => {
                 console.log("failed to get equipment", error);
             });
 
-        return getEquipmentTypes(searchValue, recordsPerPage, pagePosition)
+        return getEquipmentTypes(
+            searchValue,
+            RECORDS_PER_PAGE_MAIN,
+            pagePosition
+        )
             .then((equipmentTypesInfo) => {
                 const { data = [] } = equipmentTypesInfo;
 

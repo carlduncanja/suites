@@ -30,7 +30,7 @@ import { currencyFormatter, formatDate } from "../../utils/formatter";
 
 import DataItem from "../../components/common/List/DataItem";
 import MultipleTextDataItem from "../../components/common/List/MultipleTextDataItem";
-import { emptyFn, LONG_PRESS_TIMER, RECORDS_PER_PAGE } from "../../const";
+import { emptyFn, LONG_PRESS_TIMER, RECORDS_PER_PAGE_MAIN } from "../../const";
 import { PageSettingsContext } from "../../contexts/PageSettingsContext";
 import LongPressWithFeedback from "../../components/common/LongPressWithFeedback";
 import WasteIcon from "../../../assets/svg/wasteIcon";
@@ -159,7 +159,7 @@ function CaseFiles(props) {
 
     const fetchCaseFilesData = async (pagePosition) => {
         setIsFetchingData(true);
-        return getCaseFiles(searchValue, RECORDS_PER_PAGE, pagePosition)
+        return getCaseFiles(searchValue, RECORDS_PER_PAGE_MAIN, pagePosition)
             .then((caseResult) => {
                 const { data = [] } = caseResult;
                 setCaseFiles(data);

@@ -93,4 +93,4 @@ export const emptyFn = () => {};
 
 export const DISABLED_COLOR = (theme) => theme.colors["--color-gray-600"];
 
-export const RECORDS_PER_PAGE = 12;
+export const RECORDS_PER_PAGE_MAIN = 12;

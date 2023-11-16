@@ -13,7 +13,7 @@ import { selectAll, checkboxItemPress } from "../../helpers/caseFilesHelpers";
 
 import DataItem from "../../components/common/List/DataItem";
 import RightBorderDataItem from "../../components/common/List/RightBorderDataItem";
-import { LONG_PRESS_TIMER } from "../../const";
+import { LONG_PRESS_TIMER, RECORDS_PER_PAGE_MAIN } from "../../const";
 import LongPressWithFeedback from "../../components/common/LongPressWithFeedback";
 import WasteIcon from "../../../assets/svg/wasteIcon";
 import Button from "../../components/common/Buttons/Button";
@@ -55,7 +55,6 @@ const listHeaders = [
 function PatientFiles(props) {
     const modal = useModal();
     const theme = useTheme();
-    const recordsPerPage = 12;
 
     const { navigation } = props;
 
@@ -100,7 +99,7 @@ function PatientFiles(props) {
 
     const fetchPatientFiles = async (pagePosition) => {
         setIsFetchingData(true);
-        return getPatients(searchValue, recordsPerPage, pagePosition)
+        return getPatients(searchValue, RECORDS_PER_PAGE_MAIN, pagePosition)
             .then((patientResults) => {
                 const { data = [] } = patientResults;
                 setPatientData(data);

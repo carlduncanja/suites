@@ -24,14 +24,13 @@ import { setPhysicians } from "../redux/actions/physiciansActions";
 import ConfirmationComponent from "../components/ConfirmationComponent";
 import CreatePhysicianDialogContainer from "../components/Physicians/CreatePhyscianDialogContainer";
 import DataItem from "../components/common/List/DataItem";
-import { LONG_PRESS_TIMER } from "../const";
+import { LONG_PRESS_TIMER, RECORDS_PER_PAGE_MAIN } from "../const";
 
 import PaginatedSection from "../components/common/Page/PaginatedSection";
 import { PageSettingsContext } from "../contexts/PageSettingsContext";
 
 const Physicians = (props) => {
     const userPermissions = props.route.params.permissions;
-    const recordsPerPage = 12;
     const listHeaders = [
         {
             name: "Name",
@@ -138,7 +137,7 @@ const Physicians = (props) => {
 
     const fetchPhysiciansData = async (pagePosition) => {
         setFetchingData(true);
-        return getPhysicians(searchValue, recordsPerPage, pagePosition)
+        return getPhysicians(searchValue, RECORDS_PER_PAGE_MAIN, pagePosition)
             .then((physicianResult) => {
                 const { data = [] } = physicianResult;
                 setPhysicians(data);

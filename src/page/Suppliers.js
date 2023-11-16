@@ -34,7 +34,7 @@ import TouchableDataItem from "../components/common/List/TouchableDataItem";
 
 import { PageSettingsContext } from "../contexts/PageSettingsContext";
 import WasteIcon from "../../assets/svg/wasteIcon";
-import { LONG_PRESS_TIMER } from "../const";
+import { LONG_PRESS_TIMER, RECORDS_PER_PAGE_MAIN } from "../const";
 import PaginatedSection from "../components/common/Page/PaginatedSection";
 
 const ArchiveButton = styled.TouchableOpacity`
@@ -62,7 +62,6 @@ const Suppliers = (props) => {
     const theme = useTheme();
     const suppplierPermissions = props.route.params.suppplierPermissions;
 
-    const recordsPerPage = 12;
     const listHeaders = [
         {
             name: "Name",
@@ -158,7 +157,7 @@ const Suppliers = (props) => {
 
     const fetchSuppliersData = async (page) => {
         setIsFetchingData(true);
-        return getSuppliers(searchValue, recordsPerPage, page)
+        return getSuppliers(searchValue, RECORDS_PER_PAGE_MAIN, page)
             .then((suppliersInfo) => {
                 const { data = [] } = suppliersInfo;
                 setSuppliers(data);

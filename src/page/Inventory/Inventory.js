@@ -38,7 +38,7 @@ import {
     checkboxItemPress,
     handleUnauthorizedError,
 } from "../../helpers/caseFilesHelpers";
-import { LONG_PRESS_TIMER } from "../../const";
+import { LONG_PRESS_TIMER, RECORDS_PER_PAGE_MAIN } from "../../const";
 import { PageSettingsContext } from "../../contexts/PageSettingsContext";
 import FileUploadComponent from "../../components/FileUploadComponent";
 import PaginatedSection from "../../components/common/Page/PaginatedSection";
@@ -50,7 +50,6 @@ function Inventory(props) {
     const pageTitle = "Inventory";
     const modal = useModal();
     const theme = useTheme();
-    const recordsPerPage = 12;
 
     const [currentPage, setCurrentPage] = useState(1);
     const [isFetchingData, setIsFetchingData] = useState(false);
@@ -619,7 +618,11 @@ function Inventory(props) {
 
     const fetchInventory = async (pagePosition) => {
         setIsFetchingData(true);
-        return getInventoriesGroup(searchValue, recordsPerPage, pagePosition)
+        return getInventoriesGroup(
+            searchValue,
+            RECORDS_PER_PAGE_MAIN,
+            pagePosition
+        )
             .then((inventoryResult) => {
                 const { data = [] } = inventoryResult;
                 setInventory(data);

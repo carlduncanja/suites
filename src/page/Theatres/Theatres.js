@@ -23,7 +23,7 @@ import { setTheatres } from "../../redux/actions/theatresActions";
 
 import ConfirmationComponent from "../../components/ConfirmationComponent";
 import PaginatedSection from "../../components/common/Page/PaginatedSection";
-import { LONG_PRESS_TIMER } from "../../const";
+import { LONG_PRESS_TIMER, RECORDS_PER_PAGE_MAIN } from "../../const";
 import { PageSettingsContext } from "../../contexts/PageSettingsContext";
 
 const listHeaders = [
@@ -54,7 +54,6 @@ function Theatres(props) {
     const pageTitle = "Theatre Rental";
     const emptyTitle = "No Theatres Found";
     const modal = useModal();
-    const recordsPerPage = 12;
     const theatrePermissions = props.route.params.theatrePermissions;
 
     const [isFetchingData, setFetchingData] = useState(false);
@@ -352,7 +351,7 @@ function Theatres(props) {
 
     const fetchTheatres = async (pagePosition) => {
         setFetchingData(true);
-        return getTheatres(searchValue, recordsPerPage, pagePosition)
+        return getTheatres(searchValue, RECORDS_PER_PAGE_MAIN, pagePosition)
             .then((result) => {
                 const { data = [] } = result;
                 setTheatres(data);

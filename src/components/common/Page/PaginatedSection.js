@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import Page from "./Page";
 import Footer from "./Footer";
 import styled from "@emotion/native";
-import { RECORDS_PER_PAGE } from "../../../const";
+import { RECORDS_PER_PAGE_MAIN } from "../../../const";
 const NavPageWrapper = styled.View`
     width: 100%;
 `;
@@ -134,7 +134,7 @@ function PaginatedSection({
                     right: false,
                 }));
         });
-        setTotalPages(Math.ceil(listData.length / RECORDS_PER_PAGE));
+        setTotalPages(Math.ceil(listData.length / RECORDS_PER_PAGE_MAIN));
     }, [routeName]);
 
     return (

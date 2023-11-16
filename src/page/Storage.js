@@ -15,7 +15,7 @@ import DataItem from "../components/common/List/DataItem";
 import ListItem from "../components/common/List/ListItem";
 import RightBorderDataItem from "../components/common/List/RightBorderDataItem";
 import LongPressWithFeedback from "../components/common/LongPressWithFeedback";
-import { LONG_PRESS_TIMER } from "../const";
+import { LONG_PRESS_TIMER, RECORDS_PER_PAGE_MAIN } from "../const";
 import {
     checkboxItemPress,
     handleUnauthorizedError,
@@ -49,7 +49,6 @@ function Storage(props) {
 
     const storagePermissions = props.route.params.storagePermissions;
     const pageTitle = "Storage";
-    const recordsPerPage = 12;
     const modal = useModal();
     const theme = useTheme();
 
@@ -153,7 +152,7 @@ function Storage(props) {
 
     const fetchStorageData = async (pagePosition) => {
         setFetchingData(true);
-        return getStorage(searchValue, recordsPerPage, pagePosition)
+        return getStorage(searchValue, RECORDS_PER_PAGE_MAIN, pagePosition)
             .then((storageResult) => {
                 const { data = [] } = storageResult;
                 setStorage(data);

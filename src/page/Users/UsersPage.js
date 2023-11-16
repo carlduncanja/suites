@@ -18,7 +18,7 @@ import DataItem from "../../components/common/List/DataItem";
 import ListItem from "../../components/common/List/ListItem";
 import LongPressWithFeedback from "../../components/common/LongPressWithFeedback";
 import PaginatedSection from "../../components/common/Page/PaginatedSection";
-import { LONG_PRESS_TIMER } from "../../const";
+import { LONG_PRESS_TIMER, RECORDS_PER_PAGE_MAIN } from "../../const";
 
 const listHeaders = [
     {
@@ -50,7 +50,6 @@ function UsersPage(props) {
     const pageTitle = "Users";
     const navigation = useNavigation();
     const modal = useModal();
-    const recordsPerPage = 12;
 
     const [isLoading, setFetchingData] = useState(false);
     const [isFloatingActionDisabled, setFloatingAction] = useState(false);
@@ -318,7 +317,7 @@ function UsersPage(props) {
 
     const fetchUsers = (pagePosition) => {
         setFetchingData(true);
-        return getUsersCall(searchValue, pagePosition, recordsPerPage)
+        return getUsersCall(searchValue, pagePosition, RECORDS_PER_PAGE_MAIN)
             .then((data) => {
                 setUsers(data?.data || []);
                 return { ...data, pages: data.totalPages };

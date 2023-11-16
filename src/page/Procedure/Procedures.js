@@ -29,7 +29,11 @@ import ConfirmationComponent from "../../components/ConfirmationComponent";
 import DataItem from "../../components/common/List/DataItem";
 import RightBorderDataItem from "../../components/common/List/RightBorderDataItem";
 import TouchableDataItem from "../../components/common/List/TouchableDataItem";
-import { DISABLED_COLOR, LONG_PRESS_TIMER } from "../../const";
+import {
+    DISABLED_COLOR,
+    LONG_PRESS_TIMER,
+    RECORDS_PER_PAGE_MAIN,
+} from "../../const";
 
 import ExportIcon from "../../../assets/svg/exportIcon";
 import ConfirmationCheckBoxComponent from "../../components/ConfirmationCheckBoxComponent";
@@ -38,8 +42,6 @@ import PaginatedSection from "../../components/common/Page/PaginatedSection";
 import { PageSettingsContext } from "../../contexts/PageSettingsContext";
 
 const Procedures = (props) => {
-    const recordsPerPage = 12;
-
     const procedurePermissions = props.route.params.procedurePermissions;
 
     const modal = useModal();
@@ -151,7 +153,7 @@ const Procedures = (props) => {
 
     const fetchProceduresData = async (pagePosition) => {
         setFetchingData(true);
-        return getProcedures(searchValue, recordsPerPage, pagePosition)
+        return getProcedures(searchValue, RECORDS_PER_PAGE_MAIN, pagePosition)
             .then((proceduresResult) => {
                 const { data = [] } = proceduresResult;
                 setProcedures(data);

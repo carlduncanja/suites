@@ -44,6 +44,7 @@ import {
     LONG_PRESS_TIMER,
     ORDER_TYPES,
     PURCHASE_ORDER_STATUSES,
+    RECORDS_PER_PAGE_MAIN,
 } from "../../const";
 import { addNotification } from "../../redux/actions/NotificationActions";
 import { formatDate, transformToTitleCase } from "../../utils/formatter";
@@ -72,8 +73,6 @@ const listHeaders = [
 ];
 
 const Orders = (props) => {
-    const recordsPerPage = 12;
-
     const {
         purchaseOrders = [],
         setPurchaseOrders,
@@ -256,7 +255,11 @@ const Orders = (props) => {
 
     const fetchOrdersData = async (pagePosition) => {
         setFetchingData(true);
-        return getPurchaseOrders(searchValue, recordsPerPage, pagePosition)
+        return getPurchaseOrders(
+            searchValue,
+            RECORDS_PER_PAGE_MAIN,
+            pagePosition
+        )
             .then((ordersInfo) => {
                 const { data = [] } = ordersInfo;
                 setPurchaseOrders(data);
