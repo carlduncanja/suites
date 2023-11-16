@@ -1,5 +1,6 @@
+import _ from "lodash";
 import moment from "moment";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { useModal } from "react-native-modalfy";
 import { connect } from "react-redux";
@@ -61,9 +62,32 @@ function Theatres(props) {
 
     const [selectedIds, setSelectedIds] = useState([]);
     const [searchValue, setSearchValue] = useState("");
+    const [searchResults, setSearchResult] = useState([]);
+    const [searchQuery, setSearchQuery] = useState({});
 
     const [currentPage, setCurrentPage] = useState(1);
     const [pageSettingState, setPageSettingState] = useState({});
+
+    useEffect(() => {
+        if (!searchValue) {
+            setSearchResult([]);
+            fetchTheatres(1);
+            if (searchQuery.cancel) searchQuery.cancel();
+            return;
+        }
+
+        const search = _.debounce(fetchTheatres, 300);
+
+        setSearchQuery((prevSearch) => {
+            if (prevSearch && prevSearch.cancel) {
+                prevSearch.cancel();
+            }
+            return search;
+        });
+
+        search();
+        setCurrentPage(1);
+    }, [searchValue]);
 
     const onItemPress = (item, isOpenEditable) => () => {
         props.navigation.navigate("TheatresPage", {

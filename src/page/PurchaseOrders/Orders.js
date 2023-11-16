@@ -91,10 +91,33 @@ const Orders = (props) => {
     const [currentPagePosition, setCurrentPage] = useState(1);
 
     const [searchValue, setSearchValue] = useState("");
+    const [searchResults, setSearchResult] = useState([]);
+    const [searchQuery, setSearchQuery] = useState({});
     const [selectedOrders, setSelectedOrders] = useState([]);
 
     const [pageSettingState, setPageSettingState] = useState({});
     const [adminId, setAdminId] = useState("");
+
+    useEffect(() => {
+        if (!searchValue) {
+            setSearchResult([]);
+            fetchOrdersData(1);
+            if (searchQuery.cancel) searchQuery.cancel();
+            return;
+        }
+
+        const search = _.debounce(fetchOrdersData, 300);
+
+        setSearchQuery((prevSearch) => {
+            if (prevSearch && prevSearch.cancel) {
+                prevSearch.cancel();
+            }
+            return search;
+        });
+
+        search();
+        setCurrentPage(1);
+    }, [searchValue]);
 
     useEffect(() => {
         fetchRole();

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View } from "react-native";
 
 import { connect } from "react-redux";
@@ -84,10 +84,36 @@ const Suppliers = (props) => {
     const { suppliers = [], setSuppliers } = props;
     const modal = useModal();
 
+    const [isFetchingData, setIsFetchingData] = useState(false);
+    const [currentPage, setCurrentPage] = useState(1);
     const [isFloatingActionDisabled, setFloatingAction] = useState(false);
     const [searchValue, setSearchValue] = useState("");
+    const [searchResults, setSearchResult] = useState([]);
+    const [searchQuery, setSearchQuery] = useState({});
+
     const [selectedSuppliers, setSelectedSuppliers] = useState([]);
     const [pageSettingState, setPageSettingState] = useState({});
+
+    useEffect(() => {
+        if (!searchValue) {
+            setSearchResult([]);
+            fetchSuppliersData(1);
+            if (searchQuery.cancel) searchQuery.cancel();
+            return;
+        }
+
+        const search = _.debounce(fetchSuppliersData, 300);
+
+        setSearchQuery((prevSearch) => {
+            if (prevSearch && prevSearch.cancel) {
+                prevSearch.cancel();
+            }
+            return search;
+        });
+
+        search();
+        setCurrentPage(1);
+    }, [searchValue]);
 
     const onSearchInputChange = (input) => {
         setSearchValue(input);
@@ -130,8 +156,9 @@ const Suppliers = (props) => {
         });
     };
 
-    const fetchSuppliersData = async (currentPage) => {
-        return getSuppliers(searchValue, recordsPerPage, currentPage)
+    const fetchSuppliersData = async (page) => {
+        setIsFetchingData(true);
+        return getSuppliers(searchValue, recordsPerPage, page)
             .then((suppliersInfo) => {
                 const { data = [] } = suppliersInfo;
                 setSuppliers(data);
@@ -141,6 +168,9 @@ const Suppliers = (props) => {
                 handleUnauthorizedError(error?.response?.status, setSuppliers);
                 setPageSettingState({ ...pageSettingState, isDisabled: true });
                 throw error;
+            })
+            .finally(() => {
+                setIsFetchingData(false);
             });
     };
 
@@ -207,14 +237,12 @@ const Suppliers = (props) => {
         const selected = { ids: [...selectedSuppliers] };
         modal.closeAllModals("ConfirmationModal");
 
-        console.log("Archive suppliers: ", selected);
-
         archiveSuppliers(selected)
             .then((_) => {
                 modal.openModal("ConfirmationModal", {
                     content: (
                         <ConfirmationComponent
-                            isError={false} //boolean to show whether an error icon or success icon
+                            isError={false}
                             isEditUpdate={false}
                             onCancel={() => modal.closeAllModals()}
                             onAction={() => {
@@ -232,7 +260,7 @@ const Suppliers = (props) => {
                 modal.openModal("ConfirmationModal", {
                     content: (
                         <ConfirmationComponent
-                            isError={true} //boolean to show whether an error icon or success icon
+                            isError={true}
                             isEditUpdate={false}
                             onCancel={() => modal.closeAllModals()}
                             onAction={() => modal.closeAllModals()}
@@ -405,7 +433,9 @@ const Suppliers = (props) => {
         >
             <PaginatedSection
                 changeText={onSearchInputChange}
+                currentPage={currentPage}
                 inputText={searchValue}
+                isFetchingData={isFetchingData}
                 itemsSelected={selectedSuppliers}
                 listData={suppliers}
                 listHeaders={listHeaders}
@@ -414,6 +444,7 @@ const Suppliers = (props) => {
                 onSelectAll={handleOnSelectAll}
                 placeholderText="Search by Supplxier"
                 routeName="Suppliers"
+                setCurrentPage={setCurrentPage}
                 TopButton={() => (
                     <ButtonContainer>
                         <ArchiveButton onPress={goToArchives} theme={theme}>

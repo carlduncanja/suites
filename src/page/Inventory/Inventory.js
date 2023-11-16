@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View, FlatList } from "react-native";
 
 import { connect } from "react-redux";
@@ -60,8 +60,32 @@ function Inventory(props) {
     const [selectedVariants, setSelectedVariants] = useState([]);
 
     const [searchValue, setSearchValue] = useState("");
+    const [searchResults, setSearchResult] = useState([]);
+    const [searchQuery, setSearchQuery] = useState({});
+
     const [expandedItems, setExpandedItems] = useState([]);
     const [pageSettingState, setPageSettingState] = useState({});
+
+    useEffect(() => {
+        if (!searchValue) {
+            setSearchResult([]);
+            fetchInventory(1);
+            if (searchQuery.cancel) searchQuery.cancel();
+            return;
+        }
+
+        const search = _.debounce(fetchInventory, 300);
+
+        setSearchQuery((prevSearch) => {
+            if (prevSearch && prevSearch.cancel) {
+                prevSearch.cancel();
+            }
+            return search;
+        });
+
+        search();
+        setCurrentPage(1);
+    }, [searchValue]);
 
     const onSearchChange = (input) => {
         setSearchValue(input);

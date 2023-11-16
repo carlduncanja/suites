@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { FlatList, View } from "react-native";
 
 import styled from "@emotion/native";
@@ -110,8 +110,10 @@ const Equipment = (props) => {
     const [isFloatingActionDisabled, setFloatingAction] = useState(false);
     const [groupSelected, setGroupSelected] = useState({});
 
-    const [currentPagePosition, setCurrentPagePosition] = useState(1);
+    const [currentPage, setCurrentPage] = useState(1);
     const [searchValue, setSearchValue] = useState("");
+    const [searchResults, setSearchResult] = useState([]);
+    const [searchQuery, setSearchQuery] = useState({});
 
     const [selectedEquipments, setSelectedEquipments] = useState([]);
     const [selectedTypesIds, setSelectedTypesIds] = useState([]);
@@ -121,6 +123,27 @@ const Equipment = (props) => {
     const [expandedItems, setExpandedItems] = useState([]);
 
     const [pageSettingState, setPageSettingState] = useState({});
+
+    useEffect(() => {
+        if (!searchValue) {
+            setSearchResult([]);
+            fetchEquipmentData(1);
+            if (searchQuery.cancel) searchQuery.cancel();
+            return;
+        }
+
+        const search = _.debounce(fetchEquipmentData, 300);
+
+        setSearchQuery((prevSearch) => {
+            if (prevSearch && prevSearch.cancel) {
+                prevSearch.cancel();
+            }
+            return search;
+        });
+
+        search();
+        setCurrentPage(1);
+    }, [searchValue]);
 
     const onSearchInputChange = (input) => {
         setSearchValue(input);
@@ -215,7 +238,7 @@ const Equipment = (props) => {
     };
 
     const onRefresh = () => {
-        fetchEquipmentData(currentPagePosition);
+        fetchEquipmentData(currentPage);
     };
 
     const fetchEquipmentData = async (pagePosition) => {
@@ -715,7 +738,7 @@ const Equipment = (props) => {
             }}
         >
             <PaginatedSection
-                setCurrentPagePosition={setCurrentPagePosition}
+                setCurrentPagePosition={setCurrentPage}
                 isFetchingData={isFetchingData}
                 fetchSectionDataCb={fetchEquipmentData}
                 onRefresh={handleDataRefresh}
@@ -728,7 +751,7 @@ const Equipment = (props) => {
                 itemsSelected={selectedTypesIds}
                 onSelectAll={handleOnSelectAll}
                 listItemFormat={renderEquipmentFn}
-                currentPage={currentPagePosition}
+                currentPage={currentPage}
                 isDisabled={isFloatingActionDisabled}
                 toggleActionButton={toggleActionButton}
                 hasPaginator={true}

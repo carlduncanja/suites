@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View } from "react-native";
 import _, { isEmpty } from "lodash";
 import { useModal } from "react-native-modalfy";
@@ -64,7 +64,30 @@ function PatientFiles(props) {
     const [isFetchingData, setIsFetchingData] = useState(false);
     const [isFloatingActionDisabled, setFloatingAction] = useState(false);
     const [searchValue, setSearchValue] = useState("");
+    const [searchResults, setSearchResult] = useState([]);
+    const [searchQuery, setSearchQuery] = useState({});
     const [patientData, setPatientData] = useState([]);
+
+    useEffect(() => {
+        if (!searchValue) {
+            setSearchResult([]);
+            fetchPatientFiles(1);
+            if (searchQuery.cancel) searchQuery.cancel();
+            return;
+        }
+
+        const search = _.debounce(fetchPatientFiles, 300);
+
+        setSearchQuery((prevSearch) => {
+            if (prevSearch && prevSearch.cancel) {
+                prevSearch.cancel();
+            }
+            return search;
+        });
+
+        search();
+        setCurrentPage(1);
+    }, [searchValue]);
 
     const onSearchChange = (input) => {
         setSearchValue(input);

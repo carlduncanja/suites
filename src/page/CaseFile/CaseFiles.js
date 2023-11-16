@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View } from "react-native";
 
 import { connect } from "react-redux";
@@ -88,6 +88,29 @@ function CaseFiles(props) {
     const [pageSettingState, setPageSettingState] = useState({});
 
     const [searchValue, setSearchValue] = useState("");
+    const [searchResults, setSearchResult] = useState([]);
+    const [searchQuery, setSearchQuery] = useState({});
+
+    useEffect(() => {
+        if (!searchValue) {
+            setSearchResult([]);
+            fetchCaseFilesData(1);
+            if (searchQuery.cancel) searchQuery.cancel();
+            return;
+        }
+
+        const search = _.debounce(fetchCaseFilesData, 300);
+
+        setSearchQuery((prevSearch) => {
+            if (prevSearch && prevSearch.cancel) {
+                prevSearch.cancel();
+            }
+            return search;
+        });
+
+        search();
+        setCurrentPage(1);
+    }, [searchValue]);
 
     const handleOnItemPress = (item, isOpenEditable) => () => {
         if (item !== null) {
