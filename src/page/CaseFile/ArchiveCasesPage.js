@@ -57,7 +57,7 @@ const ArchiveCasesPage = ({
     const modal = useModal();
     const theme = useTheme();
     const { archivedCaseItem, refreshCases } = route.params;
-    const recordsPerPage = 10; //TO-DO: Does this have to be 10?
+    const recordsPerPage = 10;
 
     const [isFetchingData, setFetchingData] = useState(false);
     const [searchValue, setSearchValue] = useState("");

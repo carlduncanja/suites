@@ -245,21 +245,21 @@ const Procedures = (props) => {
     return (
         <View style={{ flex: 1 }}>
             <PaginatedSection
-                isFetchingData={isFetchingData}
-                onRefresh={handleDataRefresh}
-                placeholderText="Search by Procedure"
                 changeText={onSearchInputChange}
-                setCurrentPage={setCurrentPagePosition}
+                currentPage={currentPagePosition}
                 fetchSectionDataCb={fetchProceduresData}
                 inputText={searchValue}
-                routeName="Procedures"
+                isDisabled={isFloatingActionDisabled}
+                isFetchingData={isFetchingData}
+                itemsSelected={selectedProcedures}
                 listData={procedures}
                 listHeaders={listHeaders}
-                itemsSelected={selectedProcedures}
-                onSelectAll={handleOnSelectAll}
                 listItemFormat={renderProcedureFn}
-                currentPage={currentPagePosition}
-                isDisabled={isFloatingActionDisabled}
+                onRefresh={handleDataRefresh}
+                onSelectAll={handleOnSelectAll}
+                placeholderText="Search by Procedure"
+                routeName="Procedures"
+                setCurrentPage={setCurrentPagePosition}
                 toggleActionButton={toggleActionButton}
             />
         </View>

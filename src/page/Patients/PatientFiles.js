@@ -369,6 +369,7 @@ function PatientFiles(props) {
             placeholderText="Search Patient by First Name, Surname ,Contact Number or T.R.N"
             routeName="Patients"
             setCurrentPage={setCurrentPage}
+            toggleActionButton={toggleActionButton}
             TopButton={() => (
                 <ButtonContainer theme={theme}>
                     <Button
@@ -378,7 +379,6 @@ function PatientFiles(props) {
                     />
                 </ButtonContainer>
             )}
-            toggleActionButton={toggleActionButton}
         />
     );
 }

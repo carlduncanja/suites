@@ -163,7 +163,6 @@ function CaseFiles(props) {
             .then((caseResult) => {
                 const { data = [] } = caseResult;
                 setCaseFiles(data);
-                //TO-DO: Ask why this is necessary
                 setPageSettingState({ ...pageSettingState, isDisabled: false });
                 return caseResult;
             })
@@ -533,8 +532,8 @@ function CaseFiles(props) {
                 changeText={changeText}
                 currentPage={currentPage}
                 fetchSectionDataCb={fetchCaseFilesData}
-                hasActions={true}
                 hasActionButton={true}
+                hasActions={true}
                 hasPaginator={true}
                 inputText={searchValue}
                 isDisabled={isFloatingActionDisabled}
@@ -548,6 +547,7 @@ function CaseFiles(props) {
                 placeholderText="Search by Case ID, Patient, Staff"
                 routeName="Case Files"
                 setCurrentPage={setCurrentPage}
+                toggleActionButton={toggleActionButton}
                 TopButton={() => (
                     <ButtonContainer theme={theme}>
                         <Button
@@ -558,7 +558,6 @@ function CaseFiles(props) {
                         />
                     </ButtonContainer>
                 )}
-                toggleActionButton={toggleActionButton}
             />
         </PageSettingsContext.Provider>
     );

@@ -741,27 +741,27 @@ const Equipment = (props) => {
             }}
         >
             <PaginatedSection
-                setCurrentPagePosition={setCurrentPage}
-                isFetchingData={isFetchingData}
-                fetchSectionDataCb={fetchEquipmentData}
-                onRefresh={handleDataRefresh}
-                placeholderText="Search by Assignment, Status, Parent Name"
                 changeText={onSearchInputChange}
-                inputText={searchValue}
-                routeName="Equipment"
-                listData={equipmentTypes}
-                listHeaders={listHeaders}
-                itemsSelected={selectedTypesIds}
-                onSelectAll={handleOnSelectAll}
-                listItemFormat={renderEquipmentFn}
                 currentPage={currentPage}
-                isDisabled={isFloatingActionDisabled}
-                toggleActionButton={toggleActionButton}
-                hasPaginator={true}
+                fetchSectionDataCb={fetchEquipmentData}
                 hasActionButton={
                     equipmentPermissions.create || equipmentPermissions.delete
                 }
                 hasActions={true}
+                hasPaginator={true}
+                inputText={searchValue}
+                isDisabled={isFloatingActionDisabled}
+                isFetchingData={isFetchingData}
+                itemsSelected={selectedTypesIds}
+                listData={equipmentTypes}
+                listHeaders={listHeaders}
+                listItemFormat={renderEquipmentFn}
+                onRefresh={handleDataRefresh}
+                onSelectAll={handleOnSelectAll}
+                placeholderText="Search by Assignment, Status, Parent Name"
+                routeName="Equipment"
+                setCurrentPage={setCurrentPage}
+                toggleActionButton={toggleActionButton}
             />
         </PageSettingsContext.Provider>
     );

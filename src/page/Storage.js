@@ -65,7 +65,6 @@ function Storage(props) {
     const [pageSettingState, setPageSettingState] = useState({});
 
     useEffect(() => {
-        //TO-DO: Should search results replace the existing list data?
         if (!searchValue) {
             setSearchResult([]);
             fetchStorageData(1);
@@ -347,27 +346,27 @@ function Storage(props) {
             }}
         >
             <PaginatedSection
-                placeholderText="Search by room name."
-                fetchSectionDataCb={fetchStorageData}
-                setCurrentPage={setCurrentPage}
-                routeName={pageTitle}
-                listData={storageLocations}
-                inputText={searchValue}
-                itemsSelected={selectedIds}
-                listItemFormat={renderItem}
-                listHeaders={listHeaders}
                 changeText={onSearchChange}
-                onRefresh={onRefresh}
-                isFetchingData={isFetchingData}
-                onSelectAll={onSelectAll}
                 currentPage={currentPage}
-                isDisabled={isFloatingActionDisabled}
-                toggleActionButton={toggleActionButton}
-                hasPaginator={true}
+                fetchSectionDataCb={fetchStorageData}
                 hasActionButton={
                     storagePermissions.create || storagePermissions.delete
                 }
                 hasActions={true}
+                hasPaginator={true}
+                inputText={searchValue}
+                isDisabled={isFloatingActionDisabled}
+                isFetchingData={isFetchingData}
+                itemsSelected={selectedIds}
+                listData={storageLocations}
+                listHeaders={listHeaders}
+                listItemFormat={renderItem}
+                onRefresh={onRefresh}
+                onSelectAll={onSelectAll}
+                placeholderText="Search by room name."
+                routeName={pageTitle}
+                setCurrentPage={setCurrentPage}
+                toggleActionButton={toggleActionButton}
             />
         </PageSettingsContext.Provider>
     );

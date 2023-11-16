@@ -389,8 +389,8 @@ function Theatres(props) {
                 isFetchingData={isFetchingData}
                 itemsSelected={selectedIds}
                 listData={theatres}
-                listItemFormat={renderItem}
                 listHeaders={listHeaders}
+                listItemFormat={renderItem}
                 onRefresh={onRefresh}
                 onSelectAll={onSelectAll}
                 placeholderText="Search by theatre name"

@@ -621,25 +621,25 @@ const Orders = (props) => {
             }}
         >
             <PaginatedSection
-                isFetchingData={isFetchingData}
-                onRefresh={handleDataRefresh}
-                placeholderText="Search by any heading or entry below"
                 changeText={onSearchInputChange}
-                inputText={searchValue}
-                routeName="Orders"
-                listData={purchaseOrders}
-                listHeaders={listHeaders}
-                itemsSelected={selectedOrders}
-                onSelectAll={handleOnSelectAll}
-                listItemFormat={renderOrderFn}
                 currentPage={currentPagePosition}
-                setCurrentPage={setCurrentPage}
                 fetchSectionDataCb={fetchOrdersData}
-                isDisabled={isFloatingActionDisabled}
-                toggleActionButton={toggleActionButton}
-                hasPaginator={true}
                 hasActionButton={true}
                 hasActions={true}
+                hasPaginator={true}
+                inputText={searchValue}
+                isDisabled={isFloatingActionDisabled}
+                isFetchingData={isFetchingData}
+                itemsSelected={selectedOrders}
+                listData={purchaseOrders}
+                listHeaders={listHeaders}
+                listItemFormat={renderOrderFn}
+                onRefresh={handleDataRefresh}
+                onSelectAll={handleOnSelectAll}
+                placeholderText="Search by any heading or entry below"
+                routeName="Orders"
+                setCurrentPage={setCurrentPage}
+                toggleActionButton={toggleActionButton}
             />
         </PageSettingsContext.Provider>
     );

@@ -333,25 +333,25 @@ function UsersPage(props) {
 
     return (
         <PaginatedSection
-            placeholderText="Search by user name or email."
-            routeName={pageTitle}
-            listData={users}
-            listItemFormat={renderItem}
-            inputText={searchValue}
-            itemsSelected={selectedIds}
-            listHeaders={listHeaders}
             changeText={onSearchInputChange}
-            onRefresh={onRefresh}
-            isFetchingData={isLoading}
-            onSelectAll={onSelectAll}
             currentPage={currentPagePosition}
             fetchSectionDataCb={fetchUsers}
-            setCurrentPage={setCurrentPagePosition}
-            isDisabled={isFloatingActionDisabled}
-            toggleActionButton={toggleActionButton}
-            hasPaginator={true}
             hasActionButton={usersPermissions.delete || usersPermissions.create}
             hasActions={true}
+            hasPaginator={true}
+            inputText={searchValue}
+            isDisabled={isFloatingActionDisabled}
+            isFetchingData={isLoading}
+            itemsSelected={selectedIds}
+            listData={users}
+            listHeaders={listHeaders}
+            listItemFormat={renderItem}
+            onRefresh={onRefresh}
+            onSelectAll={onSelectAll}
+            placeholderText="Search by user name or email."
+            routeName={pageTitle}
+            setCurrentPage={setCurrentPagePosition}
+            toggleActionButton={toggleActionButton}
         />
     );
 }

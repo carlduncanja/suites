@@ -122,7 +122,7 @@ function ArchivedSuppliersPage(props) {
                             isError={true}
                             isEditUpdate={false}
                             onCancel={cancelClicked}
-                            onAction={ArchiveSupplier} //TO-DO: What should go here?
+                            onAction={ArchiveSupplier}
                             message="Are you sure you want to Archive the supplier(s)"
                             action="Archive"
                         />

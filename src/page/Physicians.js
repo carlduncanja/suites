@@ -360,27 +360,27 @@ const Physicians = (props) => {
             }}
         >
             <PaginatedSection
-                isFetchingData={isFetchingData}
-                onRefresh={handleDataRefresh}
-                placeholderText="Search by Physician or phone number"
                 changeText={onSearchInputChange}
-                inputText={searchValue}
-                routeName="Physicians"
-                listData={physicians}
-                listHeaders={listHeaders}
-                itemsSelected={selectedPhysiciansId}
-                onSelectAll={handleOnSelectAll}
-                listItemFormat={renderPhysiciansFn}
                 currentPage={currentPagePosition}
                 fetchSectionDataCb={fetchPhysiciansData}
-                setCurrentPage={setCurrentPagePosition}
-                isDisabled={isFloatingActionDisabled}
-                toggleActionButton={toggleActionButton}
-                hasPaginator={true}
                 hasActionButton={
                     (userPermissions.create || userPermissions.delete) !== false
                 }
                 hasActions={true}
+                hasPaginator={true}
+                inputText={searchValue}
+                isDisabled={isFloatingActionDisabled}
+                isFetchingData={isFetchingData}
+                itemsSelected={selectedPhysiciansId}
+                listData={physicians}
+                listHeaders={listHeaders}
+                listItemFormat={renderPhysiciansFn}
+                onRefresh={handleDataRefresh}
+                onSelectAll={handleOnSelectAll}
+                placeholderText="Search by Physician or phone number"
+                routeName="Physicians"
+                setCurrentPage={setCurrentPagePosition}
+                toggleActionButton={toggleActionButton}
             />
         </PageSettingsContext.Provider>
     );
