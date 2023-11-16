@@ -1,10 +1,10 @@
 import React from "react";
 import { StyleSheet, View } from "react-native";
 import { useTheme } from "emotion-theming";
-import RightArrow from "../../../../assets/svg/paginationRight";
-import LeftArrow from "../../../../assets/svg/paginationLeft";
-import IconButton from "../Buttons/IconButton";
-import PaginatorButtonsContainer from "./PaginatorButtonsContainer";
+import RightArrow from "../../../../../assets/svg/paginationRight";
+import LeftArrow from "../../../../../assets/svg/paginationLeft";
+import IconButton from "../../Buttons/IconButton";
+import PaginatorButtonsContainer from "../PaginatorButtonsContainer";
 
 /**
  * @typedef {Object} PaginatorAndFooterProps
@@ -31,8 +31,8 @@ function Paginator({
     currentPage = 0,
     goToNextPage: onPressRightArrow = () => {},
     goToPreviousPage: onPressLeftArrow = () => {},
-    isNextDisabled: isRightArrowDisabled = false,
-    isPreviousDisabled: isLeftArrowDisabled = false,
+    isNextDisabled: isRightArrowDisabled = true,
+    isPreviousDisabled: isLeftArrowDisabled = true,
     onPressPageNumber,
     totalPages = 0,
 }) {
@@ -58,9 +58,10 @@ function Paginator({
         <View style={styles.container}>
             <View>
                 <IconButton
+                    disabled={isLeftArrowDisabled}
                     Icon={<LeftArrow strokeColor={leftArrowColor} />}
                     onPress={onPressLeftArrow}
-                    disabled={isLeftArrowDisabled}
+                    testID="pag-left-arrow"
                 />
             </View>
 
@@ -72,9 +73,10 @@ function Paginator({
 
             <View>
                 <IconButton
+                    disabled={isRightArrowDisabled}
                     Icon={<RightArrow strokeColor={rightArrowColor} />}
                     onPress={onPressRightArrow}
-                    disabled={isRightArrowDisabled}
+                    testID="pag-right-arrow"
                 />
             </View>
         </View>

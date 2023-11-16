@@ -1,13 +1,19 @@
-import moment from 'moment';
-import {useCurrentDays, useEndDays, useStartDays} from '../hooks/useScheduleService';
+import moment from "moment";
+import {
+    useCurrentDays,
+    useEndDays,
+    useStartDays,
+} from "../hooks/useScheduleService";
 
-export const getDaysForMonth = month => {
-    const selectedMonth = moment(month)
-        .startOf('month');
+export const getDaysForMonth = (month) => {
+    const selectedMonth = moment(month).startOf("month");
 
     const pevMonthEndDays = useStartDays(selectedMonth);
     const nextMonthStartDays = useEndDays(selectedMonth);
-    const currentMonthDays = useCurrentDays(selectedMonth.month() + 1, selectedMonth.year());
+    const currentMonthDays = useCurrentDays(
+        selectedMonth.month() + 1,
+        selectedMonth.year()
+    );
 
     return pevMonthEndDays.concat(currentMonthDays.concat(nextMonthStartDays));
 };
@@ -25,15 +31,15 @@ export const getDaysInRange = (startDate, endDate) => {
     // loop over
 
     const finalDate = moment(endDate);
-    do { // ensure that the loops run once if the clause is met.
+    do {
+        // ensure that the loops run once if the clause is met.
 
-        days.push(initialDate.format('YYYY-MM-DD'))
-        initialDate.add(1, 'day')
+        days.push(initialDate.format("YYYY-MM-DD"));
+        initialDate.add(1, "day");
+    } while (!initialDate.isSameOrAfter(finalDate, "day"));
 
-    } while (!initialDate.isSameOrAfter(finalDate, 'day'));
-
-    return days
-}
+    return days;
+};
 
 /**
  * Format and displays physician's information.
@@ -44,11 +50,15 @@ export const getDaysInRange = (startDate, endDate) => {
  * @param {string} defaultString - default string shown if firstname and surname values are null.
  * @return {string}
  */
-export const formatPhysician = (physician = {}, showFull = true, defaultString = 'Unassigned') => {
-    const {firstName = '', surname = ''} = physician.length > 0 ? physician[0] : [];
+export const formatPhysician = (physician = {}, showFull = true) => {
+    const { firstName = "", surname = "" } =
+        physician.length > 0 ? physician[0] : [];
 
     if (!firstName && !surname) return " ";
-    else if (firstName && surname) return showFull ? `Dr. ${firstName} ${surname}` : `Dr. ${firstName[0]}. ${surname}`
-    else if (firstName) return `Dr. ${firstName}`
-    else return `Dr. ${surname}`
-}
+    else if (firstName && surname)
+        return showFull
+            ? `Dr. ${firstName} ${surname}`
+            : `Dr. ${firstName[0]}. ${surname}`;
+    else if (firstName) return `Dr. ${firstName}`;
+    else return `Dr. ${surname}`;
+};

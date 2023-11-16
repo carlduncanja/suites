@@ -1,20 +1,21 @@
-import React, { useContext, useEffect, useState } from "react";
-import PageTitle from "./PageTitle";
-import Search from "../Search";
-import List from "../List/List";
-import EmptyState from "../../../../assets/svg/emptyState";
-import LoadingIndicator from "../LoadingIndicator";
-import { PageSettingsContext } from "../../../contexts/PageSettingsContext";
-import PropTypes from "prop-types";
 import styled from "@emotion/native";
-import { useTheme } from "emotion-theming";
-import { useNavigation } from "@react-navigation/native";
-import LostConnectionPage from "./LostConnectionPage";
 import NetInfo from "@react-native-community/netinfo";
+import { useNavigation } from "@react-navigation/native";
+import { useTheme } from "emotion-theming";
+import PropTypes from "prop-types";
+import React, { useContext, useEffect, useState } from "react";
+import EmptyState from "../../../../assets/svg/emptyState";
+import { PageSettingsContext } from "../../../contexts/PageSettingsContext";
+import List from "../List/List";
+import LoadingIndicator from "../LoadingIndicator";
+import Search from "../Search";
+import LostConnectionPage from "./LostConnectionPage";
+import PageTitle from "./PageTitle";
 
 const PageWrapper = styled.View`
     display: flex;
     height: 100%;
+    width: 100%;
     flex-direction: column;
     margin-left: 0px;
     padding-left: ${({ theme }) => theme.space["--space-32"]};
@@ -62,7 +63,27 @@ const MessageWrapper = styled.Text(({ theme }) => ({
 }));
 
 /**
- * @returns {*}
+ * @typedef {Object} PageProps
+ * @property {VoidCallback} changeText
+ * @property {string} emptyTitle
+ * @property {string} inputText
+ * @property {boolean} isFetchingData
+ * @property {Array} itemsSelected
+ * @property {Array} listData
+ * @property {Array} listHeaders
+ * @property {JSXCallback} listItemFormat
+ * @property {Object} navigation
+ * @property {VoidCallback} onRefresh
+ * @property {VoidCallback} onSelectAll
+ * @property {string} placeholderText
+ * @property {string} routeName
+ * @property {JSX.Element} TopButton
+ * @property {boolean} hasSearch
+ */
+
+/**
+ * @param {PageProps} props
+ * @returns {JSX.Element}
  * @constructor
  */
 function Page(props) {
@@ -111,14 +132,12 @@ function Page(props) {
         ) : listData?.length < 1 ? (
             <EmptyWrapper theme={theme}>
                 <PageContent theme={theme}>
-                    {/*    ICON     */}
                     <IconWrapper theme={theme}>
                         <EmptyState />
                     </IconWrapper>
 
-                    {/*    MESSAGE HEADER  */}
                     <MessageWrapper theme={theme}>
-                        {"No Records Found"}
+                        No Records Found
                     </MessageWrapper>
                 </PageContent>
             </EmptyWrapper>
@@ -153,14 +172,12 @@ function Page(props) {
                     ) : isDisabled ? (
                         <EmptyWrapper theme={theme}>
                             <PageContent theme={theme}>
-                                {/*    ICON     */}
                                 <IconWrapper theme={theme}>
                                     <EmptyState />
                                 </IconWrapper>
 
-                                {/*    MESSAGE HEADER  */}
                                 <MessageWrapper theme={theme}>
-                                    {"No Records Found"}
+                                    No Records Found
                                 </MessageWrapper>
                             </PageContent>
                         </EmptyWrapper>
