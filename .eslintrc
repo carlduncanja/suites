@@ -4,8 +4,14 @@
     "airbnb"
   ],
   "rules": {
-    "no-restricted-syntax": "off",
-    "indent": "off",
+    "indent": [
+      "error",
+      4,
+      {
+        "SwitchCase": 1,
+        "ignoredNodes": ["TemplateLiteral"]
+      }
+    ],
     "no-unused-expressions": [
       "error",
       {
@@ -18,21 +24,38 @@
         "skipBlankLines": true
       }
     ],
-    "operator-linebreak": "off",
-    "no-use-before-define": "off",
+    "operator-linebreak": [
+      "error",
+      "after"
+    ],
+    "no-use-before-define": [
+      "warn",
+      {
+        "functions": false,
+        "classes": true,
+        "variables": true
+      }
+    ],
     "prefer-const": "warn",
     "no-shadow": "warn",
     "camelcase": "warn",
     "no-return-assign": "warn",
     "no-lonely-if": "warn",
     "array-callback-return": "warn",
-    "arrow-parens": "off",
-    "function-paren-newline":"off",
+    "arrow-parens": [
+      "warn",
+      "as-needed"
+    ],
     "arrow-body-style": [
       "warn",
       "as-needed"
     ],
-    "object-curly-newline": "off",
+    "object-curly-newline": [
+      "warn",
+      {
+        "multiline": true
+      }
+    ],
     "max-len": [
       "warn",
       {
@@ -42,14 +65,28 @@
         "ignoreUrls": true
       }
     ],
-    "prefer-destructuring": "off",
+    "prefer-destructuring": [
+      "warn",
+      {
+        "array": true,
+        "object": true
+      }
+    ],
     "no-plusplus": [
       "warn",
       {
         "allowForLoopAfterthoughts": true
       }
     ],
-    "no-console": "off",
+    "no-console": [
+      "warn",
+      {
+        "allow": [
+          "warn",
+          "error"
+        ]
+      }
+    ],
     "no-empty": [
       "warn",
       {
@@ -57,21 +94,16 @@
       }
     ],
     "no-param-reassign": "warn",
-    "no-nested-ternary": "off",
-    "no-else-return": "off",
-    "quotes": "off",
+    "no-nested-ternary": "warn",
     "nonblock-statement-body-position": "off",
     "curly": "off",
     "consistent-return": "off",
     "comma-dangle": "off",
     "one-var": "off",
-    "one-var-declaration-per-line": "off",
     "no-unused-vars": "off",
     "object-curly-spacing": "off",
-    "implicit-arrow-linebreak":"off",
     "import/newline-after-import": "off",
     "import/no-dynamic-require": "off",
-    "import/order": "off",
     "spaced-comment": "off",
     "no-underscore-dangle": "off",
     "template-curly-spacing": "off",
@@ -84,7 +116,18 @@
         ]
       }
     ],
-    "react/jsx-wrap-multilines": "off",
+    "react/jsx-wrap-multilines": [
+      "warn",
+      {
+        "declaration": "parens-new-line",
+        "assignment": "parens-new-line",
+        "return": "ignore",
+        "arrow": "parens-new-line",
+        "condition": "parens-new-line",
+        "logical": "ignore",
+        "prop": "parens-new-line"
+      }
+    ],
     "react/jsx-indent": [
       "warn",
       4
@@ -100,9 +143,12 @@
         "ignoreFunctionalComponents": true
       }
     ],
-    "react/destructuring-assignment": "off",
-    "react/prop-types": "off",
-    "react/no-array-index-key": "off",
+    "react/destructuring-assignment": [
+      "warn",
+      "always"
+    ],
+    "react/prop-types": "warn",
+    "react/no-array-index-key": "warn",
     "react/jsx-one-expression-per-line": "off",
     "react/forbid-prop-types": "off",
     "react/jsx-closing-tag-location": "off",

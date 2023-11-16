@@ -1,84 +1,97 @@
-import React from "react";
-import { StyleSheet, View } from "react-native";
-import { useTheme } from "emotion-theming";
-import RightArrow from "../../../../assets/svg/paginationRight";
-import LeftArrow from "../../../../assets/svg/paginationLeft";
-import IconButton from "../Buttons/IconButton";
-import PaginatorButtonsContainer from "./PaginatorButtonsContainer";
+import React, {Component, useContext} from 'react';
+import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
+import styled, {css} from '@emotion/native';
+import {useTheme} from 'emotion-theming';
+import SvgIcon from '../../../../assets/SvgIcon';
+import PaginatorRight from '../../../../assets/svg/paginationRight';
+import PaginatorLeft from '../../../../assets/svg/paginationLeft';
+import IconButton from '../Buttons/IconButton';
+import PaginatorNumbers from './PaginatorNumbers'; 
 
-/**
- * @typedef {Object} PaginatorAndFooterProps
- * @property {number} currentPage
- * @property {VoidCallback} goToNextPage
- * @property {VoidCallback} goToPreviousPage
- * @property {boolean} isNextDisabled
- * @property {boolean} isPreviousDisabled
- * @property {number} totalPages
- */
+const PaginatorWrapper = styled.View`
+  height: 100%;
+  width: 100%;
+`;
+const PaginatorContainer = styled.View`
+  height: 100%;
+  flex-direction : row;
+  align-items: center;
+  justify-content: center;
+`;
 
-/**
- * @typedef {Object} PaginatorProps
- * @extends PaginatorAndFooterProps
- * @property {onPressPageNumber} onPressPageNumber
- * */
-
-/**
- *
- * @param {PaginatorProps} props
- * @returns {JSX.Element}
- */
 function Paginator({
     currentPage = 0,
-    goToNextPage: onPressRightArrow = () => {},
-    goToPreviousPage: onPressLeftArrow = () => {},
-    isNextDisabled: isRightArrowDisabled = false,
-    isPreviousDisabled: isLeftArrowDisabled = false,
-    onPressPageNumber,
     totalPages = 0,
+    hasNumberBorder = true,
+    goToNextPage = () => {
+    },
+    goToPreviousPage = () => {
+    },
+    isNextDisabled = false,
+    isPreviousDisabled = false,
 }) {
     const theme = useTheme();
 
-    const styles = StyleSheet.create({
-        container: {
-            height: "100%",
-            flexDirection: "row",
-            justifyContent: "center",
-        },
-    });
-
-    const leftArrowColor = isLeftArrowDisabled
-        ? theme.colors["--color-gray-400"]
-        : theme.colors["--company"];
-
-    const rightArrowColor = isRightArrowDisabled
-        ? theme.colors["--color-gray-400"]
-        : theme.colors["--company"];
-
     return (
-        <View style={styles.container}>
-            <View>
-                <IconButton
-                    Icon={<LeftArrow strokeColor={leftArrowColor} />}
-                    onPress={onPressLeftArrow}
-                    disabled={isLeftArrowDisabled}
-                />
-            </View>
+        <PaginatorWrapper>
+            <PaginatorContainer>
 
-            <PaginatorButtonsContainer
-                currentPage={currentPage}
-                totalPages={totalPages}
-                onPressPageNumber={onPressPageNumber}
-            />
-
-            <View>
                 <IconButton
-                    Icon={<RightArrow strokeColor={rightArrowColor} />}
-                    onPress={onPressRightArrow}
-                    disabled={isRightArrowDisabled}
+                    Icon={(
+                        <PaginatorLeft
+                            strokeColor={isPreviousDisabled ? theme.colors['--color-gray-400'] : theme.colors['--company']}
+                        />
+                    )}
+                    onPress={goToPreviousPage}
+                    disabled={isPreviousDisabled}
                 />
-            </View>
-        </View>
+
+                <PaginatorNumbers
+                    currentPage={currentPage}
+                    totalPages={totalPages}
+                    hasNumberBorder={hasNumberBorder}
+                />
+
+                <IconButton
+                    Icon={(
+                        <PaginatorRight
+                            strokeColor={isNextDisabled ? theme.colors['--color-gray-400'] : theme.colors['--company']}
+                        />
+                    )}
+                    onPress={goToNextPage}
+                    disabled={isNextDisabled}
+                />
+
+            </PaginatorContainer>
+        </PaginatorWrapper>
+
     );
 }
 
 export default Paginator;
+
+const styles = StyleSheet.create({
+    container: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: 'yellow',
+    },
+    numbersContainer: {
+        backgroundColor: '#FAFAFA',
+        borderWidth: 1,
+        borderColor: '#CCD6E0',
+        borderRadius: 4,
+        paddingLeft: 7,
+        paddingRight: 7,
+        paddingBottom: 2,
+        paddingTop: 2,
+        marginLeft: 10,
+        marginRight: 10,
+        flexDirection: 'row',
+    },
+    numbers: {
+        fontSize: 14,
+        color: '#313539',
+    },
+});

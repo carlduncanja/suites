@@ -1,41 +1,45 @@
 import React from "react";
-import { useTheme } from "emotion-theming";
-import { TouchableOpacity, View, StyleSheet } from "react-native";
+import PropTypes from "prop-types";
+import {TouchableOpacity, View, StyleSheet} from "react-native";
+import styled, {css} from "@emotion/native";
+import {useTheme} from "emotion-theming";
+
+const IconButtonWrapper = styled.TouchableOpacity`
+    flex:1;
+    //height: 100%;
+    //width:100%;
+    padding-right: 10px;
+    padding-left: 10px;
+  `;
+const IconButtonContainer = styled.View`
+    height:100%;
+    width:100%;
+    align-items:center;
+    justify-content: center;
+  `;
+
 
 function IconButton({
     Icon = () => {},
     onPress = () => {},
-    disabled = false,
-    testID,
+    disabled = false
 }) {
     const theme = useTheme();
 
-    const styles = StyleSheet.create({
-        container: {
-            flex: 1,
-            paddingHorizontal: 10,
-            borderRadius: 4,
-        },
-        icon: {
-            height: "100%",
-            width: "100%",
-            alignItems: "center",
-            justifyContent: "center",
-        },
-    });
-
     return (
-        <TouchableOpacity
-            testID={testID}
-            style={styles.container}
-            onPress={onPress}
-            disabled={disabled}
-        >
-            <View theme={theme} style={styles.icon}>
-                {Icon}
-            </View>
-        </TouchableOpacity>
+        <IconButtonWrapper theme={theme} onPress={() => onPress()} disabled={disabled}>
+            <IconButtonContainer theme={theme}>{Icon}</IconButtonContainer>
+        </IconButtonWrapper>
     );
 }
+
+IconButton.propTypes = {};
+IconButton.defaultProps = {};
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+    },
+});
 
 export default IconButton;

@@ -1,70 +1,77 @@
-import { useTheme } from "emotion-theming";
-import React, { useEffect, useState } from "react";
-import { View } from "react-native";
-import { useModal } from "react-native-modalfy";
-import { connect } from "react-redux";
-import { deleteInvoices, getInvoices } from "../../api/network";
-import { PageSettingsContext } from "../../contexts/PageSettingsContext";
-import {
-    checkboxItemPress,
-    handleUnauthorizedError,
-    selectAll,
-} from "../../helpers/caseFilesHelpers";
-import { setInvoices } from "../../redux/actions/invoicesActions";
-import { formatDate } from "../../utils/formatter";
+import { useTheme } from 'emotion-theming';
+import React, {useEffect, useState} from 'react';
+import {View, StyleSheet, Text, FlatList, ScrollView} from 'react-native';
+import { useModal } from 'react-native-modalfy';
+import {connect} from 'react-redux';
+import {setInvoices} from '../../redux/actions/invoicesActions'; 
+import {PageSettingsContext} from '../../contexts/PageSettingsContext';
+import { deleteInvoices, getInvoices } from '../../api/network';
+import { useNextPaginator, usePreviousPaginator, selectAll, checkboxItemPress, handleUnauthorizedError } from '../../helpers/caseFilesHelpers';
+import { formatDate } from "../../utils/formatter"
 
-import _ from "lodash";
-import WasteIcon from "../../../assets/svg/wasteIcon";
-import ConfirmationComponent from "../../components/ConfirmationComponent";
-import ActionItem from "../../components/common/ActionItem";
-import ActionContainer from "../../components/common/FloatingAction/ActionContainer";
-import DataItem from "../../components/common/List/DataItem";
-import ListItem from "../../components/common/List/ListItem";
-import RightBorderDataItem from "../../components/common/List/RightBorderDataItem";
-import LongPressWithFeedback from "../../components/common/LongPressWithFeedback";
-import PaginatedSection from "../../components/common/Page/PaginatedSection";
-import { LONG_PRESS_TIMER } from "../../const";
+import ActionContainer from '../../components/common/FloatingAction/ActionContainer';
+import ActionItem from '../../components/common/ActionItem';
+import WasteIcon from '../../../assets/svg/wasteIcon';
+import AddIcon from '../../../assets/svg/addIcon';
+import LongPressWithFeedback from '../../components/common/LongPressWithFeedback';
+import CreateStorageDialogContainer from '../../components/Storage/CreateStorageDialogContainer';
+import NavPage from '../../components/common/Page/NavPage';
+import ConfirmationComponent from '../../components/ConfirmationComponent';
+import DataItem from '../../components/common/List/DataItem';
+import RightBorderDataItem from '../../components/common/List/RightBorderDataItem';
+import { LONG_PRESS_TIMER } from '../../const';
+import styled, { css } from '@emotion/native';
+import ListItem from '../../components/common/List/ListItem';
+import _ from 'lodash';
+import InvoicesPage from './InvoicesPage';
 
-const listHeaders = [
+// here
+ const listHeaders = [
     {
-        name: "Invoices",
-        alignment: "flext-start",
-        flex: 1,
+        name: 'Invoices',
+        alignment: 'flext-start',
+        flex: 1
     },
 
     {
-        name: "Status",
-        alignment: "left",
+        name: 'Status',
+        alignment: 'left'
     },
 
     {
-        name: "Delivery Date",
-        alignment: "flext-start",
-        flex: 1,
-    },
+        name: 'Delivery Date',
+        alignment: 'flext-start',
+        flex: 1
+    } ,
 
     {
-        name: "Supplier",
-        alignment: "flext-start",
-        flex: 1.5,
-    },
-];
+        name: 'Supplier',
+        alignment: 'flext-start',
+        flex: 1.5
+    }
+];  
 
 function Invoices(props) {
-    const { setInvoices } = props;
+    const {setInvoices, navigation, route, invoices=[]} = props;
     const pageTitle = "Invoices";
     const modal = useModal();
     const theme = useTheme();
-    const recordsPerPage = 10; //TO-DO: Is there a specific reason for this?
+    const recordsPerPage = 10;
 
+
+    // ##### States
     const [isFetchingData, setFetchingData] = useState(false);
     const [isFloatingActionDisabled, setFloatingAction] = useState(false);
-    const [searchValue, setSearchValue] = useState("");
+    const [searchValue, setSearchValue] = useState('');
     const [searchResults, setSearchResult] = useState([]);
     const [searchQuery, setSearchQuery] = useState({});
     const [selectedIds, setSelectedIds] = useState([]);
     const [allInvoices, setAllInvoices] = useState([]);
 
+    // pagination
+    const [totalPages, setTotalPages] = useState(0);
+    const [currentPageListMin, setCurrentPageListMin] = useState(0);
+    const [currentPageListMax, setCurrentPageListMax] = useState(recordsPerPage);
     const [currentPagePosition, setCurrentPagePosition] = useState(1);
     const [isNextDisabled, setNextDisabled] = useState(false);
     const [isPreviousDisabled, setPreviousDisabled] = useState(true);
@@ -72,77 +79,136 @@ function Invoices(props) {
     const [pageSettingState, setPageSettingState] = useState({});
 
     useEffect(() => {
-        if (!searchValue) {
-            setSearchResult([]);
-            fetchInvoiceData(1);
-            if (searchQuery.cancel) searchQuery.cancel();
-            return;
-        }
 
-        const search = _.debounce(fetchInvoiceData, 300);
+        if (!invoices.length) fetchInvoiceData(currentPagePosition);
 
-        setSearchQuery((prevSearch) => {
-            if (prevSearch && prevSearch.cancel) {
-                prevSearch.cancel();
-            }
-            return search;
-        });
+        setTotalPages(Math.ceil(invoices.length / recordsPerPage));
 
-        search();
-        setCurrentPagePosition(1);
-    }, [searchValue]);
+    }, []);
+
+    // for the serch may needd to be modified 
+    useEffect(() => {
+        if (!searchValue) {
+            // empty search values and cancel any out going request.
+            setSearchResult([]);
+            fetchInvoiceData(1);
+            if (searchQuery.cancel) searchQuery.cancel();
+            return;
+        }
+
+        // wait 300ms before search. cancel any prev request before executing current.
+
+        const search = _.debounce(fetchInvoiceData, 300);
+
+        setSearchQuery(prevSearch => {
+            if (prevSearch && prevSearch.cancel) {
+                prevSearch.cancel();
+            }
+            return search;
+        });
+
+        search();
+        setCurrentPagePosition(1);
+    }, [searchValue]);
 
     const onRefresh = () => {
         fetchInvoiceData();
-    };
+    }
 
     const onSearchChange = (input) => {
-        setSearchValue(input);
-    };
+        setSearchValue(input)
+    } 
 
-    const fetchInvoiceData = async (pagePosition) => {
+    const goToNextPage = () => {
+        if (currentPagePosition < totalPages) {
+            const { currentPage, currentListMin, currentListMax } = useNextPaginator(currentPagePosition, recordsPerPage, currentPageListMin, currentPageListMax);
+            setCurrentPagePosition(currentPage);
+            setCurrentPageListMin(currentListMin);
+            setCurrentPageListMax(currentListMax);
+            fetchInvoiceData(currentPage);
+        }
+    };
+
+    const goToPreviousPage = () => {
+        if (currentPagePosition === 1) return;
+
+        const { currentPage, currentListMin, currentListMax } = usePreviousPaginator(currentPagePosition, recordsPerPage, currentPageListMin, currentPageListMax);
+        setCurrentPagePosition(currentPage);
+        setCurrentPageListMin(currentListMin);
+        setCurrentPageListMax(currentListMax);
+        fetchInvoiceData(currentPage);
+    }; 
+
+    const fetchInvoiceData = pagePosition => {
+        const currentPosition = pagePosition || 1;
+        setCurrentPagePosition(currentPosition);
+
         setFetchingData(true);
-        return getInvoices(searchValue, recordsPerPage, pagePosition)
-            .then((storageResult) => {
-                const { data = [] } = storageResult;
+        getInvoices(searchValue, recordsPerPage, currentPosition)
+            .then(storageResult => {
+                const { data = [], pages = 0 } = storageResult;
+                
+                if (pages === 1) {
+                    setPreviousDisabled(true);
+                    setNextDisabled(true);
+                } else if (currentPosition === 1) {
+                    setPreviousDisabled(true);
+                    setNextDisabled(false);
+                } else if (currentPosition === pages) {
+                    setNextDisabled(true);
+                    setPreviousDisabled(false);
+                } else if (currentPosition < pages) {
+                    setNextDisabled(false);
+                    setPreviousDisabled(false);
+                } else {
+                    setNextDisabled(true);
+                    setPreviousDisabled(true);
+                }
+
                 setAllInvoices(data);
-                return storageResult;
+
+                data.length === 0 ? setTotalPages(0) : setTotalPages(pages);
             })
-            .catch((error) => {
+            .catch(error => {
+                console.log('failed to get invoices', error);
+
                 handleUnauthorizedError(error?.response?.status, setInvoices);
-                setPageSettingState({ ...pageSettingState, isDisabled: true });
+                setPageSettingState({...pageSettingState, isDisabled: true});
+
             })
-            .finally((_) => {
+            .finally(_ => {
                 setFetchingData(false);
             });
-    };
+    }; 
 
-    const invoiceItem = ({ name, status, deliveryDate, supplier }) => (
+    // here
+    const invoiceItem = ({ name, status, deliveryDate, supplier, transfers }) => (
         <>
             <RightBorderDataItem
-                fontStyle="--text-base-regular"
-                color="--color-gray-800"
+                fontStyle={'--text-base-regular'}
+                color={'--color-gray-800'}
                 text={name}
                 align="flext-start"
                 flex={1}
             />
             <DataItem
-                fontStyle="--text-base-medium"
-                color="--color-gray-800"
+                fontStyle={'--text-base-medium'}
+                color={'--color-gray-800'}
                 text={status}
                 align="flext-start"
                 flex={1}
             />
             <DataItem
-                fontStyle="--text-base-medium"
-                color="--color-blue-600"
+                fontStyle={'--text-base-medium'}
+                color={'--color-blue-600'}
                 align="flext-start"
-                text={formatDate(deliveryDate, "DD/MM/YYYY")}
+                text={ formatDate(deliveryDate, 'DD/MM/YYYY')}
+                //text={deliveryDate}
                 flex={1}
-            />
+            /> 
             <DataItem
-                fontStyle="--text-base-medium"
-                color="--color-blue-600"
+                fontStyle={'--text-base-medium'}
+                color={'--color-blue-600'}
                 align="flext-start"
                 text={supplier}
                 flex={1}
@@ -150,7 +216,8 @@ function Invoices(props) {
         </>
     );
 
-    const renderItem = (item) => {
+    const renderItem = item => {
+        // console.log("Storage item: ", item);
         const formattedItem = {
             name: item.invoiceNumber,
             status: item.status,
@@ -158,20 +225,20 @@ function Invoices(props) {
             supplier: item.supplier.name,
             levels: {
                 min: 0,
-                max: item.capacity,
-            },
+                max: item.capacity
+            }
         };
 
-        const itemView = invoiceItem(formattedItem);
-
-        return (
-            <ListItem
-                isChecked={selectedIds.includes(item._id)}
-                onCheckBoxPress={() => onCheckBoxPress(item)}
-                onItemPress={() => handleOnItemPress(item, false)}
-                itemView={itemView}
-            />
+        const itemView = invoiceItem(
+            formattedItem,
         );
+
+        return <ListItem
+            isChecked={selectedIds.includes(item._id)}
+            onCheckBoxPress={() => onCheckBoxPress(item)}
+            onItemPress={() => handleOnItemPress(item, false)}
+            itemView={itemView}
+        />;
     };
 
     const handleOnItemPress = (item, isOpenEditable) => {
@@ -181,22 +248,23 @@ function Invoices(props) {
             isEditable: isOpenEditable,
             updateInvoices: () => {
                 onRefresh();
-            },
+            }
         });
-    };
+    } 
 
-    const onCheckBoxPress = (item) => {
+    const onCheckBoxPress = item => {
         const { _id } = item;
 
         const updateInvioces = checkboxItemPress(_id, selectedIds);
 
         setSelectedIds(updateInvioces);
+
     };
 
     const getFabActions = () => {
         const isDisabled = selectedIds.length === 0;
         const deleteAction = (
-            <View style={{ borderRadius: 6, flex: 1, overflow: "hidden" }}>
+            <View style={{ borderRadius: 6, flex: 1, overflow: 'hidden' }}>
                 <LongPressWithFeedback
                     pressTimer={LONG_PRESS_TIMER.LONG}
                     onLongPress={removeStorageLocationsLongPress}
@@ -204,16 +272,9 @@ function Invoices(props) {
                 >
                     <ActionItem
                         title="Hold to Delete"
-                        icon={
-                            <WasteIcon
-                                strokeColor={
-                                    isDisabled
-                                        ? theme.colors["--color-gray-600"]
-                                        : theme.colors["--color-red-700"]
-                                }
-                            />
-                        }
-                        onPress={() => {}}
+                        icon={<WasteIcon strokeColor={isDisabled ? theme.colors['--color-gray-600'] : theme.colors['--color-red-700']} />}
+                        onPress={() => {
+                        }}
                         touchable={false}
                         disabled={isDisabled}
                     />
@@ -221,96 +282,105 @@ function Invoices(props) {
             </View>
         );
 
-        return (
-            <ActionContainer
-                floatingActions={[deleteAction]}
-                title="INVOICE ACTIONS"
-            />
-        );
-    };
+        return <ActionContainer
+            floatingActions={[
+                deleteAction
+            ]}
+            title="INVOICE ACTIONS"
+        />;
+    };  
+
 
     const removeStorageLocationsLongPress = () => {
-        if (selectedIds.length > 0)
-            openDeletionConfirm({ ids: [...selectedIds] });
+        // Done with one or more ids selected
+        if (selectedIds.length > 0) openDeletionConfirm({ ids: [...selectedIds] });
         else openErrorConfirmation();
     };
 
-    const removeInvoiceCall = (data) => {
+    const removeInvoiceCall= (data) => {
         deleteInvoices(data)
-            .then((_) => {
-                modal.openModal("ConfirmationModal", {
-                    content: (
-                        <ConfirmationComponent
+            .then(_ => {
+                modal.openModal(
+                    'ConfirmationModal',
+                    {
+                        content: <ConfirmationComponent
                             isError={false}
                             isEditUpdate={false}
                             onAction={() => {
-                                modal.closeModals("ConfirmationModal");
+                                modal.closeModals('ConfirmationModal');
                                 setTimeout(() => {
-                                    modal.closeModals("ActionContainerModal");
+                                    modal.closeModals('ActionContainerModal');
                                     onRefresh();
                                 }, 200);
                             }}
-                        />
-                    ),
-                    onClose: () => {
-                        modal.closeModals("ConfirmationModal");
-                    },
-                });
+                        />,
+                        onClose: () => {
+                            modal.closeModals('ConfirmationModal');
+                        }
+                    }
+                );
 
                 setSelectedIds([]);
             })
-            .catch((error) => {
+            .catch(error => {
                 openErrorConfirmation();
                 setTimeout(() => {
-                    modal.closeModals("ActionContainerModal");
+                    modal.closeModals('ActionContainerModal');
                 }, 200);
-                console.log("Failed to remove invoices: ", error);
+                console.log('Failed to remove invoices: ', error);
             })
-            .finally((_) => {
+            .finally(_ => {
                 setFloatingAction(false);
             });
-    };
+    }
 
-    const openDeletionConfirm = (data) => {
-        modal.openModal("ConfirmationModal", {
-            content: (
-                <ConfirmationComponent
+    const openDeletionConfirm = data => {
+        modal.openModal(
+            'ConfirmationModal',
+            {
+                content: <ConfirmationComponent
                     isError={false}
                     isEditUpdate={true}
-                    onCancel={() => modal.closeModals("ConfirmationModal")}
+                    onCancel={() => modal.closeModals('ConfirmationModal')}
                     onAction={() => {
-                        modal.closeModals("ConfirmationModal");
+                        modal.closeModals('ConfirmationModal');
                         removeInvoiceCall(data);
                     }}
+                    // onAction = { () => confirmAction()}
                     message="Do you want to delete these item(s)?"
-                />
-            ),
-            onClose: () => {
-                modal.closeModals("ConfirmationModal");
-            },
-        });
+                />,
+                onClose: () => {
+                    modal.closeModals('ConfirmationModal');
+                }
+            }
+        );
     };
 
     const openErrorConfirmation = () => {
-        modal.openModal("ConfirmationModal", {
-            content: (
-                <ConfirmationComponent
+        modal.openModal(
+            'ConfirmationModal',
+            {
+                content: <ConfirmationComponent
                     isError={true}
                     isEditUpdate={false}
-                    onCancel={() => modal.closeModals("ConfirmationModal")}
-                />
-            ),
-            onClose: () => {
-                modal.closeModals("ConfirmationModal");
-            },
-        });
+                    onCancel={() => modal.closeModals('ConfirmationModal')}
+                />,
+                onClose: () => {
+                    modal.closeModals('ConfirmationModal');
+                }
+            }
+        );
     };
+
+    const invoicesToDisplay = [...allInvoices ]
 
     const onSelectAll = () => {
-        const updatedInvoices = selectAll(allInvoices, selectedIds);
+
+        const updatedInvoices = selectAll(allInvoices , selectedIds);
+        console.log(updatedInvoices)
         setSelectedIds(updatedInvoices);
     };
-
+    
     const toggleActionButton = () => {
         setFloatingAction(true);
         modal.openModal("ActionContainerModal", {
@@ -319,20 +389,21 @@ function Invoices(props) {
             onClose: () => {
                 setFloatingAction(false);
             },
+
         });
+
     };
 
     return (
-        <PageSettingsContext.Provider
-            value={{
-                pageSettingState,
-                setPageSettingState,
-            }}
+        <PageSettingsContext.Provider value={{
+            pageSettingState,
+            setPageSettingState
+        }}
         >
-            <PaginatedSection
+            <NavPage
                 placeholderText="Search by Invoices"
                 routeName={pageTitle}
-                listData={allInvoices}
+                listData={invoicesToDisplay }
                 inputText={searchValue}
                 itemsSelected={selectedIds}
                 listItemFormat={renderItem}
@@ -341,9 +412,10 @@ function Invoices(props) {
                 onRefresh={onRefresh}
                 isFetchingData={isFetchingData}
                 onSelectAll={onSelectAll}
+                totalPages={totalPages}
                 currentPage={currentPagePosition}
-                fetchSectionDataCb={fetchInvoiceData}
-                setCurrentPage={setCurrentPagePosition}
+                goToNextPage={goToNextPage}
+                goToPreviousPage={goToPreviousPage}
                 isDisabled={isFloatingActionDisabled}
                 toggleActionButton={toggleActionButton}
                 hasPaginator={true}
@@ -354,9 +426,39 @@ function Invoices(props) {
             />
         </PageSettingsContext.Provider>
     );
-}
+};
 
-const mapStateToProps = (state) => ({ Invoices: state.invoices });
+Invoices.propTypes = {};
+Invoices.defaultProps = {};
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        flexDirection: 'column'
+    },
+    item: {
+        flex: 1,
+        flexDirection: 'row',
+    },
+    itemText: {
+        fontSize: 14,
+        color: '#4E5664',
+    },
+    footer: {
+        flex: 1,
+        flexDirection: 'row',
+        position: 'absolute',
+        bottom: 0,
+        right: 0,
+        marginBottom: 20,
+        marginRight: 30,
+    },
+    rowBorderRight: {
+        borderRightColor: '#E3E8EF',
+        borderRightWidth: 1,
+    }
+});
+const mapStateToProps = state => ({ Invoices: state.invoices });
 
 const mapDispatcherToProp = { setInvoices };
 
