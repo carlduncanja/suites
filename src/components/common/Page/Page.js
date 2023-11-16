@@ -1,16 +1,16 @@
-import React, { useContext, useEffect, useState } from "react";
-import PageTitle from "./PageTitle";
-import Search from "../Search";
-import List from "../List/List";
-import EmptyState from "../../../../assets/svg/emptyState";
-import LoadingIndicator from "../LoadingIndicator";
-import { PageSettingsContext } from "../../../contexts/PageSettingsContext";
-import PropTypes from "prop-types";
 import styled from "@emotion/native";
-import { useTheme } from "emotion-theming";
-import { useNavigation } from "@react-navigation/native";
-import LostConnectionPage from "./LostConnectionPage";
 import NetInfo from "@react-native-community/netinfo";
+import { useNavigation } from "@react-navigation/native";
+import { useTheme } from "emotion-theming";
+import PropTypes from "prop-types";
+import React, { useContext, useEffect, useState } from "react";
+import EmptyState from "../../../../assets/svg/emptyState";
+import { PageSettingsContext } from "../../../contexts/PageSettingsContext";
+import List from "../List/List";
+import LoadingIndicator from "../LoadingIndicator";
+import Search from "../Search";
+import LostConnectionPage from "./LostConnectionPage";
+import PageTitle from "./PageTitle";
 
 const PageWrapper = styled.View`
     display: flex;
@@ -78,6 +78,7 @@ const MessageWrapper = styled.Text(({ theme }) => ({
  * @property {string} placeholderText
  * @property {string} routeName
  * @property {JSX.Element} TopButton
+ * @property {boolean} hasSearch
  */
 
 /**
@@ -131,14 +132,12 @@ function Page(props) {
         ) : listData?.length < 1 ? (
             <EmptyWrapper theme={theme}>
                 <PageContent theme={theme}>
-                    {/*    ICON     */}
                     <IconWrapper theme={theme}>
                         <EmptyState />
                     </IconWrapper>
 
-                    {/*    MESSAGE HEADER  */}
                     <MessageWrapper theme={theme}>
-                        {"No Records Found"}
+                        No Records Found
                     </MessageWrapper>
                 </PageContent>
             </EmptyWrapper>
@@ -173,14 +172,12 @@ function Page(props) {
                     ) : isDisabled ? (
                         <EmptyWrapper theme={theme}>
                             <PageContent theme={theme}>
-                                {/*    ICON     */}
                                 <IconWrapper theme={theme}>
                                     <EmptyState />
                                 </IconWrapper>
 
-                                {/*    MESSAGE HEADER  */}
                                 <MessageWrapper theme={theme}>
-                                    {"No Records Found"}
+                                    No Records Found
                                 </MessageWrapper>
                             </PageContent>
                         </EmptyWrapper>

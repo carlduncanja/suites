@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from "react";
-import Page from "./Page";
-import Footer from "./Footer";
 import styled from "@emotion/native";
+import React, { useEffect, useState } from "react";
 import { RECORDS_PER_PAGE_MAIN } from "../../../const";
+import Footer from "./Footer";
+import Page from "./Page";
 const NavPageWrapper = styled.View`
     width: 100%;
 `;
@@ -54,13 +54,13 @@ function PaginatedSection({
     navigation,
     onRefresh = () => {},
     onSelectAll = () => {},
-    placeholderText = "", //for what?
+    placeholderText = "",
     routeName = "",
     TopButton = null,
 
     currentPage,
     setCurrentPage,
-    fetchSectionDataCb, // returns the data and the number of pages;
+    fetchSectionDataCb,
     hasActionButton = true,
     hasActions = true,
     hasPaginator = true,
@@ -125,7 +125,6 @@ function PaginatedSection({
             });
     };
 
-    /** Initial fetch */
     useEffect(() => {
         fetchSectionDataWrapper(currentPage).then(({ pages }) => {
             if (pages > 1)

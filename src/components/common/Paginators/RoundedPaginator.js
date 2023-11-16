@@ -1,8 +1,8 @@
-import React from "react";
 import styled from "@emotion/native";
 import { useTheme } from "emotion-theming";
-import Paginator from "./Paginator";
+import React from "react";
 import MultipleShadowContainer from "../MultipleShadowContainer";
+import Paginator from "./Paginator";
 
 const RoundedPaginatorContainer = styled.View`
     display: flex;

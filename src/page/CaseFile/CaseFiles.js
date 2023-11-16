@@ -1,43 +1,43 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { View } from "react-native";
 
-import { connect } from "react-redux";
-import _, { isEmpty } from "lodash";
-import { useModal } from "react-native-modalfy";
-import moment from "moment";
 import styled from "@emotion/native";
 import { useTheme } from "emotion-theming";
-import ListItem from "../../components/common/List/ListItem";
-import ActionContainer from "../../components/common/FloatingAction/ActionContainer";
-import ActionItem from "../../components/common/ActionItem";
+import _, { isEmpty } from "lodash";
+import moment from "moment";
+import { useModal } from "react-native-modalfy";
+import { connect } from "react-redux";
 import AddIcon from "../../../assets/svg/addIcon";
 import ArchiveIcon from "../../../assets/svg/archiveIcon";
+import ActionItem from "../../components/common/ActionItem";
+import ActionContainer from "../../components/common/FloatingAction/ActionContainer";
 import DraftItem from "../../components/common/List/DraftItem";
+import ListItem from "../../components/common/List/ListItem";
 
-import { setCaseFiles } from "../../redux/actions/caseFilesActions";
 import {
     getCaseFiles,
     removeCaseFiles,
     removeCaseFilesId,
 } from "../../api/network";
+import { setCaseFiles } from "../../redux/actions/caseFilesActions";
 
 import {
-    selectAll,
     checkboxItemPress,
     handleUnauthorizedError,
+    selectAll,
 } from "../../helpers/caseFilesHelpers";
 import { currencyFormatter, formatDate } from "../../utils/formatter";
 
+import WasteIcon from "../../../assets/svg/wasteIcon";
+import Button from "../../components/common/Buttons/Button";
 import DataItem from "../../components/common/List/DataItem";
 import MultipleTextDataItem from "../../components/common/List/MultipleTextDataItem";
+import LongPressWithFeedback from "../../components/common/LongPressWithFeedback";
+import PaginatedSection from "../../components/common/Page/PaginatedSection";
+import ConfirmationComponent from "../../components/ConfirmationComponent";
 import { emptyFn, LONG_PRESS_TIMER, RECORDS_PER_PAGE_MAIN } from "../../const";
 import { PageSettingsContext } from "../../contexts/PageSettingsContext";
-import LongPressWithFeedback from "../../components/common/LongPressWithFeedback";
-import WasteIcon from "../../../assets/svg/wasteIcon";
 import { removeDraft } from "../../redux/actions/draftActions";
-import Button from "../../components/common/Buttons/Button";
-import ConfirmationComponent from "../../components/ConfirmationComponent";
-import PaginatedSection from "../../components/common/Page/PaginatedSection";
 
 const listHeaders = [
     {
