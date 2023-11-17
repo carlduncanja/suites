@@ -233,9 +233,6 @@ function SignupPage({navigation, signIn, expoPushToken}) {
             });
     };
 
-    const onGuestButtonPress = () => {
-    };
-
     const goToLogin = () => {
         navigation.navigate('login')
     };
@@ -250,6 +247,34 @@ function SignupPage({navigation, signIn, expoPushToken}) {
             }}
         />
     );
+
+    const onGuestButtonPress = () => {
+        setLoading(true);
+        login("guest@suites.com", "123456", expoPushToken)
+            .then(async data => {
+                // save auth data
+                const { token = null } = data;
+                try {
+                    await AsyncStorage.setItem('userToken', token);
+                    // navigation.navigate("App")
+                    if (token) {
+                        setBearerToken(token);
+                    }
+
+                    signIn(token);
+                } catch (error) {
+                    // Error saving data
+                    console.log('Failed to save token', error);
+                }
+            })
+            .catch(e => {
+                console.log('login failed', e);
+                Alert.alert('Failed to login');
+            })
+            .finally(_ => {
+                setLoading(false);
+            });
+    };
 
     return (
         <PageWrapper theme={theme}>
@@ -367,6 +392,7 @@ function SignupPage({navigation, signIn, expoPushToken}) {
                                     fontColor={theme.colors['--accent-line']}
                                     backgroundColor={theme.colors['--color-gray-100']}
                                     text={'Continue As Guest'}
+                                    onPress={onGuestButtonPress}
                                 />
                             </ButtonWrapper>
 
