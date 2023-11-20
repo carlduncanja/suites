@@ -1,72 +1,50 @@
-// SuiteNavigator.js
-import React, {useContext, useEffect, useState} from 'react';
-import {View, StyleSheet, Dimensions, SafeAreaView, Text} from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage'
-import * as Notifications from 'expo-notifications';
+import React, { useContext, useEffect, useState } from "react";
+import { View, StyleSheet, Dimensions, SafeAreaView } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import NetInfo from "@react-native-community/netinfo";
-
-import {
-    ModalProvider,
-    createModalStack,
-    useModal,
-} from 'react-native-modalfy';
+import { ModalProvider, createModalStack } from "react-native-modalfy";
 import {
     NavigationHelpersContext,
     useNavigationBuilder,
     createNavigatorFactory,
     TabRouter,
-    TabActions,
-} from '@react-navigation/native';
-import {connect} from 'react-redux';
-import {MenuProvider} from 'react-native-popup-menu';
-import jwtDecode from 'jwt-decode';
-import {
-    SuitesContext,
-    SuitesContextProvider,
-} from '../contexts/SuitesContext';
-
-import SideBarComponent from '../components/SideBar/SideBarComponent';
-
-import OverlaySlidePanelModal from '../modals/OverlaySlidePanelModal';
-import OverlayModal from '../modals/OverlayModal';
-import AddWorkItemModal from '../modals/AddWorkItemModal';
-import EditWorkItemModal from '../modals/EditWorkItemModal';
-import ActionContainerModal from '../modals/ActionContainerModal';
-import ReportPreviewModal from '../modals/ReportPreviewModal';
-import OverlayInfoModal from '../modals/OverlayInfoModal';
-import BottomSheetModal from '../modals/BottomSheetModal';
-import {appActions} from '../redux/reducers/suitesAppReducer';
-import {signIn, signOut} from '../redux/actions/authActions';
-import QuickActionsModal from '../modals/QuickActionsModal';
-import Notifier from '../components/notifications/Notifier';
-import NotificationRegistry from '../components/notifications/NotficationRegistry';
-import ConfirmationModal from '../modals/ConfirmationModal';
-import {logout} from '../api/network';
-import CustomSnackbarProvider from '../components/Snackbar/CustomSnackbarProvider';
-import UnauthorizedSubscription from '../UnauthorizedSubscription';
-import {setBearerToken} from "../api";
+} from "@react-navigation/native";
+import { connect } from "react-redux";
+import { MenuProvider } from "react-native-popup-menu";
+import jwtDecode from "jwt-decode";
+import { SuitesContext } from "../contexts/SuitesContext";
+import SideBarComponent from "../components/SideBar/SideBarComponent";
+import OverlaySlidePanelModal from "../modals/OverlaySlidePanelModal";
+import OverlayModal from "../modals/OverlayModal";
+import AddWorkItemModal from "../modals/AddWorkItemModal";
+import EditWorkItemModal from "../modals/EditWorkItemModal";
+import ActionContainerModal from "../modals/ActionContainerModal";
+import ReportPreviewModal from "../modals/ReportPreviewModal";
+import OverlayInfoModal from "../modals/OverlayInfoModal";
+import BottomSheetModal from "../modals/BottomSheetModal";
+import { appActions } from "../redux/reducers/suitesAppReducer";
+import { signIn, signOut } from "../redux/actions/authActions";
+import QuickActionsModal from "../modals/QuickActionsModal";
+import Notifier from "../components/notifications/Notifier";
+import ConfirmationModal from "../modals/ConfirmationModal";
+import { logout } from "../api/network";
+import CustomSnackbarProvider from "../components/Snackbar/CustomSnackbarProvider";
+import UnauthorizedSubscription from "../UnauthorizedSubscription";
+import { setBearerToken } from "../api";
 import PrintScheduleModal from "../modals/PrintScheduleModal";
-import ToastComponent from '../components/common/ToastComponent';
+import ToastComponent from "../components/common/ToastComponent";
 
-/**
- * Custom navigator wrapper for application.
- *
- * https://reactnavigation.org/docs/custom-navigators
- */
-
-// navigation bar at the left side
-// 
 const SuitesCustomNavigator = ({
-                                   initialRouteName,
-                                   children,
-                                   screenOptions,
-                                   signOut,
-                                   auth,
-                               }) => {
-    const screenDimensions = Dimensions.get('window');
+    initialRouteName,
+    children,
+    screenOptions,
+    signOut,
+    auth,
+}) => {
+    const screenDimensions = Dimensions.get("window");
     const [suitesContext, dispatch] = useContext(SuitesContext);
 
-    const {state, navigation, descriptors} = useNavigationBuilder(TabRouter, {
+    const { state, navigation, descriptors } = useNavigationBuilder(TabRouter, {
         children,
         screenOptions,
         initialRouteName,
@@ -74,26 +52,23 @@ const SuitesCustomNavigator = ({
     const [isDisplay, setIsDispay] = useState(false);
 
     useEffect(() => {
-        NetInfo.addEventListener(state => {
+        NetInfo.addEventListener((state) => {
             setIsDispay(!state.isInternetReachable);
         });
     }, []);
 
     useEffect(() => {
-        // get user token from state,
-        // navigation
-        AsyncStorage.getItem('userToken')
-            .then(token => {
-                // navigation.navigate("App")
+        AsyncStorage.getItem("userToken")
+            .then((token) => {
                 if (token) {
                     setBearerToken(token);
                 }
                 signIn(token);
             })
-            .catch(error => {
-                console.log('failed to get user token', error);
+            .catch((error) => {
+                console.log("failed to get user token", error);
             });
-    }, [])
+    }, []);
 
     const modalConfig = {
         OverlaySlidePanelModal,
@@ -111,52 +86,46 @@ const SuitesCustomNavigator = ({
 
     const defaultOptions = {
         backdropOpacity: 0,
-        position: 'bottom',
+        position: "bottom",
         containerStyle: {
             flex: 1,
-            // ...StyleSheet.absoluteFillObject,
-            alignItems: 'flex-end',
+            alignItems: "flex-end",
         },
     };
 
     const stack = createModalStack(modalConfig, defaultOptions);
 
-    // event handlers;
     const handleOnTabPress = (e, routeName) => {
-        console.log('tab pressed', routeName);
-        navigation.navigate(routeName, {screen: routeName});
+        navigation.navigate(routeName, { screen: routeName });
     };
 
     const handleOnLogout = () => {
-        const {expoPushToken, userToken} = auth;
+        const { expoPushToken, userToken } = auth;
         const authInfo = jwtDecode(userToken);
 
-        console.log('authInfo: ', authInfo);
-
-        logout(authInfo.user_id, expoPushToken).catch(error => {
-            console.log('logout call failed', error);
+        logout(authInfo.user_id, expoPushToken).catch((error) => {
+            console.log("logout call failed", error);
         });
 
         AsyncStorage.clear()
-            .catch(error => {
-                console.log('failed to sign out', error);
+            .catch((error) => {
+                console.log("failed to sign out", error);
             })
-            .finally(_ => {
+            .finally((_) => {
                 signOut();
             });
-        // navigation.navigate('Auth')
     };
 
-    const getPageMeasure = event => {
+    const getPageMeasure = (event) => {
         dispatch({
             type: appActions.SETPAGEMEASURES,
             newState: event.nativeEvent.layout,
         });
     };
-    
+
     return (
         <NavigationHelpersContext.Provider value={navigation}>
-            <SafeAreaView style={{flex: 1, backgroundColor: '#fff'}}>
+            <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
                 <MenuProvider>
                     <ModalProvider stack={stack}>
                         <View style={styles.container}>
@@ -170,30 +139,50 @@ const SuitesCustomNavigator = ({
                                 style={styles.navBar}
                             />
 
-                            <View style={styles.pageContent} onLayout={getPageMeasure}>
-                                {/*    ACTIVE SCREEN    */}
+                            <View
+                                style={styles.pageContent}
+                                onLayout={getPageMeasure}
+                            >
                                 <CustomSnackbarProvider>
                                     {isDisplay ? (
-                                        <View style={{width: '100%', height: 100, position: 'absolute', display: 'flex', zIndex: 100, padding: 30, paddingTop: 13}}>
-                                        <View style={{flex: 1, height: 48, display: 'flex', alignItems: 'center', flexDirection: 'row'}}>
-                                            <ToastComponent
-                                                isDisplay={isDisplay}
-                                                setIsDispay={setIsDispay}
-                                            />
+                                        <View
+                                            style={{
+                                                width: "100%",
+                                                height: 100,
+                                                position: "absolute",
+                                                display: "flex",
+                                                zIndex: 100,
+                                                padding: 30,
+                                                paddingTop: 13,
+                                            }}
+                                        >
+                                            <View
+                                                style={{
+                                                    flex: 1,
+                                                    height: 48,
+                                                    display: "flex",
+                                                    alignItems: "center",
+                                                    flexDirection: "row",
+                                                }}
+                                            >
+                                                <ToastComponent
+                                                    isDisplay={isDisplay}
+                                                    setIsDispay={setIsDispay}
+                                                />
+                                            </View>
                                         </View>
-                                    </View>
-                                    ) : <View></View>
-                                
-                                }
-                                    {descriptors[state.routes[state.index].key].render()}
+                                    ) : (
+                                        <View></View>
+                                    )}
+                                    {descriptors[
+                                        state.routes[state.index].key
+                                    ].render()}
 
-                                    <UnauthorizedSubscription/>
-
+                                    <UnauthorizedSubscription />
                                 </CustomSnackbarProvider>
-
                             </View>
 
-                            <Notifier/>
+                            <Notifier />
                         </View>
                     </ModalProvider>
                 </MenuProvider>
@@ -205,22 +194,16 @@ const SuitesCustomNavigator = ({
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        width: '100%',
-        flexDirection: 'row',
+        width: "100%",
+        flexDirection: "row",
     },
-    navBar: {backgroundColor: 'blue'},
-    pageContent: {flex: 1},
+    navBar: { backgroundColor: "blue" },
+    pageContent: { flex: 1 },
 });
 
-// export const createSidebarNavigator = (routeConfigMap, sidebarNavigatorConfig) => {
-//     const customTabRouter = TabRouter(routeConfigMap, sidebarNavigatorConfig);
-//
-//     return createNavigator(SuiteNavigator, customTabRouter, {});
-// };
+const mapDispatchToProps = { signOut, signIn };
 
-const mapDispatchToProps = {signOut, signIn};
-
-const mapStateToProps = state => ({auth: state.auth});
+const mapStateToProps = (state) => ({ auth: state.auth });
 
 export const createSuitesSidebarNavigator = createNavigatorFactory(
     connect(mapStateToProps, mapDispatchToProps)(SuitesCustomNavigator)
