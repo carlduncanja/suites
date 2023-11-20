@@ -1,16 +1,46 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { StyleSheet, View } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
+import * as SplashScreen from "expo-splash-screen";
 import AuthStack from "./AuthStack/AuthStack";
 import { connect } from "react-redux";
 import { createStackNavigator } from "@react-navigation/stack";
 import SuitesNavigationStack from "./AppStack/SuitesNavigationStack";
 import { restoreToken } from "../redux/actions/authActions";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { setBearerToken } from "../api";
 
 const Stack = createStackNavigator();
 
-function RootApplicationNavigator({ auth }) {
+function RootApplicationNavigator({ auth, restoreToken }) {
     const { isSignOut, userToken } = auth;
+
+    useEffect(() => {
+        const bootstrapAsync = async () => {
+            let userToken;
+
+            try {
+                userToken = await AsyncStorage.getItem("userToken");
+            } catch (e) {
+                console.log("failed to get tokens");
+            }
+
+            if (userToken) {
+                setBearerToken(userToken);
+            }
+
+            restoreToken(userToken);
+
+            try {
+                await new Promise((resolve) => setTimeout(resolve, 1000));
+                await SplashScreen.hideAsync();
+            } catch (e) {
+                console.log("Failed to hide splash screen", error);
+            }
+        };
+
+        bootstrapAsync();
+    }, []);
 
     return (
         <View style={styles.container}>
