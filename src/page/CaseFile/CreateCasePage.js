@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Alert, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useModal } from 'react-native-modalfy';
 import { connect } from 'react-redux';
-import { isEmpty } from 'lodash';
+import { isEmpty, _ } from 'lodash';
 import moment from 'moment';
 import styled from '@emotion/native';
 import { useTheme } from 'emotion-theming';
@@ -23,8 +23,7 @@ import ConfirmationComponent from '../../components/ConfirmationComponent';
 import PageButton from '../../components/common/Page/PageButton';
 import ChevronRight from '../../../assets/svg/ChevronRight';
 import ChevronLeft from '../../../assets/svg/ChevronLeft';
-import _ from 'lodash';
-import LoadingComponent from "../../components/LoadingComponent";
+import LoadingComponent from '../../components/LoadingComponent';
 
 const PATIENT_TABS = {
     DETAILS: 'Details',
@@ -50,7 +49,6 @@ const PageContentWrapper = styled.View`
   flex: 1;
 
 `;
-/* padding: ${({theme}) => theme.space['--space-32']} */
 
 const HeaderWrapper = styled.View`
   display: flex;
@@ -219,13 +217,13 @@ function CreateCasePage({ navigation, addCaseFile, saveDraft, removeDraft, route
                             isEditUpdate={true}
                             onAction={() => {
                                 modal.closeAllModals();
-                                createDraft()
-                                navigation.dispatch(e.data.action)
+                                createDraft();
+                                navigation.dispatch(e.data.action);
                             }}
                             action="Save"
                             titleText="Save Draft?"
                             onCancel={() => {
-                                navigation.dispatch(e.data.action)
+                                navigation.dispatch(e.data.action);
                                 modal.closeAllModals();
                             }}
                             message={`You haven't finished creating the Case File for "${patientFields?.firstName || 'Unknown'}". Do you wish to save your progress?`}
@@ -237,7 +235,6 @@ function CreateCasePage({ navigation, addCaseFile, saveDraft, removeDraft, route
     );
 
     useEffect(() => {
-        
         if (route.params.intialPage == 'Patient') {
             setName("New Patient");
         }
@@ -262,8 +259,7 @@ function CreateCasePage({ navigation, addCaseFile, saveDraft, removeDraft, route
         setStaffInfo(value);
     };
 
-    const onProcedureUpdate = value => {
-        console.log('procedure update', value);
+    const onProcedureUpdate = value =>{
 
         setCaseProceduresInfo([...value]);
     };
@@ -341,8 +337,7 @@ function CreateCasePage({ navigation, addCaseFile, saveDraft, removeDraft, route
             `selected index ${selectedIndex}, selected tab index ${selectedTabIndex}, current tab ${currentTab}`
         );
 
-        let isValid = true;  
-
+        let isValid = true;
         switch (selectedIndex) {
             case CASE_PROCEDURE_TABS.PATIENT_DETAILS: {
                 isValid = validatePatientDetailsTab(currentTab);
@@ -524,8 +519,7 @@ function CreateCasePage({ navigation, addCaseFile, saveDraft, removeDraft, route
                     ...updateErrors,
                     [requiredField]: `${requiredField.charAt(0)
                         .toUpperCase() + requiredField.slice(1)
-                            .replace(/([a-z0-9])([A-Z0-9])/g, '$1 $2')} is required`, // capitalize and separate camelcase named field
-                    // [requiredField]: `${requiredField} is required`,
+                            .replace(/([a-z0-9])([A-Z0-9])/g, '$1 $2')} is required`,
                 };
             }
         }
@@ -552,11 +546,8 @@ function CreateCasePage({ navigation, addCaseFile, saveDraft, removeDraft, route
         const updateErrors = [...procedureErrors];
         const errorObj = updateErrors[procedureIndex] || {};
 
-        console.log('error index at', procedureIndex);
-
         for (const requiredParam of requiredParams) {
             if (!procedureInfo[requiredParam]) {
-                console.log(`${requiredParam} is required`);
                 isValid = false;
                 errorObj[requiredParam] = 'Please enter a value';
                 updateErrors[+procedureIndex] = errorObj;
@@ -567,17 +558,10 @@ function CreateCasePage({ navigation, addCaseFile, saveDraft, removeDraft, route
         }
 
         setProcedureErrors(updateErrors);
-        // console.log("procedure errors", procedureErrors);
         if (!isValid) return isValid;
 
-        // TODO validate time.
         const { procedure, location, startTime, duration } = procedureInfo;
         isValid = await validateProcedureAsync(procedure._id, location._id, startTime, duration);
-
-        // TODO validate theatre location.
-        // TODO validate recovery.
-        // TODO validate equipment and inventory.
-
         return isValid;
     };
 
@@ -590,11 +574,9 @@ function CreateCasePage({ navigation, addCaseFile, saveDraft, removeDraft, route
         const updateErrors = [...staffErrors];
         const errorObj = updateErrors[staffIndex] || {};
 
-        console.log('error index at', staffIndex, staff, staffInfo);
-
         for (const requiredParam of requiredParams) {
             if (!staff[requiredParam]) {
-                console.log(`${requiredParam} is required`);
+
                 isValid = false;
                 errorObj[requiredParam] = 'Please enter a value';
                 updateErrors[+staffIndex] = errorObj;
@@ -605,8 +587,6 @@ function CreateCasePage({ navigation, addCaseFile, saveDraft, removeDraft, route
         }
 
         setStaffErrors(updateErrors);
-        console.log('staff errors', staffErrors);
-
         return isValid;
     };
 
@@ -618,11 +598,6 @@ function CreateCasePage({ navigation, addCaseFile, saveDraft, removeDraft, route
     };
 
     const handleOnComplete = () => {
-        // prepare request create case file request
-        console.log('handleOnComplete patientfields', patientFields);
-        console.log('handleOnCompleted', staffInfo);
-        console.log('handleOnCompleted', caseProceduresInfo);
-
         const caseFileData = {
             name: `${patientFields.firstName} ${patientFields.surname}`,
             patient: {},
@@ -661,11 +636,11 @@ function CreateCasePage({ navigation, addCaseFile, saveDraft, removeDraft, route
         setCaseCreated(true);
         createCaseFile(caseFileData)
             .then(data => {
-                addCaseFile(data); 
+                addCaseFile(data);
                 if (route.params.intialPage == 'Patient') {
                     navigation.replace('patient', {
                         patientId: data.patient._id
-                    }) 
+                    })
                 }
                 else{
                     navigation.replace('Case', {
@@ -673,15 +648,12 @@ function CreateCasePage({ navigation, addCaseFile, saveDraft, removeDraft, route
                         isEdit: true,
                     });
                 }
-                
             })
             .catch(error => {
-                console.log('failed to create case file', error.message);
-                console.log('failed to create case file', error.response);
                 Alert.alert('Sorry', 'Something went wrong when creating case.');
             })
             .finally(_ => {
-                setLoading(false)
+                setLoading(false);
             });
 
     };
@@ -699,10 +671,10 @@ function CreateCasePage({ navigation, addCaseFile, saveDraft, removeDraft, route
 
     const onClose = () => {
         if (route.params.intialPage == 'Patient') {
-            navigation.navigate('PatientFiles')
+            navigation.navigate('Patients');
         }
         else{
-            navigation.navigate('CaseFiles')
+            navigation.navigate('CaseFiles');
         }
        
     };
@@ -776,7 +748,6 @@ function CreateCasePage({ navigation, addCaseFile, saveDraft, removeDraft, route
             return isValid;
         })
         .catch(error => {
-            console.log('Failed to validate procedure', error);
             setSnackbar({
                 visible: true,
                 message: 'Something went wrong'

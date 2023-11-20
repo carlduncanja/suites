@@ -8,7 +8,10 @@
 .expo
 __generated__
 *.ipa
+ 
 
+# Formatting configurations 
+.prettierrc
 ### ReactNative.Node Stack ###
 # Logs
 logs
