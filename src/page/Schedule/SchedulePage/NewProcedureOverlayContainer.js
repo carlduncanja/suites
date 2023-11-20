@@ -1377,7 +1377,9 @@ const styles = StyleSheet.create({
         flex: 1,
         flexDirection: 'column',
         // backgroundColor: 'red',
-        padding: 35
+        padding: 35,
+        //position: 'absolute'
+        //marginBottom:40
     },
     sectionContainer: {
         height: 150,
@@ -1460,7 +1462,7 @@ const styles = StyleSheet.create({
     staffField: {
         flexDirection: 'row',
         // backgroundColor: 'blue',
-        flex: 1,
+        //flex: 1,
     },
 
     staffText: {

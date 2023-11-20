@@ -1,4 +1,4 @@
-import React, {useContext, useRef, useState, useEffect} from 'react';
+import React, { useContext, useRef, useState, useEffect } from 'react';
 import {
     View,
     TouchableWithoutFeedback,
@@ -6,8 +6,9 @@ import {
     Dimensions
 } from "react-native";
 import Animated from 'react-native-reanimated'
-import {SuitesContext} from '../contexts/SuitesContext';
+import { SuitesContext } from '../contexts/SuitesContext';
 import BottomSheet from 'reanimated-bottom-sheet'
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 const BottomSheetModal = (props) => {
     const {
@@ -22,11 +23,12 @@ const BottomSheetModal = (props) => {
 
     const [state] = useContext(SuitesContext);
     const dimensions = Dimensions.get("window");
-
+    const scroll = useRef()
     const bottomSheetRef = useRef();
+
     const [fall] = useState(new Animated.Value(1));
 
-    const calcSnapPoints = [dimensions.height - 100, dimensions.height - 200, 0];
+    const calcSnapPoints = [dimensions.height, dimensions.height, 0];
     const initialSnap = params.initialSnap || 2;
     const snapPoints = params.snapPoints || calcSnapPoints;
 
@@ -37,7 +39,7 @@ const BottomSheetModal = (props) => {
 
     const getSnapPoints = () => {
         // return [ dimensions.height || 500 * .5,  0]
-        const {height} = Dimensions.get("window");
+        const { height } = Dimensions.get("window");
         return [height - 100, height - 200, 0]
     };
 
@@ -60,7 +62,8 @@ const BottomSheetModal = (props) => {
             height: '100%',
             width: '100%',
             backgroundColor: 'white',
-            zIndex: 2
+            zIndex: 2,
+            //position: 'absolute'
         }}>
             {params.content}
         </View>
@@ -90,45 +93,54 @@ const BottomSheetModal = (props) => {
     };
 
     return (
-        <View style={[styles.modalContainer, {width: dimensions.width, height: dimensions.height}]}>
-            {renderShadow()}
+        <KeyboardAwareScrollView
+            ref={scroll}
+            onKeyboardWillShow={(frames => { scroll?.current?.scrollToPosition(0, 200) })}
+            //style={{position:"absolute"}}
+            extraScrollHeight={100}
+        >
+            <View style={[styles.modalContainer, { width: dimensions.width, height: state.pageMeasure.height }]}>
+                {renderShadow()}
 
-            <View style={[
-                styles.bottomSheetContainer,
-                {
-                    flex: 1,
-                    width: state.pageMeasure.width,
-                }
-            ]}>
-                <TouchableWithoutFeedback onPress={closeBottomSheet}>
-                    <View style={{...StyleSheet.absoluteFillObject,}}/>
-                </TouchableWithoutFeedback>
-
-                <BottomSheet
-                    pointerEvents={'none'}
-                    ref={bottomSheetRef}
-                    snapPoints={snapPoints}
-                    initialSnap={initialSnap}
-                    callbackNode={fall}
-                    borderRadius={14}
-                    renderContent={renderContent()}
-                    onCloseEnd={onCloseEnd}
-                    onOpenEnd={onOpenEnd}
-                    renderHeader={() =>
-                        <View
-                            style={{
-                                height: 8,
-                                alignSelf: 'center',
-                                width: 50,
-                                backgroundColor: 'white',
-                                borderRadius: 4,
-                                marginBottom: 14
-                            }}
-                        />
+                <View style={[
+                    styles.bottomSheetContainer,
+                    {
+                        flex: 1,
+                        width: state.pageMeasure.width,
+                        height: state.pageMeasure.height
                     }
-                />
+                ]}>
+                    <TouchableWithoutFeedback onPress={closeBottomSheet}>
+                        <View style={{ ...StyleSheet.absoluteFillObject, }} />
+                    </TouchableWithoutFeedback>
+
+                    <BottomSheet
+
+                        pointerEvents={'none'}
+                        ref={bottomSheetRef}
+                        snapPoints={snapPoints}
+                        initialSnap={initialSnap}
+                        callbackNode={fall}
+                        borderRadius={14}
+                        renderContent={renderContent()}
+                        onCloseEnd={onCloseEnd}
+                        onOpenEnd={onOpenEnd}
+                        renderHeader={() =>
+                            <View
+                                style={{
+                                    height: 8,
+                                    alignSelf: 'center',
+                                    width: 50,
+                                    backgroundColor: 'white',
+                                    borderRadius: 4,
+                                    marginBottom: 14
+                                }}
+                            />
+                        }
+                    />
+                </View>
             </View>
-        </View>
+        </KeyboardAwareScrollView>
     );
 };
 
@@ -136,6 +148,7 @@ export default BottomSheetModal;
 
 const styles = StyleSheet.create({
     modalContainer: {
+        //position: 'absolute',
         flex: 1,
         alignItems: "flex-end",
         // justifyContent:'flex-end',
@@ -143,7 +156,8 @@ const styles = StyleSheet.create({
     shadowContainer: {
         ...StyleSheet.absoluteFillObject,
         backgroundColor: '#000',
-        // flex: 1
+        // flex: 1,
+        position: "absolute",
         width: '100%',
         height: '100%'
     },
