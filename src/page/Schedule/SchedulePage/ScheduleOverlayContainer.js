@@ -263,6 +263,7 @@ const styles = StyleSheet.create({
     paddingRight: "4%",
     paddingLeft: "4%",
     flexDirection: "column",
+    //position: 'absolute'
   },
 });
 
