@@ -32,7 +32,6 @@ function RootApplicationNavigator({ auth, restoreToken }) {
             restoreToken(userToken);
 
             try {
-                await new Promise((resolve) => setTimeout(resolve, 1000));
                 await SplashScreen.hideAsync();
             } catch (e) {
                 console.log("Failed to hide splash screen", error);
