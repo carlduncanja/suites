@@ -147,7 +147,7 @@ export const login = async (email, password, pushToken) =>
     .then(handleResponse)
     .catch(handleError);
 
-export const guestLogin = async () =>
+export const loginGuest = async () =>
   suitesAxiosInstance
     .post(guestLoginEndpoint)
     .then(handleResponse)

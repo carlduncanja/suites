@@ -3,7 +3,7 @@ import { View, StyleSheet, Alert, ActivityIndicator } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { connect } from "react-redux";
 import styled from "@emotion/native";
-import { guestLogin, login } from "../../api/network";
+import { login, loginGuest } from "../../api/network";
 import LoginBackground from "../../components/Onboarding/LoginBackground";
 import Logo from "../../../assets/svg/logo";
 import InputFieldWithIcon from "../../components/common/Input Fields/InputFieldWithIcon";
@@ -81,7 +81,7 @@ function LoginPage({ navigation, signIn, expoPushToken }) {
 
   const onGuestButtonPress = () => {
     setLoading(true);
-    guestLogin()
+    loginGuest()
       .then(async (data) => {
         const { token = null } = data;
         try {
