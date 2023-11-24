@@ -1,46 +1,37 @@
+import { createStackNavigator } from "@react-navigation/stack";
 import React from "react";
-import { createStackNavigator } from '@react-navigation/stack';
-
 import PatientFiles from "../../page/Patients/PatientFiles";
-//import PatientCreationPage from "../../page/Patients/PatientCreation/PatientCreationPage"; 
 import CreateCasePage from "../../page/CaseFile/CreateCasePage";
 import AddProcedurePage from "../../page/Patients/AddProcedurePage";
-import CasePage from "../../page/CaseFile/CasePage";
-import HeaderBackComponent from "../components/HeaderBackComponent";
 import PatientPage from "../../page/Patients/PatientPage";
 const Stack = createStackNavigator();
 
-
 export default (props) => {
     const isAdmin = props.route.params.isAdmin || false;
-    const permissions = props.route.params.userPermissions
+    const permissions = props.route.params.userPermissions;
 
     return (
-        <Stack.Navigator
-            initialRouteName="Patients"
-        >
-
+        <Stack.Navigator initialRouteName="Patients">
             <Stack.Screen
                 name="Patients"
-
                 component={PatientFiles}
                 options={{
-                    headerShown: false
+                    headerShown: false,
                 }}
                 initialParams={{
                     isAdmin,
-                    permissions
+                    permissions,
                 }}
             />
             <Stack.Screen
                 name="PatientCreation"
                 component={CreateCasePage}
                 options={{
-                    headerShown: false
+                    headerShown: false,
                 }}
                 initialParams={{
                     isAdmin,
-                    permissions
+                    permissions,
                 }}
             />
 
@@ -52,7 +43,7 @@ export default (props) => {
                     headerStyle: {
                         height: 100,
                     },
-                    headerTitle: ""
+                    headerTitle: "",
                 }}
                 initialParams={{ permissions }}
             />
@@ -60,15 +51,13 @@ export default (props) => {
                 name="AddProcedure"
                 component={AddProcedurePage}
                 options={{
-                    headerShown: false
+                    headerShown: false,
                 }}
                 initialParams={{
                     isAdmin,
-                    permissions
+                    permissions,
                 }}
             />
-
-
         </Stack.Navigator>
-    )
-}
+    );
+};
