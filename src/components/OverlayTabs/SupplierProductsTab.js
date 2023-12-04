@@ -114,10 +114,7 @@ function SupplierProductsTab({
   const [cartItems, setCartItems] = useState([]);
   const { pageState } = useContext(PageContext);
 
-  // ######## CONST
-
-  // ######## LIFECYCLE METHODS
-
+  
   useEffect(() => {
     setTimeout(() => {
       setCartItems(cart);
@@ -125,7 +122,6 @@ function SupplierProductsTab({
     }, 200);
   }, []);
 
-  // ######## EVENT HANDLERS
 
   const onProductsPress = (productItem) => () => {
     modal.closeModals("ActionContainerModal");
@@ -467,9 +463,13 @@ function SupplierProductsTab({
             amount: 1,
           });
         } else {
-          let tempCartItems = [...updatedCartItems];
-          updateAmount = tempCartItems[itemIndex].amount + 1 || 1;
-          updatedCartItems[itemIndex].amount = updateAmount;
+          let tempCartItem = updatedCartItems[itemIndex];
+          updateAmount = tempCartItem.amount + 1 || 1;  
+          updatedCartItems.splice(itemIndex,1) 
+          updatedCartItems.push({
+            ...item,
+            amount: updateAmount,
+          })
         }
       });
       cartQuantity = updatedCartItems.reduce(
