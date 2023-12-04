@@ -348,7 +348,7 @@ const OrderDetailsTab = ({
                                     onChangeText={onLocationSearchTextUpdated}
                                 />
                             </InputWrapper>
-                            : <TouchableRecord
+                            : <Record
                                 recordTitle="Storage Location"
                                 recordValue={fields?.storageLocation?.name || '--'}
                             />
