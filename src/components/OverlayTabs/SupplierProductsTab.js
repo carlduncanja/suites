@@ -300,7 +300,7 @@ function SupplierProductsTab({
           isEditUpdate={false}
           onAction={() => {
             modal.closeModals("ConfirmationModal"); 
-            onRefresh
+            onRefresh()
           }}
         />
       ),
