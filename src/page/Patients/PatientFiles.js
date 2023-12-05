@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { View } from "react-native";
-import _, { isEmpty, set } from "lodash";
+import _, { isEmpty } from "lodash";
 import { useModal } from "react-native-modalfy";
 import styled from "@emotion/native";
 import { useTheme } from "emotion-theming";
@@ -8,11 +8,14 @@ import ListItem from "../../components/common/List/ListItem";
 import ActionContainer from "../../components/common/FloatingAction/ActionContainer";
 import ActionItem from "../../components/common/ActionItem";
 import AddIcon from "../../../assets/svg/addIcon";
+
 import {
   useNextPaginator,
   usePreviousPaginator,
+  selectAll,
   checkboxItemPress,
 } from "../../helpers/caseFilesHelpers";
+
 import NavPage from "../../components/common/Page/NavPage";
 import DataItem from "../../components/common/List/DataItem";
 import RightBorderDataItem from "../../components/common/List/RightBorderDataItem";
@@ -21,9 +24,7 @@ import LongPressWithFeedback from "../../components/common/LongPressWithFeedback
 import WasteIcon from "../../../assets/svg/wasteIcon";
 import Button from "../../components/common/Buttons/Button";
 import ConfirmationComponent from "../../components/ConfirmationComponent";
-import { getPatients, deletePatient } from "../../api/network"; 
-
-
+import { getPatients, deletePatient } from "../../api/network";
 const ButtonContainer = styled.View`
   width: 105px;
   height: 26px;
@@ -57,29 +58,25 @@ const listHeaders = [
 ];
 
 function PatientFiles(props) {
-  //######## const
   const modal = useModal();
   const theme = useTheme();
   const recordsPerPage = 12;
 
   const { navigation } = props;
 
-  // States
   const [selectedPatientds, setSelectedPatientIds] = useState([]);
   const [isFloatingActionDisabled, setFloatingAction] = useState(false);
   const [searchValue, setSearchValue] = useState("");
   const [isFetchingPatients, setFetchingPatients] = useState(false);
   const [patientData, setPatientData] = useState([]);
-  const [searchResults, setSearchResult] = useState([]);
   const [searchQuery, setSearchQuery] = useState({});
-  // pagination
+
   const [totalPages, setTotalPages] = useState(1);
   const [currentPageListMin, setCurrentPageListMin] = useState(0);
   const [currentPageListMax, setCurrentPageListMax] = useState(recordsPerPage);
   const [currentPagePosition, setCurrentPagePosition] = useState(1);
   const [isNextDisabled, setNextDisabled] = useState(false);
   const [isPreviousDisabled, setPreviousDisabled] = useState(true);
-  const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
     if (!patientData.length) {
@@ -95,13 +92,12 @@ function PatientFiles(props) {
   useEffect(() => {
     if (!searchValue) {
       // empty search values and cancel any out going request.
-      setSearchResult([]);
       fetchPatientFiles(1);
       if (searchQuery.cancel) searchQuery.cancel();
       return;
     }
 
-    
+    // wait 300ms before search. cancel any prev request before executing current.
 
     const search = _.debounce(fetchPatientFiles, 300);
 
@@ -119,6 +115,11 @@ function PatientFiles(props) {
     setSearchValue(input);
   };
 
+  const handleOnSelectAll = () => {
+    const updatedPatientData = selectAll(patientData, selectedPatientds);
+    setSelectedPatientIds(updatedPatientData);
+  };
+
   const goToNextPage = () => {
     if (currentPagePosition < totalPages) {
       const { currentPage, currentListMin, currentListMax } = useNextPaginator(
@@ -129,7 +130,6 @@ function PatientFiles(props) {
       );
 
       setCurrentPagePosition(currentPagePosition);
-      setCurrentPage(currentPage);
 
       setCurrentPageListMin(currentListMin);
       setCurrentPageListMax(currentListMax);
@@ -186,7 +186,7 @@ function PatientFiles(props) {
         setTotalPages(1);
         setPreviousDisabled(true);
         setNextDisabled(true);
-        
+        console.log("failed to get the data", error);
       })
       .finally((_) => {
         setFetchingPatients(false);
@@ -264,27 +264,6 @@ function PatientFiles(props) {
     });
   };
 
-  const openConfirmModal = () => {
-    modal.openModal("ConfirmationModal", {
-      content: (
-        <ConfirmationComponent
-          isError={false}
-          isEditUpdate={false}
-          onAction={() => {
-            modal.closeModals("ConfirmationModal");
-            setTimeout(() => {
-              modal.closeModals("ActionContainerModal");
-              handleDataRefresh();
-            }, 200);
-          }}
-        />
-      ),
-      onClose: () => {
-        modal.closeModals("ConfirmationModal");
-      },
-    });
-  };
-
   const handleDataRefresh = () => {
     fetchPatientFiles();
   };
@@ -292,7 +271,25 @@ function PatientFiles(props) {
   const removePatientsCall = (data) => {
     deletePatient(data)
       .then((_) => {
-        openConfirmModal();
+        modal.openModal("ConfirmationModal", {
+          content: (
+            <ConfirmationComponent
+              isError={false}
+              isEditUpdate={false}
+              onAction={() => {
+                modal.closeModals("ConfirmationModal");
+                setTimeout(() => {
+                  modal.closeModals("ActionContainerModal");
+                  handleDataRefresh();
+                }, 200);
+              }}
+            />
+          ),
+          onClose: () => {
+            modal.closeModals("ConfirmationModal");
+          },
+        });
+
         setSelectedPatientIds([]);
       })
       .catch((error) => {
@@ -300,7 +297,7 @@ function PatientFiles(props) {
         setTimeout(() => {
           modal.closeModals("ActionContainerModal");
         }, 200);
-        console.log("Failed to remove case file: ", error);
+        console.log("Failed to remove patient file: ", error);
       })
       .finally((_) => {
         setFloatingAction(false);
@@ -318,7 +315,6 @@ function PatientFiles(props) {
             modal.closeModals("ConfirmationModal");
             removePatientsCall(data);
           }}
-          // onAction = { () => confirmAction()}
           message="Do you want to delete these item(s)?"
         />
       ),
@@ -328,27 +324,38 @@ function PatientFiles(props) {
     });
   };
 
-  const handleRemovePatient = async (id) => {
+  const handleRemovePatient = async () => {
     openDeletionConfirm({ patientIds: [...selectedPatientds] });
   };
 
   const handleOnCheckBoxPress = (item) => () => {
-    const { _id, id } = item; 
+    const { _id, id } = item; // account for both drafts and created cases.
     const updateditems = checkboxItemPress(_id || id, selectedPatientds);
     setSelectedPatientIds(updateditems);
   };
 
-  const handleNavivation = (page, initialParams) => {
+  const openCreatePatient = () => {
     modal.closeModals("ActionContainerModal");
-    setFloatingAction(false);
-    navigation.navigate(page, initialParams);
+    navigation.navigate("PatientCreation", {
+      initial: false,
+      draftItem: null,
+      intialPage: "Patient",
+    });
+  };
+
+  const handleAddProcedure = () => {
+    modal.closeModals("ActionContainerModal");
+    navigation.navigate("AddProcedure", {
+      initial: false,
+      draftItem: null,
+      patientId: selectedPatientds[0],
+    });
   };
 
   const getFabActions = () => {
     const actionArray = [];
     const disabled = !!isEmpty(selectedPatientds);
     const enabled = selectedPatientds.length === 1;
-    
     const deleteAction = (
       <View
         style={{
@@ -360,7 +367,7 @@ function PatientFiles(props) {
         <LongPressWithFeedback
           pressTimer={LONG_PRESS_TIMER.MEDIUM}
           isDisabled={disabled}
-          onLongPress={() => handleRemovePatient(selectedPatientds[0])}
+          onLongPress={() => handleRemovePatient()}
         >
           <ActionItem
             title="Hold to Delete Patient"
@@ -384,13 +391,7 @@ function PatientFiles(props) {
       <ActionItem
         title=" Create Patient"
         icon={<AddIcon />}
-        onPress={() =>
-          handleNavivation("PatientCreation", {
-            initial: false,
-            draftItem: null,
-            intialPage: "Patient",
-          })
-        }
+        onPress={openCreatePatient}
       />
     );
 
@@ -407,13 +408,7 @@ function PatientFiles(props) {
           />
         }
         disabled={!enabled}
-        onPress={() =>
-          handleNavivation("AddProcedure", {
-            initial: false,
-            draftItem: null,
-            patientId: selectedPatientds[0],
-          })
-        }
+        onPress={handleAddProcedure}
       />
     );
 
@@ -422,7 +417,7 @@ function PatientFiles(props) {
     actionArray.push(deleteAction);
 
     return (
-      <ActionContainer floatingActions={actionArray} title="CASE ACTIONS" />
+      <ActionContainer floatingActions={actionArray} title="PATIENT ACTIONS" />
     );
   };
 
@@ -459,6 +454,7 @@ function PatientFiles(props) {
       listHeaders={listHeaders}
       isDisabled={isFloatingActionDisabled}
       toggleActionButton={toggleActionButton}
+      onSelectAll={handleOnSelectAll}
       totalPages={totalPages}
       currentPage={currentPagePosition}
       goToNextPage={goToNextPage}
