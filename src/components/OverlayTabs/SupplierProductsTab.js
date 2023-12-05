@@ -1,8 +1,7 @@
 import styled from "@emotion/native";
 import { useNavigation } from "@react-navigation/native";
 import { useTheme } from "emotion-theming";
-import React, { useContext, useEffect, useState } from "react";
-import { Alert } from "react-native";
+import React, { useContext, useEffect, useState } from "react"; 
 import { useModal } from "react-native-modalfy";
 import { connect } from "react-redux";
 import { LONG_PRESS_TIMER } from "../../const";
@@ -84,13 +83,10 @@ function SupplierProductsTab({
   addCartItem,
   cart,
   products = [],
-  onAddProducts,
-  onProductsCreated,
   onRefresh,
-  isProductsLoading,
   permissions,
 }) {
-  // ######## STATES
+  
   const theme = useTheme();
   const modal = useModal();
   const navigation = useNavigation();
@@ -226,7 +222,7 @@ function SupplierProductsTab({
 
   const onListFooterPress = (data) => {
     setLoading(true);
-    const { purchaseOrders = [], deliveryDate = "" } = data;
+    const { purchaseOrders = [] } = data;
     addCartItem(purchaseOrders);
     setCartItems(purchaseOrders);
     onCompleteOrder(data);
@@ -246,28 +242,10 @@ function SupplierProductsTab({
       repeating,
       repeatingType,
     };
-    const payload = {
-      deliveryDate: deliveryDate,
-    };
 
     createPurchaseOrder(orderToCreate)
       .then((_) => {
-        modal.openModal("ConfirmationModal", {
-          content: (
-            <ConfirmationComponent
-              isError={false}
-              isEditUpdate={false}
-              onAction={() => {
-                modal.closeModals("ConfirmationModal");
-                onRefresh();
-              }}
-            />
-          ),
-          onClose: () => {
-            modal.closeModals("ConfirmationModal");
-          },
-        });
-
+        onShowSuccessScreen()
         onClearPress();
       })
       .catch((error) => {
@@ -321,7 +299,8 @@ function SupplierProductsTab({
           isError={false}
           isEditUpdate={false}
           onAction={() => {
-            modal.closeModals("ConfirmationModal");
+            modal.closeModals("ConfirmationModal"); 
+            onRefresh
           }}
         />
       ),
@@ -331,43 +310,7 @@ function SupplierProductsTab({
     });
   };
 
-  const onOrderComplete = (fields, data) => {
-    modal.closeModals("OverlayModal");
-
-    setTimeout(() => {
-      const { name = "", storageLocation = {} } = fields;
-      const updatedOrders = data
-        .filter((item) => {
-          if (item.amount || item.amount !== 0) {
-            return true;
-          }
-        })
-        .map((item) => ({
-          amount: item.amount,
-          productId: item._id,
-        }));
-      const newPO = {
-        name,
-        storageLocation: storageLocation._id,
-        supplier: supplierId,
-        orders: updatedOrders,
-        orderDate: new Date(),
-      };
-      createPurchaseOrder(newPO)
-        .then((data) => {
-          Alert.alert("Success", "Purchase order successfully created.");
-        })
-        .catch((error) => {
-          Alert.alert(
-            "Failed",
-            "Purchase order was not created, please try again."
-          );
-        });
-    }, 200);
-  };
-
-  // ######## HELPER FUNCTIONS
-
+  
   const actions = () => {
     const isDisabled = checkboxList.length === 0;
     const isDisabledColor = isDisabled
