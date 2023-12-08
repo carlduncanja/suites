@@ -315,7 +315,7 @@ function AddChargeSheetItem({navigation, route}) {
 
         let updatedItem = {};
         let items = type === 'Consumables' ? selectedObj?.inventories : selectedObj?.equipments
-        let filterItem = items.filter(dataItem => dataItem?.inventory?._id === item?._id);
+        let filterItem = items?.filter(dataItem => dataItem?.inventory?._id === item?._id);
         // console.log("Items: ", items)
         if (type === 'Consumables') {
             updatedItem = {
@@ -347,7 +347,7 @@ function AddChargeSheetItem({navigation, route}) {
         setSelectedItem(updatedItem);
         setSearchValue(updatedItem);
 
-        if (filterItem.length > 0) {
+        if (filterItem?.length > 0) {
             Alert.alert("Failed", `Item is already added to the ${type} list`);
         } else {
 

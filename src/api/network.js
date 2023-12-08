@@ -1244,9 +1244,9 @@ export const getConfigurations = async () =>
     .then(handleResponse)
     .catch(handleError);
 
-export const updateBuffer = async (time) =>
+export const updateBuffer = async (data) =>
   suitesAxiosInstance
-    .put(updateBufferEndpoint, time)
+    .put(updateBufferEndpoint, data)
     .then(handleResponse)
     .catch(handleError);
 

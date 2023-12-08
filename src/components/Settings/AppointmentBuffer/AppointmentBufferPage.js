@@ -1,244 +1,342 @@
-import React, {useState, useEffect, useContext} from 'react';
-import {View} from 'react-native';
-import styled, {css} from '@emotion/native';
-import { useTheme } from 'emotion-theming';
+import React, { useState, useEffect } from "react";
+import { View } from "react-native";
+import styled from "@emotion/native";
+import { useTheme } from "emotion-theming";
 
-import { getConfigurations, updateBuffer } from '../../../api/network';
+import { getConfigurations, updateBuffer } from "../../../api/network";
 
-import DetailsPage from '../../common/DetailsPage/DetailsPage';
-import TabsContainer from '../../common/Tabs/TabsContainerComponent';
-import Table from '../../common/Table/Table';
-import DataItem from '../../common/List/DataItem';
-import InputUnitFields from '../../common/Input Fields/InputUnitFields';
-import ContentDataItem from '../../common/List/ContentDataItem';
-import ConfirmationComponent from '../../ConfirmationComponent';
+import DetailsPage from "../../common/DetailsPage/DetailsPage";
+import TabsContainer from "../../common/Tabs/TabsContainerComponent";
+import DataItem from "../../common/List/DataItem";
+import InputUnitFields from "../../common/Input Fields/InputUnitFields";
+import ContentDataItem from "../../common/List/ContentDataItem";
+import ConfirmationComponent from "../../ConfirmationComponent";
 
-import {PageContext} from '../../../contexts/PageContext';
-import Header from '../../common/Table/Header';
-import { useModal } from 'react-native-modalfy';
+import { PageContext } from "../../../contexts/PageContext";
+import Header from "../../common/Table/Header";
+import { useModal } from "react-native-modalfy";
 
 const ContentContainer = styled.View`
-    height: 32px;
-    flex-direction: row;
-    /* margin-top: 24px; */
+  height: 32px;
+  flex-direction: row;
 `;
-
 
 const HeaderContainer = styled.View`
-    border-bottom-color: ${({theme}) => theme.colors['--color-gray-400']};
-    border-bottom-width: 1px;
-    border-bottom-style: solid;
-    margin-bottom: 24px;
+  border-bottom-color: ${({ theme }) => theme.colors["--color-gray-400"]};
+  border-bottom-width: 1px;
+  border-bottom-style: solid;
+  margin-bottom: 24px;
 `;
 
-function AppointmentBufferPage({navigation}) {
-    const theme = useTheme();
-    const modal = useModal();
-    const currentTabs = ['Details'];
-    const headers = [
-        {
-            name: 'Item',
-            alignment: 'flex-start',
-            flex: 2.5
-        },
-        {
-            name: 'Time',
-            alignment: 'flex-start',
-            flex: 1
-        },
-    ];
-    // ##### States
+function AppointmentBufferPage({ navigation }) {
+  const theme = useTheme();
+  const modal = useModal();
+  const currentTabs = ["Details"];
+  const headers = [
+    {
+      name: "Item",
+      alignment: "flex-start",
+      flex: 2.5,
+    },
+    {
+      name: "Units",
+      alignment: "flex-start",
+      flex: 1,
+    },
+  ];
 
-    const [currentTab, setCurrentTab] = useState(currentTabs[0]);
-    const [pageState, setPageState] = useState({});
-    const [isUpdated, setIsUpdated] = useState(false);
+  const currentTab = currentTabs[0];
+  const [pageState, setPageState] = useState({});
+  const [isUpdated, setIsUpdated] = useState(false);
 
-    const [bufferTime, setBufferTime] = useState(1);
-    const [error, setError] = useState(false);
+  const [bufferTime, setBufferTime] = useState(1);
+  const [localAnaesthesia, setLocalAnaesthesia] = useState(1);
+  const [generalAnaesthesia, setGeneralAnaesthesia] = useState(1);
+  const [errorFields, setErrorFields] = useState({
+    buffer: false,
+    local: false,
+    general: false,
+  });
+  const { isEditMode = false } = pageState;
 
-    const { isEditMode = false } = pageState;
+  useEffect(() => {
+    getConfigurations()
+      .then((data) => {
+        const {
+          bufferTime = 0,
+          localAnaesthesia = 0,
+          generalAnaesthesia = 0,
+        } = data;
+        setBufferTime(bufferTime);
+        setLocalAnaesthesia(localAnaesthesia);
+        setGeneralAnaesthesia(generalAnaesthesia);
+      })
+      .catch((error) => {
+        console.log("Unable to retrieve buffer time: ", error);
+      });
+  }, []);
 
-    useEffect(() => {
-        getConfigurations()
-            .then(data => {
-                const { bufferTime = 0 } = data;
-                setBufferTime(bufferTime);
-            })
-            .catch(error => {
-                console.log('Unable to retrieve buffer time: ', error);
-            });
-    }, []);
+  useEffect(() => {
+    if (isUpdated && isEditMode === false) {
+      onFinishEdit();
+    }
+  }, [isEditMode]);
 
-    useEffect(() => {
-        if (isUpdated && isEditMode === false) {
-            onFinishEdit();
-        }
-    }, [isEditMode]);
+  const onFinishEdit = () => {
+    if (bufferTime < 1) {
+      setErrorFields({
+        ...errorFields,
+        buffer: true,
+      });
+      setPageState({ ...pageState, isEditMode: true });
+      return;
+    }
 
-    const onFinishEdit = () => {
-        if (bufferTime < 1) {
-            setError(true);
-            setPageState({...pageState, isEditMode: true});
-            return;
-        }
-        
-        goToConfirmationScreen();
-        console.log('Buffer time: ', bufferTime);
-    };
+    goToConfirmationScreen();
+  };
 
-    const onBufferTimeChange = time => {
-        setBufferTime(time);
-        setIsUpdated(true);
-        if (time > 1) { setError(false); }
-    };
-   
-    const setPageLoading = value => {
-        setPageState({
-            ...pageState,
-            isLoading: value,
-            isEdit: false
+  const onValueChange = (value, type) => {
+    if (type === "local") {
+      setLocalAnaesthesia(value);
+      setIsUpdated(true);
+      if (value > 1) {
+        setErrorFields({
+          ...errorFields,
+          local: false,
         });
-    };
+      }
+    }
 
-    const goToConfirmationScreen = () => {
-        modal.openModal('ConfirmationModal',
-            {
-                content: <ConfirmationComponent
-                    isEditUpdate={true}
-                    onCancel= {() => {
-                        modal.closeModals('ConfirmationModal');
-                        setPageState({
-                            ...pageState,
-                            isEditMode: true
-                        });
-                    }}
-                    onAction={() => updateBufferTime()}
-                    message="Do you want to save your changes?"
-                />,
-                onClose: () => { modal.closeModals('ConfirmationModal'); }
+    if (type === "buffer") {
+      setBufferTime(value);
+      setIsUpdated(true);
+      if (value > 1) {
+        setErrorFields({
+          ...errorFields,
+          buffer: false,
+        });
+      }
+    }
+
+    if (type === "general") {
+      setGeneralAnaesthesia(value);
+      setIsUpdated(true);
+      if (value > 1) {
+        setErrorFields({
+          ...errorFields,
+          general: false,
+        });
+      }
+    }
+  };
+
+  const goToConfirmationScreen = () => {
+    modal.openModal("ConfirmationModal", {
+      content: (
+        <ConfirmationComponent
+          isEditUpdate={true}
+          onCancel={() => {
+            modal.closeModals("ConfirmationModal");
+            setPageState({
+              ...pageState,
+              isEditMode: true,
             });
-    };
+          }}
+          onAction={() => updateBufferTime()}
+          message="Do you want to save your changes?"
+        />
+      ),
+      onClose: () => {
+        modal.closeModals("ConfirmationModal");
+      },
+    });
+    setErrorFields({ buffer: false, local: false, general: false });
+  };
 
-    const updateBufferTime = () => {
-        modal.closeAllModals();
-        const buffer = { bufferTime };
-        
-        updateBuffer(buffer)
-            .then(_ => {
-                modal.openModal('ConfirmationModal',
-                    {
-                        content: <ConfirmationComponent
-                            isEditUpdate={false}
-                            isError={false}
-                            onCancel={() => modal.closeAllModals()}
-                            onAction={() => modal.closeAllModals()}
-                        />,
-                        onClose: () => { modal.closeModals('ConfirmationModal'); }
-                    });
-            })
-            .catch(_ => {
-                modal.openModal('ConfirmationModal',
-                    {
-                        content: <ConfirmationComponent
-                            isEditUpdate={false}
-                            isError={true}
-                            onCancel={() => modal.closeAllModals()}
-                            onAction={() => modal.closeAllModals()}
-                        />,
-                        onClose: () => { modal.closeModals('ConfirmationModal'); }
-                    });
-            });
-    };
+  const updateBufferTime = () => {
+    modal.closeAllModals();
+    const buffer = { bufferTime, localAnaesthesia, generalAnaesthesia };
 
-    const itemFormat = () => (
-        
-        <ContentContainer>
-            {/* <DataItem color="--color-gray-800" fontStyle="--text-base-medium" flex={2.5} text={`Buffer time (appr. ${Math.ceil(bufferTime / 60)} hrs)`}/> */}
-            <DataItem color="--color-gray-800" fontStyle="--text-base-medium" flex={2.5} text="Buffer time"/>
-           
-            <ContentDataItem
-                flex={1}
-                content={(
-                    <InputUnitFields
-                        value={bufferTime}
-                        units={['mins']}
-                        enabled={isEditMode}
-                        onChangeText={value => {
-                            if (/^\d+$/g.test(value) || !value) {
-                                onBufferTimeChange(value);
-                            }
-                        }}
-                        keyboardType="number-pad"
-                        hasError={error}
-                        errorMessage="! Input a value excluding 0"
-                    />
-                )}
+    updateBuffer(buffer)
+      .then((_) => {
+        modal.openModal("ConfirmationModal", {
+          content: (
+            <ConfirmationComponent
+              isEditUpdate={false}
+              isError={false}
+              onCancel={() => modal.closeAllModals()}
+              onAction={() => modal.closeAllModals()}
             />
-        </ContentContainer>
-        
-    );
+          ),
+          onClose: () => {
+            modal.closeModals("ConfirmationModal");
+          },
+        });
+      })
+      .catch((_) => {
+        modal.openModal("ConfirmationModal", {
+          content: (
+            <ConfirmationComponent
+              isEditUpdate={false}
+              isError={true}
+              onCancel={() => modal.closeAllModals()}
+              onAction={() => modal.closeAllModals()}
+            />
+          ),
+          onClose: () => {
+            modal.closeModals("ConfirmationModal");
+          },
+        });
+      });
+  };
 
-    const details = (
-        <>
-            <HeaderContainer theme={theme}>
-                <Header
-                    headers={headers}
-                    isCheckbox={false}
-                />
-            </HeaderContainer>
-           
-            {itemFormat()}
-            
-        </>
-    );
+  const itemFormat = () => (
+    <>
+      <ContentContainer>
+        <DataItem
+          color="--color-gray-800"
+          fontStyle="--text-base-medium"
+          flex={2.5}
+          text="Buffer time"
+        />
 
+        <ContentDataItem
+          flex={1}
+          content={
+            <InputUnitFields
+              value={bufferTime}
+              units={["mins"]}
+              enabled={isEditMode}
+              onChangeText={(value) => {
+                if (/^\d+$/g.test(value) || !value) {
+                  onValueChange(value, "buffer");
+                }
+              }}
+              keyboardType="number-pad"
+              hasError={errorFields["buffer"]}
+              errorMessage="Input a value excluding 0"
+            />
+          }
+        />
+      </ContentContainer>
 
-    const getTabContent = selectedTab => {
-        switch (selectedTab) {
-            case 'Details':
-                return details;
-            default:
-                return <View/>;
-        }
-    };
+      <View style={{ marginTop: 20 }}>
+        <ContentContainer>
+          <DataItem
+            color="--color-gray-800"
+            fontStyle="--text-base-medium"
+            flex={2.5}
+            text="Local Anaesthesia Hourly Cost"
+          />
 
-    const getIsEditable = () => {
-        switch (currentTab) {
-            case 'Details':
-                return false;
-            default:
-                return false;
-        }
-    };
-
-    return (
-        <PageContext.Provider value={{
-            pageState,
-            setPageState
-        }}
-        >
-            <DetailsPage
-                isEditable={true}
-                headerChildren={['Custom types', 'Appointment Buffer-time']}
-                onBackPress={() => {
-                    navigation.navigate('Settings');
+          <ContentDataItem
+            flex={1}
+            content={
+              <InputUnitFields
+                value={
+                  !isEditMode
+                    ? localAnaesthesia.toLocaleString()
+                    : localAnaesthesia
+                }
+                units={["$"]}
+                enabled={isEditMode}
+                onChangeText={(value) => {
+                  if (/^\d+$/g.test(value) || !value) {
+                    onValueChange(value, "local");
+                  }
                 }}
-                isArchive={getIsEditable()}
-                pageTabs={(
-                    <TabsContainer
-                        tabs={currentTabs}
-                        selectedTab={currentTab}
-                    />
-                )}
-            >
-                {getTabContent(currentTab)}
-            </DetailsPage>
+                keyboardType="number-pad"
+                hasError={errorFields["local"]}
+                errorMessage="Input must be greater than 0"
+              />
+            }
+          />
+        </ContentContainer>
+      </View>
 
-        </PageContext.Provider>
-    );
+      <View style={{ marginTop: 20 }}>
+        <ContentContainer>
+          <DataItem
+            color="--color-gray-800"
+            fontStyle="--text-base-medium"
+            flex={2.5}
+            text="General Anaesthesia Hourly Cost"
+          />
+
+          <ContentDataItem
+            flex={1}
+            content={
+              <InputUnitFields
+                value={
+                  !isEditMode
+                    ? generalAnaesthesia.toLocaleString()
+                    : generalAnaesthesia
+                }
+                units={["$"]}
+                enabled={isEditMode}
+                onChangeText={(value) => {
+                  if (/^\d+$/g.test(value) || !value) {
+                    onValueChange(value, "general");
+                  }
+                }}
+                keyboardType="number-pad"
+                hasError={errorFields["general"]}
+                errorMessage="Input must be greater than 0"
+              />
+            }
+          />
+        </ContentContainer>
+      </View>
+    </>
+  );
+
+  const details = (
+    <>
+      <HeaderContainer theme={theme}>
+        <Header headers={headers} isCheckbox={false} />
+      </HeaderContainer>
+
+      {itemFormat()}
+    </>
+  );
+
+  const getTabContent = (selectedTab) => {
+    switch (selectedTab) {
+      case "Details":
+        return details;
+      default:
+        return <View />;
+    }
+  };
+
+  const getIsEditable = () => {
+    switch (currentTab) {
+      case "Details":
+        return false;
+      default:
+        return false;
+    }
+  };
+
+  return (
+    <PageContext.Provider
+      value={{
+        pageState,
+        setPageState,
+      }}
+    >
+      <DetailsPage
+        isEditable={true}
+        headerChildren={["Custom types", "Procedure/Appointment Configuration"]}
+        onBackPress={() => {
+          navigation.navigate("Settings");
+        }}
+        isArchive={getIsEditable()}
+        pageTabs={<TabsContainer tabs={currentTabs} selectedTab={currentTab} />}
+      >
+        {getTabContent(currentTab)}
+      </DetailsPage>
+    </PageContext.Provider>
+  );
 }
-
-AppointmentBufferPage.propTypes = {};
-AppointmentBufferPage.defaultProps = {};
-
 export default AppointmentBufferPage;

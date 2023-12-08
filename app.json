@@ -4,7 +4,7 @@
     "slug": "smsja-suites",
     "privacy": "public",
     "platforms": ["ios"],
-    "version": "2.1.6",
+    "version": "2.1.8",
     "orientation": "portrait",
     "icon": "./assets/MedopsLogo.png",
     "splash": {
@@ -19,7 +19,7 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.smsja.suites",
-      "buildNumber": "1.5.3",
+      "buildNumber": "1.5.6",
       "config": {
         "usesNonExemptEncryption": false
       }

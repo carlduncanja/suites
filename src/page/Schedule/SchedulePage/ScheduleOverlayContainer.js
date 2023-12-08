@@ -1,25 +1,12 @@
 import React, { useEffect, useState } from "react";
-import {
-  StyleSheet,
-  ActivityIndicator,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
-import {
-  getAppointmentById,
-  getAppointments,
-  getCaseFileById,
-} from "../../../api/network";
+import { StyleSheet, ActivityIndicator, View } from "react-native";
+import { getAppointmentById, getCaseFileById } from "../../../api/network";
 import ProcedureScheduleContent from "./ProcedureScheduleContent";
 import DefaultScheduleContent from "./DefaultScheduleContent";
 import { colors } from "../../../styles";
 import DeliveryScheduleContent from "./DeliveryScheduleContent";
 import RestockScheduleContent from "./RestockScheduleContent";
 import { emptyFn } from "../../../const";
-import { useModal } from "react-native-modalfy";
-import NewProcedureOverlayContainer from "./NewProcedureOverlayContainer";
-import { appointments } from "../../../../data/Appointments";
 
 const APPOINTMENT_TYPES = {
   SURGERY: "Procedure",
@@ -46,24 +33,18 @@ function ScheduleOverlayContainer({
   const [isFetchingDetails, setFetchingDetails] = useState(false);
   const [caseFile, setCaseFile] = useState();
 
-  const modal = useModal();
   // On Mount
   useEffect(() => {
-    // fetch appointment
-    // console.log("fetching data for: ", appointment._id);
     setTimeout(() => getAppointment(appointment._id), 200);
   }, []);
 
   useEffect(() => {
-    // fetch addition data for appointment
-
     if (appointmentDetails) {
       const { type } = appointmentDetails;
 
       switch (type.name) {
         case APPOINTMENT_TYPES.SURGERY: {
           // fetch case file info
-          let caseFile = appointmentDetails.item.case;
 
           console.log("fetching case");
 
@@ -72,7 +53,7 @@ function ScheduleOverlayContainer({
             .then((response) => {
               setCaseFile(response);
             })
-            .catch((error) => {
+            .catch(() => {
               console.log("Failed to fetch case by id");
             })
             .finally((_) => {
@@ -96,7 +77,7 @@ function ScheduleOverlayContainer({
     getAppointmentById(id)
       .then((data) => {
         setAppointmentDetails(data);
-        setAppLocation(data.location._id)
+        setAppLocation(data.location._id);
       })
       .catch((error) => {
         console.log("failed to get appointment", error);
@@ -121,65 +102,6 @@ function ScheduleOverlayContainer({
         if (!caseFile)
           return <DefaultScheduleContent scheduleDetails={appointment} />;
 
-        // fetch case file info
-        let physicians =
-          caseFile.staff &&
-          caseFile.staff.physicians.map((item) => ({
-            _id: item._id,
-            firstName: item.firstName,
-            surname: item.surname,
-            position: "",
-            isLead: caseFile.staff.leadPhysician === item._id,
-          }));
-
-        /*
-                function getStaffMember(tag) {
-                    const currentRoleKeys = appointment.item.case.roleKeys;
-                    let foundTag = {};
-                    let foundPhysician = {};
-
-                    const match = currentRoleKeys.filter(result => {
-                        if(result.tag === tag) {
-                            
-                            foundTag = result
-                        }
-                    });
-
-                    const matchPhysician = physicians.filter(result => {
-                        if(result._id === foundTag._id) {
-                            foundPhysician = result;
-                        }
-                    })
-                    
-                    return {
-                        _id: foundPhysician._id,
-                        firstName: foundPhysician.firstName,
-                        surname: foundPhysician.surname ,
-                        position: foundTag.tag,
-                        isLead: false
-                    }
-                }
-                const currentLeadSurgeon = getStaffMember("Lead Surgeon");
-                const currentAnaesthesiologist = getStaffMember("Anaesthesiologist");
-                const currentAssistantSurgeon = getStaffMember("Assistant Surgeon")
-
-                const updatedPhysician = [
-                    currentLeadSurgeon,
-                    currentAnaesthesiologist,
-                    currentAssistantSurgeon
-                ]
-
-                
-
-
-                physicians = updatedPhysician;
-                */
-        const nurses = caseFile.staff.nurses.map((item) => ({
-          _id: item._Id,
-          firstName: item.first_name,
-          lastName: item.last_name,
-        }));
-
         const patient = caseFile.patient;
 
         const finalRoleKeys = appointment.item.case.roleKeys;
@@ -194,7 +116,8 @@ function ScheduleOverlayContainer({
           <ProcedureScheduleContent
             handleScheduleRefresh={handleScheduleRefresh}
             appointmentDetails={appointment}
-            appLocation = {appLocation}
+            duration={caseFile.caseProcedures[0]?.procedure?.duration}
+            appLocation={appLocation}
             physicians={finalPhysicians}
             patient={patient}
             leadPhysicianId={caseFile.staff.leadPhysician}
@@ -263,11 +186,7 @@ const styles = StyleSheet.create({
     paddingRight: "4%",
     paddingLeft: "4%",
     flexDirection: "column",
-    //position: 'absolute'
   },
 });
-
-ScheduleOverlayContainer.propTypes = {};
-ScheduleOverlayContainer.defaultProps = {};
 
 export default ScheduleOverlayContainer;
