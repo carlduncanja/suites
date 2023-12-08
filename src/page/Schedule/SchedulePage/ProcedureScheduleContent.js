@@ -12,15 +12,13 @@ import GenerateIcon from "../../../../assets/svg/generateIcon";
 import { useNavigation } from "@react-navigation/native";
 import { emptyFn } from "../../../const";
 import { useModal } from "react-native-modalfy";
-import styled, { css } from "@emotion/native";
+import styled from "@emotion/native";
 import { useTheme } from "emotion-theming";
 import {
   getUserCall,
-  deleteCaseFile,
   deleteAppointmentById,
   updateAppointmentById,
 } from "../../../api/network";
-import NewProcedureOverlayContainer from "./NewProcedureOverlayContainer";
 import ConfirmationComponent from "../../../components/ConfirmationComponent";
 /**
  * Visual component for rendering procedure appointments.
@@ -34,6 +32,7 @@ function ProcedureScheduleContent({
   appLocation,
   physicians,
   patient,
+  duration,
   nurses = [],
   leadPhysicianId,
   closeOverlay = emptyFn,
@@ -47,22 +46,15 @@ function ProcedureScheduleContent({
     createdBy = "",
     item = {},
     descrition,
-    responseEntity = "",
     title = "",
     subject = "",
     location = "",
-    surgeons = {},
-    doctors = {},
-    progressStatus = "",
     startTime = new Date(),
     endTime = new Date(),
   } = appointmentDetails;
 
-
   const { case: caseItem } = item;
   const { caseNumber } = caseItem;
-  const [started, setStarted] = useState(false)
-  const [newStart, setNewStart] =  useState(undefined)
 
   const [owner, setOwner] = useState({
     firstName: "",
@@ -71,7 +63,6 @@ function ProcedureScheduleContent({
 
   useEffect(() => {
     getUserCall(createdBy).then((res) => {
-      console.log("owndreor", res.data[0].first_name);
       setOwner({
         firstName: res.data[0].first_name,
         lastName: res.data[0].last_name,
@@ -79,12 +70,11 @@ function ProcedureScheduleContent({
     });
   }, []);
 
-  const [temp, setTemp] = useState('')
+  const [temp, setTemp] = useState("");
 
   useEffect(() => {
-    const x =  getProgressStatus(startTime, endTime)
-    setTemp(x)
-   
+    const x = getProgressStatus(startTime, endTime);
+    setTemp(x);
   }, []);
 
   /**
@@ -119,9 +109,8 @@ function ProcedureScheduleContent({
 
     return firstName && surname ? `${firstName} ${surname}` : "N/A";
   };
-  const labels = ["Lead Surgeon", "Anaesthesiologist", "Assistant Surgeon"];
 
-  const staffItem = (key, name, position, isBold, isSupporting) => (
+  const staffItem = (key, name, position, isBold) => (
     <View style={[styles.doctorContainer]} key={key}>
       {name !== null ? (
         <View style={{ marginRight: 10 }}>
@@ -172,11 +161,13 @@ function ProcedureScheduleContent({
 
   const renderPhysicians = (physicians, leadPhysicianId) => {
     if (physicians.length == 0) {
-    let leadPhysicianObj = {...leadPhysicianId, tag: 'Lead Surgeon',  name: "Dr. " + leadPhysicianId.surname}
-      physicians.push(leadPhysicianObj)
+      let leadPhysicianObj = {
+        ...leadPhysicianId,
+        tag: "Lead Surgeon",
+        name: "Dr. " + leadPhysicianId.surname,
+      };
+      physicians.push(leadPhysicianObj);
     }
-    //const leadPhysician = physicians.find(item => item._id === leadPhysicianId._id);
-    //const supportingPhysicians = physicians.filter(item => item._id !== leadPhysicianId);
 
     function findPhysicianByTag(tag) {
       const match = physicians.filter((target) => target.tag === tag);
@@ -233,8 +224,6 @@ function ProcedureScheduleContent({
     closeOverlay();
   };
 
-  // when a case file is clicked this is displayed
-  // with all the details about a case
   const NewProcedureButton = styled.TouchableOpacity`
     align-items: center;
     border-width: 1px;
@@ -253,70 +242,57 @@ function ProcedureScheduleContent({
   `;
 
   async function handleDeletePress() {
-    //const appointmentID = appointmentDetails.item.case.caseProcedures[0].appointment;
     const appointmentID = appointmentDetails._id;
-    await deleteAppointmentById(appointmentID).then((res) => {
+    await deleteAppointmentById(appointmentID).then(() => {
       handleScheduleRefresh({});
       modal.closeAllModals();
     });
-
-    /*await deleteCaseFile(item.case._id).then((res) => {
-            modal.closeAllModals()
-       });
-       */
   }
 
   function handleEditClick() {
     closeOverlay();
   }
 
-  const hanadleErrorModal = (error='') => {
-    modal.openModal(
-        'ConfirmationModal',
-        {
-            content: <ConfirmationComponent
-                textPadding={15}
-                message={error}
-                isError={true}
-                isEditUpdate={false}
-                onCancel={() => modal.closeModals('ConfirmationModal')}
-            />,
-            onClose: () => {
-                setAllowedToSubmit(false);
-                modal.closeModals('ConfirmationModal');
+  const hanadleErrorModal = (error = "") => {
+    modal.openModal("ConfirmationModal", {
+      content: (
+        <ConfirmationComponent
+          textPadding={15}
+          message={error}
+          isError={true}
+          isEditUpdate={false}
+          onCancel={() => modal.closeModals("ConfirmationModal")}
+        />
+      ),
+      onClose: () => {
+        setAllowedToSubmit(false);
+        modal.closeModals("ConfirmationModal");
+      },
+    });
+  };
 
-            }
-        }
-    );
+  function handleStartClick() {
+    const now = new moment();
+    const end = moment(now).add(duration, "hours");
 
-}
-
-  function handleStartClick(){
-    const now = new moment()
-    const end = new moment().add(2, "hours");
-    
     const appointmentObj = {
-          _id: _id,
-          description: descrition,
-          subject: subject,
-          startTime: now,
-          endTime: end,
-          title: title,
-          location: appLocation
-    }
-    setStarted(true)
-    setNewStart(now)
-    updateAppointmentById(_id,
-       {
-        description: descrition,
-          subject: subject,
-          startTime: now,
-          endTime: endTime,
-          title: title,
-          location: appLocation
-
-       }
-      ).then(data => {
+      _id: _id,
+      description: descrition,
+      subject: subject,
+      startTime: now,
+      endTime: end,
+      title: title,
+      location: appLocation,
+    };
+    updateAppointmentById(_id, {
+      description: descrition,
+      subject: subject,
+      startTime: now,
+      endTime: end,
+      title: title,
+      location: appLocation,
+    })
+      .then(() => {
         navigation.navigate("CaseFiles", {
           screen: "Case",
           params: {
@@ -324,18 +300,15 @@ function ProcedureScheduleContent({
             caseId: caseItem._id,
             isEdit: false,
             timeStamp: now,
-            appointmentObj: appointmentObj
+            appointmentObj: appointmentObj,
           },
         });
         closeOverlay();
-    }).catch(
-      err => {
-          console.log(err)
-          hanadleErrorModal()
-      }
-  )
-
-   
+      })
+      .catch((err) => {
+        console.log(err);
+        hanadleErrorModal();
+      });
   }
 
   return (
@@ -446,14 +419,16 @@ function ProcedureScheduleContent({
           Created by {owner.firstName} {owner.lastName}
         </Text>
         <View style={styles.buttonHolder}>
-        {(temp ===  "Not Yet Started") && <NewProcedureButton
-            style={{ borderColor: "#0CB0E7" , width: 150}}
-            theme={theme}
-            onPress={() => handleStartClick()}
-          >
-            <NewProcedureButtonText> Start Procedure </NewProcedureButtonText>
-          </NewProcedureButton>}
-          
+          {temp === "Not Yet Started" && (
+            <NewProcedureButton
+              style={{ borderColor: "#0CB0E7", width: 150 }}
+              theme={theme}
+              onPress={() => handleStartClick()}
+            >
+              <NewProcedureButtonText> Start Procedure </NewProcedureButtonText>
+            </NewProcedureButton>
+          )}
+
           <NewProcedureButton
             style={{ borderColor: "#0CB0E7" }}
             theme={theme}
@@ -488,7 +463,6 @@ const styles = StyleSheet.create({
 
   buttonHolder: {
     flex: 1,
-    //backgroundColor: 'black',
     display: "flex",
     justifyContent: "flex-end",
     flexDirection: "row",
@@ -502,7 +476,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingVertical: 17,
     paddingHorizontal: 32,
-    //backgroundColor: 'red'
   },
 
   editText: {
@@ -510,7 +483,6 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: "500",
     flex: 1,
-    // backgroundColor: 'red'
   },
 
   idText: {
@@ -536,7 +508,6 @@ const styles = StyleSheet.create({
   },
   cardTitle: {
     flexDirection: "column",
-    //paddingTop:10,
     paddingBottom: 20,
     borderBottomColor: "#E2E8F0",
     borderBottomWidth: 1,
@@ -550,8 +521,6 @@ const styles = StyleSheet.create({
     paddingRight: "4%",
     paddingTop: 20,
     paddingBottom: 20,
-    //marginBottom:'5%',
-    //height:100,
   },
 
   cardDescription: {
@@ -624,8 +593,5 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
 });
-
-ProcedureScheduleContent.propTypes = {};
-ProcedureScheduleContent.defaultProps = {};
 
 export default ProcedureScheduleContent;

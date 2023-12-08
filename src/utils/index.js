@@ -1,15 +1,21 @@
-import moment from 'moment';
-import {useCurrentDays, useEndDays, useStartDays} from '../hooks/useScheduleService';
+import moment from "moment";
+import {
+  useCurrentDays,
+  useEndDays,
+  useStartDays,
+} from "../hooks/useScheduleService";
 
-export const getDaysForMonth = month => {
-    const selectedMonth = moment(month)
-        .startOf('month');
+export const getDaysForMonth = (month) => {
+  const selectedMonth = moment(month).startOf("month");
 
-    const pevMonthEndDays = useStartDays(selectedMonth);
-    const nextMonthStartDays = useEndDays(selectedMonth);
-    const currentMonthDays = useCurrentDays(selectedMonth.month() + 1, selectedMonth.year());
+  const pevMonthEndDays = useStartDays(selectedMonth);
+  const nextMonthStartDays = useEndDays(selectedMonth);
+  const currentMonthDays = useCurrentDays(
+    selectedMonth.month() + 1,
+    selectedMonth.year()
+  );
 
-    return pevMonthEndDays.concat(currentMonthDays.concat(nextMonthStartDays));
+  return pevMonthEndDays.concat(currentMonthDays.concat(nextMonthStartDays));
 };
 
 /**
@@ -19,21 +25,21 @@ export const getDaysForMonth = month => {
  * @return {string[]} - array of days
  */
 export const getDaysInRange = (startDate, endDate) => {
-    const days = [];
+  const days = [];
 
-    const initialDate = moment(startDate);
-    // loop over
+  const initialDate = moment(startDate);
+  // loop over
 
-    const finalDate = moment(endDate);
-    do { // ensure that the loops run once if the clause is met.
+  const finalDate = moment(endDate);
+  do {
+    // ensure that the loops run once if the clause is met.
 
-        days.push(initialDate.format('YYYY-MM-DD'))
-        initialDate.add(1, 'day')
+    days.push(initialDate.format("YYYY-MM-DD"));
+    initialDate.add(1, "day");
+  } while (!initialDate.isSameOrAfter(finalDate, "day"));
 
-    } while (!initialDate.isSameOrAfter(finalDate, 'day'));
-
-    return days
-}
+  return days;
+};
 
 /**
  * Format and displays physician's information.
@@ -44,11 +50,47 @@ export const getDaysInRange = (startDate, endDate) => {
  * @param {string} defaultString - default string shown if firstname and surname values are null.
  * @return {string}
  */
-export const formatPhysician = (physician = {}, showFull = true, defaultString = 'Unassigned') => {
-    const {firstName = '', surname = ''} = physician.length > 0 ? physician[0] : [];
+export const formatPhysician = (
+  physician = {},
+  showFull = true,
+  defaultString = "Unassigned"
+) => {
+  const { firstName = "", surname = "" } =
+    physician.length > 0 ? physician[0] : [];
 
-    if (!firstName && !surname) return " ";
-    else if (firstName && surname) return showFull ? `Dr. ${firstName} ${surname}` : `Dr. ${firstName[0]}. ${surname}`
-    else if (firstName) return `Dr. ${firstName}`
-    else return `Dr. ${surname}`
+  if (!firstName && !surname) return " ";
+  else if (firstName && surname)
+    return showFull
+      ? `Dr. ${firstName} ${surname}`
+      : `Dr. ${firstName[0]}. ${surname}`;
+  else if (firstName) return `Dr. ${firstName}`;
+  else return `Dr. ${surname}`;
+};
+
+export function calculateProcedureOvertime(
+  procedureDetails,
+  anaesthesiaType,
+  anaesthesiaCost
+) {
+  if (procedureDetails?.endTime?.length < 1 || !procedureDetails?.endTime)
+    return 0;
+  const durationFormat = procedureDetails.estimatedDuration + ":00";
+  const endTime = moment(procedureDetails.endTime);
+  const startTime = moment(procedureDetails.startTime)
+    .format("HH:mm")
+    .split(":");
+  const timeDifference = moment(
+    endTime.subtract({ hours: startTime[0], minutes: startTime[1] })
+  ).format("HH:mm");
+  if (
+    moment(timeDifference, "HH:mm") <= moment(durationFormat, "HH:mm") ||
+    anaesthesiaType == "none"
+  )
+    return 0;
+  if (moment(timeDifference, "HH:mm") > moment(durationFormat, "HH:mm")) {
+    const overTime =
+      moment.duration(timeDifference).asHours() -
+      procedureDetails.estimatedDuration;
+    return overTime * anaesthesiaCost[anaesthesiaType];
+  }
 }

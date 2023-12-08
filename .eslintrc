@@ -1,0 +1,25 @@
+{
+    "extends": [
+      "react-app",
+      "airbnb"
+    ],
+    "rules": {
+     "no-unused-vars": "error",
+     "quotes": "off",
+     "react/prop-types": "off",
+     "no-shadow": "off",
+     "padded-blocks": "off",
+     "no-trailing-spaces": "off",
+     "no-multiple-empty-lines": "off",
+     "react/jsx-filename-extension": "off",
+     "object-curly-newline": "off",
+     "comma-dangle": "off",
+     "no-param-reassign": "off",
+     "no-restricted-syntax": "off",
+     "no-underscore-dangle": "off",
+     "no-restricted-globals": "off",
+     "no-global-assign": "off",
+     "no-plusplus": "off"
+    }
+  }
+  

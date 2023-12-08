@@ -18,54 +18,54 @@ import styled from "@emotion/native";
  */
 
 const ListWrapper = styled.View`
-    display: flex;
-    flex: 1;
+  display: flex;
+  flex: 1;
 `;
 
 const ListContainer = styled.View`
-    display: flex;
+  display: flex;
 `;
 
 function List({
-    listData = [],
-    listHeaders = [],
-    itemsSelected = [],
-    listItemFormat = () => {},
-    onRefresh = () => {},
-    refreshing = false,
-    onSelectAll = () => {},
-    isCheckbox = false,
-    keyExtractor = (item) =>
-        (item?.id || "" || item?._id || "") + new Date().getTime(),
+  grandparentState,
+  listData = [],
+  listHeaders = [],
+  listItemFormat = () => {},
+  onRefresh = () => {},
+  refreshing = false,
+  onSelectAll = () => {},
+  isCheckbox = false,
+  keyExtractor = (item) =>
+    (item?.id || "" || item?._id || "") + new Date().getTime(),
 }) {
-    const isIndeterminate =
-        itemsSelected.length > 0 && itemsSelected.length !== listData.length;
+  const isIndeterminate = grandparentState === "indeterminate";
+  const isChecked = grandparentState === "checked";
 
-    return (
-        <ListWrapper>
-            <ListContainer>
-                <Header
-                    headers={listHeaders}
-                    toggleHeaderCheckbox={onSelectAll}
-                    checked={itemsSelected.length > 0}
-                    isCheckbox={isCheckbox}
-                    isIndeterminate={isIndeterminate}
-                />
+  return (
+    <ListWrapper>
+      <ListContainer>
+        <Header
+          headers={listHeaders}
+          toggleHeaderCheckbox={onSelectAll}
+          checked={isChecked}
+          isCheckbox={isCheckbox}
+          isIndeterminate={isIndeterminate}
+        />
 
-                <FlatList
-                    style={{ height: "100%" }}
-                    nestedScrollEnabled={true}
-                    data={listData}
-                    renderItem={({ item }) => listItemFormat(item)}
-                    keyExtractor={keyExtractor}
-                    onRefresh={onRefresh}
-                    refreshing={refreshing}
-                    contentContainerStyle={{ paddingBottom: 100 }}
-                    keyboardShouldPersistTaps={"always"}
-                />
-            </ListContainer>
-        </ListWrapper>
-    );
+        <FlatList
+          style={{ height: "100%" }}
+          nestedScrollEnabled={true}
+          data={listData}
+          renderItem={({ item }) => listItemFormat(item)}
+          keyExtractor={keyExtractor}
+          onRefresh={onRefresh}
+          refreshing={refreshing}
+          contentContainerStyle={{ paddingBottom: 100 }}
+          keyboardShouldPersistTaps={"always"}
+        />
+      </ListContainer>
+    </ListWrapper>
+  );
 }
 
 export default List;

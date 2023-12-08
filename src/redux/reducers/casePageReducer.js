@@ -1,21 +1,32 @@
 import initialState from "./initialState";
-import {SET_CASE_EDIT, SET_CASE_PAGE} from "../actions/casePageActions";
+import {
+  SET_CASE_EDIT,
+  SET_CASE_PAGE,
+  SET_PROCEDURE_END_TIME,
+} from "../actions/casePageActions";
 
 export default (state = initialState.casePage, action) => {
+  const { type, payload } = action;
 
-    const {type, payload} = action;
-
-    switch (type) {
-        case SET_CASE_PAGE: {
-            const {data} = payload;
-            return {...data}
-        }
-        case SET_CASE_EDIT: {
-            const {data} = payload;
-            return {...state, isEdit: data}
-        }
-        default:
-            return state
+  switch (type) {
+    case SET_CASE_PAGE: {
+      const { data } = payload;
+      return { ...data };
     }
-
-}
+    case SET_CASE_EDIT: {
+      const { data } = payload;
+      return { ...state, isEdit: data };
+    }
+    case SET_PROCEDURE_END_TIME:
+      const { procedureEndTime, caseId } = payload;
+      return {
+        ...state,
+        procedureEndTime: {
+          ...state.procedureEndTime,
+          [caseId]: procedureEndTime,
+        },
+      };
+    default:
+      return state;
+  }
+};
