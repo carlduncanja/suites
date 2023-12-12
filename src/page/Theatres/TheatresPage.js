@@ -14,7 +14,6 @@ import { PageContext } from '../../contexts/PageContext';
 import { formatDate } from '../../utils/formatter';
 
 function TheatresPage({route, navigation}) {
-    const theme = useTheme();
     const currentTabs = [
         'Details',
         'History',
@@ -286,8 +285,5 @@ function TheatresPage({route, navigation}) {
         </>
     );
 }
-
-TheatresPage.propTypes = {};
-TheatresPage.defaultProps = {};
 
 export default TheatresPage;
