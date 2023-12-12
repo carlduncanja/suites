@@ -1,20 +1,18 @@
-import React, {useContext, useEffect, useState} from 'react';
-import {View, Text, StyleSheet, ScrollView, TouchableOpacity, FlatList} from 'react-native';
-import {useTheme} from 'emotion-theming';
-import Table from '../common/Table/Table';
-import Item from '../common/Table/Item';
-import {currencyFormatter, formatDate} from '../../utils/formatter';
-import {checkboxItemPress, selectAll} from '../../helpers/caseFilesHelpers';
+import { useTheme } from 'emotion-theming';
+import React, { useState } from 'react';
+import { FlatList, ScrollView, StyleSheet, View } from 'react-native';
+import CollapsedIcon from '../../../assets/svg/closeArrow';
+import ActionIcon from '../../../assets/svg/dropdownIcon';
+import { checkboxItemPress, selectAll } from '../../helpers/caseFilesHelpers';
+import { formatDate } from '../../utils/formatter';
+import IconButton from '../common/Buttons/IconButton';
 import CollapsibleListItem from '../common/List/CollapsibleListItem';
+import ContentDataItem from '../common/List/ContentDataItem';
 import DataItem from '../common/List/DataItem';
 import RightBorderDataItem from '../common/List/RightBorderDataItem';
-import ContentDataItem from '../common/List/ContentDataItem';
-import LevelIndicator from '../common/LevelIndicator/LevelIndicator';
-import MultipleShadowsContainer from '../common/MultipleShadowContainer';
-import IconButton from '../common/Buttons/IconButton';
-import ActionIcon from '../../../assets/svg/dropdownIcon';
-import CollapsedIcon from '../../../assets/svg/closeArrow';
 import Footer from '../common/Page/Footer';
+import Item from '../common/Table/Item';
+import Table from '../common/Table/Table';
 
 const headers = [
     {
@@ -58,18 +56,16 @@ const EquipmentsTab = ({equipments = []}) => {
         const {_id} = equipment;
         const {_id: equipmentTypeId} = equipmentType;
 
-        // get ids for equipments
         const equipmentIds = selectedEquipments.map(equipment => equipment._id);
         const updatedChildIds = checkboxItemPress(_id, equipmentIds);
 
-        // set selected equipment
+        
         const updatedSelectedEquipments = updatedChildIds.map(_id => ({
             _id,
             equipmentTypeId
         }));
         setSelectedEquipments(updatedSelectedEquipments);
 
-        // unselect group when child is selected
         const updatedIds = selectedIds.filter(id => id !== equipmentTypeId);
         setSelectedIds(updatedIds);
     };
@@ -137,7 +133,6 @@ const EquipmentsTab = ({equipments = []}) => {
                     fontStyle="--text-sm-medium"
                 />
                 <DataItem flex={1.4} text="1" color="--color-gray-800" fontStyle="--text-sm-regular" align="center"/>
-                {/* TODO: Eval different colors to show based on status */}
                 <DataItem flex={1} text={status} color={evaluateColor()} fontStyle="--text-sm-regular"  />
                 <DataItem flex={1.8} text={formatDate(endTime, 'DD/MM/YYYY')} color="--color-gray-800" fontStyle="--text-sm-regular" align="center" textAlign='center'/>
                 
@@ -162,7 +157,7 @@ const EquipmentsTab = ({equipments = []}) => {
     };
 
     const renderListFn = item => {
-        const {appointmentId, _id, equipments = []} = item;
+        const {_id, equipments = []} = item;
 
         const isIndeterminate = selectedEquipments.some(equipment => equipment.equipmentTypeId === _id);
 
@@ -178,7 +173,6 @@ const EquipmentsTab = ({equipments = []}) => {
         >
             <FlatList
                 data={equipments}
-                // nestedScrollEnabled={true}
                 renderItem={({item: childItem}) => renderChildItemView(childItem, item, () => {
                 })}
                 keyExtractor={(item, index) => `${index}`}
@@ -224,39 +218,4 @@ const EquipmentsTab = ({equipments = []}) => {
 
 export default EquipmentsTab;
 
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        flexDirection: 'row',
-        padding: 10,
-        backgroundColor: '#FFFFFF',
-        alignItems: 'center',
-        marginBottom: 10
-    },
-    dataContainer: {
-        flex: 1,
-        flexDirection: 'row',
-        alignItems: 'flex-start',
-        justifyContent: 'space-between'
-    },
-    item: {flex: 1},
-    itemText: {
-        fontSize: 16,
-        color: '#4A5568',
-    },
-    headersContainer: {
-        //flex:1,
-        marginLeft: 10,
-        flexDirection: 'row',
-        //width:'100%'
-    },
-    headerItem: {
-        flex: 1,
-        alignItems: 'flex-start',
-        justifyContent: 'center',
-    },
-    headerText: {
-        fontSize: 12,
-        color: '#718096'
-    }
-});
+
