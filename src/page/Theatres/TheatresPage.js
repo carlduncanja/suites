@@ -1,4 +1,3 @@
-import { useTheme } from 'emotion-theming';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { View } from 'react-native';
