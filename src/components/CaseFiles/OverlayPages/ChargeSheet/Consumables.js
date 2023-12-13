@@ -202,6 +202,7 @@ function Consumables({
                 backgroundColor="--color-green-100"
                 borderColor="--color-green-500"
                 isChargeSheetField={true}
+                isLeftArrowDisabled={totalQty === 0}
                 onChangePress={onChangeConsumableQty(
                   item,
                   itemIndex,
