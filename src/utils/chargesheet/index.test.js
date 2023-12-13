@@ -1,11 +1,11 @@
 import {
-  calculateAdditionalConsumablesCost,
   calculateOutstandingBalance,
   createTemplateResourceMap,
   createUpdatedResourceMap,
   createDefaultAdditionalResourcesMap,
   getTemplateResources,
   getUpdatedProcedureResourceList,
+  calculateAdditionalResourcesCost,
 } from ".";
 
 const templateInventoryList = [
@@ -125,7 +125,7 @@ describe("Testing chargeSheetUtils", () => {
       const updatedConsumables =
         getUpdatedProcedureResourceList(updatedCaseProcedure);
       const templateConsumables = getTemplateResources(templateInventoryList);
-      const cost = calculateAdditionalConsumablesCost(
+      const cost = calculateAdditionalResourcesCost(
         templateConsumables,
         updatedConsumables
       );
@@ -170,7 +170,7 @@ describe("Testing chargeSheetUtils", () => {
       const updatedConsumables =
         getUpdatedProcedureResourceList(updatedCaseProcedure);
       const templateConsumables = getTemplateResources(templateInventoryList);
-      const cost = calculateAdditionalConsumablesCost(
+      const cost = calculateAdditionalResourcesCost(
         templateConsumables,
         updatedConsumables
       );
@@ -215,7 +215,7 @@ describe("Testing chargeSheetUtils", () => {
       const updatedConsumables =
         getUpdatedProcedureResourceList(updatedCaseProcedure);
       const templateConsumables = getTemplateResources([]);
-      const cost = calculateAdditionalConsumablesCost(
+      const cost = calculateAdditionalResourcesCost(
         templateConsumables,
         updatedConsumables
       );
@@ -228,15 +228,17 @@ describe("Testing chargeSheetUtils", () => {
       const overtimeCost = 5;
       const serviceCost = 100;
       const totalDisc = 0;
+      const addEquipCost = 20;
 
       const outstandingBalance = calculateOutstandingBalance(
         additonalInvCost,
+        addEquipCost,
         amountPaid,
         overtimeCost,
         serviceCost,
         totalDisc
       );
-      expect(outstandingBalance).toBe(135);
+      expect(outstandingBalance).toBe(155);
     });
   });
 

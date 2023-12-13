@@ -32,7 +32,7 @@ import ConfirmationComponent from "../../../ConfirmationComponent";
 import LongPressWithFeedback from "../../../common/LongPressWithFeedback";
 import EmptyChargeSheetComponent from "../../EmptyChargeSheetComponent";
 import {
-  calculateAdditionalConsumablesCost,
+  calculateAdditionalResourcesCost,
   calculateOutstandingBalance,
   getTemplateResources,
   getUpdatedProcedureResourceList,
@@ -78,24 +78,24 @@ const headers = [
   },
   {
     name: "Category",
-    alignment: "center",
-    flex: 3,
+    alignment: "flex-start",
+    flex: 1,
     hasSort: true,
   },
   {
     name: "Base Quantity",
-    alignment: "center",
-    flex: 1.1,
+    alignment: "flex-end",
+    flex: 1,
   },
 
   {
     name: "Additional Quantity",
-    alignment: "center",
-    flex: 1.1,
+    alignment: "flex-end",
+    flex: 1,
   },
   {
     name: "Total Quantity",
-    alignment: "center",
+    alignment: "flex-end",
     flex: 1,
   },
 ];
@@ -229,19 +229,42 @@ const ChargeSheet = React.forwardRef(
     const templateConsumables = getTemplateResources(
       templateResourceLists?.inventories
     );
-    const updatedConsumables = getUpdatedProcedureResourceList(caseProcedures);
+    const templateEquipment = getTemplateResources(
+      templateResourceLists?.equipments[0]?.equipment,
+      "equipments"
+    );
 
-    const additionalConsumablesCost = calculateAdditionalConsumablesCost(
+    const updatedConsumables = getUpdatedProcedureResourceList(caseProcedures);
+    const updatedEquipment = getUpdatedProcedureResourceList(
+      caseProcedures,
+      "equipments"
+    );
+
+    const additionalConsumablesCost = calculateAdditionalResourcesCost(
       templateConsumables,
       updatedConsumables
     );
+    const additionalEquipmentCost = calculateAdditionalResourcesCost(
+      templateEquipment,
+      updatedEquipment,
+      "equipment"
+    );
+
     const outstandingBalance = calculateOutstandingBalance(
       additionalConsumablesCost,
+      additionalEquipmentCost,
       amountPaid,
-      overtime,
+      overtime.overtimeCost,
       serviceFee,
       totalDiscount
     );
+
+    const overTimeData = {
+      overtime: overtime.overtimeCost,
+      baseHours: procedureDetails.estimatedDuration,
+      procedureHours: overtime.procedureHours,
+      anaesCost: anaesthesiaCost[anaesthesiaType],
+    };
 
     useEffect(() => {
       if (isUpdated) {
@@ -866,7 +889,6 @@ const ChargeSheet = React.forwardRef(
               icon={<AddIcon strokeColor={theme.colors["--color-green-700"]} />}
               onPress={() => {
                 onConsumableCaseProcedureSelected();
-                console.log(selectedCaseProcedureIds);
                 openAddItem("Equipment");
               }}
             />
@@ -903,17 +925,7 @@ const ChargeSheet = React.forwardRef(
         const addNewLineItemAction = (
           <ActionItem
             title="Add Equipment"
-            icon={
-              <AddIcon
-                strokeColor={
-                  isDisabled
-                    ? theme.colors["--color-gray-600"]
-                    : theme.colors["--color-green-700"]
-                }
-              />
-            }
-            disabled={isDisabled}
-            touchable={!isDisabled}
+            icon={<AddIcon strokeColor={theme.colors["--color-green-700"]} />}
             onPress={() => openAddItem("Equipment")}
           />
         );
@@ -1130,9 +1142,10 @@ const ChargeSheet = React.forwardRef(
             outstandingBalance={outstandingBalance}
             paymentDetails={paymentDetails}
             procedureDetails={procedureDetails}
+            overTimeData={overTimeData}
             quotations={quotations}
             tabDetails={billing}
-            templateInventoryList={templateResourceLists?.inventories}
+            templateResourceLists={templateResourceLists}
           />
         );
       default:
@@ -1184,7 +1197,7 @@ const configureBillableItems = (
 
     const name = `${title} (${formatDate(
       caseAppointment.startTime,
-      "MMM D - h:mm a"
+      "MMM D, YYYY - h:mm a"
     )})`;
 
     const billingItem = {

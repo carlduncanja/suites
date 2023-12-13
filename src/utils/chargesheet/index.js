@@ -19,27 +19,29 @@ export const getTemplateResources = (
   templateResourceList,
   resourceType = "inventory"
 ) => {
-  if (!templateResourceList) return {};
+  if (!templateResourceList || !templateResourceList.length) return [];
+  const isInventoryList = resourceType === "inventory";
   return templateResourceList?.map((resource) => ({
-    _id: resource[resourceType]._id,
+    _id: isInventoryList ? resource[resourceType]._id : resource._id,
     amount: resource.amount,
-    ...(resourceType === "inventory" && {
+    ...(isInventoryList && {
       cost: resource.inventory.unitCost,
     }),
   }));
 };
 
-export const calculateAdditionalConsumablesCost = (
-  templateInventoryList,
-  updatedInventoryList
+export const calculateAdditionalResourcesCost = (
+  templateResourceList,
+  updatedResourceList,
+  resourceType = "inventory"
 ) => {
   let surplusCost = 0;
-  if (!updatedInventoryList?.length) return surplusCost;
+  if (!updatedResourceList?.length) return surplusCost;
 
-  updatedInventoryList.forEach((updatedConsumable) => {
-    const matchingTemplateConsumable = templateInventoryList.find(
+  updatedResourceList.forEach((updatedConsumable) => {
+    const matchingTemplateConsumable = templateResourceList.find(
       (templateConsumable) =>
-        templateConsumable._id === updatedConsumable.inventory
+        templateConsumable._id === updatedConsumable[resourceType]
     );
     if (!matchingTemplateConsumable) {
       surplusCost += updatedConsumable.amount * updatedConsumable.cost;
@@ -54,6 +56,7 @@ export const calculateAdditionalConsumablesCost = (
 
 export const calculateOutstandingBalance = (
   additionalConsumablesCost,
+  additionalEquipmentCost,
   amountPaid,
   overtimeCost,
   serviceCost,
@@ -62,7 +65,8 @@ export const calculateOutstandingBalance = (
   return (
     serviceCost +
     overtimeCost +
-    additionalConsumablesCost -
+    additionalConsumablesCost +
+    additionalEquipmentCost -
     totalDiscount -
     amountPaid
   );
@@ -74,6 +78,7 @@ export const calculateOutstandingBalance = (
  */
 export const createTemplateResourceMap = (templateResourceList) => {
   const map = {};
+  if (!templateResourceList || !templateResourceList.length) return {};
   templateResourceList?.forEach((resource) => {
     map[resource._id] = resource.amount;
   });
@@ -97,6 +102,9 @@ export const createUpdatedResourceMap = (
   return map;
 };
 
+/** This is used to populate the "Additional Quantity" column on the Consumables
+ *  and Equipment tab in the chargesheet.
+ */
 export const createDefaultAdditionalResourcesMap = (
   templateResourceMap,
   updatedResourceMap
@@ -116,10 +124,10 @@ export const isNewResource = (resourceId, templateResourceMap) => {
   return !!!templateResourceMap[resourceId];
 };
 
-export const getAdditionalResourceMap = (
-  templateResourceMap,
-  updatedResourceMap
-) => {
+/** Used for resources, consumables or equipment, which are added to the list.
+ *  These resources were not included in procedure template.
+ */
+export const getNewResourceMap = (templateResourceMap, updatedResourceMap) => {
   const additionalQtyMap = {};
   for (id in updatedResourceMap) {
     if (!templateResourceMap[id]) {

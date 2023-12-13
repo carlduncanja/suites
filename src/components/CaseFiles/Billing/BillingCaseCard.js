@@ -94,8 +94,10 @@ const BillingCaseCard = ({
   onCaseProcedureBillablesChange,
   outstandingBalance,
   paymentDetails,
+  overTimeData,
   procedureDetails,
   tabDetails,
+  templateResourceLists,
 }) => {
   const modal = useModal();
   const theme = useTheme();
@@ -105,6 +107,7 @@ const BillingCaseCard = ({
   const { lineItems = [] } = paymentDetails;
 
   const [billingProcedures, setBillingProcedures] = useState(caseProcedures);
+  const [open, setOpen] = useState(true);
 
   const payments = lineItems.filter((lineItem) => lineItem.type === "payment");
   const discounts = lineItems.filter(
@@ -115,41 +118,6 @@ const BillingCaseCard = ({
     (acc, curr) => acc + (curr.unitPrice || 0),
     0
   );
-
-  const getProcedureStatusArray = () => {
-    const statusArray = procedures.map((procedure, index) => ({
-      index,
-      status: false,
-    }));
-    return statusArray;
-  };
-
-  const [openDetailsArrayState, setOpenDetailsArrayState] = useState(
-    getProcedureStatusArray()
-  );
-
-  const getStatus = (index) => {
-    const currentArray = openDetailsArrayState.filter(
-      (item) => item.index === index
-    );
-    return currentArray[0].status;
-  };
-
-  const openProcedureDetails = (index) => {
-    const selectedIndex = openDetailsArrayState.findIndex(
-      (obj) => obj.index === index
-    );
-    const newObject = {
-      ...openDetailsArrayState[selectedIndex],
-      status: !openDetailsArrayState[selectedIndex].status,
-    };
-    const updatedArray = [
-      ...openDetailsArrayState.slice(0, selectedIndex),
-      newObject,
-      ...openDetailsArrayState.slice(selectedIndex + 1),
-    ];
-    setOpenDetailsArrayState(updatedArray);
-  };
 
   const onCreated = (id) => (data) => {
     const billingData = [...billingProcedures];
@@ -213,7 +181,7 @@ const BillingCaseCard = ({
               color="--color-gray-800"
               font="--text-base-medium"
             >
-              {formatDate(lastModified, "DD/MM/YYYY")}
+              {formatDate(lastModified, "MMM D, YYYY")}
             </BillingText>
           </StackedRecord>
 
@@ -332,11 +300,11 @@ const BillingCaseCard = ({
               <ProcedureContainer>
                 <ProcedureHeaderContainer
                   theme={theme}
-                  onPress={() => openProcedureDetails(index)}
+                  onPress={() => setOpen(!open)}
                 >
                   <ProcedureNameContainer>
                     <ProcedureIconContainer theme={theme}>
-                      {getStatus(index) ? (
+                      {open ? (
                         <SvgIcon iconName="hideProcedure" />
                       ) : (
                         <SvgIcon iconName="showProcedure" />
@@ -354,13 +322,14 @@ const BillingCaseCard = ({
                   >{`$ ${currencyFormatter(serviceFee)}`}</BillingText>
                 </ProcedureHeaderContainer>
 
-                {getStatus(index) && (
+                {open && (
                   <ProcedureDetailsContainer theme={theme}>
                     <BillingCaseProcedure
                       physicians={physicians}
                       equipments={equipments}
                       inventories={inventories}
-                      services={services}
+                      overTimeData={overTimeData}
+                      templateResourceLists={templateResourceLists}
                     />
                     {isEditMode && (
                       <EditButtonItem
@@ -374,15 +343,7 @@ const BillingCaseCard = ({
                             caseProcedureId
                           );
                         }}
-                      >
-                        <BillingText
-                          theme={theme}
-                          color="--accent-button"
-                          font="--text-base-medium"
-                        >
-                          Edit Procedure
-                        </BillingText>
-                      </EditButtonItem>
+                      ></EditButtonItem>
                     )}
                   </ProcedureDetailsContainer>
                 )}
