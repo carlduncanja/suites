@@ -73,7 +73,10 @@ export function calculateProcedureOvertime(
   anaesthesiaCost
 ) {
   if (procedureDetails?.endTime?.length < 1 || !procedureDetails?.endTime)
-    return 0;
+    return {
+      overtimeCost: 0,
+      procedureHours: procedureDetails.estimatedDuration,
+    };
   const durationFormat = procedureDetails.estimatedDuration + ":00";
   const endTime = moment(procedureDetails.endTime);
   const startTime = moment(procedureDetails.startTime)
@@ -86,11 +89,17 @@ export function calculateProcedureOvertime(
     moment(timeDifference, "HH:mm") <= moment(durationFormat, "HH:mm") ||
     anaesthesiaType == "none"
   )
-    return 0;
+    return {
+      overtimeCost: 0,
+      procedureHours: moment.duration(timeDifference).asHours(),
+    };
   if (moment(timeDifference, "HH:mm") > moment(durationFormat, "HH:mm")) {
     const overTime =
       moment.duration(timeDifference).asHours() -
       procedureDetails.estimatedDuration;
-    return overTime * anaesthesiaCost[anaesthesiaType];
+    return {
+      overtimeCost: overTime * anaesthesiaCost[anaesthesiaType],
+      procedureHours: moment.duration(timeDifference).asHours(),
+    };
   }
 }

@@ -1,4 +1,3 @@
-import moment from "moment";
 import { calculateProcedureOvertime } from ".";
 describe("Calculate procedure overTime test", () => {
   it("procedure overtime for local anaesthesia should be zero when duration is equal to estimated duration", () => {
@@ -15,7 +14,7 @@ describe("Calculate procedure overTime test", () => {
       type,
       anaesthesiaCost
     );
-    expect(overTime).toBe(0);
+    expect(overTime).toStrictEqual({ overtimeCost: 0, procedureHours: 1 });
   });
 
   it("procedure overtime  for local anaesthesia should be greater than zero when duration is not equal to estimated duration", () => {
@@ -35,7 +34,7 @@ describe("Calculate procedure overTime test", () => {
       type,
       anaesthesiaCost
     );
-    expect(overTime).toBe(200);
+    expect(overTime).toStrictEqual({ overtimeCost: 200, procedureHours: 3 });
   });
 
   it("procedure overtime for general anaesthesia should be zero when duration is equal to estimated duration", () => {
@@ -52,7 +51,7 @@ describe("Calculate procedure overTime test", () => {
       type,
       anaesthesiaCost
     );
-    expect(overTime).toBe(0);
+    expect(overTime).toStrictEqual({ overtimeCost: 0, procedureHours: 1 });
   });
 
   it("procedure overtime  for general anaesthesia should be greater than zero when duration is not equal to estimated duration", () => {
@@ -72,7 +71,7 @@ describe("Calculate procedure overTime test", () => {
       type,
       anaesthesiaCost
     );
-    expect(overTime).toBe(600);
+    expect(overTime).toStrictEqual({ overtimeCost: 600, procedureHours: 3 });
   });
 
   it("procedure overtime  for general anaesthesia should be zero when procedure start and end time is the same", () => {
@@ -92,7 +91,7 @@ describe("Calculate procedure overTime test", () => {
       type,
       anaesthesiaCost
     );
-    expect(overTime).toBe(0);
+    expect(overTime).toStrictEqual({ overtimeCost: 0, procedureHours: 0 });
   });
 
   it("procedure overtime  for local anaesthesia should be zero when procedure start at 11pm and end time at 12am", () => {
@@ -112,7 +111,7 @@ describe("Calculate procedure overTime test", () => {
       type,
       anaesthesiaCost
     );
-    expect(overTime).toBe(0);
+    expect(overTime).toStrictEqual({ overtimeCost: 0, procedureHours: 1 });
   });
 
   it("procedure overtime  for local anaesthesia should be 100 when procedure start at 12am and end time at 2am next day", () => {
@@ -132,7 +131,7 @@ describe("Calculate procedure overTime test", () => {
       type,
       anaesthesiaCost
     );
-    expect(overTime).toBe(100);
+    expect(overTime).toStrictEqual({ overtimeCost: 100, procedureHours: 2 });
   });
   it("procedure overtime  for local anaesthesia should be r when procedure start at 11pm and end time at 2am next day", () => {
     const type = "localAnaesthesia";
@@ -151,6 +150,6 @@ describe("Calculate procedure overTime test", () => {
       type,
       anaesthesiaCost
     );
-    expect(overTime).toBe(250);
+    expect(overTime).toStrictEqual({ overtimeCost: 250, procedureHours: 3.5 });
   });
 });

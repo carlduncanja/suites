@@ -20,7 +20,7 @@ import {
   createDefaultAdditionalResourcesMap,
   getTemplateResources,
   getUpdatedProcedureResourceList,
-  getAdditionalResourceMap,
+  getNewResourceMap,
 } from "../../../../utils/chargesheet";
 
 const ConsumablesWrapper = styled.View`
@@ -80,7 +80,7 @@ function Consumables({
   }, [caseProcedures]);
 
   const addNewConsumableToAdditionalConsumables = () => {
-    const additonalResourceQtyMap = getAdditionalResourceMap(
+    const additonalResourceQtyMap = getNewResourceMap(
       templateConsumablesMap,
       updatedConsumablesMap
     );
@@ -170,60 +170,66 @@ function Consumables({
       <>
         <DataItem
           text={name}
-          flex={isEditMode ? 2.8 : 2.2}
+          flex={1}
           fontStyle={"--text-sm-medium"}
           color="--color-blue-600"
         />
 
         <DataItem
           text={type}
-          flex={isEditMode ? 3 : 3.1}
+          flex={1}
           align="center"
+          textAlign="left"
           fontStyle={"--text-base-regular"}
           color="--color-gray-700"
         />
 
         <DataItem
-          text={baseQty}
-          flex={1}
           align="center"
-          fontStyle={"--text-base-regular"}
           color="--color-gray-700"
+          flex={1}
+          fontStyle={"--text-base-regular"}
+          text={baseQty}
+          textAlign="right"
         />
 
         {isEditMode === true ? (
           <ContentDataItem
-            flex={3}
+            flex={1}
             align="center"
             content={
               <NumberChangeField
+                backgroundColor="--color-green-100"
+                borderColor="--color-green-500"
+                isChargeSheetField={true}
+                isLeftArrowDisabled={totalQty === 0}
                 onChangePress={onChangeConsumableQty(
                   item,
                   itemIndex,
                   sectionIndex
                 )}
                 value={additionalQty?.toString()}
-                borderColor="--color-green-500"
-                backgroundColor="--color-green-100"
               />
             }
           />
         ) : (
           <DataItem
-            flex={1}
-            text={additionalQty}
             align="center"
-            fontStyle={"--text-base-regular"}
             color="--color-gray-700"
+            flex={1}
+            fontStyle={"--text-base-regular"}
+            text={additionalQty}
+            textAlign="right"
           />
         )}
 
         <DataItem
-          flex={1}
-          text={totalQty}
           align="center"
-          fontStyle={"--text-base-regular"}
           color="--color-gray-700"
+          flex={1}
+          fontStyle={"--text-base-regular"}
+          text={totalQty}
+          textAlign="right"
         />
       </>
     );
@@ -311,12 +317,13 @@ function Consumables({
         >
           <TableContainer theme={theme}>
             <Table
-              isCheckbox={true}
               data={caseProcedures}
-              listItemFormat={renderTable}
               headers={headers}
-              toggleHeaderCheckbox={() => {}}
+              isChargeSheetTable={true}
+              isCheckbox={true}
               itemSelected={selectedConsumables}
+              listItemFormat={renderTable}
+              toggleHeaderCheckbox={() => {}}
             />
           </TableContainer>
         </ScrollView>

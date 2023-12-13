@@ -18,6 +18,7 @@ import {
   createDefaultAdditionalResourcesMap,
   createTemplateResourceMap,
   createUpdatedResourceMap,
+  getNewResourceMap,
   getTemplateResources,
   getUpdatedProcedureResourceList,
 } from "../../../../utils/chargesheet";
@@ -79,17 +80,36 @@ function ChargesheetEquipment({
     updatedEquipmentMap
   );
 
-  const [additionalEquipment, setAdditionalEquipment] = useState(
-    defaultAddEquipmentMap
-  );
+  const [additionalEquipment, setAdditionalEquipment] = useState({});
 
   useEffect(() => {
     if (!Object.keys(additionalEquipment).length && caseProcedures.length) {
       setAdditionalEquipment(defaultAddEquipmentMap);
+    } else {
+      addNewEquipmentToAdditionalEquipment();
     }
   }, [caseProcedures]);
 
   const [searchText, setSearchText] = useState("");
+
+  const addNewEquipmentToAdditionalEquipment = () => {
+    const newEquipmentQtyMap = getNewResourceMap(
+      templateEquipmentMap,
+      updatedEquipmentMap
+    );
+    const toAdd = {};
+    for (id in newEquipmentQtyMap) {
+      if (!additionalEquipment[id]) {
+        toAdd[id] = updatedEquipmentMap[id];
+      }
+    }
+    if (Object.keys(toAdd).length) {
+      setAdditionalEquipment((current) => ({
+        ...current,
+        ...toAdd,
+      }));
+    }
+  };
 
   const onSearchInputChange = (input) => {
     setSearchText(input);
@@ -200,60 +220,66 @@ function ChargesheetEquipment({
       <>
         <DataItem
           text={name}
-          flex={isEditMode ? 2.8 : 2.2}
+          flex={1}
           fontStyle={"--text-sm-medium"}
           color="--color-blue-600"
         />
 
         <DataItem
           text={type}
-          flex={isEditMode ? 4 : 4.1}
+          flex={1}
           align="center"
+          textAlign="left"
           fontStyle={"--text-base-regular"}
           color="--color-gray-700"
         />
 
         <DataItem
-          text={baseQty}
-          flex={isEditMode ? 0.2 : 2}
           align="center"
-          fontStyle={"--text-base-regular"}
           color="--color-gray-700"
+          flex={1}
+          fontStyle={"--text-base-regular"}
+          text={baseQty}
+          textAlign="right"
         />
 
         {isEditMode === true ? (
           <ContentDataItem
-            flex={3}
+            flex={1}
             align="center"
             content={
               <NumberChangeField
+                backgroundColor="--color-green-100"
+                borderColor="--color-green-500"
+                isChargeSheetField={true}
+                isLeftArrowDisabled={totalQty === 0}
                 onChangePress={onQuantityChangePress(
                   item,
                   itemIndex,
                   sectionIndex
                 )}
                 value={additionalQty?.toString()}
-                borderColor="--color-green-500"
-                backgroundColor="--color-green-100"
               />
             }
           />
         ) : (
           <DataItem
-            flex={1.5}
-            text={additionalQty}
             align="center"
-            fontStyle={"--text-base-regular"}
             color="--color-gray-700"
+            flex={1}
+            fontStyle={"--text-base-regular"}
+            text={additionalQty}
+            textAlign="right"
           />
         )}
 
         <DataItem
-          flex={1}
-          text={totalQty}
           align="center"
-          fontStyle={"--text-base-regular"}
           color="--color-gray-700"
+          flex={1}
+          fontStyle={"--text-base-regular"}
+          text={totalQty}
+          textAlign="right"
         />
       </>
     );
@@ -265,7 +291,7 @@ function ChargesheetEquipment({
       (obj) => obj._parentId === parentId
     );
     const variants = selectedGroup?.variants || [];
-    const baseQty = templateEquipmentMap[equipment];
+    const baseQty = templateEquipmentMap[equipment] ?? 0;
 
     return (
       <Item
@@ -334,12 +360,13 @@ function ChargesheetEquipment({
         >
           <TableContainer theme={theme}>
             <Table
-              isCheckbox={true}
               data={caseProcedures}
-              listItemFormat={renderCollapsible}
               headers={headers}
-              toggleHeaderCheckbox={toggleHeaderCheckbox}
+              isChargeSheetTable={true}
+              isCheckbox={true}
               itemSelected={selectedEquipments}
+              listItemFormat={renderCollapsible}
+              toggleHeaderCheckbox={toggleHeaderCheckbox}
             />
           </TableContainer>
         </ScrollView>
