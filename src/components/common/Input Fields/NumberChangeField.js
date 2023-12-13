@@ -46,7 +46,6 @@ function NumberChangeField({
   borderColor = "--color-gray-400",
   flex = 1,
   isChargeSheetField = false,
-  isLeftArrowDisabled = false,
   leftArrowColor = "--color-gray-600",
   onAmountChange = () => {},
   onChangePress = () => {},
