@@ -27,7 +27,6 @@
     "babel-plugin-inline-dotenv": "^1.6.0",
     "buffer": "^6.0.3",
     "emotion-theming": "^10.0.27",
-    "expo": "^49.0.21",
     "expo-app-loading": "~2.0.0",
     "expo-asset": "~8.9.1",
     "expo-constants": "~14.2.1",
