@@ -88,7 +88,8 @@ function PageHeader({
             <ConfirmationComponent
               isError={false}
               isEditUpdate={false}
-              message="Nurses storage updated with consumables and may contain negative stock values. Please update storage location as soon as possible."
+              message="Procedure successfully ended."
+              secondaryMessage="Please review and adjust the storage promptly for accurate records."
               onAction={() => {
                 modal.closeModals("ConfirmationModal");
                 setTimeout(() => {
@@ -115,7 +116,6 @@ function PageHeader({
     modal.openModal("ConfirmationModal", {
       content: (
         <ConfirmationCheckBoxComponent
-          caseId={caseId}
           isError={false}
           isEditUpdate={true}
           onCancel={() => modal.closeModals("ConfirmationModal")}
