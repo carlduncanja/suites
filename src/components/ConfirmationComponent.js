@@ -35,6 +35,7 @@ const HeadingContainer = styled.View`
   flex-direction: row;
   justify-content: space-between;
   padding-left: 12px;
+
   padding-right: 2px;
 `;
 
@@ -75,9 +76,6 @@ const MessageContainer = styled.View`
   justify-content: center;
   align-items: center;
   background-color: ${({ theme }) => theme.colors["--default-shade-white"]};
-
-  /* border-bottom-left-radius :8px;
-    border-bottom-right-radius :8px; */
 `;
 
 const IconMessageContainer = styled.View`
@@ -141,7 +139,10 @@ const shadows = [
 function ConfirmationComponent({
   isEditUpdate,
   textPadding = 0,
+
   textAlign = "center",
+  secondaryMessagePadding = 7,
+  secondaryMessageMargin = 5,
   isError,
   isWarning,
   onCancel = () => {},
@@ -282,6 +283,16 @@ function ConfirmationComponent({
             >
               {" "}
               {message || "Completed Successfully!"}{" "}
+            </ModalText>
+            <ModalText
+              messageMargin={secondaryMessageMargin}
+              messageAlign={textAlign}
+              messagePadding={secondaryMessagePadding}
+              theme={theme}
+              textColor="--color-gray-800"
+              font="--text-sm-regular"
+            >
+              {secondaryMessage}
             </ModalText>
           </IconMessageContainer>
 
