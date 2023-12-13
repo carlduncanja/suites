@@ -22,7 +22,7 @@ export default {
   draft: [],
   archivedSuppliers: [],
   archivedCases: [],
-  casePage: { isEdit: false, procedureEndTime: "" },
+  casePage: { isEdit: false, procedureEndTime: {}, chargeSheetTab: "Details" },
   procedurePage: { isEdit: false },
   invoices: [],
 };

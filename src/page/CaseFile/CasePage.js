@@ -66,6 +66,7 @@ import { addNotification } from "../../redux/actions/NotificationActions";
 import { setCaseEdit } from "../../redux/actions/casePageActions";
 import { currencyFormatter, formatDate } from "../../utils/formatter";
 import PayBalanceItem from "./PayBalanceItem";
+import { setChargeSheetTab } from "../../redux/actions/casePageActions";
 
 const overlayMenu = [
   {
@@ -117,13 +118,21 @@ const { name: initialMenuItem, overlayTabs: initialCurrentTabs } =
   overlayMenu[0];
 const initialSelectedTab = initialCurrentTabs[0];
 
-function CasePage({ auth = {}, route, addNotification, navigation }) {
+function CasePage({
+  auth = {},
+  route,
+  addNotification,
+  navigation,
+  setSelectedTabRdx,
+  chargeSheetTab,
+}) {
   const {
     appointmentObj,
     permissions: casePermissions,
     timeStamp,
   } = route.params;
   const modal = useModal();
+  const caseIdRef = useRef();
   const chargeSheetRef = useRef();
   const templateResourceListsRef = useRef();
 
@@ -142,12 +151,6 @@ function CasePage({ auth = {}, route, addNotification, navigation }) {
   const [selectedQuoteIds, setSelectedQuoteIds] = useState([]);
   const [selectedInvoiceIds, setSelectedInvoiceIds] = useState([]);
 
-  const [
-    selectedConsumableCaseProcedureIds,
-    setSelectedConsumableCaseProcedureIds, // TO-DO: Are these to be used somewhere?
-  ] = useState([]);
-
-  const [selectedTab, setSelectedTab] = useState(initialSelectedTab);
   const [currentTabs, setCurrentTabs] = useState(initialCurrentTabs);
   const [selectedMenuItem, setSelectedMenuItem] = useState(initialMenuItem);
   const [status, setStatus] = useState("");
@@ -160,8 +163,12 @@ function CasePage({ auth = {}, route, addNotification, navigation }) {
 
   const renderConfirmationModal = useConfirmationModal();
   const renderApplyDiscModal = useApplyDiscountModal();
+
   useEffect(() => {
-    console.log("fetching case in use effect. one pop");
+    if (caseIdRef.current !== caseId) {
+      caseIdRef.current = caseId;
+      setSelectedTabRdx("Details");
+    }
     fetchCase(caseId);
     fetchUser(authInfo?.user_id);
   }, []);
@@ -190,7 +197,7 @@ function CasePage({ auth = {}, route, addNotification, navigation }) {
 
   const handleTabPressChange = (tab) => {
     if (!pageState.isEditMode) {
-      setSelectedTab(tab);
+      setSelectedTabRdx(tab);
     }
   };
 
@@ -204,7 +211,7 @@ function CasePage({ auth = {}, route, addNotification, navigation }) {
     const selectedTab = currentTabs[0];
     setSelectedMenuItem(menuItem);
     setCurrentTabs(currentTabs);
-    setSelectedTab(selectedTab);
+    setSelectedTabRdx(selectedTab);
   };
 
   const handleEditDone = (data) => {
@@ -249,7 +256,6 @@ function CasePage({ auth = {}, route, addNotification, navigation }) {
 
     updateChargeSheet(caseId, updateInfo)
       .then((data) => {
-        // console.log("Updated Record:", data);
         renderConfirmationModal("Ok", false, false, null, onAction, onCancel);
       })
       .catch((error) => {
@@ -414,7 +420,7 @@ function CasePage({ auth = {}, route, addNotification, navigation }) {
       content: (
         <ConfirmationComponent
           isError={false}
-          error={false} //boolean to show whether an error icon or success icon
+          error={false}
           isEditUpdate={true}
           onCancel={() => {
             modal.closeAllModals();
@@ -424,7 +430,7 @@ function CasePage({ auth = {}, route, addNotification, navigation }) {
             console.log("Payment data: ", data);
             applyInvoicePayment(invoiceId, data);
           }}
-          message="Do you want to save your changes?" //general message you can send to be displayed
+          message="Do you want to save your changes?"
           action="Yes"
         />
       ),
@@ -437,7 +443,7 @@ function CasePage({ auth = {}, route, addNotification, navigation }) {
       content: (
         <ConfirmationComponent
           isError={false}
-          error={false} //boolean to show whether an error icon or success icon
+          error={false}
           isEditUpdate={true}
           onCancel={() => {
             modal.closeAllModals();
@@ -447,7 +453,7 @@ function CasePage({ auth = {}, route, addNotification, navigation }) {
             console.log("Payment data: ", data);
             applyPayment(caseId, data);
           }}
-          message="Do you want to save your changes?" //general message you can send to be displayed
+          message="Do you want to save your changes?"
           action="Yes"
         />
       ),
@@ -455,15 +461,10 @@ function CasePage({ auth = {}, route, addNotification, navigation }) {
     });
   };
 
-  const onAppointmentCreated = (value) => fetchCase(caseId);
-
   const onPatientUpdated = (data) => fetchCase(caseId);
 
   const onRiskUpdate = () => fetchCase(caseId);
 
-  /**
-   * Displays floating actions
-   */
   const toggleActionButton = () => {
     setFloatingAction(true);
     modal.openModal("ActionContainerModal", {
@@ -540,7 +541,7 @@ function CasePage({ auth = {}, route, addNotification, navigation }) {
         modal.openModal("ConfirmationModal", {
           content: (
             <ConfirmationComponent
-              isError={true} //boolean to show whether an error icon or success icon
+              isError={true}
               isEditUpdate={false}
               onCancel={() => {
                 modal.closeAllModals();
@@ -562,7 +563,6 @@ function CasePage({ auth = {}, route, addNotification, navigation }) {
 
   const chargeSheetWithdrawChanges = () => {
     setPageLoading(true);
-    // return;
     withdrawChargeSheetChangesCall(caseId)
       .then((_) => {
         modal.openModal("ConfirmationModal", {
@@ -588,7 +588,7 @@ function CasePage({ auth = {}, route, addNotification, navigation }) {
         modal.openModal("ConfirmationModal", {
           content: (
             <ConfirmationComponent
-              isError={true} //boolean to show whether an error icon or success icon
+              isError={true}
               isEditUpdate={false}
               onCancel={() => {
                 modal.closeAllModals();
@@ -636,7 +636,7 @@ function CasePage({ auth = {}, route, addNotification, navigation }) {
         modal.openModal("ConfirmationModal", {
           content: (
             <ConfirmationComponent
-              isError={true} //boolean to show whether an error icon or success icon
+              isError={true}
               isEditUpdate={false}
               onCancel={() => {
                 modal.closeAllModals();
@@ -662,8 +662,6 @@ function CasePage({ auth = {}, route, addNotification, navigation }) {
     setPageLoading(true);
     generateInvoiceCall(caseId)
       .then((invoice) => {
-        console.log("invoice created", invoice);
-        // addInvoiceToCaseState(invoice);
         fetchCase(caseId);
         modal.openModal("ConfirmationModal", {
           content: (
@@ -688,7 +686,7 @@ function CasePage({ auth = {}, route, addNotification, navigation }) {
         modal.openModal("ConfirmationModal", {
           content: (
             <ConfirmationComponent
-              isError={true} //boolean to show whether an error icon or success icon
+              isError={true}
               isEditUpdate={false}
               onCancel={() => {
                 modal.closeAllModals();
@@ -738,7 +736,7 @@ function CasePage({ auth = {}, route, addNotification, navigation }) {
         modal.openModal("ConfirmationModal", {
           content: (
             <ConfirmationComponent
-              isError={true} //boolean to show whether an error icon or success icon
+              isError={true}
               isEditUpdate={false}
               onCancel={() => {
                 modal.closeAllModals();
@@ -788,7 +786,7 @@ function CasePage({ auth = {}, route, addNotification, navigation }) {
         modal.openModal("ConfirmationModal", {
           content: (
             <ConfirmationComponent
-              isError={true} //boolean to show whether an error icon or success icon
+              isError={true}
               isEditUpdate={false}
               onCancel={() => {
                 modal.closeAllModals();
@@ -816,8 +814,6 @@ function CasePage({ auth = {}, route, addNotification, navigation }) {
     updatedCase.quotations = [...quotations, newQuotations];
     setCaseFile(updatedCase);
   };
-
-  // TO-DO: Will this be used?
 
   const removeQuotationFromState = (quotationId) => {
     const { quotations = [] } = caseFile;
@@ -887,148 +883,17 @@ function CasePage({ auth = {}, route, addNotification, navigation }) {
     let title = "Actions";
     let floatingAction = [];
 
-    console.log("getFabActions: selected tab", selectedTab);
+    console.log("getFabActions: selected tab", chargeSheetTab);
     console.log("Selected menu: ", selectedMenuItem);
 
     if (selectedMenuItem === "Charge Sheet") {
-      switch (selectedTab) {
+      switch (chargeSheetTab) {
         case "Consumables": {
-          // const {chargeSheet} = selectedCase;
-
-          // const {status} = chargeSheet;
-          // const isPending = status === CHARGE_SHEET_STATUSES.PENDING_CHANGES;
-          //
-          // if (isPending) {
-          //     const isAdmin = authInfo.role_name === ROLES.ADMIN;
-          //     const isOwner = chargeSheet.updatedBy?._id === authInfo.user_id;
-          //
-          //     if (isAdmin) {
-          //         const RevertChanges = (
-          //             <ActionItem
-          //                 title="Revert Changes"
-          //                 icon={<WasteIcon/>}
-          //                 onPress={handleRevertChargeSheetChanges}
-          //             />
-          //         );
-          //
-          //         const AcceptChanges = (
-          //             <ActionItem
-          //                 title="Accept Changes"
-          //                 icon={<AcceptIcon/>}
-          //                 onPress={handleAcceptChargeSheetChange}
-          //             />
-          //         );
-          //         floatingAction.push(RevertChanges, AcceptChanges);
-          //     }
-          //
-          //     if (isOwner) {
-          //         const WithdrawChanges = (
-          //             <LongPressWithFeedback
-          //                 pressTimer={LONG_PRESS_TIMER.MEDIUM}
-          //                 onLongPress={handleWithdrawChargeSheetChanges}
-          //             >
-          //                 <ActionItem
-          //                     title="Hold to Withdraw"
-          //                     icon={<WasteIcon/>}
-          //                     onPress={() => {
-          //                     }}
-          //                     touchable={false}
-          //                 />
-          //             </LongPressWithFeedback>
-          //         );
-          //         floatingAction.push(WithdrawChanges);
-          //     }
-          // }
-          // else {
-          //     const isDisabled = !selectedConsumableCaseProcedureIds.length
-          //
-          //     const addNewItem = (
-          //         <ActionItem
-          //             title="Add Consumable"
-          //             icon={(
-          //                 <AddIcon
-          //                     strokeColor={isDisabled ? theme.colors['--color-gray-600'] : theme.colors['--color-green-700']}
-          //                 />
-          //             )}
-          //             disabled={isDisabled}
-          //             touchable={!isDisabled}
-          //             onPress={() => openAddItem('Consumables')}
-          //         />
-          //     );
-          //     const removeLineItemAction = (
-          //         <LongPressWithFeedback
-          //             pressTimer={LONG_PRESS_TIMER.MEDIUM}
-          //             onLongPress={() => handleRemoveConsumableItems('Consumables')}
-          //             isDisabled={selectedConsumables.length === 0}
-          //
-          //         >
-          //             <ActionItem
-          //                 title="Hold to Delete"
-          //                 icon={(
-          //                     <WasteIcon
-          //                         strokeColor={selectedConsumables.length === 0 ? theme.colors['--color-gray-600'] : theme.colors['--color-red-700']}
-          //                     />
-          //                 )}
-          //                 onPress={() => {
-          //                 }}
-          //                 touchable={false}
-          //                 disabled={selectedConsumables.length === 0}
-          //             />
-          //
-          //         </LongPressWithFeedback>
-          //     );
-          //     floatingAction.push(/*addNewLineItemAction,*/ removeLineItemAction, addNewItem,);
-          // }
-          // title = 'CONSUMABLE\'S ACTIONS';
-          // break;
-
           [floatingAction, title] = chargeSheetRef.current?.getActions() || [];
-
-          console.log("chargeSheetRef: ", chargeSheetRef);
 
           break;
         }
         case "Equipment": {
-          // const isDisabled = selectedEquipments.length !== 1;
-          //
-          // const addNewLineItemAction = (
-          //     <ActionItem
-          //         title="Add Equipment"
-          //         icon={(
-          //             <AddIcon
-          //                 strokeColor={isDisabled ? theme.colors['--color-gray-600'] : theme.colors['--color-green-700']}
-          //             />
-          //         )}
-          //         disabled={isDisabled}
-          //         touchable={!isDisabled}
-          //         onPress={() => openAddItem('Equipment')}
-          //     />
-          // );
-          // const removeLineItemAction = (
-          //     <LongPressWithFeedback
-          //         pressTimer={LONG_PRESS_TIMER.MEDIUM}
-          //         onLongPress={() => handleRemoveConsumableItems('Equipment')}
-          //         isDisabled={selectedEquipments.length === 0}
-          //
-          //     >
-          //         <ActionItem
-          //             title="Hold to Delete"
-          //             icon={(
-          //                 <WasteIcon
-          //                     strokeColor={selectedEquipments.length === 0 ? theme.colors['--color-gray-600'] : theme.colors['--color-red-700']}
-          //                 />
-          //             )}
-          //             onPress={() => {
-          //             }}
-          //             touchable={false}
-          //             disabled={selectedEquipments.length === 0}
-          //         />
-          //
-          //     </LongPressWithFeedback>
-          // );
-          // floatingAction.push(removeLineItemAction, addNewLineItemAction);
-          // title = 'EQUIPMENT ACTIONS';
-
           [floatingAction, title] = chargeSheetRef.current?.getActions() || [];
 
           break;
@@ -1064,8 +929,6 @@ function CasePage({ auth = {}, route, addNotification, navigation }) {
             floatingAction.push(removeQuotations);
             floatingAction.push(downloadQuotation);
           } else if (selectedQuoteIds.length > 1) {
-            // const createInvoice = <ActionItem title="Create Invoice" icon={<AddIcon/>}
-            //                                   onPress={onCreateInvoice}/>
           }
 
           title = "QUOTATION ACTIONS";
@@ -1094,7 +957,6 @@ function CasePage({ auth = {}, route, addNotification, navigation }) {
               />
             );
 
-            // floatingAction.push(removeInvoices);
             floatingAction.push(downloadInvoice, payBalanceAction);
           }
           break;
@@ -1150,22 +1012,6 @@ function CasePage({ auth = {}, route, addNotification, navigation }) {
         }
       }
     } else if (selectedMenuItem === "Procedures") {
-      switch (
-        selectedTab
-        // case 'Details': {
-        //     const addNewProcedure = (
-        //         <ActionItem
-        //             title="Add Appointment"
-        //             icon={<AddIcon />}
-        //             onPress={openAddProcedure}
-        //         />
-        //     );
-        //     floatingAction.push(addNewProcedure);
-        //     title = 'APPOINTMENT ACTIONS';
-        //     break;
-        // }
-      ) {
-      }
     }
 
     return <ActionContainer floatingActions={floatingAction} title={title} />;
@@ -1213,7 +1059,6 @@ function CasePage({ auth = {}, route, addNotification, navigation }) {
       procedures: [],
     };
 
-    // todo: eval what's actually needed here
     for (const proceduresBillableItem of proceduresBillableItems) {
       const {
         lineItems = [],
@@ -1294,7 +1139,6 @@ function CasePage({ auth = {}, route, addNotification, navigation }) {
     } = caseFile;
     const { proceduresBillableItems = [], total = 0 } = chargeSheet;
 
-    // preparing billing information
     const LINE_ITEM_TYPES = {
       DISCOUNT: "discount",
       SERVICE: "service",
@@ -1309,7 +1153,6 @@ function CasePage({ auth = {}, route, addNotification, navigation }) {
       procedures: [],
     };
 
-    // todo: eval what's actually needed here
     for (const proceduresBillableItem of proceduresBillableItems) {
       const {
         lineItems = [],
@@ -1517,7 +1360,7 @@ function CasePage({ auth = {}, route, addNotification, navigation }) {
           modal.closeAllModals();
         });
     } catch (error) {
-      console.log(error); // todo: show error message
+      console.log(error);
       setPageLoading(false);
       modal.closeAllModals();
     }
@@ -1752,29 +1595,28 @@ function CasePage({ auth = {}, route, addNotification, navigation }) {
           modal.closeAllModals();
         });
     } catch (error) {
-      console.log(error); // todo: show error message
+      console.log(error);
       setPageLoading(false);
       modal.closeAllModals();
     }
   };
-  // ############### Data
 
   const getIsEditable = () => {
     switch (selectedMenuItem) {
       case "Medical Staff":
         return (
-          selectedTab === "Insurance" ||
-          selectedTab === "Diagnosis" ||
-          selectedTab === "Patient Comments"
+          chargeSheetTab === "Insurance" ||
+          chargeSheetTab === "Diagnosis" ||
+          chargeSheetTab === "Patient Comments"
         );
       case "Medical History":
         true;
 
       case "Medical Staff":
         return (
-          selectedTab === "Insurance" ||
-          selectedTab === "Diagnosis" ||
-          selectedTab === "Patient Comments"
+          chargeSheetTab === "Insurance" ||
+          chargeSheetTab === "Diagnosis" ||
+          chargeSheetTab === "Patient Comments"
         );
       default:
         return false;
@@ -1793,15 +1635,13 @@ function CasePage({ auth = {}, route, addNotification, navigation }) {
     const { medicalInfo = {} } = patient;
     const { proceduresBillableItems } = chargeSheet;
 
-    // setBiilable(proceduresBillableItems)
-
     switch (selectedMenuItem) {
       case "Patient":
         return (
           <Patient
             patient={patient}
             procedures={caseProcedures}
-            selectedTab={selectedTab}
+            selectedTab={chargeSheetTab}
             onPatientUpdated={onPatientUpdated}
             onRiskUpdate={onRiskUpdate}
             isEditMode={pageState.isEditMode}
@@ -1811,7 +1651,7 @@ function CasePage({ auth = {}, route, addNotification, navigation }) {
         return (
           <MedicalStaff
             staff={staff}
-            selectedTab={selectedTab}
+            selectedTab={chargeSheetTab}
             isEditMode={pageState.isEditMode}
             modal={modal}
             caseId={caseId}
@@ -1824,7 +1664,7 @@ function CasePage({ auth = {}, route, addNotification, navigation }) {
         return (
           <MedicalHistory
             medicalInfo={medicalInfo}
-            selectedTab={selectedTab}
+            selectedTab={chargeSheetTab}
             patient={patient}
             setPageState={setPageState}
             fetchCase={() => fetchCase(caseId)}
@@ -1854,7 +1694,7 @@ function CasePage({ auth = {}, route, addNotification, navigation }) {
             procedures={caseProcedures}
             quotations={quotations}
             ref={chargeSheetRef}
-            selectedTab={selectedTab}
+            selectedTab={chargeSheetTab}
             templateResourceLists={templateResourceListsRef.current}
           />
         );
@@ -1887,13 +1727,14 @@ function CasePage({ auth = {}, route, addNotification, navigation }) {
         updatePhysician={casePermissions.update}
         onBackPress={() => {
           navigation.navigate("CaseFiles");
+          setSelectedTabRdx("Details");
         }}
-        selectedTab={selectedTab}
+        selectedTab={chargeSheetTab}
         isArchive={getIsEditable()}
         pageTabs={
           <TabsContainer
             tabs={currentTabs}
-            selectedTab={selectedTab}
+            selectedTab={chargeSheetTab}
             onPressChange={handleTabPressChange}
           />
         }
@@ -1917,11 +1758,15 @@ const mapDispatchTopProp = (dispatch) =>
     {
       addNotification,
       setCaseEdit,
+      setSelectedTabRdx: setChargeSheetTab,
     },
     dispatch
   );
 
-const mapStateToProps = (state) => ({ auth: state.auth });
+const mapStateToProps = (state) => ({
+  auth: state.auth,
+  chargeSheetTab: state.casePage.chargeSheetTab,
+});
 
 export default connect(mapStateToProps, mapDispatchTopProp)(CasePage);
 
