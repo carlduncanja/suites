@@ -3,6 +3,7 @@ import {
   SET_CASE_EDIT,
   SET_CASE_PAGE,
   SET_PROCEDURE_END_TIME,
+  SET_CHARGESHEET_TAB,
 } from "../actions/casePageActions";
 
 export default (state = initialState.casePage, action) => {
@@ -26,6 +27,13 @@ export default (state = initialState.casePage, action) => {
           [caseId]: procedureEndTime,
         },
       };
+    case SET_CHARGESHEET_TAB: {
+      const { chargeSheetTab } = payload;
+      return {
+        ...state,
+        chargeSheetTab,
+      };
+    }
     default:
       return state;
   }

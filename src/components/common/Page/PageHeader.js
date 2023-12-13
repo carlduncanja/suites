@@ -12,19 +12,22 @@ import ConfirmationCheckBoxComponent from "../../ConfirmationCheckBoxComponent";
 import ConfirmationComponent from "../../ConfirmationComponent";
 import Button from "../Buttons/Button";
 import MultipleShadowsContainer from "../MultipleShadowContainer";
+import { setChargeSheetTab } from "../../../redux/actions/casePageActions";
+import { connect } from "react-redux";
 
 function PageHeader({
-  onBack,
-  caseId,
-  timeStamp,
-  status,
   appointmentObj,
-  selectedTab,
-  isArchive: isEditDisabled = false,
-  headerChildren = [],
-  separator = null,
-  isEditable,
+  caseId,
   editMessage = "now in edit mode",
+  headerChildren = [],
+  isArchive: isEditDisabled = false,
+  isEditable,
+  onBack,
+  selectedTab,
+  separator = null,
+  setChargeSheetTab,
+  status,
+  timeStamp,
 }) {
   const theme = useTheme();
 
@@ -89,6 +92,7 @@ function PageHeader({
               onAction={() => {
                 modal.closeModals("ConfirmationModal");
                 setTimeout(() => {
+                  setChargeSheetTab("Billing");
                   modal.closeModals("ActionContainerModal");
                 }, 200);
               }}
@@ -378,4 +382,8 @@ const shadows = [
   },
 ];
 
-export default PageHeader;
+const mapDispatchToProps = {
+  setChargeSheetTab: setChargeSheetTab,
+};
+
+export default connect(null, mapDispatchToProps)(PageHeader);
