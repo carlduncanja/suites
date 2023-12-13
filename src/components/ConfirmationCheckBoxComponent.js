@@ -136,8 +136,6 @@ function ConfirmationCheckBoxComponent({
 }) {
   const theme = useTheme();
 
-  console.log({ caseId, procedureEndTime });
-
   const [isChecked, setIsChecked] = useState(false);
   const [isChecked1, setIsChecked1] = useState(false);
   const [isChecked2, setIsChecked2] = useState(false);

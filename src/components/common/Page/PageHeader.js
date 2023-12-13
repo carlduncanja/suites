@@ -116,6 +116,7 @@ function PageHeader({
     modal.openModal("ConfirmationModal", {
       content: (
         <ConfirmationCheckBoxComponent
+          caseId={caseId}
           isError={false}
           isEditUpdate={true}
           onCancel={() => modal.closeModals("ConfirmationModal")}
