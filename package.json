@@ -134,9 +134,10 @@
     "eslint-plugin-react-hooks": "^2.3.0"
   },
   "resolutions": {
-    "@expo/config-plugins": "~5.0.0",
-    "@expo/prebuild-config": "~5.0.0",
-    "expo-modules-autolinking": "0.10.1"
+    "@expo/config-plugins": "~7.2.2",
+    "@expo/prebuild-config": "~6.2.4",
+    "expo-modules-autolinking": "~1.5.0",
+    "@expo/metro-config": "~0.10.0"
   },
   "private": true
 }
