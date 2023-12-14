@@ -19,6 +19,7 @@ eas-build:
   image: node:latest
   script:
     - echo $EXPO_TOKEN
+    - yarn install
     - npx eas-cli build --platform ios --non-interactive
   rules:
     - if: '$CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "story-2917"'
