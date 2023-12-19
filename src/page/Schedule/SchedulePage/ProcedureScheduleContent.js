@@ -72,10 +72,7 @@ function ProcedureScheduleContent({
 
   const [temp, setTemp] = useState("");
 
-  useEffect(() => {
-    const x = getProgressStatus(startTime, endTime);
-    setTemp(x);
-  }, []);
+  const { status } = appointmentDetails;
 
   /**
    * @param scheduleDate - date object
@@ -88,20 +85,6 @@ function ProcedureScheduleContent({
   const formatDate = (scheduleDate) => {
     const date = moment(scheduleDate);
     return date.format("D/M/YYYY");
-  };
-
-  const getProgressStatus = (startTime, endTime) => {
-    const now = moment();
-    const start = moment(startTime);
-    const end = moment(endTime);
-
-    if (now.isBefore(start)) {
-      return "Not Yet Started";
-    }
-    if (now.isBefore(end)) {
-      return "In Progress";
-    }
-    return "Ended";
   };
 
   const displayPatient = (patient = {}) => {
@@ -204,7 +187,6 @@ function ProcedureScheduleContent({
   const renderNurses = (nurses) => (
     <View style={styles.box}>
       {nurses.map((item, index) => {
-        console.log("yhyjhjkhdks sdkdls", item.name);
         const name = `${item.name}` || "No Data";
         const position = `Nurse`;
         return staffItem(index, name, position, false, false);
@@ -280,6 +262,7 @@ function ProcedureScheduleContent({
       description: descrition,
       subject: subject,
       startTime: now,
+      status: "In Progress",
       endTime: end,
       title: title,
       location: appLocation,
@@ -288,6 +271,7 @@ function ProcedureScheduleContent({
       description: descrition,
       subject: subject,
       startTime: now,
+      status: "In Progress",
       endTime: end,
       title: title,
       location: appLocation,
@@ -341,7 +325,7 @@ function ProcedureScheduleContent({
                     fontSize: 12,
                   }}
                 >
-                  {temp}
+                  {status}
                 </Text>
               </View>
             </View>
@@ -419,7 +403,7 @@ function ProcedureScheduleContent({
           Created by {owner.firstName} {owner.lastName}
         </Text>
         <View style={styles.buttonHolder}>
-          {temp === "Not Yet Started" && (
+          {status == "Not Yet Started" && (
             <NewProcedureButton
               style={{ borderColor: "#0CB0E7", width: 150 }}
               theme={theme}

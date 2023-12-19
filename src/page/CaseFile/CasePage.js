@@ -2,7 +2,6 @@ import styled from "@emotion/native";
 import * as FileSystem from "expo-file-system";
 import * as Sharing from "expo-sharing";
 import jwtDecode from "jwt-decode";
-import moment from "moment";
 import React, { useEffect, useRef, useState } from "react";
 import { Alert, View } from "react-native";
 import { useModal } from "react-native-modalfy";
@@ -36,7 +35,6 @@ import {
   getProcedureById,
   getUserCall,
   removeQuotationCall,
-  updateCaseQuotationStatus,
   updateChargeSheet,
   withdrawChargeSheetChangesCall,
 } from "../../api/network";
@@ -116,7 +114,6 @@ const overlayMenu = [
 
 const { name: initialMenuItem, overlayTabs: initialCurrentTabs } =
   overlayMenu[0];
-const initialSelectedTab = initialCurrentTabs[0];
 
 function CasePage({
   auth = {},
@@ -146,14 +143,11 @@ function CasePage({
 
   const { caseId } = route.params;
 
-  const [isFloatingActionDisabled, setFloatingAction] = useState(false); // TO-DO: Are these to be used somewhere?
-  const [updateInfo, setUpdateInfo] = useState([]); // TO-DO: Are these to be used somewhere?
   const [selectedQuoteIds, setSelectedQuoteIds] = useState([]);
   const [selectedInvoiceIds, setSelectedInvoiceIds] = useState([]);
 
   const [currentTabs, setCurrentTabs] = useState(initialCurrentTabs);
   const [selectedMenuItem, setSelectedMenuItem] = useState(initialMenuItem);
-  const [status, setStatus] = useState("");
 
   const [pageState, setPageState] = useState({
     isEditMode: false,
@@ -173,27 +167,7 @@ function CasePage({
     fetchUser(authInfo?.user_id);
   }, []);
 
-  const { startTime: appointmentStartTime, endTime: appointmentEndTime } =
-    caseFile.caseProcedures?.[0].appointment ?? {};
-
-  useEffect(() => {
-    const info = getProgressStatus(appointmentStartTime, appointmentEndTime);
-    setStatus(info);
-  }, [appointmentStartTime, appointmentEndTime]);
-
-  const getProgressStatus = (startTime, endTime) => {
-    const now = moment();
-    const start = moment(startTime);
-    const end = moment(endTime);
-
-    if (now.isBefore(start)) {
-      return "Not Yet Started";
-    }
-    if (now.isBefore(end)) {
-      return "In Progress";
-    }
-    return "Ended";
-  };
+  const { status } = caseFile.caseProcedures?.[0].appointment ?? {};
 
   const handleTabPressChange = (tab) => {
     if (!pageState.isEditMode) {
@@ -212,10 +186,6 @@ function CasePage({
     setSelectedMenuItem(menuItem);
     setCurrentTabs(currentTabs);
     setSelectedTabRdx(selectedTab);
-  };
-
-  const handleEditDone = (data) => {
-    setUpdateInfo(data);
   };
 
   const setPageLoading = (value) => {
@@ -305,7 +275,6 @@ function CasePage({
 
   const onPreviewInvoice = () => {
     const billingData = getBillingData();
-    const { total = 0 } = getBillingData(); //To-do: should this be used?
 
     /**
      * Prepare Report Preview details from ChargeSheet data.
@@ -359,11 +328,9 @@ function CasePage({
 
   const onApplyDiscount = () => {
     const onCancel = () => {
-      setFloatingAction(false);
       modal.closeAllModals();
     };
     const onClose = () => {
-      setFloatingAction(false);
       modal.closeAllModals();
     };
     modal.closeAllModals();
@@ -380,13 +347,11 @@ function CasePage({
           <PayBalanceItem
             onAddPay={handlePayment}
             onCancel={() => {
-              setFloatingAction(false);
               modal.closeAllModals();
             }}
           />
         ),
         onClose: () => {
-          setFloatingAction(false);
           modal.closeAllModals();
         },
       });
@@ -402,13 +367,11 @@ function CasePage({
           <PayBalanceItem
             onAddPay={(data) => handleInvoicePayment(invoiceId, data)}
             onCancel={() => {
-              setFloatingAction(false);
               modal.closeAllModals();
             }}
           />
         ),
         onClose: () => {
-          setFloatingAction(false);
           modal.closeAllModals();
         },
       });
@@ -466,13 +429,10 @@ function CasePage({
   const onRiskUpdate = () => fetchCase(caseId);
 
   const toggleActionButton = () => {
-    setFloatingAction(true);
     modal.openModal("ActionContainerModal", {
       actions: getFabActions(),
       title: "CASE ACTIONS",
-      onClose: () => {
-        setFloatingAction(false);
-      },
+      onClose: () => {},
     });
   };
 
@@ -899,8 +859,6 @@ function CasePage({
           break;
         }
         case "Quotation": {
-          // Generate Actions depending on the quotation that was selected.
-
           if (selectedQuoteIds.length === 1) {
             const quotation = selectedQuoteIds[0];
             const removeQuotations = (
@@ -923,8 +881,6 @@ function CasePage({
                 onPress={() => downloadQuotationDocument(quotation)}
               />
             );
-
-            console.log("selected quote id", quotation);
 
             floatingAction.push(removeQuotations);
             floatingAction.push(downloadQuotation);
@@ -1331,7 +1287,6 @@ function CasePage({
       args,
     };
 
-    // build args to pass to document generation endpoint; pass result of that endpoint to downloadAsync
     try {
       modal.closeModals("ActionContainerModal");
       setPageLoading(true);
@@ -1389,7 +1344,6 @@ function CasePage({
       procedures: [],
     };
 
-    // todo: eval what's actually needed here
     for (const proceduresBillableItem of proceduresBillableItems) {
       const {
         lineItems = [],
@@ -1683,7 +1637,6 @@ function CasePage({
           <ChargeSheet
             chargeSheet={chargeSheet}
             chargeSheetApproval={chargeSheetApproval}
-            handleEditDone={handleEditDone}
             handleInvoices={handleInvoices}
             handleQuotes={handleQuotes}
             invoices={invoices}
