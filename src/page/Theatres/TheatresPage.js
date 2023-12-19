@@ -1,26 +1,18 @@
-import React, {useEffect, useState} from 'react';
-import {ActivityIndicator, View} from 'react-native';
 import moment from 'moment';
-import {forEach} from 'lodash';
-import styled, {css} from '@emotion/native';
-import {useTheme} from 'emotion-theming';
-import SlideOverlay from '../../components/common/SlideOverlay/SlideOverlay';
-import InventoryGeneralTabContent from '../../components/OverlayTabs/InventoryGeneralTabContent';
-import TheatresDetailsTab from '../../components/OverlayTabs/TheatresDetailsTab';
-import {getTheatreById} from '../../api/network';
-import ProceduresEquipmentTab from '../../components/OverlayTabs/ProceduresEquipmentTab';
+import React, { useEffect, useState } from 'react';
+import { View } from 'react-native';
+import { getTheatreById } from '../../api/network';
 import EquipmentsTab from '../../components/OverlayTabs/EquipmentsTab';
-import PaginatedSchedule from '../../components/PaginatedSchedule';
-import StorageLocationsTab from '../../components/OverlayTabs/StorageLocationsTab';
 import HistoryTabs from '../../components/OverlayTabs/HistoryTabs';
-import {formatDate} from '../../utils/formatter';
-import BottomSheetContainer from '../../components/common/BottomSheetContainer';
-import {PageContext} from '../../contexts/PageContext';
+import StorageLocationsTab from '../../components/OverlayTabs/StorageLocationsTab';
+import TheatresDetailsTab from '../../components/OverlayTabs/TheatresDetailsTab';
+import PaginatedSchedule from '../../components/PaginatedSchedule';
 import DetailsPage from '../../components/common/DetailsPage/DetailsPage';
 import TabsContainer from '../../components/common/Tabs/TabsContainerComponent';
+import { PageContext } from '../../contexts/PageContext';
+import { formatDate } from '../../utils/formatter';
 
 function TheatresPage({route, navigation}) {
-    const theme = useTheme();
     const currentTabs = [
         'Details',
         'History',
@@ -31,14 +23,13 @@ function TheatresPage({route, navigation}) {
     const {theatre, reloadTheatres, tab} = route.params;
 
     const updateTheatre =  route.params.updateTheatre;
-    // ##### States
+
     const [currentTab, setCurrentTab] = useState(currentTabs[0]);
     const [selectedTheatre, setTheatre] = useState(theatre);
     const [pageState, setPageState] = useState({});
 
     const {isEditMode} = pageState;
-    // ##### Lifecycle Methods
-
+   
     tab ? useEffect(() => {
         setTimeout(() => {
             fetchTheatre(theatre._id);
@@ -53,8 +44,6 @@ function TheatresPage({route, navigation}) {
         }, 200);
     }, []);
 
-    // ##### Event Handlers
-
     const onTabPress = selectedTab => {
         if (!isEditMode) setCurrentTab(selectedTab);
     };
@@ -68,12 +57,10 @@ function TheatresPage({route, navigation}) {
     };
 
     const onBackTapped = () => {
-        console.log('tapped the back arrow');
         navigation.navigate('Theatres');
     };
 
     const onDetailsUpdated = updates => {
-        // hello???
         setTheatre({
             ...selectedTheatre,
             name: updates.name,
@@ -141,7 +128,7 @@ function TheatresPage({route, navigation}) {
                 />;
             }
             case 'History': {
-                // console.log("Cases: ", selectedTheatre.cases)
+                
                 const cases = selectedTheatre.cases.map(caseItem => {
                     const end = caseItem.endTime;
                     const start = caseItem.startTime;
@@ -171,7 +158,6 @@ function TheatresPage({route, navigation}) {
                         critical: 0
                     };
 
-                    // get the total stock and levels
                     inventoryLocations.map(inventoryLocation => {
                         stock += inventoryLocation.stock;
 
@@ -216,7 +202,7 @@ function TheatresPage({route, navigation}) {
                             endTime
                         };
 
-                        if (equipmentTypeIndex < 0) { // add to equipments array
+                        if (equipmentTypeIndex < 0) { 
                             equipments.push({
                                 _id: equipmentTypeId,
                                 appointmentId,
@@ -228,47 +214,6 @@ function TheatresPage({route, navigation}) {
                         }
                     }
                 });
-
-                const array = [
-                    {
-                        appointmentId: '5f75e79e488941fbfe16fcf3',
-                        equipmentTypeId: '5ea059269c2d1f6e55deb714',
-                        equipmentTypeName: 'Stethoscope',
-                        equipments: [
-                            {
-                                endTime: '2020-10-05T14:28:43.065Z',
-                                equipmentId: '5ea0736698454a945321009d',
-                                equipmentName: 'Stethoscopes 3',
-                                startTime: '2020-10-02T14:28:43.065Z',
-                                status: 'Available',
-                                equipmentTypeId: '5ea059269c2d1f6e55deb714'
-                            },
-                        ],
-                    },
-                    {
-                        appointmentId: '5f75e787488941fbfe16fcf1',
-                        equipmentTypeId: '5ea058fb706b105f13cc93d2',
-                        equipmentTypeName: 'MRI',
-                        equipments: [
-                            {
-                                endTime: '2020-10-05T14:28:16.504Z',
-                                equipmentId: '5ea07336dfb0da52b0ebd730',
-                                equipmentName: 'MRI 2',
-                                startTime: '2020-10-02T14:28:16.504Z',
-                                status: 'Available',
-                                equipmentTypeId: '5ea058fb706b105f13cc93d2'
-                            },
-                            {
-                                endTime: '2020-10-04T05:00:00.000Z',
-                                equipmentId: '5ea0733121bc5060f5317006',
-                                equipmentName: 'MRI 1',
-                                startTime: '2020-10-01T05:00:00.000Z',
-                                status: 'Available',
-                                equipmentTypeId: '5ea058fb706b105f13cc93d2'
-                            },
-                        ],
-                    },
-                ];
 
                 return <EquipmentsTab equipments={equipments}/>;
             }
@@ -284,11 +229,11 @@ function TheatresPage({route, navigation}) {
             case 'Details':
                 return false;
             case 'History':
-                return false;
+                return true;
             case 'Storage':
-                return false;
+                return true;
             case 'Equipment':
-                return false;
+                return true
             case 'Schedule':
                 return true;
             default:
@@ -304,7 +249,7 @@ function TheatresPage({route, navigation}) {
             })
             .catch(error => {
                 console.log('Failed to get theatre', error);
-                //TODO handle error cases.
+                
             })
             .finally(_ => {
                 setPageLoading(false);
@@ -339,8 +284,5 @@ function TheatresPage({route, navigation}) {
         </>
     );
 }
-
-TheatresPage.propTypes = {};
-TheatresPage.defaultProps = {};
 
 export default TheatresPage;
