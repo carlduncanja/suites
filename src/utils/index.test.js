@@ -1,4 +1,8 @@
-import { calculateProcedureOvertime } from ".";
+import {
+  calculateProcedureOvertime,
+  validateAddressField,
+  validateNameField,
+} from ".";
 describe("Calculate procedure overTime test", () => {
   it("procedure overtime for local anaesthesia should be zero when duration is equal to estimated duration", () => {
     const type = "localAnaesthesia";
@@ -151,5 +155,51 @@ describe("Calculate procedure overTime test", () => {
       anaesthesiaCost
     );
     expect(overTime).toStrictEqual({ overtimeCost: 250, procedureHours: 3.5 });
+  });
+});
+
+describe("Validate name field", () => {
+  it("name validation should pass when there is no special characters", () => {
+    const name = "Mary";
+    const nameValidation = validateNameField(name);
+    expect(nameValidation).toBe(true);
+  });
+
+  it("name validation should fail when there is a $ in name", () => {
+    const name = "Mary$";
+    const nameValidation = validateNameField(name);
+    expect(nameValidation).toBe(false);
+  });
+
+  it("name validation should fail if it has a digit", () => {
+    const name = "Mary28483294";
+    const nameValidation = validateNameField(name);
+    expect(nameValidation).toBe(false);
+  });
+
+  it("name validation should pass if it contains a hyphen, white space and letters only ", () => {
+    const name = "Mary -brownGirl";
+    const nameValidation = validateNameField(name);
+    expect(nameValidation).toBe(true);
+  });
+});
+
+describe("Validate address field", () => {
+  it("address validation passes if it contains #", () => {
+    const address = "Adress line #2345";
+    const addressValidation = validateAddressField(address);
+    expect(addressValidation).toBe(true);
+  });
+
+  it("address validation fails if it contains $, %, &", () => {
+    const address = "Adress line #2$$%&45";
+    const addressValidation = validateAddressField(address);
+    expect(addressValidation).toBe(false);
+  });
+
+  it("address validation passes if it has no characters ", () => {
+    const address = "";
+    const addressValidation = validateAddressField(address);
+    expect(addressValidation).toBe(true);
   });
 });

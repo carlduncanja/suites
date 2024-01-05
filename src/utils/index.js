@@ -103,3 +103,13 @@ export function calculateProcedureOvertime(
     };
   }
 }
+
+export function validateNameField(name) {
+  const regex = /^[a-zA-Z\-\ ]{0,30}$/;
+  return regex.test(name);
+}
+
+export function validateAddressField(address) {
+  const regex = /^[a-zA-Z0-9\-\,\#\.\ ]{0,100}$/;
+  return regex.test(address);
+}
