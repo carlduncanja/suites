@@ -171,9 +171,9 @@ const SchedulePage = (props) => {
     };
 
     const handleOnGoToToday = () => { 
-        
+
         const currentDate = new Date();
-        const date = formatDate(currentDate, "YYYY-MM-DD").toString();
+        const date =  formatDate(currentDate, "YYYY-MM-DD").toString();
         const currentDaysList = getDaysForMonth(currentDate);
 
         setDaysList(getDaysForMonth(currentDate));
