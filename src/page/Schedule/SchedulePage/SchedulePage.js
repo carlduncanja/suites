@@ -170,7 +170,8 @@ const SchedulePage = (props) => {
         setSectionListIndex(indexOfSelected);
     };
 
-    const handleOnGoToToday = () => {
+    const handleOnGoToToday = () => { 
+        
         const currentDate = new Date();
         const date = formatDate(currentDate, "YYYY-MM-DD").toString();
         const currentDaysList = getDaysForMonth(currentDate);
