@@ -56,17 +56,6 @@ const SchedulePage = (props) => {
     const [userPermissions, setUserPermissions] = useState({});
     const newProcedure = userPermissions.procedures?.create;
 
-    const fetchUser = (id) => {
-        getUserCall(id)
-            .then((data) => {
-                setUserPermissions(data.role?.permissions || {});
-            })
-            .catch((error) => {
-                console.error("fetch.user.failed", error);
-            })
-            .finally();
-    };
-
     useEffect(() => {
         fetchUser(id);
     }, []);
@@ -109,14 +98,16 @@ const SchedulePage = (props) => {
     const [showPrintOptions, setShowPrintOptions] = useState(false);
 
     const [searchOpen, setSearchOpen] = useState(false);
-    const [isExpanded, setisExpanded] = useState(false);
+    const [isExpanded, setisExpanded] = useState(false); 
+
+    const [flag, setFlag] = useState(false);
+    const [currentAppointment, setCurrentAppointment] = useState({});
 
     useEffect(() => {
         fetchAppointments();
     }, [appointmentsEndDate, appointmentsStartDate]);
 
     useEffect(() => {
-        console.log("filtered appointments state has:", filteredAppointments);
         checkedRadioButton === "" ? fetchAppointments() : filter(appointments);
     }, [checkedRadioButton]);
 
@@ -132,7 +123,19 @@ const SchedulePage = (props) => {
         item.valueOf() === checkedRadioButton.valueOf()
             ? setCheckedButton("")
             : setCheckedButton(item);
+    }; 
+
+    const fetchUser = (id) => {
+        getUserCall(id)
+            .then((data) => {
+                setUserPermissions(data.role?.permissions || {});
+            })
+            .catch((error) => {
+                console.error("fetch.user.failed", error);
+            })
+            .finally();
     };
+
 
     const fetchAppointments = () => {
         setFetchingAppointments(true);
@@ -198,8 +201,7 @@ const SchedulePage = (props) => {
             setAppointmentsStartDate(newStartDate);
         }
     };
-    const [flag, setFlag] = useState(false);
-    const [currentAppointment, setCurrentAppointment] = useState({});
+    
 
     const handleAppointmentPress = (appointment) => {
         modal.openModal("BottomSheetModal", {
@@ -235,12 +237,13 @@ const SchedulePage = (props) => {
         }
     }, [flag, currentAppointment]);
 
-    const handleNewProcedurePress = () => {
+    const handleNewProcedurePress = (Date) => {   
+        
         modal.openModal("BottomSheetModal", {
             content: (
                 <NewProcedureOverlayContainer
                     handleScheduleRefresh={handleScheduleRefresh}
-                    passedDate={selectedDay}
+                    passedDate={Date}
                 />
             ),
             initialSnap: 2,
