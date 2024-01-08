@@ -20,8 +20,8 @@ eas-build:
     # - yarn install
     # - npx eas-cli build --platform ios --non-interactive
     - echo "TEST PASSED"
-  rules:
-    - if: '$CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "staging"'
-    - if: $CI_MERGE_REQUEST_APPROVED
+  # rules:
+  #   - if: '$CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "staging"'
+  #   - if: $CI_MERGE_REQUEST_APPROVED
   only:
     - staging
