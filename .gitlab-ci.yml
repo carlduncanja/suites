@@ -22,4 +22,6 @@ eas-build:
     - echo "TEST PASSED"
   rules:
     - if: '$CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "staging"'
-    - if: "$CI_COMMIT_MESSAGE =~ /See merge request/"
+    - if: $CI_MERGE_REQUEST_APPROVED
+  only:
+    - staging
