@@ -11,7 +11,7 @@ unit-test:
   rules:
     - if: '$CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "master"'
     - if: '$CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "develop"'
-    - if: '$CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "staging"'
+    - if: '$CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "story-3022"'
 
 eas-build:
   stage: build
