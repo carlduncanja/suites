@@ -1,27 +1,12 @@
-stages:
-  - test
-  - build
-
 unit-test:
   stage: test
   image: node:latest
   script:
+    - echo "Running unit tests"
     - yarn install
     - npx jest --coverage
+    - echo "test completed!"
   rules:
     - if: '$CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "master"'
     - if: '$CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "develop"'
-    - if: '$CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "story-3022"'
-
-eas-build:
-  stage: build
-  image: node:latest
-  script:
-    # - yarn install
-    # - npx eas-cli build --platform ios --non-interactive
-    - echo "TEST PASSED"
-  # rules:
-  #   - if: '$CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "staging"'
-  #   - if: $CI_MERGE_REQUEST_APPROVED
-  only:
-    - staging
+    - if: '$CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "staging"'
