@@ -113,7 +113,7 @@ Follow the following steps for setting up this project on ur local maching.
 - If you still have issues please refer to the following link and the current suites team 
    - (https://blog.yogeshchavan.dev/automatically-format-code-on-file-save-in-visual-studio-code-using-prettier)
 
-## Building the archive (.ipa) locally
+## How to setup your local environment to build a Suites .ipa file
 
 1.	Install Fastlane: https://docs.fastlane.tools/getting-started/ios/setup/
 2.	Install Cocoapods: https://formulae.brew.sh/formula/cocoapods
