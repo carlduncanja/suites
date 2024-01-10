@@ -112,3 +112,18 @@ Follow the following steps for setting up this project on ur local maching.
       - Search "Format on Paste" and "Format on Save" in the searchbar and click the option box on each
 - If you still have issues please refer to the following link and the current suites team 
    - (https://blog.yogeshchavan.dev/automatically-format-code-on-file-save-in-visual-studio-code-using-prettier)
+
+## Building the archive (.ipa) locally
+
+1.	Install Fastlane: https://docs.fastlane.tools/getting-started/ios/setup/
+2.	Install Cocoapods: https://formulae.brew.sh/formula/cocoapods
+3.	Install eas-cli: https://www.npmjs.com/package/eas-cli 
+4.	Download the Distribution certificate from expo.dev
+5.	Download AppleWWDRCAG3.cer from https://www.apple.com/certificateauthority/ or another verified source.
+6.	Open “LaunchPad” and then search for “Keychain Access”
+7.	Add the Distribution certificate and the AppleWWDRCAG3.cer under the “Login” section.
+8.	When you are prompted for the password for DistCertCredentials_ZUUUVP6233.p12 , enter the password in the DistCertCredentials_ZUUUVP6233.md file 
+9.	Delete the “projectId” key from the app.json file.
+10. Increment the patch number by one for the “version” and “buildNumber” from the app.json file
+11. Run `eas build - -local - -platform ios
+12. When the prompt which says "codesign wants to sign using key...", enter the password you use to login on your laptop and select “Always Allow”.
