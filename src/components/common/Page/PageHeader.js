@@ -77,6 +77,7 @@ function PageHeader({
       description: appointmentObj.description,
       subject: appointmentObj.subject,
       startTime: appointmentObj.startTime,
+      status: "Ended",
       endTime: data,
       title: appointmentObj.title,
       location: appointmentObj.appLocation,
