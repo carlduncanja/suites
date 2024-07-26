@@ -1,8 +1,7 @@
 import React, {useState} from 'react';
 import PropTypes from 'prop-types';
 import {View, TextInput, StyleSheet, TouchableOpacity, Text} from 'react-native';
-import DatePicker from 'react-native-datepicker';
-import RNDatePicker from '@react-native-community/datetimepicker';
+import DateTimePicker from '@react-native-community/datetimepicker';
 import {useTheme} from 'emotion-theming';
 import Styled from '@emotion/native';
 import ClearIcon from '../../../../assets/svg/clearIcon';
@@ -70,44 +69,15 @@ function DateInputField({
                     alignItems: 'center',
                 }}
             >
-                <DatePicker
-                    style={{
-                        flex: 1,
-                        height: 32
-                    }}
-                    date={value}
-                    mode={mode}
-                    format={format}
-                    disabled={!enabled}
-                    placeholder={placeholder}
-                    minDate={minDate}
-                    maxDate={maxDate}
-                    iconComponent={<View/>}
-                    confirmBtnText="Confirm"
-                    cancelBtnText="Cancel"
-                    minuteInterval={minuteInterval}
-                    customStyles={{
-                        dateInput: {
-                            ...styles.inputWrapper,
-                            flex: 1,
-                            backgroundColor: theme.colors['--default-shade-white'],
-                            borderColor: hasBorder ? theme.colors[borderColor] : null,
-                            justifyContent: 'center',
-                            alignSelf: 'flex-start',
-                            borderWidth: hasBorder ? 1 : null,
-                            borderRadius: 4,
-                            height: 32,
-                            padding: 4,
-                            paddingLeft: 12,
-                            paddingRight: 12,
-                            marginBottom: 0,
-                            textOverflow: 'ellipsis'
-                        },
-                        disabled: {backgroundColor: theme.colors['--color-gray-100']}
-                    }}
-                    onDateChange={handleOnDateChange}
-                    iOSDatePickerComponent={(props) => (<RNDatePicker {...props} display={Platform.OS === 'ios' ? 'spinner' : 'default' }/>)}
-                />
+
+            <DateTimePicker
+            testID="dateTimePicker"
+            value={value == undefined ? new Date() : new Date(value)}
+            mode={mode}
+            is24Hour={true}
+            display="default"
+            onChange={handleOnDateChange}
+            />
 
                 {
                     hasError &&

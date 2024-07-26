@@ -124,6 +124,7 @@ const Equipment = (props) => {
     onPressChild,
     onPressGrandparent,
     onPressParent,
+    numParentsChecked,
   } = useGetCheckboxUtils(equipmentTypes, "equipments");
 
   useEffect(() => {

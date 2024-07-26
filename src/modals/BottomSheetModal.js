@@ -1,144 +1,74 @@
-import React, { useContext, useRef, useState, useEffect } from 'react';
+import React, { useContext, useRef, useState, useEffect, useCallback } from 'react';
 import {
     View,
     TouchableWithoutFeedback,
     StyleSheet,
     Dimensions
-} from "react-native";
-import Animated from 'react-native-reanimated'
+} from 'react-native';
+import BottomSheet from '@gorhom/bottom-sheet';
 import { SuitesContext } from '../contexts/SuitesContext';
-import BottomSheet from 'reanimated-bottom-sheet'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 const BottomSheetModal = (props) => {
     const {
         modal: {
             closeModal,
-            closeModals,
-            currentModal,
-            closeAllModals,
             params
         }
     } = props;
 
     const [state] = useContext(SuitesContext);
-    const dimensions = Dimensions.get("window");
-    const scroll = useRef()
-    const bottomSheetRef = useRef();
+    const dimensions = Dimensions.get('window');
+    const scroll = useRef();
+    const bottomSheetRef = useRef(null);
 
-    const [fall] = useState(new Animated.Value(1));
-
-    const calcSnapPoints = [dimensions.height, dimensions.height, 0];
-    const initialSnap = params.initialSnap || 2;
-    const snapPoints = params.snapPoints || calcSnapPoints;
-
+    const snapPoints = ['25%', '50%', '90%'];
 
     useEffect(() => {
-        if (bottomSheetRef) bottomSheetRef.current.snapTo(0);
+        // Open modal on mount
+        if (bottomSheetRef.current) {
+            bottomSheetRef.current.expand();
+        }
     }, []);
 
-    const getSnapPoints = () => {
-        // return [ dimensions.height || 500 * .5,  0]
-        const { height } = Dimensions.get("window");
-        return [height - 100, height - 200, 0]
-    };
-
     const closeBottomSheet = () => {
-        console.log("closeBottomSheet")
-        bottomSheetRef.current.snapTo(initialSnap);
+        if (bottomSheetRef.current) {
+            bottomSheetRef.current.close();
+        }
     };
 
-    const onCloseEnd = () => {
-        console.log("on close end");
-        closeModal()
-    };
+    const handleSheetChanges = useCallback((index) => {
+        if (index === -1) {
+            closeModal();
+        }
+    }, [closeModal]);
 
-    const onOpenEnd = () => {
-
-    };
-
-    const renderContent = () => () => {
-        return <View style={{
-            height: '100%',
-            width: '100%',
-            backgroundColor: 'white',
-            zIndex: 2,
-            //position: 'absolute'
-        }}>
-            {params.content}
-        </View>
-    };
-
-    const renderShadow = () => {
-        const animatedShadowOpacity = fall.interpolate({
-            inputRange: [0, 0.5, 1],
-            outputRange: [0.3, 0.2, 0]
-        });
-
+    const renderContent = () => {
         return (
-            <TouchableWithoutFeedback
-                onPress={closeBottomSheet}
-            >
-                <Animated.View
-                    pointerEvents={'auto'}
-                    style={[
-                        styles.shadowContainer,
-                        {
-                            opacity: animatedShadowOpacity,
-                        },
-                    ]}
-                />
-            </TouchableWithoutFeedback>
-        )
+            <View style={styles.contentContainer}>
+                {params.content}
+            </View>
+        );
     };
 
     return (
         <KeyboardAwareScrollView
             ref={scroll}
-            onKeyboardWillShow={(frames => { scroll?.current?.scrollToPosition(0, 200) })}
-            //style={{position:"absolute"}}
+            onKeyboardWillShow={() => scroll?.current?.scrollToPosition(0, 200)}
             extraScrollHeight={100}
         >
             <View style={[styles.modalContainer, { width: dimensions.width, height: state.pageMeasure.height }]}>
-                {renderShadow()}
-
-                <View style={[
-                    styles.bottomSheetContainer,
-                    {
-                        flex: 1,
-                        width: state.pageMeasure.width,
-                        height: state.pageMeasure.height
-                    }
-                ]}>
-                    <TouchableWithoutFeedback onPress={closeBottomSheet}>
-                        <View style={{ ...StyleSheet.absoluteFillObject, }} />
-                    </TouchableWithoutFeedback>
-
-                    <BottomSheet
-
-                        pointerEvents={'none'}
-                        ref={bottomSheetRef}
-                        snapPoints={snapPoints}
-                        initialSnap={initialSnap}
-                        callbackNode={fall}
-                        borderRadius={14}
-                        renderContent={renderContent()}
-                        onCloseEnd={onCloseEnd}
-                        onOpenEnd={onOpenEnd}
-                        renderHeader={() =>
-                            <View
-                                style={{
-                                    height: 8,
-                                    alignSelf: 'center',
-                                    width: 50,
-                                    backgroundColor: 'white',
-                                    borderRadius: 4,
-                                    marginBottom: 14
-                                }}
-                            />
-                        }
-                    />
-                </View>
+                <TouchableWithoutFeedback onPress={closeBottomSheet}>
+                    <View style={styles.shadowContainer} />
+                </TouchableWithoutFeedback>
+                <BottomSheet
+                    ref={bottomSheetRef}
+                    index={0}
+                    snapPoints={snapPoints}
+                    onChange={handleSheetChanges}
+                >
+                    {renderContent()}
+                </BottomSheet>
             </View>
         </KeyboardAwareScrollView>
     );
@@ -148,21 +78,27 @@ export default BottomSheetModal;
 
 const styles = StyleSheet.create({
     modalContainer: {
-        //position: 'absolute',
         flex: 1,
-        alignItems: "flex-end",
-        // justifyContent:'flex-end',
+        alignItems: 'flex-end',
     },
     shadowContainer: {
         ...StyleSheet.absoluteFillObject,
         backgroundColor: '#000',
-        // flex: 1,
-        position: "absolute",
+        opacity: 0.3,
+        position: 'absolute',
         width: '100%',
-        height: '100%'
+        height: '100%',
     },
-    bottomSheetContainer: {
-        alignItems: 'flex-end'
-    }
-
+    bottomSheetContent: {
+        backgroundColor: 'white',
+        padding: 20,
+        borderTopLeftRadius: 14,
+        borderTopRightRadius: 14,
+        minHeight: 150,
+    },
+    contentContainer: {
+        height: '100%',
+        width: '100%',
+        backgroundColor: 'white',
+    },
 });
