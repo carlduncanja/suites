@@ -94,10 +94,8 @@ function InventoryStorageLocationsTab({
                 'OverlayModal',
                 {
                     content: <TransferItemDialog
-                        // onCreated={(item) => onItemPress(item)()}
                         variant={variant}
                         selectedLocation={fromLocation}
-                        // groupId = {groupId}
                         onCreated={() => { setFloatingAction(false); onUpdateItem(); setSelectedItems([]); }}
                         onCancel={() => setFloatingAction(false)}
                     />,
@@ -128,7 +126,6 @@ function InventoryStorageLocationsTab({
     };
 
     const handleOnCheckBoxPress = (item) => () => {
-        // console.log("Item: ", item);
         const {_id} = item;
         let updatedItems = checkboxItemPress(_id, selectedItems);
 
