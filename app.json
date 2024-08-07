@@ -3,7 +3,9 @@
     "name": "Suites",
     "slug": "smsja-suites",
     "privacy": "public",
-    "platforms": ["ios"],
+    "platforms": [
+      "ios"
+    ],
     "version": "2.2.0",
     "orientation": "portrait",
     "icon": "./assets/MedopsLogo.png",
@@ -15,7 +17,9 @@
     "updates": {
       "fallbackToCacheTimeout": 0
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.smsja.suites",
@@ -26,7 +30,7 @@
     },
     "extra": {
       "eas": {
-        "projectId": "36952d6f-ced1-4294-bfa8-2e20e9226601"
+        "projectId": "9c2562ca-7117-495d-881f-f1a4e5b76a8c"
       }
     }
   }

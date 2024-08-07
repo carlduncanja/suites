@@ -11,9 +11,7 @@ import LevelIndicator from "../../components/common/LevelIndicator/LevelIndicato
 import LongPressWithFeedback from "../../components/common/LongPressWithFeedback";
 import ActionItem from "../../components/common/ActionItem";
 import ActionContainer from "../../components/common/FloatingAction/ActionContainer";
-import CreateInventoryDialogContainer from "../../components/Inventory/CreateInventoryDialogContainer";
 import CollapsibleListItem from "../../components/common/List/CollapsibleListItem";
-import CreateInventoryGroupDialogContainer from "../../components/Inventory/CreateInventoryGroupDialogContainer";
 import NavPage from "../../components/common/Page/NavPage";
 import Item from "../../components/common/Table/Item";
 import DataItem from "../../components/common/List/DataItem";
@@ -35,7 +33,6 @@ import { setInventory } from "../../redux/actions/InventorActions";
 import {
   getInventoriesGroup,
   getInventoriesGroupBulkUploadRequest,
-  removeInventoryGroup,
   removeInventoryGroups,
   removeInventoryVariants,
 } from "../../api/network";
@@ -66,7 +63,6 @@ function Inventory(props) {
   const [isFloatingActionDisabled, setFloatingAction] = useState(false);
 
   const [selectedIds, setSelectedIds] = useState([]);
-  //   const [selectedVariants, setSelectedVariants] = useState([]);
 
   const [searchValue, setSearchValue] = useState("");
   const [searchResults, setSearchResult] = useState([]);
