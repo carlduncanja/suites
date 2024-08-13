@@ -1,6 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import PropTypes from 'prop-types';
-import {View, StyleSheet, Text, Switch, Picker, Alert, TouchableOpacity} from "react-native";
+import {View} from "react-native";
 import OverlayDialog from "../common/Dialog/OverlayDialog";
 import {useModal} from "react-native-modalfy";
 import DialogTabs from "../common/Dialog/DialogTabs";
@@ -12,7 +11,6 @@ import Row from '../common/Row';
 import FieldContainer from '../common/FieldContainerComponent';
 import OverlayDialogContent from '../common/Dialog/OverlayContent';
 import ConfirmationComponent from '../ConfirmationComponent';
-import { css } from '@emotion/native';
 
 
 
@@ -77,7 +75,6 @@ import { css } from '@emotion/native';
                 const results = data.map(item => ({
                     ...item
                 }));
-
                 setStorageSearchResult(results || []);
 
             })
@@ -248,7 +245,6 @@ import { css } from '@emotion/native';
     const detailsTab = (
         <>
             <Row>
-
                 <FieldContainer maxWidth='100%'>
                     <SearchableOptionsField
                         label={"Storage"}
@@ -258,9 +254,6 @@ import { css } from '@emotion/native';
                         onChangeText={value => {setStorageSearchValue(value); }}
                         onClear={
                             onDestinationSelected
-                            // console.log("Clearing");
-                            // onFieldChange('to')('');
-                            // setStorageSearchValue('');
                         }
                         options={storageSearchResults}
                         handlePopovers = {()=>{}}
