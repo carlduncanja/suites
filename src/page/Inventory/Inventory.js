@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback} from "react";
 import { View, StyleSheet, Text, FlatList, ScrollView } from "react-native";
 
 import { connect } from "react-redux";
@@ -27,6 +27,8 @@ import WasteIcon from "../../../assets/svg/wasteIcon";
 import TransferIcon from "../../../assets/svg/transferIcon";
 import AddIcon from "../../../assets/svg/addIcon";
 import ExportIcon from "../../../assets/svg/exportIcon";
+import { useFocusEffect } from '@react-navigation/native';
+
 
 import { numberFormatter } from "../../utils/formatter";
 import { setInventory } from "../../redux/actions/InventorActions";
@@ -81,6 +83,14 @@ function Inventory(props) {
   const [pageSettingState, setPageSettingState] = useState({});
 
   // ##### Lifecycle Methods
+
+
+useFocusEffect(
+  useCallback(() => {
+    fetchInventory(currentPagePosition);
+    return () => {};
+  }, [currentPagePosition])
+);
 
   useEffect(() => {
     if (!inventory.length) fetchInventory(currentPagePosition);
