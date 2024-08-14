@@ -128,7 +128,7 @@ function EquipmentGroupDetailsPage(props) {
         modal.closeModals("ConfirmationModal");
         props.navigation.navigate("Equipment");
         onCreated();
-    }
+    };
 
     const onConfirmSave = () => {
         modal.closeModals('ConfirmationModal');

@@ -71,7 +71,7 @@ function InventoryGroupGeneral({
             categories.length == 0 && setCategories(data.data)
         })
             .catch(error => {
-                console.log('Unable to retrieve iventory category items: ', error);
+                console.log('Unable to retrieve inventory category items: ', error);
             });
     };
 
