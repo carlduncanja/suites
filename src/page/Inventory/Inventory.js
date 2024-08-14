@@ -28,6 +28,8 @@ import WasteIcon from "../../../assets/svg/wasteIcon";
 import TransferIcon from "../../../assets/svg/transferIcon";
 import AddIcon from "../../../assets/svg/addIcon";
 import ExportIcon from "../../../assets/svg/exportIcon";
+import { useFocusEffect } from '@react-navigation/native';
+
 
 import { numberFormatter } from "../../utils/formatter";
 import { setInventory } from "../../redux/actions/InventorActions";
