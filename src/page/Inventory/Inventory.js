@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { View, StyleSheet, Text, FlatList, ScrollView } from "react-native";
 
 import { connect } from "react-redux";
 import { useModal } from "react-native-modalfy";
 import styled, { css } from "@emotion/native";
 import { useTheme } from "emotion-theming";
+import { useFocusEffect } from '@react-navigation/native';
 import _ from "lodash";
 import IconButton from "../../components/common/Buttons/IconButton";
 import LevelIndicator from "../../components/common/LevelIndicator/LevelIndicator";
@@ -82,6 +83,13 @@ function Inventory(props) {
 
   // ##### Lifecycle Methods
 
+  useFocusEffect(
+    useCallback(() => {
+      fetchInventory(currentPagePosition);
+      return () => {};
+    }, [currentPagePosition])
+  );
+
   useEffect(() => {
     if (!inventory.length) fetchInventory(currentPagePosition);
     setTotalPages(Math.ceil(inventory.length / recordsPerPage));
@@ -119,6 +127,8 @@ function Inventory(props) {
     onPressChild,
     onPressGrandparent,
     onPressParent,
+    checkboxState,
+    setCheckboxState
   } = useGetCheckboxUtils(inventory, "variants");
 
   const selectedVariants = getSelectedChildren();
@@ -151,7 +161,6 @@ function Inventory(props) {
       groupId: parentItem?._id,
       groupName: parentItem?.name,
     };
-    // console.log("Updated item: ", updatedItem);
     navigation.navigate("InventoryVariantPage", {
       screen: "InventoryVariantPage",
       initial: false,

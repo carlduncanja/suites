@@ -4,6 +4,8 @@ import {View, TextInput, StyleSheet, TouchableOpacity, Text} from 'react-native'
 import DateTimePicker from '@react-native-community/datetimepicker';
 import {useTheme} from 'emotion-theming';
 import Styled from '@emotion/native';
+import { format as formatDate, parse } from 'date-fns';
+
 import ClearIcon from '../../../../assets/svg/clearIcon';
 import InputLabelComponent from '../InputLablel';
 import InputErrorComponent from '../InputErrorComponent';
@@ -43,13 +45,28 @@ function DateInputField({
 }) {
     const theme = useTheme();
 
-    const handleOnDateChange = (dateString, dateObj) => {
-        // if (!onDateChange) {
-        //     setDate(dateObj)
-        // } else {
-        onDateChange(dateObj);
+    const [date, setDate] = useState(() => {
+        if (value) {
+            try {
+                // Attempt to parse the value using the provided format
+                format = format.toLowerCase();
+                const parsedDate = parse(value, format, new Date());
+                return parsedDate;
+            } catch (error) {
+                console.error("Error parsing date:", error);
+                return new Date(); // Fallback to current date
+            }
+        } else {
+            return new Date();
+        }
+    });
 
-        // }
+    const handleOnDateChange = (dateString, dateObj) => {
+        if (!onDateChange) {
+            setDate(dateObj)
+        } else {
+        onDateChange(dateObj);
+        }
     };
 
     return (
@@ -72,7 +89,7 @@ function DateInputField({
 
             <DateTimePicker
             testID="dateTimePicker"
-            value={value == undefined ? new Date() : new Date(value)}
+            value={date}
             mode={mode}
             is24Hour={true}
             display="default"
