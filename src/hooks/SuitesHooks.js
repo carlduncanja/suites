@@ -262,7 +262,9 @@ export const useGetCheckboxUtils = (mainList, childrenKey) => {
     onPressChild,
     onPressGrandparent,
     onPressParent,
-    numParentsChecked
+    numParentsChecked,
+    checkboxState,
+    setCheckboxState
   };
 };
 

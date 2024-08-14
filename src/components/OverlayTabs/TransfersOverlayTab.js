@@ -235,7 +235,6 @@ function TransfersOverlayTab({ transferItems = [], updateStorage, transferObj, g
 
     const handleAcceptTransfer = () => {
         if (pendingCheckedItems.length === 1) {
-            // console.log("Hello");
             modal.closeAllModals();
             setTimeout(() => {
                 modal.openModal('ConfirmationModal', {
@@ -259,6 +258,24 @@ function TransfersOverlayTab({ transferItems = [], updateStorage, transferObj, g
                     }
                 });
             }, 200);
+        } else {
+            modal.openModal(
+                'ConfirmationModal',
+                {
+                    content: <ConfirmationComponent
+                        isEditUpdate={false}
+                        isError={true}
+                        onCancel={() => modal.closeAllModals()}
+                        onAction={() => {
+                            modal.closeAllModals();
+                        }}
+                        message="You can only accept one transfer at a time"
+                    />,
+                    onClose: () => {
+                        modal.closeModals('ConfirmationModal');
+                    }
+                }
+            );
         }
     };
 
