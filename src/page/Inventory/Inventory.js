@@ -642,7 +642,14 @@ function Inventory(props) {
         hasCheckBox={true}
         isChecked={isParentChecked}
         isIndeterminate={isParentIndeterminate}
-        onCheckBoxPress={() => onPressParent(inventoryGroup._id)}
+        onCheckBoxPress={() => {
+          if (isParentChecked) {
+            setSelectedIds(selectedIds.filter((id) => id !== inventoryGroup._id));
+          } else {
+            setSelectedIds([...selectedIds, inventoryGroup._id]);
+          }
+          onPressParent(inventoryGroup._id);
+        }}
         onCollapsedEnd={() => onCollapseView(inventoryGroup.name)}
         onItemPress={onItemPress(inventoryGroup)}
         render={(collapse, isCollapsed) =>

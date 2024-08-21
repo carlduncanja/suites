@@ -294,6 +294,7 @@ function OrderItemPage({ route, navigation }) {
                 const { orders = [] } = data || {};
                 setSelectedOrder(data)
                 setOrderItems(orders)
+                console.log('Order fetched', data)
             })
             .catch(error => {
                 console.log('Failed to get order', error)
