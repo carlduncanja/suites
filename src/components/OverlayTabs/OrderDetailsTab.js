@@ -43,6 +43,7 @@ const OrderDetailsTab = ({
         _id,
         deliveryDate = "",
         nextOrderDate = "",
+        description = "",
         repeating = false,
         repeatingType = "",
         status = "",
@@ -61,7 +62,6 @@ const OrderDetailsTab = ({
         
     } = order
 
-    const { description = "", representatives = [] } = supplier;
     const { name = "" } = storageLocation || {};
 
     const [fields, setFields] = useState({
