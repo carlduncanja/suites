@@ -430,12 +430,13 @@ function CreateProcedure({addProcedure, navigation, route}) {
                 // setTimeout(() => {onCreated(data)}, 200);
             })
             .catch(error => {
-                // todo handle error
+                var message = JSON.parse(error.request._response);
                 modal.openModal('ConfirmationModal',
                     {
                         content: <ConfirmationComponent
                             isError={true}
                             isEditUpdate={false}
+                            message= {message.msg}
                             onCancel={() => {
                                 modal.closeModals('ConfirmationModal');
                                 onCancel();
