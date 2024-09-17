@@ -260,7 +260,9 @@ function ProcedureScheduleContent({
   };
 
   function handleStartClick() {
-    if (!isProcedureDateValid(appointmentDetails.startTime)) {
+    const startTime = appointmentDetails?.startTime || new Date();
+
+    if (!isProcedureDateValid(startTime)) {
       Alert.alert(
         "Invalid Start Date",
         "You cannot start a procedure scheduled for a past date.",
