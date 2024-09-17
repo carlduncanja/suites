@@ -11,7 +11,7 @@ const BMIConverter = ({bmiValue, recordTitle, bmiScale}) => {
         const calValue = value > 100 ? 100 : value;
         const bmiRange = data.filter(item => calValue >= item.startValue && calValue <= item.endValue);
         const getIndex = data.indexOf(bmiRange[0]);
-        const position = (calValue - bmiRange[0].startValue) * (width / (bmiRange[0].endValue - bmiRange[0].startValue));
+        const position = (calValue - bmiRange[0]?.startValue) * (width / (bmiRange[0].endValue - bmiRange[0].startValue));
         return (getIndex * width) + position;
     };
 
