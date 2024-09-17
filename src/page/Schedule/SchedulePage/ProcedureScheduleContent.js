@@ -5,6 +5,7 @@ import {
   Text,
   TouchableOpacity,
   View,
+  Alert
 } from "react-native";
 import moment from "moment";
 import SvgIcon from "../../../../assets/SvgIcon";
@@ -55,6 +56,11 @@ function ProcedureScheduleContent({
 
   const { case: caseItem } = item;
   const { caseNumber } = caseItem;
+
+  const isProcedureDateValid = (procedureDate) => {
+    const now = new Date();
+    return new Date(procedureDate) >= now;
+  };
 
   const [owner, setOwner] = useState({
     firstName: "",
@@ -254,6 +260,15 @@ function ProcedureScheduleContent({
   };
 
   function handleStartClick() {
+    if (!isProcedureDateValid(appointmentDetails.startTime)) {
+      Alert.alert(
+        "Invalid Start Date",
+        "You cannot start a procedure scheduled for a past date.",
+        [{ text: "OK", onPress: () => console.log("OK Pressed") }]
+      );
+      return;
+    }
+
     const now = new moment();
     const end = moment(now).add(duration, "hours");
 

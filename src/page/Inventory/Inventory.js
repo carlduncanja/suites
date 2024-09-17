@@ -5,7 +5,6 @@ import { connect } from "react-redux";
 import { useModal } from "react-native-modalfy";
 import styled, { css } from "@emotion/native";
 import { useTheme } from "emotion-theming";
-import { useFocusEffect } from '@react-navigation/native';
 import _ from "lodash";
 import IconButton from "../../components/common/Buttons/IconButton";
 import LevelIndicator from "../../components/common/LevelIndicator/LevelIndicator";
