@@ -8,13 +8,13 @@ import {
   Alert
 } from "react-native";
 import moment from "moment";
-import SvgIcon from "../../../../assets/SvgIcon";
-import GenerateIcon from "../../../../assets/svg/generateIcon";
 import { useNavigation } from "@react-navigation/native";
-import { emptyFn } from "../../../const";
 import { useModal } from "react-native-modalfy";
 import styled from "@emotion/native";
 import { useTheme } from "emotion-theming";
+import SvgIcon from "../../../../assets/SvgIcon";
+import GenerateIcon from "../../../../assets/svg/generateIcon";
+import { emptyFn } from "../../../const";
 import {
   getUserCall,
   deleteAppointmentById,
@@ -75,8 +75,6 @@ function ProcedureScheduleContent({
       });
     });
   }, []);
-
-  const [temp, setTemp] = useState("");
 
   const { status } = appointmentDetails;
 
@@ -149,11 +147,11 @@ function ProcedureScheduleContent({
   );
 
   const renderPhysicians = (physicians, leadPhysicianId) => {
-    if (physicians.length == 0) {
-      let leadPhysicianObj = {
+    if (physicians.length === 0) {
+      const leadPhysicianObj = {
         ...leadPhysicianId,
         tag: "Lead Surgeon",
-        name: "Dr. " + leadPhysicianId.surname,
+        name: `Dr. ${leadPhysicianId.surname}`,
       };
       physicians.push(leadPhysicianObj);
     }
@@ -259,7 +257,7 @@ function ProcedureScheduleContent({
     });
   };
 
-  function handleStartClick() {
+  const handleStartClick = () => {
     const startTime = appointmentDetails?.startTime || new Date();
 
     if (!isProcedureDateValid(startTime)) {
@@ -271,28 +269,20 @@ function ProcedureScheduleContent({
       return;
     }
 
-    const now = new moment();
+    const now = moment();
     const end = moment(now).add(duration, "hours");
 
     const appointmentObj = {
-      _id: _id,
+      _id,
       description: descrition,
-      subject: subject,
+      subject,
       startTime: now,
       status: "In Progress",
       endTime: end,
-      title: title,
+      title,
       location: appLocation,
     };
-    updateAppointmentById(_id, {
-      description: descrition,
-      subject: subject,
-      startTime: now,
-      status: "In Progress",
-      endTime: end,
-      title: title,
-      location: appLocation,
-    })
+    updateAppointmentById(_id, appointmentObj)
       .then(() => {
         navigation.navigate("CaseFiles", {
           screen: "Case",
@@ -301,7 +291,7 @@ function ProcedureScheduleContent({
             caseId: caseItem._id,
             isEdit: false,
             timeStamp: now,
-            appointmentObj: appointmentObj,
+            appointmentObj,
           },
         });
         closeOverlay();
@@ -310,7 +300,7 @@ function ProcedureScheduleContent({
         console.log(err);
         hanadleErrorModal();
       });
-  }
+  };
 
   return (
     <TouchableOpacity style={{ flex: 1 }} activeOpacity={1}>
@@ -328,7 +318,9 @@ function ProcedureScheduleContent({
                 style={{ flexDirection: "row" }}
                 onPress={handleOnCaseIdPress}
               >
-                <Text style={styles.idText}>#{caseNumber}</Text>
+                <Text style={styles.idText}>
+                  #{caseNumber}
+                </Text>
 
                 <View style={{ paddingTop: 2 }}>
                   <GenerateIcon strokeColor={"#104587"} />
@@ -401,7 +393,8 @@ function ProcedureScheduleContent({
                     Time
                   </Text>
                   <Text style={[styles.detailText]}>
-                    {getTime(startTime)} - {getTime(endTime)}
+                    {getTime(startTime)} -
+                    {getTime(endTime)}
                   </Text>
                 </View>
               </View>
@@ -417,14 +410,16 @@ function ProcedureScheduleContent({
       </ScrollView>
       <View style={styles.editContainer}>
         <Text style={styles.editText}>
-          Created by {owner.firstName} {owner.lastName}
+          Created by {owner.firstName}
+          {' '}
+          {owner.lastName}
         </Text>
         <View style={styles.buttonHolder}>
-          {status == "Not Yet Started" && (
+          {status === "Not Yet Started" && (
             <NewProcedureButton
               style={{ borderColor: "#0CB0E7", width: 150 }}
               theme={theme}
-              onPress={() => handleStartClick()}
+              onPress={handleStartClick}
             >
               <NewProcedureButtonText> Start Procedure </NewProcedureButtonText>
             </NewProcedureButton>
