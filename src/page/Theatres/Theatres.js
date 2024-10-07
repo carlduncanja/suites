@@ -378,10 +378,10 @@ function Theatres(props) {
 
         const formattedItem = {
             name: item.name || '',
-            recoveryStatus: isRecovery ? 'Yes' : isActive ? 'No' : '--',
-            recoveryStatusColor: isRecovery ? availableColor : '#4E5664',
-            status: !isActive ? 'Available' : 'In-Use',
-            statusColor: !isActive ? availableColor : inUseColor,
+            recoveryStatus: item.isRecovery ? 'Yes' : item.active ? 'No' : '--',
+            recoveryStatusColor: item.isRecovery ? availableColor : '#4E5664',
+            status: !item.active ? 'Available' : 'In-Use',
+            statusColor: !item.active ? availableColor : inUseColor,
         };
 
         // console.log("Formatted Item: ", formattedItem)
