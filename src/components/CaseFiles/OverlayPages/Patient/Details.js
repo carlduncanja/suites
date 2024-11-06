@@ -26,6 +26,7 @@ import { updatePatient } from "../../../../api/network";
 import { calculateBmi } from "../../../../helpers/calculations";
 import FieldContainer from "../../../common/FieldContainerComponent";
 import { validateAddressField, validateNameField } from "../../../../utils";
+import moment from "moment";
 
 const bmiScale = [
   {
@@ -530,6 +531,9 @@ const Details = ({ tabDetails, onUpdated = () => {} }) => {
       ? workEmailValue
       : workEmailRecordValue;
 
+  // Add this state to track the last update
+  const [lastUpdate, setLastUpdate] = useState(null);
+
   return (
     <ScrollView contentContainerStyle={{ paddingBottom: 100 }}>
       <>
@@ -631,7 +635,19 @@ const Details = ({ tabDetails, onUpdated = () => {} }) => {
               useDateField={true}
               maxDate={new Date()}
               onClearValue={() => onFieldChange("dob")("")}
-              onRecordUpdate={(date) => onFieldChange("dob")(date)}
+              onRecordUpdate={(date) => {
+                // Prevent duplicate updates within a short time window
+                const now = Date.now();
+                if (lastUpdate && now - lastUpdate < 1000) {
+                  return; // Ignore updates within 1 second of the last update
+                }
+                
+                if (date instanceof Date) {
+                  setLastUpdate(now);
+                  const formattedDate = moment(date).format('YYYY-MM-DD');
+                  onFieldChange("dob")(formattedDate);
+                }
+              }}
             />
           </FieldContainer>
 
@@ -643,6 +659,7 @@ const Details = ({ tabDetails, onUpdated = () => {} }) => {
               onRecordUpdate={(value) => {
                 const val = handleNumberValidation(value, 9);
                 if (val || val === "") onFieldChange("trn")(val);
+                console.log("this is a test TRN: ", val);
               }}
               editMode={isEditMode}
               editable={true}
