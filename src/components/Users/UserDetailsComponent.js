@@ -172,8 +172,8 @@ function UserDetailsComponent({
               recordTitle="First Name"
               editMode={isEditMode}
               onRecordUpdate={(value) => {
-                const isvalid = validateNameField(value);
-                if (isvalid) onFieldChange("first_name");
+                const isValid = validateNameField(value);
+                if (isValid) onFieldChange("first_name")(value);
               }}
               onClearValue={onFieldChange("first_name")}
             />
@@ -186,7 +186,7 @@ function UserDetailsComponent({
               editMode={isEditMode}
               onRecordUpdate={(value) => {
                 const isvalid = validateNameField(value);
-                if (isvalid) onFieldChange("last_name");
+                if (isvalid) onFieldChange("last_name")(value);
               }}
               onClearValue={onFieldChange("last_name")}
             />
