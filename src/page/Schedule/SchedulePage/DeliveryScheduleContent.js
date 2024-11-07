@@ -221,14 +221,14 @@ function DeliveryScheduleContent({appointmentDetails, purchaseOrder, pickupPerso
 
             </AppointmentInformation>
 
-            <ReviewButtonContainer theme={theme}>
+            {/* <ReviewButtonContainer theme={theme}>
                 <Button
                     color={theme.colors['--color-white']}
                     title="Review Order"
                     backgroundColor={theme.colors['--color-blue-500']}
                     onPress={() => {}}
                 />
-            </ReviewButtonContainer>
+            </ReviewButtonContainer> */}
 
         </DeliveryCardContainer>
 
