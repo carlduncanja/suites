@@ -6,7 +6,7 @@
     "platforms": [
       "ios"
     ],
-    "version": "2.2.0",
+    "version": "2.4.0",
     "orientation": "portrait",
     "icon": "./assets/MedopsLogo.png",
     "splash": {
@@ -23,7 +23,7 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.smsja.suites",
-      "buildNumber": "1.5.9",
+      "buildNumber": "1.7.0",
       "config": {
         "usesNonExemptEncryption": false
       }
@@ -32,6 +32,9 @@
       "eas": {
         "projectId": "9c2562ca-7117-495d-881f-f1a4e5b76a8c"
       }
+    },
+    "android": {
+      "package": "com.smsja.suites"
     }
   }
 }
